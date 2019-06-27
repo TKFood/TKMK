@@ -369,6 +369,37 @@ namespace TKMK
 
         }
 
+        public void SETFASTREPORT()
+        {
+
+            string SQL;
+            Report report1 = new Report();
+            report1.Load(@"REPORT\飲品記錄表.frx");
+
+            report1.Dictionary.Connections[0].ConnectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+            //report1.Dictionary.Connections[0].ConnectionString = "server=192.168.1.105;database=TKPUR;uid=sa;pwd=dsc";
+
+            TableDataSource Table = report1.GetDataSource("Table") as TableDataSource;
+            SQL = SETFASETSQL();
+            Table.SelectCommand = SQL;
+            report1.Preview = previewControl1;
+            report1.Show();
+
+        }
+
+        public string SETFASETSQL()
+        {
+            StringBuilder FASTSQL = new StringBuilder();
+
+
+            FASTSQL.AppendFormat(@"  SELECT CONVERT(NVARCHAR,[DATES],111) AS '日期' ,[DEP] AS '部門' ,[DEPNAME] AS '部門名' ,[DRINK] AS '飲品' ,[OTHERS] AS '其他' ,[CUP] AS '數量' ,[REASON] AS '原因' ,[SIGN] AS '簽名' ,[ID]");
+            FASTSQL.AppendFormat(@"  FROM [TKMK].[dbo].[MKDRINKRECORD]");
+            FASTSQL.AppendFormat(@"  WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}' ", dateTimePicker4.Value.ToString("yyyyMMdd"), dateTimePicker5.Value.ToString("yyyyMMdd"));
+            FASTSQL.AppendFormat(@"  ");
+
+            return FASTSQL.ToString();
+        }
+
         #endregion
 
         #region BUTTON
@@ -428,10 +459,14 @@ namespace TKMK
             MessageBox.Show("完成");
         }
 
+        private void button6_Click(object sender, EventArgs e)
+        {
+            SETFASTREPORT();
+        }
 
 
         #endregion
 
-       
+
     }
 }
