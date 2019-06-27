@@ -80,7 +80,43 @@ namespace TKMK
 
         private void ChildClick(object sender, EventArgs e)
         {
+            // MessageBox.Show(string.Concat("You have Clicked ", sender.ToString(), " Menu"), "Menu Items Event",MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+            String Seqtx = "SELECT FRM_CODE FROM MNU_SUBMENU WHERE FRM_NAME='" + sender.ToString() + "'";
+            SqlDataAdapter datransaction = new SqlDataAdapter(Seqtx, conn);
+            DataTable dtransaction = new DataTable();
+            datransaction.Fill(dtransaction);
+
+            Assembly frmAssembly = Assembly.LoadFile(Application.ExecutablePath);
+            foreach (Type type in frmAssembly.GetTypes())
+            {
+                //MessageBox.Show(type.Name);
+                if (type.BaseType == typeof(Form))
+                {
+                    if (type.Name == dtransaction.Rows[0][0].ToString())
+                    {
+                        Form frmShow = (Form)frmAssembly.CreateInstance(type.ToString());
+                        // then when you want to close all of them simple call the below code
+
+                        foreach (Form form in this.MdiChildren)
+                        {
+                            //form.Close();
+                            //如果子視窗已經存在
+                            if (form.Name == frmShow.Name)
+                            {
+                                //將該子視窗設為焦點
+                                form.Focus();
+                                return;
+                            }
+                        }
+
+                        frmShow.MdiParent = this;
+                        frmShow.WindowState = FormWindowState.Maximized;
+                        //frmShow.ControlBox = false;
+                        frmShow.Show();
+                    }
+                }
+            }
         }
 
         private void FrmParent_FormClosed(object sender, FormClosedEventArgs e)
