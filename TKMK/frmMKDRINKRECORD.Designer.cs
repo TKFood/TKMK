@@ -59,7 +59,7 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.textBoxID = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -269,7 +269,7 @@
             this.tableLayoutPanel2.Controls.Add(this.textBox2, 4, 3);
             this.tableLayoutPanel2.Controls.Add(this.textBox3, 1, 4);
             this.tableLayoutPanel2.Controls.Add(this.textBox4, 1, 5);
-            this.tableLayoutPanel2.Controls.Add(this.textBox5, 1, 6);
+            this.tableLayoutPanel2.Controls.Add(this.textBoxID, 1, 6);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -464,14 +464,14 @@
             this.textBox4.Size = new System.Drawing.Size(234, 27);
             this.textBox4.TabIndex = 46;
             // 
-            // textBox5
+            // textBoxID
             // 
-            this.textBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox5.Location = new System.Drawing.Point(123, 246);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.ReadOnly = true;
-            this.textBox5.Size = new System.Drawing.Size(114, 27);
-            this.textBox5.TabIndex = 47;
+            this.textBoxID.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxID.Location = new System.Drawing.Point(123, 246);
+            this.textBoxID.Name = "textBoxID";
+            this.textBoxID.ReadOnly = true;
+            this.textBoxID.Size = new System.Drawing.Size(114, 27);
+            this.textBoxID.TabIndex = 47;
             // 
             // frmMKDRINKRECORD
             // 
@@ -533,6 +533,6 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TextBox textBoxID;
     }
 }

@@ -56,6 +56,7 @@ namespace TKMK
         {
             InitializeComponent();
             comboBox1load();
+            comboBox2load();
 
         }
 
@@ -82,10 +83,35 @@ namespace TKMK
 
         }
 
+        public void comboBox2load()
+        {
+            connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+            sqlConn = new SqlConnection(connectionString);
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"SELECT [DRINKNAME] FROM [TKMK].[dbo].[DRINKNAME] WHERE [USED]='Y' ORDER BY [ID] ");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("DRINKNAME", typeof(string));
+
+            da.Fill(dt);
+            comboBox2.DataSource = dt.DefaultView;
+            comboBox2.ValueMember = "DRINKNAME";
+            comboBox2.DisplayMember = "DRINKNAME";
+            sqlConn.Close();
+
+
+        }
+
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             textBox1.Text = null;
-            textBox1.Text = comboBox1.SelectedValue.ToString();
+            if(!string.IsNullOrEmpty(comboBox1.SelectedValue.ToString())&&!comboBox1.SelectedValue.ToString().Equals("System.Data.DataRowView"))
+            {
+                textBox1.Text = comboBox1.SelectedValue.ToString();
+            }
+            
         }
         public void Search()
         {
@@ -159,7 +185,7 @@ namespace TKMK
                     textBox2.Text = row.Cells["其他"].Value.ToString();
                     textBox3.Text = row.Cells["數量"].Value.ToString();
                     textBox4.Text = row.Cells["原因"].Value.ToString();
-                    textBox5.Text = row.Cells["ID"].Value.ToString();
+                    textBoxID.Text = row.Cells["ID"].Value.ToString();
 
                 }
                 else
@@ -168,7 +194,7 @@ namespace TKMK
                     textBox2.Text = null;
                     textBox3.Text = null;
                     textBox4.Text = null;
-                    textBox5.Text = null;
+                    textBoxID.Text = null;
 
                 }
             }
@@ -179,6 +205,7 @@ namespace TKMK
             textBox2.Text = null;
             textBox3.Text = null;
             textBox4.Text = null;
+            textBoxID.Text = null;
             textBox1.ReadOnly = false;
             textBox2.ReadOnly = false;
             textBox3.ReadOnly = false;
@@ -214,6 +241,10 @@ namespace TKMK
                 tran = sqlConn.BeginTransaction();
 
               
+                sbSql.AppendFormat(" UPDATE [TKMK].[dbo].[MKDRINKRECORD]");
+                sbSql.AppendFormat(" SET [DATES]='{0}',[DEP]='{1}',[DEPNAME]='{2}',[DRINK]='{3}',[OTHERS]='{4}',[CUP]='{5}',[REASON]='{6}',[SIGN]='{7}'", dateTimePicker3.Value.ToString("yyyyMMdd"), textBox1.Text, comboBox1.Text, comboBox2.Text, textBox2.Text, textBox3.Text, textBox4.Text,null);
+                sbSql.AppendFormat(" WHERE [ID]='{0}'", textBoxID.Text);
+                sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" ");
 
                 cmd.Connection = sqlConn;
@@ -259,7 +290,12 @@ namespace TKMK
 
                 sbSql.Clear();
             
+                sbSql.AppendFormat(" INSERT INTO [TKMK].[dbo].[MKDRINKRECORD]");
+                sbSql.AppendFormat(" ([DATES],[DEP],[DEPNAME],[DRINK],[OTHERS],[CUP],[REASON],[SIGN])");
+                sbSql.AppendFormat(" VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}')",dateTimePicker3.Value.ToString("yyyyMMdd"),textBox1.Text,comboBox1.Text,comboBox2.Text,textBox2.Text,textBox3.Text,textBox4.Text,null);
                 sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+
 
                 cmd.Connection = sqlConn;
                 cmd.CommandTimeout = 60;
@@ -301,7 +337,8 @@ namespace TKMK
 
                 sbSql.Clear();
 
-               
+                sbSql.AppendFormat(" DELETE [TKMK].[dbo].[MKDRINKRECORD]");
+                sbSql.AppendFormat(" WHERE [ID]='{0}'",textBoxID.Text);
                 sbSql.AppendFormat(" ");
 
                 cmd.Connection = sqlConn;
@@ -374,7 +411,7 @@ namespace TKMK
         private void button4_Click(object sender, EventArgs e)
         {
             STATUS = null;
-            string message = textBox2.Text + " 要刪除了?";
+            string message =  " 要刪除了?";
 
             DialogResult dialogResult = MessageBox.Show(message.ToString(), "要刪除了?", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes)
