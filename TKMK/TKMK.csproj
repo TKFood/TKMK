@@ -44,6 +44,10 @@
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\..\..\NPOI 2.2.1 binary package\Release\Net40\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+    <Reference Include="NPOI, Version=2.2.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\NPOI 2.2.1 binary package\Release\Net40\NPOI.dll</HintPath>
+    </Reference>
     <Reference Include="NPOI.OOXML">
       <HintPath>..\..\..\NPOI 2.2.1 binary package\Release\Net40\NPOI.OOXML.dll</HintPath>
     </Reference>
