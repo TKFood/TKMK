@@ -395,7 +395,7 @@ namespace TKMK
             FASTSQL.AppendFormat(@"  SELECT CONVERT(NVARCHAR,[DATES],111) AS '日期' ,[DEP] AS '部門' ,[DEPNAME] AS '部門名' ,[DRINK] AS '飲品' ,[OTHERS] AS '其他' ,[CUP] AS '數量' ,[REASON] AS '原因' ,[SIGN] AS '簽名' ,[ID]");
             FASTSQL.AppendFormat(@"  FROM [TKMK].[dbo].[MKDRINKRECORD]");
             FASTSQL.AppendFormat(@"  WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}' ", dateTimePicker4.Value.ToString("yyyyMMdd"), dateTimePicker5.Value.ToString("yyyyMMdd"));
-            FASTSQL.AppendFormat(@"  ");
+            FASTSQL.AppendFormat(@"   ");
 
             return FASTSQL.ToString();
         }
