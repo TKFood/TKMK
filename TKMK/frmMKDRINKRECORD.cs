@@ -395,7 +395,43 @@ namespace TKMK
             FASTSQL.AppendFormat(@"  SELECT CONVERT(NVARCHAR,[DATES],111) AS '日期' ,[DEP] AS '部門' ,[DEPNAME] AS '部門名' ,[DRINK] AS '飲品' ,[OTHERS] AS '其他' ,[CUP] AS '數量' ,[REASON] AS '原因' ,[SIGN] AS '簽名' ,[ID]");
             FASTSQL.AppendFormat(@"  FROM [TKMK].[dbo].[MKDRINKRECORD]");
             FASTSQL.AppendFormat(@"  WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}' ", dateTimePicker4.Value.ToString("yyyyMMdd"), dateTimePicker5.Value.ToString("yyyyMMdd"));
-            FASTSQL.AppendFormat(@"   ");
+            FASTSQL.AppendFormat(@" ");
+
+            return FASTSQL.ToString();
+        }
+
+
+        public void SETFASTREPORT2()
+        {
+
+            string SQL;
+            Report report2 = new Report();
+            report2.Load(@"REPORT\飲品記錄表加總.frx");
+
+            report2.Dictionary.Connections[0].ConnectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+            //report1.Dictionary.Connections[0].ConnectionString = "server=192.168.1.105;database=TKPUR;uid=sa;pwd=dsc";
+
+            TableDataSource Table = report2.GetDataSource("Table") as TableDataSource;
+            SQL = SETFASETSQL2();
+            Table.SelectCommand = SQL;
+            report2.SetParameterValue("P1", dateTimePicker4.Value.ToString("yyyyMMdd"));
+            report2.SetParameterValue("P2", dateTimePicker5.Value.ToString("yyyyMMdd"));
+            report2.Preview = previewControl2;
+            report2.Show();
+
+        }
+
+        public string SETFASETSQL2()
+        {
+            StringBuilder FASTSQL = new StringBuilder();
+
+            FASTSQL.AppendFormat(@" SELECT[DRINK] AS '飲品' ,[OTHERS] AS '其他' ,SUM([CUP]) AS '數量' ");
+            FASTSQL.AppendFormat(@" FROM [TKMK].[dbo].[MKDRINKRECORD]");
+            FASTSQL.AppendFormat(@" WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}'", dateTimePicker4.Value.ToString("yyyyMMdd"), dateTimePicker5.Value.ToString("yyyyMMdd"));
+            FASTSQL.AppendFormat(@" GROUP BY [DRINK],[OTHERS]");
+            FASTSQL.AppendFormat(@" ORDER BY [DRINK],[OTHERS]");
+            FASTSQL.AppendFormat(@" ");
+            FASTSQL.AppendFormat(@" ");
 
             return FASTSQL.ToString();
         }
@@ -462,6 +498,7 @@ namespace TKMK
         private void button6_Click(object sender, EventArgs e)
         {
             SETFASTREPORT();
+            SETFASTREPORT2();
         }
 
 
