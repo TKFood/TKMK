@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="06/27/2019 14:55:31" ReportInfo.Modified="07/02/2019 17:13:45" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="06/27/2019 14:55:31" ReportInfo.Modified="07/22/2019 17:39:26" ReportInfo.CreatorVersion="2016.4.4.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9K5ftLVJ05gE0a8wE7zIykW">
-      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT[DRINK] AS '飲品' ,[OTHERS] AS '其他' ,SUM([CUP]) AS '數量' &#13;&#10;FROM [TKMK].[dbo].[MKDRINKRECORD]&#13;&#10;WHERE CONVERT(NVARCHAR,[DATES],112)&gt;='20190601' AND CONVERT(NVARCHAR,[DATES],112)&lt;='20190731'&#13;&#10;GROUP BY [DRINK],[OTHERS]&#13;&#10;ORDER BY [DRINK],[OTHERS]">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9KOKxQWKhJWqXEy5PLFHuKz">
+      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT[DRINK] AS '飲品' ,[OTHERS] AS '其他' ,SUM([CUP]) AS '數量' &#13;&#10;FROM [TKMK].[dbo].[MKDRINKRECORD]&#13;&#10;WHERE CONVERT(NVARCHAR,[DATES],112)&gt;='20190701' AND CONVERT(NVARCHAR,[DATES],112)&lt;='20190731'&#13;&#10;GROUP BY [DRINK],[OTHERS]&#13;&#10;ORDER BY [DRINK],[OTHERS]">
         <Column Name="飲品" DataType="System.String"/>
         <Column Name="其他" DataType="System.String"/>
         <Column Name="數量" DataType="System.Int32"/>
