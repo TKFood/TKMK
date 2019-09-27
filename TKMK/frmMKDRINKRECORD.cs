@@ -80,6 +80,8 @@ namespace TKMK
             comboBox1.DisplayMember = "ME002";
             sqlConn.Close();
 
+            textBox1.Text= comboBox1.SelectedValue.ToString();
+
 
         }
 
@@ -88,18 +90,21 @@ namespace TKMK
             connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
             sqlConn = new SqlConnection(connectionString);
             StringBuilder Sequel = new StringBuilder();
-            Sequel.AppendFormat(@"SELECT [DRINKNAME] FROM [TKMK].[dbo].[DRINKNAME] WHERE [USED]='Y' ORDER BY [ID] ");
+            Sequel.AppendFormat(@"SELECT [ID],[DRINKNAME] FROM [TKMK].[dbo].[DRINKNAME] WHERE [USED]='Y' ORDER BY [ID] ");
             SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
             DataTable dt = new DataTable();
             sqlConn.Open();
 
+            dt.Columns.Add("ID", typeof(string));
             dt.Columns.Add("DRINKNAME", typeof(string));
 
             da.Fill(dt);
             comboBox2.DataSource = dt.DefaultView;
-            comboBox2.ValueMember = "DRINKNAME";
+            comboBox2.ValueMember = "ID";
             comboBox2.DisplayMember = "DRINKNAME";
             sqlConn.Close();
+
+            ID.Text = comboBox2.SelectedValue.ToString();
 
 
         }
@@ -127,7 +132,7 @@ namespace TKMK
                 sbSqlQuery.Clear();
 
                
-                sbSql.AppendFormat(@"  SELECT CONVERT(NVARCHAR,[DATES],111) AS '日期' ,[DEP] AS '部門' ,[DEPNAME] AS '部門名' ,[DRINK] AS '飲品' ,[OTHERS] AS '其他' ,[CUP] AS '數量' ,[REASON] AS '原因' ,[SIGN] AS '簽名' ,[ID]");
+                sbSql.AppendFormat(@"  SELECT CONVERT(NVARCHAR,[DATES],111) AS '日期' ,[DEP] AS '部門' ,[DEPNAME] AS '部門名' ,[DRINK] AS '飲品' ,[OTHERS] AS '其他' ,[CUP] AS '數量' ,[REASON] AS '原因' ,[DRINKID] AS '品號' ,[SIGN] AS '簽名' ,[ID]");
                 sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[MKDRINKRECORD]");
                 sbSql.AppendFormat(@" WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}' ",dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
                 sbSql.AppendFormat(@"  ");
@@ -242,7 +247,7 @@ namespace TKMK
 
               
                 sbSql.AppendFormat(" UPDATE [TKMK].[dbo].[MKDRINKRECORD]");
-                sbSql.AppendFormat(" SET [DATES]='{0}',[DEP]='{1}',[DEPNAME]='{2}',[DRINK]='{3}',[OTHERS]='{4}',[CUP]='{5}',[REASON]='{6}',[SIGN]='{7}'", dateTimePicker3.Value.ToString("yyyyMMdd"), textBox1.Text, comboBox1.Text, comboBox2.Text, textBox2.Text, textBox3.Text, textBox4.Text,null);
+                sbSql.AppendFormat(" SET [DATES]='{0}',[DEP]='{1}',[DEPNAME]='{2}',[DRINK]='{3}',[OTHERS]='{4}',[CUP]='{5}',[REASON]='{6}',[SIGN]='{7}',[DRINKID]='{8}'", dateTimePicker3.Value.ToString("yyyyMMdd"), textBox1.Text, comboBox1.Text, comboBox2.Text, textBox2.Text, textBox3.Text, textBox4.Text,null,comboBox2.SelectedValue.ToString());
                 sbSql.AppendFormat(" WHERE [ID]='{0}'", textBoxID.Text);
                 sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" ");
@@ -291,8 +296,8 @@ namespace TKMK
                 sbSql.Clear();
             
                 sbSql.AppendFormat(" INSERT INTO [TKMK].[dbo].[MKDRINKRECORD]");
-                sbSql.AppendFormat(" ([DATES],[DEP],[DEPNAME],[DRINK],[OTHERS],[CUP],[REASON],[SIGN])");
-                sbSql.AppendFormat(" VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}')",dateTimePicker3.Value.ToString("yyyyMMdd"),textBox1.Text,comboBox1.Text,comboBox2.Text,textBox2.Text,textBox3.Text,textBox4.Text,null);
+                sbSql.AppendFormat(" ([DATES],[DEP],[DEPNAME],[DRINK],[OTHERS],[CUP],[REASON],[SIGN],[DRINKID])");
+                sbSql.AppendFormat(" VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')", dateTimePicker3.Value.ToString("yyyyMMdd"),textBox1.Text,comboBox1.Text,comboBox2.Text,textBox2.Text,textBox3.Text,textBox4.Text,null,comboBox2.SelectedValue.ToString());
                 sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" ");
 
@@ -435,7 +440,10 @@ namespace TKMK
 
             return FASTSQL.ToString();
         }
-
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ID.Text = comboBox2.SelectedValue.ToString();
+        }
         #endregion
 
         #region BUTTON
@@ -502,8 +510,9 @@ namespace TKMK
         }
 
 
+
         #endregion
 
-
+       
     }
 }
