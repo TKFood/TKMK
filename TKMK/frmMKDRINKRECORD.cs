@@ -55,6 +55,10 @@ namespace TKMK
         string OLDBUYNO;
         string CHECKYN = "N";
 
+        string SID;
+        string TD001;
+        string TD002;
+
         public frmMKDRINKRECORD()
         {
             InitializeComponent();
@@ -522,6 +526,8 @@ namespace TKMK
                     textBox11.Text = row.Cells["品號"].Value.ToString();
                     textBoxID2.Text = row.Cells["ID"].Value.ToString();
 
+                    SID= row.Cells["ID"].Value.ToString();
+
                 }
                 else
                 {
@@ -534,14 +540,68 @@ namespace TKMK
                     textBox11.Text = null;
                     textBoxID2.Text = null;
 
+                    SID = null;
+
                 }
             }
         }
 
 
+        public void ADDBOMTDRESLUT()
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                //TD001 = "A421";
+                //TD002 = "20190930003";
+
+                sbSql.AppendFormat(" INSERT INTO [TKMK].[dbo].[BOMTDRESLUT]");
+                sbSql.AppendFormat(" ([SID],[TD001],[TD002])");
+                sbSql.AppendFormat(" VALUES ('{0}','{1}','{2}')", SID, TD001, TD002);
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
         #endregion
 
-        #region BUTTON
+            #region BUTTON
         private void button1_Click(object sender, EventArgs e)
         {
             Search();
@@ -611,7 +671,7 @@ namespace TKMK
 
         private void button8_Click(object sender, EventArgs e)
         {
-
+            ADDBOMTDRESLUT();
         }
 
 
