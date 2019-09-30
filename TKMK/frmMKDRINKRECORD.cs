@@ -35,12 +35,15 @@ namespace TKMK
         SqlCommandBuilder sqlCmdBuilder3 = new SqlCommandBuilder();
         SqlDataAdapter adapter4 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder4 = new SqlCommandBuilder();
+        SqlDataAdapter adapter5 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder5 = new SqlCommandBuilder();
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
         DataSet ds2 = new DataSet();
         DataSet ds3 = new DataSet();
         DataSet ds4 = new DataSet();
+        DataSet ds5 = new DataSet();
         DataTable dt = new DataTable();
         string tablename = null;
         string EDITID;
@@ -157,6 +160,62 @@ namespace TKMK
                     {
                         dataGridView1.DataSource = ds.Tables["TEMPds1"];
                         dataGridView1.AutoResizeColumns();
+
+
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
+        public void Search2()
+        {
+            ds.Clear();
+
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+
+                sbSql.AppendFormat(@"  SELECT CONVERT(NVARCHAR,[DATES],111) AS '日期' ,[DEP] AS '部門' ,[DEPNAME] AS '部門名' ,[DRINK] AS '飲品' ,[OTHERS] AS '其他' ,[CUP] AS '數量' ,[REASON] AS '原因' ,[DRINKID] AS '品號' ,[SIGN] AS '簽名' ,[ID]");
+                sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[MKDRINKRECORD]");
+                sbSql.AppendFormat(@" WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}' ", dateTimePicker6.Value.ToString("yyyyMMdd"), dateTimePicker7.Value.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter5 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder5 = new SqlCommandBuilder(adapter5);
+                sqlConn.Open();
+                ds5.Clear();
+                adapter5.Fill(ds5, "ds5");
+                sqlConn.Close();
+
+
+                if (ds5.Tables["ds5"].Rows.Count == 0)
+                {
+                    dataGridView2.DataSource = null;
+                }
+                else
+                {
+                    if (ds5.Tables["ds5"].Rows.Count >= 1)
+                    {
+                        dataGridView2.DataSource = ds5.Tables["ds5"];
+                        dataGridView2.AutoResizeColumns();
 
 
                     }
@@ -444,6 +503,42 @@ namespace TKMK
         {
             ID.Text = comboBox2.SelectedValue.ToString();
         }
+
+        private void dataGridView2_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView2.CurrentRow != null)
+            {
+                int rowindex = dataGridView2.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView2.Rows[rowindex];
+
+                    textBox5.Text = row.Cells["日期"].Value.ToString();
+                    textBox6.Text = row.Cells["部門名"].Value.ToString();
+                    textBox7.Text =row.Cells["飲品"].Value.ToString();
+                    textBox8.Text = row.Cells["其他"].Value.ToString();
+                    textBox9.Text = row.Cells["數量"].Value.ToString();
+                    textBox10.Text = row.Cells["原因"].Value.ToString();
+                    textBox11.Text = row.Cells["品號"].Value.ToString();
+                    textBoxID2.Text = row.Cells["ID"].Value.ToString();
+
+                }
+                else
+                {
+                    textBox5.Text = null;
+                    textBox6.Text = null;
+                    textBox7.Text = null;
+                    textBox8.Text = null;
+                    textBox9.Text = null;
+                    textBox10.Text = null;
+                    textBox11.Text = null;
+                    textBoxID2.Text = null;
+
+                }
+            }
+        }
+
+
         #endregion
 
         #region BUTTON
@@ -509,10 +604,20 @@ namespace TKMK
             SETFASTREPORT2();
         }
 
+        private void button7_Click(object sender, EventArgs e)
+        {
+            Search2();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+
+        }
+
 
 
         #endregion
 
-       
+      
     }
 }
