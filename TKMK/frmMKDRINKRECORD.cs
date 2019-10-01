@@ -841,6 +841,78 @@ namespace TKMK
         {
             BOMTDDATA BOMTD = new BOMTDDATA();
             BOMTD = SETBOMTD();
+
+            if(!string.IsNullOrEmpty(TD001)&& !string.IsNullOrEmpty(TD002) && !string.IsNullOrEmpty(TD003) && !string.IsNullOrEmpty(TD004) && !string.IsNullOrEmpty(TD005) && !string.IsNullOrEmpty(TD007) )
+            {
+
+            }
+            try
+            {
+              
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(" INSERT INTO [TK].[dbo].[BOMTD]");
+                sbSql.AppendFormat(" (");
+                sbSql.AppendFormat(" [COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE]");
+                sbSql.AppendFormat(" ,[TRANS_NAME],[sync_date],[sync_time],[sync_mark],[sync_count],[DataUser],[DataGroup]");
+                sbSql.AppendFormat(" ,[TD001],[TD002],[TD003],[TD004],[TD005],[TD006],[TD007],[TD008],[TD009],[TD010]");
+                sbSql.AppendFormat(" ,[TD011],[TD012],[TD013],[TD014],[TD015],[TD016],[TD017],[TD018],[TD019],[TD020]");
+                sbSql.AppendFormat(" ,[TD021],[TD022],[TD023],[TD024],[TD025],[TD026],[TD027],[TD028],[TD029],[TD030]");
+                sbSql.AppendFormat(" ,[TD031],[TD032],[TD033],[TD034],[TD035],[TD036]");
+                sbSql.AppendFormat(" ,[UDF01],[UDF02],[UDF03],[UDF04],[UDF05],[UDF06],[UDF07],[UDF08],[UDF09],[UDF10]");
+                sbSql.AppendFormat(" )");
+                sbSql.AppendFormat(" VALUES");
+                sbSql.AppendFormat(" (");
+                sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}',", BOMTD.COMPANY, BOMTD.CREATOR, BOMTD.USR_GROUP, BOMTD.CREATE_DATE, BOMTD.MODIFIER, BOMTD.MODI_DATE, BOMTD.FLAG, BOMTD.CREATE_TIME, BOMTD.MODI_TIME, BOMTD.TRANS_TYPE);
+                sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}',", BOMTD.TRANS_NAME, BOMTD.sync_date, BOMTD.sync_time, BOMTD.sync_mark, BOMTD.sync_count, BOMTD.DataUser, BOMTD.DataGroup);
+                sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}',", BOMTD.TD001, BOMTD.TD002, BOMTD.TD003, BOMTD.TD004, BOMTD.TD005, BOMTD.TD006, BOMTD.TD007, BOMTD.TD008, BOMTD.TD009, BOMTD.TD010);
+                sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}',", BOMTD.TD011, BOMTD.TD012, BOMTD.TD013, BOMTD.TD014, BOMTD.TD015, BOMTD.TD016, BOMTD.TD017, BOMTD.TD018, BOMTD.TD019, BOMTD.TD020);
+                sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}',", BOMTD.TD021, BOMTD.TD022, BOMTD.TD023, BOMTD.TD024, BOMTD.TD025, BOMTD.TD026, BOMTD.TD027, BOMTD.TD028, BOMTD.TD029, BOMTD.TD030);
+                sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}',", BOMTD.TD031, BOMTD.TD032, BOMTD.TD033, BOMTD.TD034, BOMTD.TD035, BOMTD.TD036);
+                sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}'", BOMTD.UDF01, BOMTD.UDF02, BOMTD.UDF03, BOMTD.UDF04, BOMTD.UDF05, BOMTD.UDF06, BOMTD.UDF07, BOMTD.UDF08, BOMTD.UDF09, BOMTD.UDF10);
+                sbSql.AppendFormat(" )");
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+                
+
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
         }
 
         public BOMTDDATA SETBOMTD()
@@ -867,49 +939,49 @@ namespace TKMK
             BOMTD.TD001 = TD001;
             BOMTD.TD002 = TD002;
             BOMTD.TD003 = TD003;
-            BOMTD.TD004 = "";
-            BOMTD.TD005 = "";
+            BOMTD.TD004 = TD004;
+            BOMTD.TD005 = TD005;
             BOMTD.TD006 = "";
-            BOMTD.TD007 = "";
-            BOMTD.TD008 = "";
-            BOMTD.TD009 = "";
-            BOMTD.TD010 = "";
+            BOMTD.TD007 = TD007;
+            BOMTD.TD008 = "0";
+            BOMTD.TD009 = "0";
+            BOMTD.TD010 = textBox12.Text;
             BOMTD.TD011 = "";
-            BOMTD.TD012 = "";
-            BOMTD.TD013 = "";
-            BOMTD.TD014 = "";
+            BOMTD.TD012 = "N";
+            BOMTD.TD013 = "0";
+            BOMTD.TD014 = TD003;
             BOMTD.TD015 = "";
-            BOMTD.TD016 = "";
+            BOMTD.TD016 = "N";
             BOMTD.TD017 = "";
             BOMTD.TD018 = "";
             BOMTD.TD019 = "";
-            BOMTD.TD020 = "";
+            BOMTD.TD020 = "0";
             BOMTD.TD021 = "";
-            BOMTD.TD022 = "";
+            BOMTD.TD022 = "0";
             BOMTD.TD023 = "";
-            BOMTD.TD024 = "";
-            BOMTD.TD025 = "";
+            BOMTD.TD024 = "0";
+            BOMTD.TD025 = "N";
             BOMTD.TD026 = "";
             BOMTD.TD027 = "";
-            BOMTD.TD028 = "";
+            BOMTD.TD028 = "0";
             BOMTD.TD029 = "";
-            BOMTD.TD030 = "";
+            BOMTD.TD030 = "0";
             BOMTD.TD031 = "";
-            BOMTD.TD032 = "";
+            BOMTD.TD032 = "0";
             BOMTD.TD033 = "";
             BOMTD.TD034 = "";
             BOMTD.TD035 = "";
-            BOMTD.TD036 = "";
+            BOMTD.TD036 = "0";
             BOMTD.UDF01 = "";
             BOMTD.UDF02 = "";
             BOMTD.UDF03 = "";
             BOMTD.UDF04 = "";
             BOMTD.UDF05 = "";
-            BOMTD.UDF06 = "";
-            BOMTD.UDF07 = "";
-            BOMTD.UDF08 = "";
-            BOMTD.UDF09 = "";
-            BOMTD.UDF10 = "";
+            BOMTD.UDF06 = "0";
+            BOMTD.UDF07 = "0";
+            BOMTD.UDF08 = "0";
+            BOMTD.UDF09 = "0";
+            BOMTD.UDF10 = "0";
 
 
             return BOMTD;
