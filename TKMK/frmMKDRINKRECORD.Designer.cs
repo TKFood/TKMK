@@ -102,6 +102,7 @@
             this.dataGridView3 = new System.Windows.Forms.DataGridView();
             this.label21 = new System.Windows.Forms.Label();
             this.textBox12 = new System.Windows.Forms.TextBox();
+            this.button9 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -886,6 +887,7 @@
             this.tableLayoutPanel5.Controls.Add(this.label21, 4, 1);
             this.tableLayoutPanel5.Controls.Add(this.button8, 3, 1);
             this.tableLayoutPanel5.Controls.Add(this.textBox12, 5, 1);
+            this.tableLayoutPanel5.Controls.Add(this.button9, 3, 2);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel5.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
@@ -1087,6 +1089,17 @@
             this.textBox12.TabIndex = 50;
             this.textBox12.Text = "21001";
             // 
+            // button9
+            // 
+            this.button9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.button9.Location = new System.Drawing.Point(363, 83);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(114, 33);
+            this.button9.TabIndex = 51;
+            this.button9.Text = "刪除記錄";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
             // frmMKDRINKRECORD
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1220,5 +1233,6 @@
         private System.Windows.Forms.TextBox textBox11;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.TextBox textBox12;
+        private System.Windows.Forms.Button button9;
     }
 }

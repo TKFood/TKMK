@@ -41,6 +41,8 @@ namespace TKMK
         SqlCommandBuilder sqlCmdBuilder6 = new SqlCommandBuilder();
         SqlDataAdapter adapter7 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder7 = new SqlCommandBuilder();
+        SqlDataAdapter adapter8 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder8 = new SqlCommandBuilder();
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
@@ -50,6 +52,7 @@ namespace TKMK
         DataSet ds5 = new DataSet();
         DataSet ds6 = new DataSet();
         DataSet ds7 = new DataSet();
+        DataSet ds8 = new DataSet();
         DataTable dt = new DataTable();
         string tablename = null;
         string EDITID;
@@ -68,6 +71,9 @@ namespace TKMK
         string TD004;
         string TD005;
         string TD007;
+        string TD011;
+
+        string CHECKDEL;
 
 
         public class BOMTDDATA
@@ -629,7 +635,9 @@ namespace TKMK
                     TD004 = row.Cells["品號"].Value.ToString();
                     TD005 = row.Cells["單位"].Value.ToString();
                     TD007 = row.Cells["數量"].Value.ToString();
+                    TD011 = row.Cells["原因"].Value.ToString();
 
+                    CHECKBOMTDRESLUT();
                 }
                 else
                 {
@@ -647,6 +655,7 @@ namespace TKMK
                     TD004 = null;
                     TD005 = null;
                     TD007 = null;
+                    TD011 = null;
 
                 }
             }
@@ -844,99 +853,99 @@ namespace TKMK
 
             if(!string.IsNullOrEmpty(TD001)&& !string.IsNullOrEmpty(TD002) && !string.IsNullOrEmpty(TD003) && !string.IsNullOrEmpty(TD004) && !string.IsNullOrEmpty(TD005) && !string.IsNullOrEmpty(TD007) )
             {
-
-            }
-            try
-            {
-              
-                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
-                sqlConn = new SqlConnection(connectionString);
-
-                sqlConn.Close();
-                sqlConn.Open();
-                tran = sqlConn.BeginTransaction();
-
-                sbSql.Clear();
-
-                sbSql.AppendFormat(" INSERT INTO [TK].[dbo].[BOMTD]");
-                sbSql.AppendFormat(" (");
-                sbSql.AppendFormat(" [COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE]");
-                sbSql.AppendFormat(" ,[TRANS_NAME],[sync_date],[sync_time],[sync_mark],[sync_count],[DataUser],[DataGroup]");
-                sbSql.AppendFormat(" ,[TD001],[TD002],[TD003],[TD004],[TD005],[TD006],[TD007],[TD008],[TD009],[TD010]");
-                sbSql.AppendFormat(" ,[TD011],[TD012],[TD013],[TD014],[TD015],[TD016],[TD017],[TD018],[TD019],[TD020]");
-                sbSql.AppendFormat(" ,[TD021],[TD022],[TD023],[TD024],[TD025],[TD026],[TD027],[TD028],[TD029],[TD030]");
-                sbSql.AppendFormat(" ,[TD031],[TD032],[TD033],[TD034],[TD035],[TD036]");
-                sbSql.AppendFormat(" ,[UDF01],[UDF02],[UDF03],[UDF04],[UDF05],[UDF06],[UDF07],[UDF08],[UDF09],[UDF10]");
-                sbSql.AppendFormat(" )");
-                sbSql.AppendFormat(" VALUES");
-                sbSql.AppendFormat(" (");
-                sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}',", BOMTD.COMPANY, BOMTD.CREATOR, BOMTD.USR_GROUP, BOMTD.CREATE_DATE, BOMTD.MODIFIER, BOMTD.MODI_DATE, BOMTD.FLAG, BOMTD.CREATE_TIME, BOMTD.MODI_TIME, BOMTD.TRANS_TYPE);
-                sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}',", BOMTD.TRANS_NAME, BOMTD.sync_date, BOMTD.sync_time, BOMTD.sync_mark, BOMTD.sync_count, BOMTD.DataUser, BOMTD.DataGroup);
-                sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}',", BOMTD.TD001, BOMTD.TD002, BOMTD.TD003, BOMTD.TD004, BOMTD.TD005, BOMTD.TD006, BOMTD.TD007, BOMTD.TD008, BOMTD.TD009, BOMTD.TD010);
-                sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}',", BOMTD.TD011, BOMTD.TD012, BOMTD.TD013, BOMTD.TD014, BOMTD.TD015, BOMTD.TD016, BOMTD.TD017, BOMTD.TD018, BOMTD.TD019, BOMTD.TD020);
-                sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}',", BOMTD.TD021, BOMTD.TD022, BOMTD.TD023, BOMTD.TD024, BOMTD.TD025, BOMTD.TD026, BOMTD.TD027, BOMTD.TD028, BOMTD.TD029, BOMTD.TD030);
-                sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}',", BOMTD.TD031, BOMTD.TD032, BOMTD.TD033, BOMTD.TD034, BOMTD.TD035, BOMTD.TD036);
-                sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}'", BOMTD.UDF01, BOMTD.UDF02, BOMTD.UDF03, BOMTD.UDF04, BOMTD.UDF05, BOMTD.UDF06, BOMTD.UDF07, BOMTD.UDF08, BOMTD.UDF09, BOMTD.UDF10);
-                sbSql.AppendFormat(" )");
-                sbSql.AppendFormat(" ");
-                sbSql.AppendFormat(" INSERT INTO [TK].[dbo].[BOMTE]");
-                sbSql.AppendFormat(" (");
-                sbSql.AppendFormat(" [COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE]");
-                sbSql.AppendFormat(" ,[TRANS_NAME],[sync_date],[sync_time],[sync_mark],[sync_count],[DataUser],[DataGroup]");
-                sbSql.AppendFormat(" ,[TE001],[TE002],[TE003],[TE004],[TE005],[TE006],[TE007],[TE008],[TE009],[TE010]");
-                sbSql.AppendFormat(" ,[TE011],[TE012],[TE013],[TE014],[TE015],[TE016],[TE017],[TE018],[TE019],[TE020]");
-                sbSql.AppendFormat(" ,[TE021],[TE022],[TE023],[TE024],[TE025],[TE026],[TE027],[TE028],[TE029]");
-                sbSql.AppendFormat(" ,[UDF01],[UDF02],[UDF03],[UDF04],[UDF05],[UDF06],[UDF07],[UDF08],[UDF09],[UDF10]");
-                sbSql.AppendFormat(" )");
-                sbSql.AppendFormat(" (");
-                sbSql.AppendFormat(" SELECT");
-                sbSql.AppendFormat(" '{0}' [COMPANY],'{1}' [CREATOR],'{2}' [USR_GROUP],'{3}' [CREATE_DATE],'{4}' [MODIFIER],'{5}' [MODI_DATE],'{6}' [FLAG],'{7}' [CREATE_TIME],'{8}' [MODI_TIME],'{9}' [TRANS_TYPE]", BOMTD.COMPANY, BOMTD.CREATOR, BOMTD.USR_GROUP, BOMTD.CREATE_DATE, BOMTD.MODIFIER, BOMTD.MODI_DATE, BOMTD.FLAG, BOMTD.CREATE_TIME, BOMTD.MODI_TIME, BOMTD.TRANS_TYPE);
-                sbSql.AppendFormat(" ,'{0}' [TRANS_NAME],'{1}' [sync_date],'{2}' [sync_time],'{3}' [sync_mark],'{4}' [sync_count],'{5}' [DataUser],'{6}' [DataGroup]", BOMTD.TRANS_NAME, BOMTD.sync_date, BOMTD.sync_time, BOMTD.sync_mark, BOMTD.sync_count, BOMTD.DataUser, BOMTD.DataGroup);
-                sbSql.AppendFormat(" ,'{0}' [TE001],'{1}' [TE002],[BOMMD].MD002 [TE003],[BOMMD].MD003 [TE004],[BOMMD].MD004 [TE005],[BOMMD].MD005 [TE006],[INVMB].MB017 [TE007],ROUND({2}*[BOMMD].MD006/[BOMMD].MD007*(1+[BOMMD].MD008),3) [TE008],'{3}' [TE009],'{4}' [TE010]",TD001,TD002,TD007,null,'N');
-                sbSql.AppendFormat(" ,'{0}' [TE011],'{1}' [TE012],'{2}' [TE013],'{3}' [TE014],'{4}' [TE015],'{5}' [TE016],'{6}' [TE017],'{7}' [TE018],'{8}' [TE019],'{9}' [TE020]",'0', '0',null,null,null, '0', '0',null,null,null);
-                sbSql.AppendFormat(" ,'{0}' [TE021],'{1}' [TE022],'{2}' [TE023],'{3}' [TE024],'{4}' [TE025],'{5}' [TE026],'{6}' [TE027],'{7}' [TE028],'{8}' [TE029]", '0',null, '0',null, '0', null,null,null, '0');
-                sbSql.AppendFormat(" ,'{0}' [UDF01],'{1}' [UDF02],'{2}' [UDF03],'{3}' [UDF04],'{4}' [UDF05],'{5}' [UDF06],'{6}' [UDF07],'{7}' [UDF08],'{8}' [UDF09],'{9}' [UDF10]", null, null, null, null, null, '0', '0', '0', '0', '0');
-                sbSql.AppendFormat(" FROM [TKMK].[dbo].[MKDRINKRECORD],[TK].dbo.[INVMB],[TK].dbo.[BOMMD]");
-                sbSql.AppendFormat(" WHERE [DRINKID]=MB001 AND [BOMMD].MD001=[INVMB].MB001");
-                sbSql.AppendFormat(" AND [ID]='{0}'",textBoxID2.Text.ToString());
-                sbSql.AppendFormat(" )");
-                sbSql.AppendFormat(" ");
-                sbSql.AppendFormat(" ");
-                sbSql.AppendFormat(" ");
-                sbSql.AppendFormat(" ");
-                sbSql.AppendFormat(" ");
-                sbSql.AppendFormat(" ");
-
-
-                cmd.Connection = sqlConn;
-                cmd.CommandTimeout = 60;
-                cmd.CommandText = sbSql.ToString();
-                cmd.Transaction = tran;
-                result = cmd.ExecuteNonQuery();
-
-                if (result == 0)
+                try
                 {
-                    tran.Rollback();    //交易取消
+
+                    connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+
+                    sbSql.AppendFormat(" INSERT INTO [TK].[dbo].[BOMTD]");
+                    sbSql.AppendFormat(" (");
+                    sbSql.AppendFormat(" [COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE]");
+                    sbSql.AppendFormat(" ,[TRANS_NAME],[sync_date],[sync_time],[sync_mark],[sync_count],[DataUser],[DataGroup]");
+                    sbSql.AppendFormat(" ,[TD001],[TD002],[TD003],[TD004],[TD005],[TD006],[TD007],[TD008],[TD009],[TD010]");
+                    sbSql.AppendFormat(" ,[TD011],[TD012],[TD013],[TD014],[TD015],[TD016],[TD017],[TD018],[TD019],[TD020]");
+                    sbSql.AppendFormat(" ,[TD021],[TD022],[TD023],[TD024],[TD025],[TD026],[TD027],[TD028],[TD029],[TD030]");
+                    sbSql.AppendFormat(" ,[TD031],[TD032],[TD033],[TD034],[TD035],[TD036]");
+                    sbSql.AppendFormat(" ,[UDF01],[UDF02],[UDF03],[UDF04],[UDF05],[UDF06],[UDF07],[UDF08],[UDF09],[UDF10]");
+                    sbSql.AppendFormat(" )");
+                    sbSql.AppendFormat(" VALUES");
+                    sbSql.AppendFormat(" (");
+                    sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}',", BOMTD.COMPANY, BOMTD.CREATOR, BOMTD.USR_GROUP, BOMTD.CREATE_DATE, BOMTD.MODIFIER, BOMTD.MODI_DATE, BOMTD.FLAG, BOMTD.CREATE_TIME, BOMTD.MODI_TIME, BOMTD.TRANS_TYPE);
+                    sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}',", BOMTD.TRANS_NAME, BOMTD.sync_date, BOMTD.sync_time, BOMTD.sync_mark, BOMTD.sync_count, BOMTD.DataUser, BOMTD.DataGroup);
+                    sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}',", BOMTD.TD001, BOMTD.TD002, BOMTD.TD003, BOMTD.TD004, BOMTD.TD005, BOMTD.TD006, BOMTD.TD007, BOMTD.TD008, BOMTD.TD009, BOMTD.TD010);
+                    sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}',", BOMTD.TD011, BOMTD.TD012, BOMTD.TD013, BOMTD.TD014, BOMTD.TD015, BOMTD.TD016, BOMTD.TD017, BOMTD.TD018, BOMTD.TD019, BOMTD.TD020);
+                    sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}',", BOMTD.TD021, BOMTD.TD022, BOMTD.TD023, BOMTD.TD024, BOMTD.TD025, BOMTD.TD026, BOMTD.TD027, BOMTD.TD028, BOMTD.TD029, BOMTD.TD030);
+                    sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}',", BOMTD.TD031, BOMTD.TD032, BOMTD.TD033, BOMTD.TD034, BOMTD.TD035, BOMTD.TD036);
+                    sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}'", BOMTD.UDF01, BOMTD.UDF02, BOMTD.UDF03, BOMTD.UDF04, BOMTD.UDF05, BOMTD.UDF06, BOMTD.UDF07, BOMTD.UDF08, BOMTD.UDF09, BOMTD.UDF10);
+                    sbSql.AppendFormat(" )");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" INSERT INTO [TK].[dbo].[BOMTE]");
+                    sbSql.AppendFormat(" (");
+                    sbSql.AppendFormat(" [COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE]");
+                    sbSql.AppendFormat(" ,[TRANS_NAME],[sync_date],[sync_time],[sync_mark],[sync_count],[DataUser],[DataGroup]");
+                    sbSql.AppendFormat(" ,[TE001],[TE002],[TE003],[TE004],[TE005],[TE006],[TE007],[TE008],[TE009],[TE010]");
+                    sbSql.AppendFormat(" ,[TE011],[TE012],[TE013],[TE014],[TE015],[TE016],[TE017],[TE018],[TE019],[TE020]");
+                    sbSql.AppendFormat(" ,[TE021],[TE022],[TE023],[TE024],[TE025],[TE026],[TE027],[TE028],[TE029]");
+                    sbSql.AppendFormat(" ,[UDF01],[UDF02],[UDF03],[UDF04],[UDF05],[UDF06],[UDF07],[UDF08],[UDF09],[UDF10]");
+                    sbSql.AppendFormat(" )");
+                    sbSql.AppendFormat(" (");
+                    sbSql.AppendFormat(" SELECT");
+                    sbSql.AppendFormat(" '{0}' [COMPANY],'{1}' [CREATOR],'{2}' [USR_GROUP],'{3}' [CREATE_DATE],'{4}' [MODIFIER],'{5}' [MODI_DATE],'{6}' [FLAG],'{7}' [CREATE_TIME],'{8}' [MODI_TIME],'{9}' [TRANS_TYPE]", BOMTD.COMPANY, BOMTD.CREATOR, BOMTD.USR_GROUP, BOMTD.CREATE_DATE, BOMTD.MODIFIER, BOMTD.MODI_DATE, BOMTD.FLAG, BOMTD.CREATE_TIME, BOMTD.MODI_TIME, BOMTD.TRANS_TYPE);
+                    sbSql.AppendFormat(" ,'{0}' [TRANS_NAME],'{1}' [sync_date],'{2}' [sync_time],'{3}' [sync_mark],'{4}' [sync_count],'{5}' [DataUser],'{6}' [DataGroup]", BOMTD.TRANS_NAME, BOMTD.sync_date, BOMTD.sync_time, BOMTD.sync_mark, BOMTD.sync_count, BOMTD.DataUser, BOMTD.DataGroup);
+                    sbSql.AppendFormat(" ,'{0}' [TE001],'{1}' [TE002],[BOMMD].MD002 [TE003],[BOMMD].MD003 [TE004],[BOMMD].MD004 [TE005],[BOMMD].MD005 [TE006],[INVMB].MB017 [TE007],ROUND({2}*[BOMMD].MD006/[BOMMD].MD007*(1+[BOMMD].MD008),3) [TE008],'{3}' [TE009],'{4}' [TE010]", TD001, TD002, TD007, null, 'N');
+                    sbSql.AppendFormat(" ,'{0}' [TE011],'{1}' [TE012],'{2}' [TE013],'{3}' [TE014],'{4}' [TE015],'{5}' [TE016],'{6}' [TE017],'{7}' [TE018],'{8}' [TE019],'{9}' [TE020]", '0', '0', null, null, null, '0', '0', null, null, null);
+                    sbSql.AppendFormat(" ,'{0}' [TE021],'{1}' [TE022],'{2}' [TE023],'{3}' [TE024],'{4}' [TE025],'{5}' [TE026],'{6}' [TE027],'{7}' [TE028],'{8}' [TE029]", '0', null, '0', null, '0', null, null, null, '0');
+                    sbSql.AppendFormat(" ,'{0}' [UDF01],'{1}' [UDF02],'{2}' [UDF03],'{3}' [UDF04],'{4}' [UDF05],'{5}' [UDF06],'{6}' [UDF07],'{7}' [UDF08],'{8}' [UDF09],'{9}' [UDF10]", null, null, null, null, null, '0', '0', '0', '0', '0');
+                    sbSql.AppendFormat(" FROM [TKMK].[dbo].[MKDRINKRECORD],[TK].dbo.[INVMB],[TK].dbo.[BOMMD]");
+                    sbSql.AppendFormat(" WHERE [DRINKID]=MB001 AND [BOMMD].MD001=[INVMB].MB001");
+                    sbSql.AppendFormat(" AND [ID]='{0}'", textBoxID2.Text.ToString());
+                    sbSql.AppendFormat(" )");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+
+
+                    }
+
+
+
                 }
-                else
+                catch
                 {
-                    tran.Commit();      //執行交易  
-
 
                 }
-                
 
-
+                finally
+                {
+                    sqlConn.Close();
+                }
             }
-            catch
-            {
-
-            }
-
-            finally
-            {
-                sqlConn.Close();
-            }
+           
         }
 
         public BOMTDDATA SETBOMTD()
@@ -970,7 +979,7 @@ namespace TKMK
             BOMTD.TD008 = "0";
             BOMTD.TD009 = "0";
             BOMTD.TD010 = textBox12.Text;
-            BOMTD.TD011 = "";
+            BOMTD.TD011 = TD011;
             BOMTD.TD012 = "N";
             BOMTD.TD013 = "0";
             BOMTD.TD014 = TD003;
@@ -982,7 +991,7 @@ namespace TKMK
             BOMTD.TD020 = "0";
             BOMTD.TD021 = "";
             BOMTD.TD022 = "0";
-            BOMTD.TD023 = "";
+            BOMTD.TD023 = textBoxID2.Text;
             BOMTD.TD024 = "0";
             BOMTD.TD025 = "N";
             BOMTD.TD026 = "";
@@ -1011,7 +1020,97 @@ namespace TKMK
             return BOMTD;
         }
 
+        public void CHECKBOMTD()
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
 
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+               
+                sbSql.AppendFormat(@"  SELECT * FROM [TK].dbo.BOMTD WHERE TD023='{0}'",textBoxID2.Text.ToString());
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+ 
+
+                adapter8 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder8 = new SqlCommandBuilder(adapter8);
+                sqlConn.Open();
+                ds8.Clear();
+                adapter8.Fill(ds8, "ds8");
+                sqlConn.Close();
+
+
+                if (ds8.Tables["ds8"].Rows.Count == 0)
+                {
+                    CHECKDEL = "Y";
+                }
+                else
+                {
+                    if (ds8.Tables["ds8"].Rows.Count >= 1)
+                    {
+                        CHECKDEL = "N";
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
+        public void DELBOMTDRESLUT()
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+                sbSql.AppendFormat(" DELETE [TKMK].[dbo].[BOMTDRESLUT]");
+                sbSql.AppendFormat(" WHERE [SID]='{0}'", SID);
+                sbSql.AppendFormat(" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -1086,14 +1185,40 @@ namespace TKMK
         {
             TD001 = "A421";
             TD002 = GETMAXTD002(TD001);
-            //ADDBOMTDRESLUT();
+            ADDBOMTDRESLUT();
             ADDBOMTDTE();
+
+            CHECKBOMTDRESLUT();
+
         }
 
+        private void button9_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("要刪除了?", "要刪除了?", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                CHECKBOMTD();
+
+                if(CHECKDEL.Equals("Y"))
+                {
+                    DELBOMTDRESLUT();
+                    CHECKBOMTDRESLUT();
+                }
+                else if (CHECKDEL.Equals("N"))
+                {
+                    MessageBox.Show("ERP還有組合單未刪除，請先刪除");
+                }
+
+            }
+            else if (dialogResult == DialogResult.No)
+            {
+                //do something else
+            }
+        }
 
 
         #endregion
 
-      
+
     }
 }
