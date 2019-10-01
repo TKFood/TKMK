@@ -39,6 +39,8 @@ namespace TKMK
         SqlCommandBuilder sqlCmdBuilder5 = new SqlCommandBuilder();
         SqlDataAdapter adapter6 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder6 = new SqlCommandBuilder();
+        SqlDataAdapter adapter7 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder7 = new SqlCommandBuilder();
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
@@ -47,6 +49,7 @@ namespace TKMK
         DataSet ds4 = new DataSet();
         DataSet ds5 = new DataSet();
         DataSet ds6 = new DataSet();
+        DataSet ds7 = new DataSet();
         DataTable dt = new DataTable();
         string tablename = null;
         string EDITID;
@@ -61,9 +64,13 @@ namespace TKMK
         string SID;
         string TD001;
         string TD002;
+        string TD003;
+        string TD004;
+        string TD005;
+        string TD007;
 
 
-        public class MOCTADATA
+        public class BOMTDDATA
         {
             public string COMPANY;
             public string CREATOR;
@@ -76,8 +83,13 @@ namespace TKMK
             public string MODI_TIME;
             public string TRANS_TYPE;
             public string TRANS_NAME;
+            public string sync_date;
+            public string sync_time;
+            public string sync_mark;
             public string sync_count;
+            public string DataUser;
             public string DataGroup;
+
             public string TD001;
             public string TD002;
             public string TD003;
@@ -280,9 +292,10 @@ namespace TKMK
                 sbSqlQuery.Clear();
 
 
-                sbSql.AppendFormat(@"  SELECT CONVERT(NVARCHAR,[DATES],112) AS '日期' ,[DEP] AS '部門' ,[DEPNAME] AS '部門名' ,[DRINK] AS '飲品' ,[OTHERS] AS '其他' ,[CUP] AS '數量' ,[REASON] AS '原因' ,[DRINKID] AS '品號' ,[SIGN] AS '簽名' ,[ID]");
+                sbSql.AppendFormat(@"  SELECT CONVERT(NVARCHAR,[DATES],112) AS '日期' ,[DEP] AS '部門' ,[DEPNAME] AS '部門名' ,[DRINK] AS '飲品' ,[OTHERS] AS '其他' ,[CUP] AS '數量' ,[REASON] AS '原因' ,[DRINKID] AS '品號' ,[SIGN] AS '簽名' ,MB004 AS '單位',[ID]");
                 sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[MKDRINKRECORD]");
-                sbSql.AppendFormat(@" WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}' ", dateTimePicker6.Value.ToString("yyyyMMdd"), dateTimePicker7.Value.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.INVMB ON MB001=[DRINKID] ");
+                sbSql.AppendFormat(@"  WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}' ", dateTimePicker6.Value.ToString("yyyyMMdd"), dateTimePicker7.Value.ToString("yyyyMMdd"));
                 sbSql.AppendFormat(@"  ");
                 sbSql.AppendFormat(@"  ");
 
@@ -578,7 +591,7 @@ namespace TKMK
         {
             StringBuilder FASTSQL = new StringBuilder();
 
-            FASTSQL.AppendFormat(@" SELECT[DRINK] AS '飲品' ,[OTHERS] AS '其他' ,SUM([CUP]) AS '數量' ");
+            FASTSQL.AppendFormat(@" SELECT [DRINK] AS '飲品' ,[OTHERS] AS '其他' ,SUM([CUP]) AS '數量' ");
             FASTSQL.AppendFormat(@" FROM [TKMK].[dbo].[MKDRINKRECORD]");
             FASTSQL.AppendFormat(@" WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}'", dateTimePicker4.Value.ToString("yyyyMMdd"), dateTimePicker5.Value.ToString("yyyyMMdd"));
             FASTSQL.AppendFormat(@" GROUP BY [DRINK],[OTHERS]");
@@ -612,6 +625,10 @@ namespace TKMK
                     textBoxID2.Text = row.Cells["ID"].Value.ToString();
 
                     SID= row.Cells["ID"].Value.ToString();
+                    TD003 = row.Cells["日期"].Value.ToString();
+                    TD004 = row.Cells["品號"].Value.ToString();
+                    TD005 = row.Cells["單位"].Value.ToString();
+                    TD007 = row.Cells["數量"].Value.ToString();
 
                 }
                 else
@@ -626,6 +643,10 @@ namespace TKMK
                     textBoxID2.Text = null;
 
                     SID = null;
+                    TD003 = null;
+                    TD004 = null;
+                    TD005 = null;
+                    TD007 = null;
 
                 }
             }
@@ -634,54 +655,58 @@ namespace TKMK
 
         public void ADDBOMTDRESLUT()
         {
-            try
+            if(!string.IsNullOrEmpty(SID) && !string.IsNullOrEmpty(TD001) &&!string.IsNullOrEmpty(TD002))
             {
-                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
-                sqlConn = new SqlConnection(connectionString);
-
-                sqlConn.Close();
-                sqlConn.Open();
-                tran = sqlConn.BeginTransaction();
-
-                sbSql.Clear();
-
-                //TD001 = "A421";
-                //TD002 = "20190930003";
-
-                sbSql.AppendFormat(" INSERT INTO [TKMK].[dbo].[BOMTDRESLUT]");
-                sbSql.AppendFormat(" ([SID],[TD001],[TD002])");
-                sbSql.AppendFormat(" VALUES ('{0}','{1}','{2}')", SID, TD001, TD002);
-                sbSql.AppendFormat(" ");
-                sbSql.AppendFormat(" ");
-
-
-                cmd.Connection = sqlConn;
-                cmd.CommandTimeout = 60;
-                cmd.CommandText = sbSql.ToString();
-                cmd.Transaction = tran;
-                result = cmd.ExecuteNonQuery();
-
-                if (result == 0)
+                try
                 {
-                    tran.Rollback();    //交易取消
+                    connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+
+                    //TD001 = "A421";
+                    //TD002 = "20190930003";
+
+                    sbSql.AppendFormat(" INSERT INTO [TKMK].[dbo].[BOMTDRESLUT]");
+                    sbSql.AppendFormat(" ([SID],[TD001],[TD002])");
+                    sbSql.AppendFormat(" VALUES ('{0}','{1}','{2}')", SID, TD001, TD002);
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+
+
+                    }
+
                 }
-                else
+                catch
                 {
-                    tran.Commit();      //執行交易  
-
 
                 }
 
+                finally
+                {
+                    sqlConn.Close();
+                }
             }
-            catch
-            {
-
-            }
-
-            finally
-            {
-                sqlConn.Close();
-            }
+           
         }
         public string GETMAXTD002(string TD001)
         {
@@ -700,7 +725,7 @@ namespace TKMK
                 sbSql.AppendFormat(@"  SELECT ISNULL(MAX(TD002),'00000000000') AS TD002");
                 sbSql.AppendFormat(@"  FROM [TK].[dbo].[BOMTD] ");
                 //sbSql.AppendFormat(@"  WHERE  TC001='{0}' AND TC003='{1}'", "A542","20170119");
-                sbSql.AppendFormat(@"  WHERE  TD001='{0}' AND TD003='{1}'", TD001, textBox5.Text.ToString());
+                sbSql.AppendFormat(@"  WHERE  TD001='{0}' AND TD003='{1}'", TD001, TD003.ToString());
                 sbSql.AppendFormat(@"  ");
                 sbSql.AppendFormat(@"  ");
 
@@ -744,7 +769,7 @@ namespace TKMK
         {
             if (TD002.Equals("00000000000"))
             {
-                return textBox5.Text.ToString() + "001";
+                return TD003.ToString() + "001";
             }
 
             else
@@ -753,11 +778,144 @@ namespace TKMK
                 serno = serno + 1;
                 string temp = serno.ToString();
                 temp = temp.PadLeft(3, '0');
-                return textBox5.Text.ToString() + temp.ToString();
+                return TD003.ToString() + temp.ToString();
             }
 
             return null;
         }
+        public void CHECKBOMTDRESLUT()
+        {
+           
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@" SELECT [TD001] AS '組合單' ,[TD002]  AS '組合號',[SID] AS '來源' ");
+                sbSql.AppendFormat(@" FROM [TKMK].[dbo].[BOMTDRESLUT] ");
+                sbSql.AppendFormat(@" WHERE [SID]='{0}' ",textBoxID2.Text.ToString());
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter7 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder7 = new SqlCommandBuilder(adapter7);
+                sqlConn.Open();
+                ds7.Clear();
+                adapter7.Fill(ds7, "ds7");
+                sqlConn.Close();
+
+
+                if (ds7.Tables["ds7"].Rows.Count == 0)
+                {
+                    dataGridView3.DataSource = null;
+                }
+                else
+                {
+                    if (ds7.Tables["ds7"].Rows.Count >= 1)
+                    {
+                        dataGridView3.DataSource = ds7.Tables["ds7"];
+                        dataGridView3.AutoResizeColumns();
+
+
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
+        public void ADDBOMTDTE()
+        {
+            BOMTDDATA BOMTD = new BOMTDDATA();
+            BOMTD = SETBOMTD();
+        }
+
+        public BOMTDDATA SETBOMTD()
+        {
+            BOMTDDATA BOMTD = new BOMTDDATA();
+            BOMTD.COMPANY = "TK";
+            BOMTD.CREATOR = "160116";
+            BOMTD.USR_GROUP = "116000";
+            //MOCTA.CREATE_DATE = dt1.ToString("yyyyMMdd");
+            BOMTD.CREATE_DATE = DateTime.Now.ToString("yyyyMMdd");
+            BOMTD.MODIFIER = "160116";
+            BOMTD.MODI_DATE = DateTime.Now.ToString("yyyyMMdd");
+            BOMTD.FLAG = "0";
+            BOMTD.CREATE_TIME = DateTime.Now.ToString("HH:mm:dd");
+            BOMTD.MODI_TIME = DateTime.Now.ToString("HH:mm:dd");
+            BOMTD.TRANS_TYPE = "P001";
+            BOMTD.TRANS_NAME = "BOMMI05";
+            BOMTD.sync_date="";
+            BOMTD.sync_time = "";
+            BOMTD.sync_mark = "";
+            BOMTD.sync_count = "0";
+            BOMTD.DataUser = "";
+            BOMTD.DataGroup = "116000";
+            BOMTD.TD001 = TD001;
+            BOMTD.TD002 = TD002;
+            BOMTD.TD003 = TD003;
+            BOMTD.TD004 = "";
+            BOMTD.TD005 = "";
+            BOMTD.TD006 = "";
+            BOMTD.TD007 = "";
+            BOMTD.TD008 = "";
+            BOMTD.TD009 = "";
+            BOMTD.TD010 = "";
+            BOMTD.TD011 = "";
+            BOMTD.TD012 = "";
+            BOMTD.TD013 = "";
+            BOMTD.TD014 = "";
+            BOMTD.TD015 = "";
+            BOMTD.TD016 = "";
+            BOMTD.TD017 = "";
+            BOMTD.TD018 = "";
+            BOMTD.TD019 = "";
+            BOMTD.TD020 = "";
+            BOMTD.TD021 = "";
+            BOMTD.TD022 = "";
+            BOMTD.TD023 = "";
+            BOMTD.TD024 = "";
+            BOMTD.TD025 = "";
+            BOMTD.TD026 = "";
+            BOMTD.TD027 = "";
+            BOMTD.TD028 = "";
+            BOMTD.TD029 = "";
+            BOMTD.TD030 = "";
+            BOMTD.TD031 = "";
+            BOMTD.TD032 = "";
+            BOMTD.TD033 = "";
+            BOMTD.TD034 = "";
+            BOMTD.TD035 = "";
+            BOMTD.TD036 = "";
+            BOMTD.UDF01 = "";
+            BOMTD.UDF02 = "";
+            BOMTD.UDF03 = "";
+            BOMTD.UDF04 = "";
+            BOMTD.UDF05 = "";
+            BOMTD.UDF06 = "";
+            BOMTD.UDF07 = "";
+            BOMTD.UDF08 = "";
+            BOMTD.UDF09 = "";
+            BOMTD.UDF10 = "";
+
+
+            return BOMTD;
+        }
+
+
         #endregion
 
         #region BUTTON
@@ -833,6 +991,7 @@ namespace TKMK
             TD001 = "A421";
             TD002 = GETMAXTD002(TD001);
             //ADDBOMTDRESLUT();
+            ADDBOMTDTE();
         }
 
 
