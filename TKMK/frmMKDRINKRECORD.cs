@@ -37,6 +37,8 @@ namespace TKMK
         SqlCommandBuilder sqlCmdBuilder4 = new SqlCommandBuilder();
         SqlDataAdapter adapter5 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder5 = new SqlCommandBuilder();
+        SqlDataAdapter adapter6 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder6 = new SqlCommandBuilder();
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
@@ -44,6 +46,7 @@ namespace TKMK
         DataSet ds3 = new DataSet();
         DataSet ds4 = new DataSet();
         DataSet ds5 = new DataSet();
+        DataSet ds6 = new DataSet();
         DataTable dt = new DataTable();
         string tablename = null;
         string EDITID;
@@ -58,6 +61,88 @@ namespace TKMK
         string SID;
         string TD001;
         string TD002;
+
+
+        public class MOCTADATA
+        {
+            public string COMPANY;
+            public string CREATOR;
+            public string USR_GROUP;
+            public string CREATE_DATE;
+            public string MODIFIER;
+            public string MODI_DATE;
+            public string FLAG;
+            public string CREATE_TIME;
+            public string MODI_TIME;
+            public string TRANS_TYPE;
+            public string TRANS_NAME;
+            public string sync_count;
+            public string DataGroup;
+            public string TD001;
+            public string TD002;
+            public string TD003;
+            public string TD004;
+            public string TD005;
+            public string TD006;
+            public string TD007;
+            public string TD008;
+            public string TD009;
+            public string TD010;
+            public string TD011;
+            public string TD012;
+            public string TD013;
+            public string TD014;
+            public string TD015;
+            public string TD016;
+            public string TD017;
+            public string TD018;
+            public string TD019;
+            public string TD020;
+            public string TD021;
+            public string TD022;
+            public string TD023;
+            public string TD024;
+            public string TD025;
+            public string TD026;
+            public string TD027;
+            public string TD028;
+            public string TD029;
+            public string TD030;
+            public string TD031;
+            public string TD032;
+            public string TD033;
+            public string TD034;
+            public string TD035;
+            public string TD036;
+            public string UDF01;
+            public string UDF02;
+            public string UDF03;
+            public string UDF04;
+            public string UDF05;
+            public string UDF06;
+            public string UDF07;
+            public string UDF08;
+            public string UDF09;
+            public string UDF10;
+        }
+
+        public class MOCTBDATA
+        {
+            public string COMPANY;
+            public string CREATOR;
+            public string USR_GROUP;
+            public string CREATE_DATE;
+            public string MODIFIER;
+            public string MODI_DATE;
+            public string FLAG;
+            public string CREATE_TIME;
+            public string MODI_TIME;
+            public string TRANS_TYPE;
+            public string TRANS_NAME;
+            public string sync_count;
+            public string DataGroup;
+
+        }
 
         public frmMKDRINKRECORD()
         {
@@ -195,7 +280,7 @@ namespace TKMK
                 sbSqlQuery.Clear();
 
 
-                sbSql.AppendFormat(@"  SELECT CONVERT(NVARCHAR,[DATES],111) AS '日期' ,[DEP] AS '部門' ,[DEPNAME] AS '部門名' ,[DRINK] AS '飲品' ,[OTHERS] AS '其他' ,[CUP] AS '數量' ,[REASON] AS '原因' ,[DRINKID] AS '品號' ,[SIGN] AS '簽名' ,[ID]");
+                sbSql.AppendFormat(@"  SELECT CONVERT(NVARCHAR,[DATES],112) AS '日期' ,[DEP] AS '部門' ,[DEPNAME] AS '部門名' ,[DRINK] AS '飲品' ,[OTHERS] AS '其他' ,[CUP] AS '數量' ,[REASON] AS '原因' ,[DRINKID] AS '品號' ,[SIGN] AS '簽名' ,[ID]");
                 sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[MKDRINKRECORD]");
                 sbSql.AppendFormat(@" WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}' ", dateTimePicker6.Value.ToString("yyyyMMdd"), dateTimePicker7.Value.ToString("yyyyMMdd"));
                 sbSql.AppendFormat(@"  ");
@@ -598,10 +683,84 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
+        public string GETMAXTD002(string TD001)
+        {
+            string TD002;
 
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                StringBuilder sbSql = new StringBuilder();
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+                ds4.Clear();
+
+                sbSql.AppendFormat(@"  SELECT ISNULL(MAX(TD002),'00000000000') AS TD002");
+                sbSql.AppendFormat(@"  FROM [TK].[dbo].[BOMTD] ");
+                //sbSql.AppendFormat(@"  WHERE  TC001='{0}' AND TC003='{1}'", "A542","20170119");
+                sbSql.AppendFormat(@"  WHERE  TD001='{0}' AND TD003='{1}'", TD001, textBox5.Text.ToString());
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter6 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder6 = new SqlCommandBuilder(adapter6);
+                sqlConn.Open();
+                ds6.Clear();
+                adapter6.Fill(ds6, "ds6");
+                sqlConn.Close();
+
+
+                if (ds6.Tables["ds6"].Rows.Count == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    if (ds6.Tables["ds6"].Rows.Count >= 1)
+                    {
+                        TD002 = SETTD002(ds6.Tables["ds6"].Rows[0]["TD002"].ToString());
+                        return TD002;
+
+                    }
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+
+        public string SETTD002(string TD002)
+        {
+            if (TD002.Equals("00000000000"))
+            {
+                return textBox5.Text.ToString() + "001";
+            }
+
+            else
+            {
+                int serno = Convert.ToInt16(TD002.Substring(8, 3));
+                serno = serno + 1;
+                string temp = serno.ToString();
+                temp = temp.PadLeft(3, '0');
+                return textBox5.Text.ToString() + temp.ToString();
+            }
+
+            return null;
+        }
         #endregion
 
-            #region BUTTON
+        #region BUTTON
         private void button1_Click(object sender, EventArgs e)
         {
             Search();
@@ -671,7 +830,9 @@ namespace TKMK
 
         private void button8_Click(object sender, EventArgs e)
         {
-            ADDBOMTDRESLUT();
+            TD001 = "A421";
+            TD002 = GETMAXTD002(TD001);
+            //ADDBOMTDRESLUT();
         }
 
 
