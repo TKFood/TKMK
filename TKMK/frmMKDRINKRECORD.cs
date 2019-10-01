@@ -238,8 +238,8 @@ namespace TKMK
                
                 sbSql.AppendFormat(@"  SELECT CONVERT(NVARCHAR,[DATES],111) AS '日期' ,[DEP] AS '部門' ,[DEPNAME] AS '部門名' ,[DRINK] AS '飲品' ,[OTHERS] AS '其他' ,[CUP] AS '數量' ,[REASON] AS '原因' ,[DRINKID] AS '品號' ,[SIGN] AS '簽名' ,[ID]");
                 sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[MKDRINKRECORD]");
-                sbSql.AppendFormat(@" WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}' ",dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
-                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}' ",dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  ORDER BY CONVERT(NVARCHAR,[DATES],111)");
                 sbSql.AppendFormat(@"  ");
 
                 adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -296,7 +296,7 @@ namespace TKMK
                 sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[MKDRINKRECORD]");
                 sbSql.AppendFormat(@"  LEFT JOIN [TK].dbo.INVMB ON MB001=[DRINKID] ");
                 sbSql.AppendFormat(@"  WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}' ", dateTimePicker6.Value.ToString("yyyyMMdd"), dateTimePicker7.Value.ToString("yyyyMMdd"));
-                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"   ORDER BY CONVERT(NVARCHAR,[DATES],112)");
                 sbSql.AppendFormat(@"  ");
 
                 adapter5 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -878,6 +878,30 @@ namespace TKMK
                 sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}',", BOMTD.TD031, BOMTD.TD032, BOMTD.TD033, BOMTD.TD034, BOMTD.TD035, BOMTD.TD036);
                 sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}'", BOMTD.UDF01, BOMTD.UDF02, BOMTD.UDF03, BOMTD.UDF04, BOMTD.UDF05, BOMTD.UDF06, BOMTD.UDF07, BOMTD.UDF08, BOMTD.UDF09, BOMTD.UDF10);
                 sbSql.AppendFormat(" )");
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" INSERT INTO [TK].[dbo].[BOMTE]");
+                sbSql.AppendFormat(" (");
+                sbSql.AppendFormat(" [COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE]");
+                sbSql.AppendFormat(" ,[TRANS_NAME],[sync_date],[sync_time],[sync_mark],[sync_count],[DataUser],[DataGroup]");
+                sbSql.AppendFormat(" ,[TE001],[TE002],[TE003],[TE004],[TE005],[TE006],[TE007],[TE008],[TE009],[TE010]");
+                sbSql.AppendFormat(" ,[TE011],[TE012],[TE013],[TE014],[TE015],[TE016],[TE017],[TE018],[TE019],[TE020]");
+                sbSql.AppendFormat(" ,[TE021],[TE022],[TE023],[TE024],[TE025],[TE026],[TE027],[TE028],[TE029]");
+                sbSql.AppendFormat(" ,[UDF01],[UDF02],[UDF03],[UDF04],[UDF05],[UDF06],[UDF07],[UDF08],[UDF09],[UDF10]");
+                sbSql.AppendFormat(" )");
+                sbSql.AppendFormat(" (");
+                sbSql.AppendFormat(" SELECT");
+                sbSql.AppendFormat(" '{0}' [COMPANY],'{1}' [CREATOR],'{2}' [USR_GROUP],'{3}' [CREATE_DATE],'{4}' [MODIFIER],'{5}' [MODI_DATE],'{6}' [FLAG],'{7}' [CREATE_TIME],'{8}' [MODI_TIME],'{9}' [TRANS_TYPE]", BOMTD.COMPANY, BOMTD.CREATOR, BOMTD.USR_GROUP, BOMTD.CREATE_DATE, BOMTD.MODIFIER, BOMTD.MODI_DATE, BOMTD.FLAG, BOMTD.CREATE_TIME, BOMTD.MODI_TIME, BOMTD.TRANS_TYPE);
+                sbSql.AppendFormat(" ,'{0}' [TRANS_NAME],'{1}' [sync_date],'{2}' [sync_time],'{3}' [sync_mark],'{4}' [sync_count],'{5}' [DataUser],'{6}' [DataGroup]", BOMTD.TRANS_NAME, BOMTD.sync_date, BOMTD.sync_time, BOMTD.sync_mark, BOMTD.sync_count, BOMTD.DataUser, BOMTD.DataGroup);
+                sbSql.AppendFormat(" ,'{0}' [TE001],'{1}' [TE002],[BOMMD].MD002 [TE003],[BOMMD].MD003 [TE004],[BOMMD].MD004 [TE005],[BOMMD].MD005 [TE006],[INVMB].MB017 [TE007],ROUND({2}*[BOMMD].MD006/[BOMMD].MD007*(1+[BOMMD].MD008),3) [TE008],'{3}' [TE009],'{4}' [TE010]",TD001,TD002,TD007,null,'N');
+                sbSql.AppendFormat(" ,'{0}' [TE011],'{1}' [TE012],'{2}' [TE013],'{3}' [TE014],'{4}' [TE015],'{5}' [TE016],'{6}' [TE017],'{7}' [TE018],'{8}' [TE019],'{9}' [TE020]",'0', '0',null,null,null, '0', '0',null,null,null);
+                sbSql.AppendFormat(" ,'{0}' [TE021],'{1}' [TE022],'{2}' [TE023],'{3}' [TE024],'{4}' [TE025],'{5}' [TE026],'{6}' [TE027],'{7}' [TE028],'{8}' [TE029]", '0',null, '0',null, '0', null,null,null, '0');
+                sbSql.AppendFormat(" ,'{0}' [UDF01],'{1}' [UDF02],'{2}' [UDF03],'{3}' [UDF04],'{4}' [UDF05],'{5}' [UDF06],'{6}' [UDF07],'{7}' [UDF08],'{8}' [UDF09],'{9}' [UDF10]", null, null, null, null, null, '0', '0', '0', '0', '0');
+                sbSql.AppendFormat(" FROM [TKMK].[dbo].[MKDRINKRECORD],[TK].dbo.[INVMB],[TK].dbo.[BOMMD]");
+                sbSql.AppendFormat(" WHERE [DRINKID]=MB001 AND [BOMMD].MD001=[INVMB].MB001");
+                sbSql.AppendFormat(" AND [ID]='{0}'",textBoxID2.Text.ToString());
+                sbSql.AppendFormat(" )");
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" ");
