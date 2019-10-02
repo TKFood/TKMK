@@ -43,6 +43,8 @@ namespace TKMK
         SqlCommandBuilder sqlCmdBuilder7 = new SqlCommandBuilder();
         SqlDataAdapter adapter8 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder8 = new SqlCommandBuilder();
+        SqlDataAdapter adapter9 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder9 = new SqlCommandBuilder();
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
@@ -53,6 +55,7 @@ namespace TKMK
         DataSet ds6 = new DataSet();
         DataSet ds7 = new DataSet();
         DataSet ds8 = new DataSet();
+        DataSet ds9 = new DataSet();
         DataTable dt = new DataTable();
         string tablename = null;
         string EDITID;
@@ -347,6 +350,62 @@ namespace TKMK
                     {
                         dataGridView2.DataSource = ds5.Tables["ds5"];
                         dataGridView2.AutoResizeColumns();
+
+
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
+        public void Search3()
+        {
+            ds.Clear();
+
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+
+                sbSql.AppendFormat(@"  SELECT CONVERT(NVARCHAR,[DATES],111) AS '日期' ,[DEP] AS '部門' ,[DEPNAME] AS '部門名' ,[DRINK] AS '飲品' ,[OTHERS] AS '其他' ,[CUP] AS '數量' ,[REASON] AS '原因' ,[DRINKID] AS '品號' ,[SIGN] AS '簽名' ,[ID]");
+                sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[MKDRINKRECORD]");
+                sbSql.AppendFormat(@"  WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}' AND [DEPNAME]='{2}' ", dateTimePicker8.Value.ToString("yyyyMMdd"), dateTimePicker9.Value.ToString("yyyyMMdd"),comboBox3.Text.ToString());
+                sbSql.AppendFormat(@"  ORDER BY CONVERT(NVARCHAR,[DATES],111)");
+                sbSql.AppendFormat(@"  ");
+
+                adapter9 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder9 = new SqlCommandBuilder(adapter9);
+                sqlConn.Open();
+                ds9.Clear();
+                adapter9.Fill(ds9, "ds9");
+                sqlConn.Close();
+
+
+                if (ds9.Tables["ds9"].Rows.Count == 0)
+                {
+                    dataGridView4.DataSource = null;
+                }
+                else
+                {
+                    if (ds9.Tables["ds9"].Rows.Count >= 1)
+                    {
+                        dataGridView4.DataSource = ds9.Tables["ds9"];
+                        dataGridView4.AutoResizeColumns();
 
 
                     }
@@ -1239,6 +1298,10 @@ namespace TKMK
             }
         }
 
+        private void button10_Click(object sender, EventArgs e)
+        {
+            Search3();
+        }
 
         #endregion
 
