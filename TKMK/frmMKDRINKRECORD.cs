@@ -225,23 +225,23 @@ namespace TKMK
 
         public void comboBox3load()
         {
-            connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
-            sqlConn = new SqlConnection(connectionString);
-            StringBuilder Sequel = new StringBuilder();
-            Sequel.AppendFormat(@"SELECT ME001,ME002 FROM [TK].dbo.CMSME WHERE ME002 NOT LIKE '%停用%' ORDER BY ME001 ");
-            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
-            DataTable dt = new DataTable();
-            sqlConn.Open();
+            //connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+            //sqlConn = new SqlConnection(connectionString);
+            //StringBuilder Sequel = new StringBuilder();
+            //Sequel.AppendFormat(@"SELECT ME001,ME002 FROM [TK].dbo.CMSME WHERE ME002 NOT LIKE '%停用%' ORDER BY ME001 ");
+            //SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            //DataTable dt = new DataTable();
+            //sqlConn.Open();
 
-            dt.Columns.Add("ME001", typeof(string));
-            dt.Columns.Add("ME002", typeof(string));
-            da.Fill(dt);
-            comboBox3.DataSource = dt.DefaultView;
-            comboBox3.ValueMember = "ME001";
-            comboBox3.DisplayMember = "ME002";
-            sqlConn.Close();
+            //dt.Columns.Add("ME001", typeof(string));
+            //dt.Columns.Add("ME002", typeof(string));
+            //da.Fill(dt);
+            //comboBox3.DataSource = dt.DefaultView;
+            //comboBox3.ValueMember = "ME001";
+            //comboBox3.DisplayMember = "ME002";
+            //sqlConn.Close();
 
-            textBox1.Text = comboBox1.SelectedValue.ToString();
+            //textBox1.Text = comboBox1.SelectedValue.ToString();
 
 
         }
@@ -383,7 +383,7 @@ namespace TKMK
 
                 sbSql.AppendFormat(@"  SELECT CONVERT(NVARCHAR,[DATES],111) AS '日期' ,[DEP] AS '部門' ,[DEPNAME] AS '部門名' ,[DRINK] AS '飲品' ,[OTHERS] AS '其他' ,[CUP] AS '數量' ,[REASON] AS '原因' ,[DRINKID] AS '品號' ,[SIGN] AS '簽名' ,[ID]");
                 sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[MKDRINKRECORD]");
-                sbSql.AppendFormat(@"  WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}' AND [DEPNAME]='{2}' ", dateTimePicker8.Value.ToString("yyyyMMdd"), dateTimePicker9.Value.ToString("yyyyMMdd"),comboBox3.Text.ToString());
+                sbSql.AppendFormat(@"  WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}'  ", dateTimePicker8.Value.ToString("yyyyMMdd"), dateTimePicker9.Value.ToString("yyyyMMdd"));
                 sbSql.AppendFormat(@"  ORDER BY CONVERT(NVARCHAR,[DATES],111)");
                 sbSql.AppendFormat(@"  ");
 
@@ -1193,6 +1193,48 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
+
+        private void dataGridView4_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView4.CurrentRow != null)
+            {
+                int rowindex = dataGridView4.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView4.Rows[rowindex];
+
+                    textBox13.Text = row.Cells["日期"].Value.ToString();
+                    textBox14.Text = row.Cells["部門"].Value.ToString();
+                    textBox15.Text = row.Cells["品號"].Value.ToString();
+                    textBox16.Text = row.Cells["飲品"].Value.ToString();
+                    textBox17.Text = row.Cells["其他"].Value.ToString();
+                    textBox18.Text = row.Cells["數量"].Value.ToString();
+                    textBox19.Text = row.Cells["原因"].Value.ToString();              
+                    textBox20.Text = row.Cells["部門名"].Value.ToString();
+                    textBoxID3.Text = row.Cells["ID"].Value.ToString();
+
+                 
+
+                    
+                }
+                else
+                {                    
+                    textBox13.Text = null;
+                    textBox14.Text = null;
+                    textBox15.Text = null;
+                    textBox16.Text = null;
+                    textBox17.Text = null;
+                    textBox18.Text = null;
+                    textBox19.Text = null;
+                    textBox20.Text = null;
+                    textBoxID3.Text = null;
+
+
+
+                }
+            }
+        }
+
         #endregion
 
         #region BUTTON
@@ -1303,8 +1345,13 @@ namespace TKMK
             Search3();
         }
 
+        private void button11_Click(object sender, EventArgs e)
+        {
+
+        }
+
         #endregion
 
-
+       
     }
 }
