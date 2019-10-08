@@ -498,7 +498,7 @@ namespace TKMK
                 sbSqlQuery.Clear();
 
 
-                sbSql.AppendFormat(@"  SELECT CONVERT(NVARCHAR,[DATES],111) AS '日期' ,[DEP] AS '部門' ,[DEPNAME] AS '部門名' ,[DRINK] AS '飲品' ,[OTHERS] AS '其他' ,[CUP] AS '數量' ,[REASON] AS '原因' ,[DRINKID] AS '品號' ,[SIGN] AS '簽名' ,[ID]");
+                sbSql.AppendFormat(@"  SELECT CONVERT(NVARCHAR,[DATES],112) AS '日期' ,[DEP] AS '部門' ,[DEPNAME] AS '部門名' ,[DRINK] AS '飲品' ,[OTHERS] AS '其他' ,[CUP] AS '數量' ,[REASON] AS '原因' ,[DRINKID] AS '品號' ,[SIGN] AS '簽名' ,[ID]");
                 sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[MKDRINKRECORD]");
                 sbSql.AppendFormat(@"  WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}'  ", dateTimePicker8.Value.ToString("yyyyMMdd"), dateTimePicker9.Value.ToString("yyyyMMdd"));
                 sbSql.AppendFormat(@"  ORDER BY CONVERT(NVARCHAR,[DATES],111)");
@@ -1391,9 +1391,8 @@ namespace TKMK
                     sbSql.AppendFormat(" ,[TA051],[TA052],[TA053],[TA054],[TA055],[TA056],[TA057],[TA058],[TA059],[TA060]");
                     sbSql.AppendFormat(" ,[TA061],[TA062],[TA063],[TA064],[TA065],[TA066],[TA067],[TA068],[TA200]");
                     sbSql.AppendFormat(" ,[UDF01],[UDF02],[UDF03],[UDF04],[UDF05],[UDF06],[UDF07],[UDF08],[UDF09],[UDF10]");
-                    sbSql.AppendFormat(" )");
-                    sbSql.AppendFormat(" VALUES");
-                    sbSql.AppendFormat(" (");
+                    sbSql.AppendFormat(" )");                
+                    sbSql.AppendFormat(" SELECT ");
                     sbSql.AppendFormat(" '{0}' [COMPANY],'{1}' [CREATOR],'{2}' [USR_GROUP],'{3}' [CREATE_DATE],'{4}' [MODIFIER],'{5}' [MODI_DATE],'{6}' [FLAG],'{7}' [CREATE_TIME],'{8}' [MODI_TIME],'{9}' [TRANS_TYPE]", INVTA.COMPANY, INVTA.CREATOR, INVTA.USR_GROUP, INVTA.CREATE_DATE, INVTA.MODIFIER, INVTA.MODI_DATE, INVTA.FLAG, INVTA.CREATE_TIME, INVTA.MODI_TIME, INVTA.TRANS_TYPE);
                     sbSql.AppendFormat(" ,'{0}' [TRANS_NAME],'{1}' [sync_date],'{2}' [sync_time],'{3}' [sync_mark],'{4}' [sync_count],'{5}' [DataUser],'{6}' [DataGroup]", INVTA.TRANS_NAME, INVTA.sync_date, INVTA.sync_time, INVTA.sync_mark, INVTA.sync_count, INVTA.DataUser, INVTA.DataGroup);
                     sbSql.AppendFormat(" ,'{0}' [TA001],'{1}' [TA002],'{2}' [TA003],'{3}' [TA004],'{4}' [TA005],'{5}' [TA006],{6} [TA007],'{7}' [TA008],'{8}' [TA009],{9} [TA010]",INVTA.TA001, INVTA.TA002, INVTA.TA003, INVTA.TA004, INVTA.TA005, INVTA.TA006, INVTA.TA007, INVTA.TA008, INVTA.TA009, INVTA.TA010);
@@ -1406,8 +1405,7 @@ namespace TKMK
                     sbSql.AppendFormat(" ,'{0}' [UDF01],'{1}' [UDF02],'{2}' [UDF03],'{3}' [UDF04],'{4}' [UDF05],'{5}' [UDF06],'{6}' [UDF07],'{7}' [UDF08],'{8}' [UDF09],'{9}' [UDF10]", INVTA.UDF01, INVTA.UDF02, INVTA.UDF03, INVTA.UDF04, INVTA.UDF05, INVTA.UDF06, INVTA.UDF07, INVTA.UDF08, INVTA.UDF09, INVTA.UDF10);
                     sbSql.AppendFormat(" FROM [TKMK].[dbo].[MKDRINKRECORD],[TK].dbo.[INVMB]");
                     sbSql.AppendFormat(" WHERE [DRINKID]=MB001 ");
-                    sbSql.AppendFormat(" AND [ID]='{0}'",SID2);
-                    sbSql.AppendFormat(" )");
+                    sbSql.AppendFormat(" AND [ID]='{0}'",SID2);             
                     sbSql.AppendFormat(" ");
                     sbSql.AppendFormat(" ");
                     sbSql.AppendFormat(" ");
@@ -1667,9 +1665,12 @@ namespace TKMK
                     textBox20.Text = row.Cells["部門名"].Value.ToString();
                     textBoxID3.Text = row.Cells["ID"].Value.ToString();
 
-                 
+                    TA003 = row.Cells["日期"].Value.ToString();
+                    TA004 = row.Cells["部門"].Value.ToString();
+                    TA005 = row.Cells["原因"].Value.ToString();
+                    SID2 = row.Cells["ID"].Value.ToString();
 
-                    
+
                 }
                 else
                 {                    
@@ -1683,8 +1684,10 @@ namespace TKMK
                     textBox20.Text = null;
                     textBoxID3.Text = null;
 
-
-
+                    TA003 = null;
+                    TA004 = null;
+                    TA005 = null;
+                    SID2 = null;
                 }
             }
         }
@@ -1806,7 +1809,7 @@ namespace TKMK
 
         private void button11_Click(object sender, EventArgs e)
         {
-            TA001 = "A421";
+            TA001 = "A111";
             TA002 = GETMAXTA002(TA001,TA003);
             ADDINVTARESLUT();
             ADDINVTAB();
