@@ -45,6 +45,8 @@ namespace TKMK
         SqlCommandBuilder sqlCmdBuilder8 = new SqlCommandBuilder();
         SqlDataAdapter adapter9 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder9 = new SqlCommandBuilder();
+        SqlDataAdapter adapter10 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder10 = new SqlCommandBuilder();
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
@@ -56,6 +58,7 @@ namespace TKMK
         DataSet ds7 = new DataSet();
         DataSet ds8 = new DataSet();
         DataSet ds9 = new DataSet();
+        DataSet ds10 = new DataSet();
         DataTable dt = new DataTable();
         string tablename = null;
         string EDITID;
@@ -75,6 +78,16 @@ namespace TKMK
         string TD005;
         string TD007;
         string TD011;
+
+        string SID2;
+        string TA001;
+        string TA002;
+        string TA003;
+        string TA004;
+        string TA005;
+        string TA011;
+        string TA029;
+
 
         string CHECKDEL;
 
@@ -164,6 +177,110 @@ namespace TKMK
             public string DataGroup;
 
         }
+
+        public class INVTADATA
+        {
+            public string COMPANY;
+            public string CREATOR;
+            public string USR_GROUP;
+            public string CREATE_DATE;
+            public string MODIFIER;
+            public string MODI_DATE;
+            public string FLAG;
+            public string CREATE_TIME;
+            public string MODI_TIME;
+            public string TRANS_TYPE;
+            public string TRANS_NAME;
+            public string sync_date;
+            public string sync_time;
+            public string sync_mark;
+            public string sync_count;
+            public string DataUser;
+            public string DataGroup;
+
+            public string TA001;
+            public string TA002;
+            public string TA003;
+            public string TA004;
+            public string TA005;
+            public string TA006;
+            public string TA007;
+            public string TA008;
+            public string TA009;
+            public string TA010;
+            public string TA011;
+            public string TA012;
+            public string TA013;
+            public string TA014;
+            public string TA015;
+            public string TA016;
+            public string TA017;
+            public string TA018;
+            public string TA019;
+            public string TA020;
+            public string TA021;
+            public string TA022;
+            public string TA023;
+            public string TA024;
+            public string TA025;
+            public string TA026;
+            public string TA027;
+            public string TA028;
+            public string TA029;
+            public string TA030;
+            public string TA031;
+            public string TA032;
+            public string TA033;
+            public string TA034;
+            public string TA035;
+            public string TA036;
+            public string TA037;
+            public string TA038;
+            public string TA039;
+            public string TA040;
+            public string TA041;
+            public string TA042;
+            public string TA043;
+            public string TA044;
+            public string TA045;
+            public string TA046;
+            public string TA047;
+            public string TA048;
+            public string TA049;
+            public string TA050;
+            public string TA051;
+            public string TA052;
+            public string TA053;
+            public string TA054;
+            public string TA055;
+            public string TA056;
+            public string TA057;
+            public string TA058;
+            public string TA059;
+            public string TA060;
+            public string TA061;
+            public string TA062;
+            public string TA063;
+            public string TA064;
+            public string TA065;
+            public string TA066;
+            public string TA067;
+            public string TA068;
+            public string TA200;
+           
+            public string UDF01;
+            public string UDF02;
+            public string UDF03;
+            public string UDF04;
+            public string UDF05;
+            public string UDF06;
+            public string UDF07;
+            public string UDF08;
+            public string UDF09;
+            public string UDF10;
+        }
+
+
 
         public frmMKDRINKRECORD()
         {
@@ -803,7 +920,63 @@ namespace TKMK
             }
            
         }
-        public string GETMAXTD002(string TD001)
+
+        public void ADDINVTARESLUT()
+        {
+            if (!string.IsNullOrEmpty(SID2) && !string.IsNullOrEmpty(TA001) && !string.IsNullOrEmpty(TA002))
+            {
+                try
+                {
+                    connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+
+                    //TD001 = "A421";
+                    //TD002 = "20190930003";
+
+                    sbSql.AppendFormat(" INSERT INTO [TKMK].[dbo].[INVTARESLUT]");
+                    sbSql.AppendFormat(" ([SID],[TA001],[TA002])");
+                    sbSql.AppendFormat(" VALUES ('{0}','{1}','{2}')", SID2, TA001, TA002);
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+
+
+                    }
+
+                }
+                catch
+                {
+
+                }
+
+                finally
+                {
+                    sqlConn.Close();
+                }
+            }
+
+        }
+        public string GETMAXTD002(string TD001,string TD003)
         {
             string TD002;
 
@@ -841,7 +1014,7 @@ namespace TKMK
                 {
                     if (ds6.Tables["ds6"].Rows.Count >= 1)
                     {
-                        TD002 = SETTD002(ds6.Tables["ds6"].Rows[0]["TD002"].ToString());
+                        TD002 = SETTD002(ds6.Tables["ds6"].Rows[0]["TD002"].ToString(), TD003);
                         return TD002;
 
                     }
@@ -859,8 +1032,7 @@ namespace TKMK
             }
         }
 
-
-        public string SETTD002(string TD002)
+        public string SETTD002(string TD002, string TD003)
         {
             if (TD002.Equals("00000000000"))
             {
@@ -878,6 +1050,87 @@ namespace TKMK
 
             return null;
         }
+
+
+        public string GETMAXTA002(string TA001,string TA003)
+        {
+            string TA002;
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                StringBuilder sbSql = new StringBuilder();
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+                ds4.Clear();
+
+                sbSql.AppendFormat(@"  SELECT ISNULL(MAX(TA002),'00000000000') AS TA002");
+                sbSql.AppendFormat(@"  FROM [TK].[dbo].[INVTA] ");
+                //sbSql.AppendFormat(@"  WHERE  TC001='{0}' AND TC003='{1}'", "A542","20170119");
+                sbSql.AppendFormat(@"  WHERE  TA001='{0}' AND TA003='{1}'", TA001, TA003.ToString());
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter10 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder10 = new SqlCommandBuilder(adapter10);
+                sqlConn.Open();
+                ds10.Clear();
+                adapter10.Fill(ds10, "ds10");
+                sqlConn.Close();
+
+
+                if (ds10.Tables["ds10"].Rows.Count == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    if (ds10.Tables["ds10"].Rows.Count >= 1)
+                    {
+                        TA002 = SETTA002(ds10.Tables["ds10"].Rows[0]["TA002"].ToString(),TA003);
+                        return TA002;
+
+                    }
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }             
+
+
+
+
+        public string SETTA002(string TA002,string TA003)
+        {
+            if (TA002.Equals("00000000000"))
+            {
+                return TA003.ToString() + "001";
+            }
+
+            else
+            {
+                int serno = Convert.ToInt16(TA002.Substring(8, 3));
+                serno = serno + 1;
+                string temp = serno.ToString();
+                temp = temp.PadLeft(3, '0');
+                return TA003.ToString() + temp.ToString();
+            }
+
+            return null;
+        }
+
+
         public void CHECKBOMTDRESLUT()
         {
            
@@ -1106,6 +1359,203 @@ namespace TKMK
             return BOMTD;
         }
 
+        public void ADDINVTAB()
+        {
+            INVTADATA INVTA = new INVTADATA();
+            INVTA = SETINVTA();
+
+            if (!string.IsNullOrEmpty(TA001) && !string.IsNullOrEmpty(TA002) )
+            {
+                try
+                {
+
+                    connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                    sqlConn = new SqlConnection(connectionString);
+
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+
+
+                    sbSql.AppendFormat(" INSERT INTO [TK].[dbo].[INVTA]");
+                    sbSql.AppendFormat(" (");
+                    sbSql.AppendFormat(" [COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE]");
+                    sbSql.AppendFormat(" ,[TRANS_NAME],[sync_date],[sync_time],[sync_mark],[sync_count],[DataUser],[DataGroup]");
+                    sbSql.AppendFormat(" ,[TA001],[TA002],[TA003],[TA004],[TA005],[TA006],[TA007],[TA008],[TA009],[TA010]");
+                    sbSql.AppendFormat(" ,[TA011],[TA012],[TA013],[TA014],[TA015],[TA016],[TA017],[TA018],[TA019],[TA020]");
+                    sbSql.AppendFormat(" ,[TA021],[TA022],[TA023],[TA024],[TA025],[TA026],[TA027],[TA028],[TA029],[TA030]");
+                    sbSql.AppendFormat(" ,[TA031],[TA032],[TA033],[TA034],[TA035],[TA036],[TA037],[TA038],[TA039],[TA040]");
+                    sbSql.AppendFormat(" ,[TA041],[TA042],[TA043],[TA044],[TA045],[TA046],[TA047],[TA048],[TA049],[TA050]");
+                    sbSql.AppendFormat(" ,[TA051],[TA052],[TA053],[TA054],[TA055],[TA056],[TA057],[TA058],[TA059],[TA060]");
+                    sbSql.AppendFormat(" ,[TA061],[TA062],[TA063],[TA064],[TA065],[TA066],[TA067],[TA068],[TA200]");
+                    sbSql.AppendFormat(" ,[UDF01],[UDF02],[UDF03],[UDF04],[UDF05],[UDF06],[UDF07],[UDF08],[UDF09],[UDF10]");
+                    sbSql.AppendFormat(" )");
+                    sbSql.AppendFormat(" VALUES");
+                    sbSql.AppendFormat(" (");
+                    sbSql.AppendFormat(" '{0}' [COMPANY],'{1}' [CREATOR],'{2}' [USR_GROUP],'{3}' [CREATE_DATE],'{4}' [MODIFIER],'{5}' [MODI_DATE],'{6}' [FLAG],'{7}' [CREATE_TIME],'{8}' [MODI_TIME],'{9}' [TRANS_TYPE]", INVTA.COMPANY, INVTA.CREATOR, INVTA.USR_GROUP, INVTA.CREATE_DATE, INVTA.MODIFIER, INVTA.MODI_DATE, INVTA.FLAG, INVTA.CREATE_TIME, INVTA.MODI_TIME, INVTA.TRANS_TYPE);
+                    sbSql.AppendFormat(" ,'{0}' [TRANS_NAME],'{1}' [sync_date],'{2}' [sync_time],'{3}' [sync_mark],'{4}' [sync_count],'{5}' [DataUser],'{6}' [DataGroup]", INVTA.TRANS_NAME, INVTA.sync_date, INVTA.sync_time, INVTA.sync_mark, INVTA.sync_count, INVTA.DataUser, INVTA.DataGroup);
+                    sbSql.AppendFormat(" ,'{0}' [TA001],'{1}' [TA002],'{2}' [TA003],'{3}' [TA004],'{4}' [TA005],'{5}' [TA006],{6} [TA007],'{7}' [TA008],'{8}' [TA009],{9} [TA010]",INVTA.TA001, INVTA.TA002, INVTA.TA003, INVTA.TA004, INVTA.TA005, INVTA.TA006, INVTA.TA007, INVTA.TA008, INVTA.TA009, INVTA.TA010);
+                    sbSql.AppendFormat(" ,[CUP] [TA011],ISNULL((SELECT TOP 1 [LB010] FROM [TK].dbo.[INVLB] WHERE  LB001=[DRINKID] AND [LB010]>0 ORDER BY LB002 DESC)*[CUP],0)*[CUP] [TA012],'{0}' [TA013],'{1}' [TA014],'{2}' [TA015],{3} [TA016],'{4}' [TA017],'{5}' [TA018],{6} [TA019],'{7}' [TA020]", INVTA.TA013, INVTA.TA014, INVTA.TA015, INVTA.TA016, INVTA.TA017, INVTA.TA018, INVTA.TA019, INVTA.TA020);
+                    sbSql.AppendFormat(" ,'{0}' [TA021],'{1}' [TA022],'{2}' [TA023],'{3}' [TA024],'{4}' [TA025],'{5}' [TA026],'{6}' [TA027],'{7}' [TA028],'{8}' [TA029],'{9}' [TA030]", INVTA.TA021, INVTA.TA022, INVTA.TA023, INVTA.TA024, INVTA.TA025, INVTA.TA026, INVTA.TA027, INVTA.TA028, INVTA.TA029, INVTA.TA030);
+                    sbSql.AppendFormat(" ,'{0}' [TA031],'{1}' [TA032],{2} [TA033],{3} [TA034],'{4}' [TA035],'{5}' [TA036],'{6}' [TA037],'{7}' [TA038],'{8}' [TA039],{9} [TA040]", INVTA.TA031, INVTA.TA032, INVTA.TA033, INVTA.TA034, INVTA.TA035, INVTA.TA036, INVTA.TA037, INVTA.TA038, INVTA.TA039, INVTA.TA040);
+                    sbSql.AppendFormat(" ,{0} [TA041],{1} [TA042],'{2}' [TA043],'{3}' [TA044],'{4}' [TA045],'{5}' [TA046],'{6}' [TA047],'{7}' [TA048],{8} [TA049],{9} [TA050]", INVTA.TA041, INVTA.TA042, INVTA.TA043, INVTA.TA044, INVTA.TA045, INVTA.TA046, INVTA.TA047, INVTA.TA048, INVTA.TA049, INVTA.TA050);
+                    sbSql.AppendFormat(" ,'{0}' [TA051],'{1}' [TA052],'{2}' [TA053],'{3}' [TA054],{4} [TA055],{5} [TA056],{6} [TA057],{7} [TA058],'{8}' [TA059],'{9}' [TA060]", INVTA.TA051, INVTA.TA052, INVTA.TA053, INVTA.TA054, INVTA.TA055, INVTA.TA056, INVTA.TA057, INVTA.TA058, INVTA.TA059, INVTA.TA060);
+                    sbSql.AppendFormat(" ,'{0}' [TA061],'{1}' [TA062],'{2}' [TA063],'{3}' [TA064],'{4}' [TA065],'{5}' [TA066],'{6}' [TA067],'{7}' [TA068],'{8}' [TA200]", INVTA.TA061, INVTA.TA062, INVTA.TA063, INVTA.TA064, INVTA.TA065, INVTA.TA066, INVTA.TA067, INVTA.TA068, INVTA.TA200);
+                    sbSql.AppendFormat(" ,'{0}' [UDF01],'{1}' [UDF02],'{2}' [UDF03],'{3}' [UDF04],'{4}' [UDF05],'{5}' [UDF06],'{6}' [UDF07],'{7}' [UDF08],'{8}' [UDF09],'{9}' [UDF10]", INVTA.UDF01, INVTA.UDF02, INVTA.UDF03, INVTA.UDF04, INVTA.UDF05, INVTA.UDF06, INVTA.UDF07, INVTA.UDF08, INVTA.UDF09, INVTA.UDF10);
+                    sbSql.AppendFormat(" FROM [TKMK].[dbo].[MKDRINKRECORD],[TK].dbo.[INVMB]");
+                    sbSql.AppendFormat(" WHERE [DRINKID]=MB001 ");
+                    sbSql.AppendFormat(" AND [ID]='{0}'",SID2);
+                    sbSql.AppendFormat(" )");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" ");
+
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+
+
+                    }
+
+
+
+                }
+                catch
+                {
+
+                }
+
+                finally
+                {
+                    sqlConn.Close();
+                }
+            }
+
+        }
+
+        public INVTADATA SETINVTA()
+        {
+            INVTADATA INVTA = new INVTADATA();
+            INVTA.COMPANY = "TK";
+            INVTA.CREATOR = "160116";
+            INVTA.USR_GROUP = "116000";
+            //MOCTA.CREATE_DATE = dt1.ToString("yyyyMMdd");
+            INVTA.CREATE_DATE = DateTime.Now.ToString("yyyyMMdd");
+            INVTA.MODIFIER = "160116";
+            INVTA.MODI_DATE = DateTime.Now.ToString("yyyyMMdd");
+            INVTA.FLAG = "0";
+            INVTA.CREATE_TIME = DateTime.Now.ToString("HH:mm:dd");
+            INVTA.MODI_TIME = DateTime.Now.ToString("HH:mm:dd");
+            INVTA.TRANS_TYPE = "P001";
+            INVTA.TRANS_NAME = "INVMI05";
+            INVTA.sync_date = "";
+            INVTA.sync_time = "";
+            INVTA.sync_mark = "";
+            INVTA.sync_count = "0";
+            INVTA.DataUser = "";
+            INVTA.DataGroup = "116000";
+            INVTA.TA001=TA001;
+            INVTA.TA002=TA002;
+            INVTA.TA003=TA003;
+            INVTA.TA004=TA004;
+            INVTA.TA005=TA005;
+            INVTA.TA006="N";
+            INVTA.TA007="0";
+            INVTA.TA008="20";
+            INVTA.TA009="11";
+            INVTA.TA010="0";
+            INVTA.TA011=TA011;
+            INVTA.TA012="0";
+            INVTA.TA013="N";
+            INVTA.TA014=TA003;
+            INVTA.TA015="";
+            INVTA.TA016="0";
+            INVTA.TA017="N";
+            INVTA.TA018="N";
+            INVTA.TA019="0";
+            INVTA.TA020="6";
+            INVTA.TA021="";
+            INVTA.TA022="";
+            INVTA.TA023="";
+            INVTA.TA024="";
+            INVTA.TA025="";
+            INVTA.TA026="";
+            INVTA.TA027="";
+            INVTA.TA028="";
+            INVTA.TA029=TA029;
+            INVTA.TA030="";
+            INVTA.TA031="";
+            INVTA.TA032="";
+            INVTA.TA033 = "0";
+            INVTA.TA034 = "0";
+            INVTA.TA035 = "";
+            INVTA.TA036 = "";
+            INVTA.TA037 = "";
+            INVTA.TA038 = "";
+            INVTA.TA039 = "";
+            INVTA.TA040 = "0";
+            INVTA.TA041 = "0";
+            INVTA.TA042 = "0";
+            INVTA.TA043 = "";
+            INVTA.TA044 = "";
+            INVTA.TA045 = "";
+            INVTA.TA046 = "";
+            INVTA.TA047 = "";
+            INVTA.TA048 = "";
+            INVTA.TA049 = "0";
+            INVTA.TA050 = "0";
+            INVTA.TA051 = "";
+            INVTA.TA052 = "";
+            INVTA.TA053 = "";
+            INVTA.TA054 = "";
+            INVTA.TA055 = "0";
+            INVTA.TA056 = "0";
+            INVTA.TA057 = "0";
+            INVTA.TA058 = "0";
+            INVTA.TA059 = "";
+            INVTA.TA060 = "";
+            INVTA.TA061 = "";
+            INVTA.TA062 = "";
+            INVTA.TA063 = "";
+            INVTA.TA064 = "";
+            INVTA.TA065 = "";
+            INVTA.TA066 = "";
+            INVTA.TA067 = "";
+            INVTA.TA068 = "";
+            INVTA.TA200 = "";
+            INVTA.UDF01 = "";
+            INVTA.UDF02 = "";
+            INVTA.UDF03 = "";
+            INVTA.UDF04 = "";
+            INVTA.UDF05 = "";
+            INVTA.UDF06 = "0";
+            INVTA.UDF07 = "0";
+            INVTA.UDF08 = "0";
+            INVTA.UDF09 = "0";
+            INVTA.UDF10 = "0";
+
+
+            return INVTA;
+        }
+
+
         public void CHECKBOMTD()
         {
             try
@@ -1239,6 +1689,10 @@ namespace TKMK
             }
         }
 
+        public void UPDATEINVTA()
+        {
+
+        }
         #endregion
 
         #region BUTTON
@@ -1312,9 +1766,10 @@ namespace TKMK
         private void button8_Click(object sender, EventArgs e)
         {
             TD001 = "A421";
-            TD002 = GETMAXTD002(TD001);
+            TD002 = GETMAXTD002(TD001,TD003);
             ADDBOMTDRESLUT();
             ADDBOMTDTE();
+
 
             CHECKBOMTDRESLUT();
 
@@ -1351,7 +1806,13 @@ namespace TKMK
 
         private void button11_Click(object sender, EventArgs e)
         {
+            TA001 = "A421";
+            TA002 = GETMAXTA002(TA001,TA003);
+            ADDINVTARESLUT();
+            ADDINVTAB();
+            UPDATEINVTA();
 
+            CHECKBOMTDRESLUT();
         }
 
         #endregion
