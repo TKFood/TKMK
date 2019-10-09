@@ -85,6 +85,7 @@ namespace TKMK
         string TD005;
         string TD007;
         string TD011;
+        string BOMTDUDF01;
 
         string SID2;
         string TA001;
@@ -95,6 +96,7 @@ namespace TKMK
         string TA011;
         string TA029;
         string TB012;
+        string INVTAUDF01;
 
 
 
@@ -846,6 +848,7 @@ namespace TKMK
                     TD005 = row.Cells["單位"].Value.ToString();
                     TD007 = row.Cells["數量"].Value.ToString();
                     TD011 = row.Cells["原因"].Value.ToString();
+                    BOMTDUDF01 = row.Cells["ID"].Value.ToString();
 
                     CHECKBOMTDRESLUT();
                 }
@@ -866,7 +869,7 @@ namespace TKMK
                     TD005 = null;
                     TD007 = null;
                     TD011 = null;
-
+                    BOMTDUDF01 = null;
                 }
             }
         }
@@ -1391,7 +1394,7 @@ namespace TKMK
             BOMTD.TD020 = "0";
             BOMTD.TD021 = "";
             BOMTD.TD022 = "0";
-            BOMTD.TD023 = textBoxID2.Text;
+            BOMTD.TD023 = "";
             BOMTD.TD024 = "0";
             BOMTD.TD025 = "N";
             BOMTD.TD026 = "";
@@ -1405,7 +1408,7 @@ namespace TKMK
             BOMTD.TD034 = "";
             BOMTD.TD035 = "";
             BOMTD.TD036 = "0";
-            BOMTD.UDF01 = "";
+            BOMTD.UDF01 = BOMTDUDF01;
             BOMTD.UDF02 = "";
             BOMTD.UDF03 = "";
             BOMTD.UDF04 = "";
@@ -1631,7 +1634,7 @@ namespace TKMK
             INVTA.TA067 = "";
             INVTA.TA068 = "";
             INVTA.TA200 = "";
-            INVTA.UDF01 = "";
+            INVTA.UDF01 = INVTAUDF01;
             INVTA.UDF02 = "";
             INVTA.UDF03 = "";
             INVTA.UDF04 = "";
@@ -1658,7 +1661,7 @@ namespace TKMK
                 sbSqlQuery.Clear();
 
                
-                sbSql.AppendFormat(@"  SELECT * FROM [TK].dbo.BOMTD WHERE TD023='{0}'",textBoxID2.Text.ToString());
+                sbSql.AppendFormat(@"  SELECT * FROM [TK].dbo.BOMTD WHERE UDF01='{0}'", textBoxID2.Text.ToString());
                 sbSql.AppendFormat(@"  ");
                 sbSql.AppendFormat(@"  ");
  
@@ -1707,7 +1710,7 @@ namespace TKMK
                 sbSqlQuery.Clear();
 
 
-                sbSql.AppendFormat(@"  SELECT * FROM [TK].dbo.INVTA WHERE TA029='{0}'", textBoxID3.Text.ToString());
+                sbSql.AppendFormat(@"  SELECT * FROM [TK].dbo.INVTA WHERE UDF01='{0}'", textBoxID3.Text.ToString());
                 sbSql.AppendFormat(@"  ");
                 sbSql.AppendFormat(@"  ");
 
@@ -1856,6 +1859,7 @@ namespace TKMK
                     TA005 = row.Cells["原因"].Value.ToString();
                     TA029= row.Cells["ID"].Value.ToString();
                     SID2 = row.Cells["ID"].Value.ToString();
+                    INVTAUDF01 = row.Cells["ID"].Value.ToString();
 
                     CHECKINVTARESLUT();
                 }
@@ -1876,6 +1880,7 @@ namespace TKMK
                     TA005 = null;
                     TA029 = null;
                     SID2 = null;
+                    INVTAUDF01 = null;
                 }
             }
         }
