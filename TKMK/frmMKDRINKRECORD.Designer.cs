@@ -1497,6 +1497,7 @@
             this.button12.TabIndex = 51;
             this.button12.Text = "刪除記錄";
             this.button12.UseVisualStyleBackColor = true;
+            this.button12.Click += new System.EventHandler(this.button12_Click);
             // 
             // textBox16
             // 
