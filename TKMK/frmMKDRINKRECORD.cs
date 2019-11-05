@@ -614,6 +614,64 @@ namespace TKMK
             }
         }
 
+        public void Search5()
+        {
+            ds.Clear();
+
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+
+
+                sbSql.AppendFormat(@"  SELECT CONVERT(NVARCHAR,[DATES],112) AS '日期' ,[DEP] AS '部門' ,[DEPNAME] AS '部門名' ,[DRINK] AS '飲品' ,[OTHERS] AS '其他' ,[CUP] AS '數量' ,[REASON] AS '原因' ,[DRINKID] AS '品號' ,[SIGN] AS '簽名' ,[ID]");
+                sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[MKDRINKRECORD]");
+                sbSql.AppendFormat(@"  WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}'  ", dateTimePicker10.Value.ToString("yyyyMMdd"), dateTimePicker11.Value.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  AND [DEP]='{0}'",textBox23.Text);
+                sbSql.AppendFormat(@"  ORDER BY CONVERT(NVARCHAR,[DATES],111)");
+                sbSql.AppendFormat(@"  ");
+
+                adapter14 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder14 = new SqlCommandBuilder(adapter14);
+                sqlConn.Open();
+                ds14.Clear();
+                adapter14.Fill(ds14, "ds14");
+                sqlConn.Close();
+
+
+                if (ds14.Tables["ds14"].Rows.Count == 0)
+                {
+                    dataGridView7.DataSource = null;
+                }
+                else
+                {
+                    if (ds14.Tables["ds14"].Rows.Count >= 1)
+                    {
+                        dataGridView7.DataSource = ds14.Tables["ds14"];
+                        dataGridView7.AutoResizeColumns();
+
+
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
             if (dataGridView1.CurrentRow != null)
@@ -1954,6 +2012,29 @@ namespace TKMK
         {
 
         }
+
+
+        private void dataGridView6_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView6.CurrentRow != null)
+            {
+                int rowindex = dataGridView6.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView6.Rows[rowindex];
+
+                    textBox23.Text = row.Cells["代號"].Value.ToString();
+                    textBox31.Text = row.Cells["名稱"].Value.ToString();
+
+                    Search5();
+                }
+                else
+                {
+                    textBox23.Text = null;
+                    textBox31.Text = null;
+                }
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -2104,8 +2185,9 @@ namespace TKMK
             Search4();
         }
 
+
         #endregion
 
-
+      
     }
 }

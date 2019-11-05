@@ -1789,6 +1789,7 @@
             this.dataGridView6.RowTemplate.Height = 24;
             this.dataGridView6.Size = new System.Drawing.Size(245, 517);
             this.dataGridView6.TabIndex = 4;
+            this.dataGridView6.SelectionChanged += new System.EventHandler(this.dataGridView6_SelectionChanged);
             // 
             // dataGridView7
             // 
