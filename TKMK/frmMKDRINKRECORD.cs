@@ -2416,6 +2416,10 @@ namespace TKMK
             ADDINVTAB2();
             UPDATEINVTA();
 
+            Search5();
+            Search6();
+
+            MessageBox.Show("已完成");
             //CHECKINVTARESLUT();
         }
 
