@@ -633,8 +633,9 @@ namespace TKMK
                 sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[MKDRINKRECORD]");
                 sbSql.AppendFormat(@"  WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}'  ", dateTimePicker10.Value.ToString("yyyyMMdd"), dateTimePicker11.Value.ToString("yyyyMMdd"));
                 sbSql.AppendFormat(@"  AND [DEP]='{0}'",textBox23.Text);
+                sbSql.AppendFormat(@"  AND [ID] NOT IN  (SELECT UDF01 FROM [TK].dbo.INVTB WHERE ISNULL(UDF01,'')<>'')  ");
                 sbSql.AppendFormat(@"  ORDER BY CONVERT(NVARCHAR,[DATES],111)");
-                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"   ");
 
                 adapter14 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -1727,6 +1728,7 @@ namespace TKMK
         {
             INVTADATA INVTA = new INVTADATA();
             INVTA = SETINVTA();
+            INVTA.TA004 = textBox23.Text;
 
             if (!string.IsNullOrEmpty(TA001) && !string.IsNullOrEmpty(TA002))
             {
@@ -1770,36 +1772,37 @@ namespace TKMK
                     sbSql.AppendFormat(" ,'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}' ,'{8}','{9}'", INVTA.UDF01, INVTA.UDF02, INVTA.UDF03, INVTA.UDF04, INVTA.UDF05, INVTA.UDF06, INVTA.UDF07, INVTA.UDF08, INVTA.UDF09, INVTA.UDF10);
                     sbSql.AppendFormat(" )");
                     sbSql.AppendFormat(" ");
-                    //sbSql.AppendFormat(" INSERT INTO [TK].[dbo].[INVTB]");
-                    //sbSql.AppendFormat(" (");
-                    //sbSql.AppendFormat(" [COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE]");
-                    //sbSql.AppendFormat(" ,[TRANS_NAME],[sync_date],[sync_time],[sync_mark],[sync_count],[DataUser],[DataGroup]");
-                    //sbSql.AppendFormat(" ,[TB001],[TB002],[TB003],[TB004],[TB005],[TB006],[TB007],[TB008],[TB009],[TB010]");
-                    //sbSql.AppendFormat(" ,[TB011],[TB012],[TB013],[TB014],[TB015],[TB016],[TB017],[TB018],[TB019],[TB020]");
-                    //sbSql.AppendFormat(" ,[TB021],[TB022],[TB023],[TB024],[TB025],[TB026],[TB027],[TB028],[TB029],[TB030]");
-                    //sbSql.AppendFormat(" ,[TB031],[TB032],[TB033],[TB034],[TB035],[TB036],[TB037],[TB038],[TB039],[TB040]");
-                    //sbSql.AppendFormat(" ,[TB041],[TB042],[TB043],[TB044],[TB045],[TB046],[TB047],[TB048],[TB049],[TB050]");
-                    //sbSql.AppendFormat(" ,[TB051],[TB052],[TB053],[TB054],[TB055],[TB056],[TB057],[TB058],[TB059],[TB060]");
-                    //sbSql.AppendFormat(" ,[TB061],[TB062],[TB063],[TB064],[TB065],[TB066],[TB067],[TB068],[TB069],[TB070]");
-                    //sbSql.AppendFormat(" ,[TB071],[TB072],[TB073]");
-                    //sbSql.AppendFormat(" ,[UDF01],[UDF02],[UDF03],[UDF04],[UDF05],[UDF06],[UDF07],[UDF08],[UDF09],[UDF10]");
-                    //sbSql.AppendFormat(" )");
-                    //sbSql.AppendFormat(" SELECT ");
-                    //sbSql.AppendFormat(" '{0}' [COMPANY],'{1}' [CREATOR],'{2}' [USR_GROUP],'{3}' [CREATE_DATE],'{4}' [MODIFIER],'{5}' [MODI_DATE],'{6}' [FLAG],'{7}' [CREATE_TIME],'{8}' [MODI_TIME],'{9}' [TRANS_TYPE]", INVTA.COMPANY, INVTA.CREATOR, INVTA.USR_GROUP, INVTA.CREATE_DATE, INVTA.MODIFIER, INVTA.MODI_DATE, INVTA.FLAG, INVTA.CREATE_TIME, INVTA.MODI_TIME, INVTA.TRANS_TYPE);
-                    //sbSql.AppendFormat(" ,'{0}' [TRANS_NAME],'{1}' [sync_date],'{2}' [sync_time],'{3}' [sync_mark],'{4}' [sync_count],'{5}' [DataUser],'{6}' [DataGroup]", INVTA.TRANS_NAME, INVTA.sync_date, INVTA.sync_time, INVTA.sync_mark, INVTA.sync_count, INVTA.DataUser, INVTA.DataGroup);
-                    //sbSql.AppendFormat(" ,'{0}' [TB001],'{1}' [TB002],RIGHT(REPLICATE('0',4) + CAST(ROW_NUMBER() OVER(ORDER BY [ID])  as NVARCHAR),4) [TB003],MB001 [TB004],MB002 [TB005],MB003 [TB006],CUP [TB007],MB004 [TB008],{2} [TB009],ISNULL((SELECT TOP 1 [LB010] FROM [TK].dbo.[INVLB] WHERE  LB001=[DRINKID] AND [LB010]>0 ORDER BY LB002 DESC)*[CUP],0)  [TB010]", TA001, TA002, 0);
-                    //sbSql.AppendFormat(" ,ISNULL((SELECT TOP 1 [LB010] FROM [TK].dbo.[INVLB] WHERE  LB001=[DRINKID] AND [LB010]>0 ORDER BY LB002 DESC)*[CUP],0)*[CUP] [TB011],'{0}' [TB012],'{1}' [TB013],'{2}' [TB014],'{3}' [TB015],'{4}' [TB016],REASON [TB017],'{5}' [TB018],'{6}' [TB019],'{7}' [TB020]", TB012, null, null, null, null, "N", TA003, null);
-                    //sbSql.AppendFormat(" ,'{0}' [TB021],{1} [TB022],'{2}' [TB023],'{3}' [TB024],MB047 [TB025],MB047*CUP [TB026],'{4}' [TB027],'{5}' [TB028],'{6}' [TB029],{7} [TB030]", null, 0, null, "N", null, null, null, 0);
-                    //sbSql.AppendFormat(" ,'{0}' [TB031],'{1}' [TB032],'{2}' [TB033],'{3}' [TB034],'{4}' [TB035],'{5}' [TB036],{6} [TB037],{7} [TB038],{8} [TB039],'{9}' [TB040]", 0, null, null, null, null, null, 0, 0, 0, null, null);
-                    //sbSql.AppendFormat(" ,'{0}' [TB041],'{1}' [TB042],'{2}' [TB043],'{3}' [TB044],{4} [TB045],'{5}' [TB046],{6} [TB047],'{7}' [TB048],'{8}' [TB049],{9} [TB050]", null, null, null, null, 0, null, 0, null, null, 0);
-                    //sbSql.AppendFormat(" ,'{0}' [TB051],'{1}' [TB052],'{2}' [TB053],'{3}' [TB054],{4} [TB055],'{5}' [TB056],'{6}' [TB057],'{7}' [TB058],{8} [TB059],{9} [TB060]", null, "N", null, null, 0, null, null, null, 0, 0);
-                    //sbSql.AppendFormat(" ,'{0}' [TB061],{1} [TB062],'{2}' [TB063],{3} [TB064],{4} [TB065],{5} [TB066],{6} [TB067],'{7}' [TB068],'{8}' [TB069],'{9}' [TB070]", null, 0, null, 0, 0, 0, 0, null, null, null);
-                    //sbSql.AppendFormat(" ,'{0}' [TB071],'{1}' [TB072],'{2}' [TB073]", null, null, null);
-                    //sbSql.AppendFormat(" ,'{0}' [UDF01],'{1}' [UDF02],'{2}' [UDF03],'{3}' [UDF04],'{4}' [UDF05],{5} [UDF06],{6} [UDF07],{7} [UDF08],{8} [UDF09],{9} [UDF10]", null, null, null, null, null, 0, 0, 0, 0, 0);
-                    //sbSql.AppendFormat(" FROM [TKMK].[dbo].[MKDRINKRECORD],[TK].dbo.[INVMB]");
-                    //sbSql.AppendFormat(" WHERE [DRINKID]=MB001");
-                    //sbSql.AppendFormat(" AND [ID]='{0}'", SID2);
-                    //sbSql.AppendFormat(" ");
+                    sbSql.AppendFormat(" INSERT INTO [TK].[dbo].[INVTB]");
+                    sbSql.AppendFormat(" (");
+                    sbSql.AppendFormat(" [COMPANY],[CREATOR],[USR_GROUP],[CREATE_DATE],[MODIFIER],[MODI_DATE],[FLAG],[CREATE_TIME],[MODI_TIME],[TRANS_TYPE]");
+                    sbSql.AppendFormat(" ,[TRANS_NAME],[sync_date],[sync_time],[sync_mark],[sync_count],[DataUser],[DataGroup]");
+                    sbSql.AppendFormat(" ,[TB001],[TB002],[TB003],[TB004],[TB005],[TB006],[TB007],[TB008],[TB009],[TB010]");
+                    sbSql.AppendFormat(" ,[TB011],[TB012],[TB013],[TB014],[TB015],[TB016],[TB017],[TB018],[TB019],[TB020]");
+                    sbSql.AppendFormat(" ,[TB021],[TB022],[TB023],[TB024],[TB025],[TB026],[TB027],[TB028],[TB029],[TB030]");
+                    sbSql.AppendFormat(" ,[TB031],[TB032],[TB033],[TB034],[TB035],[TB036],[TB037],[TB038],[TB039],[TB040]");
+                    sbSql.AppendFormat(" ,[TB041],[TB042],[TB043],[TB044],[TB045],[TB046],[TB047],[TB048],[TB049],[TB050]");
+                    sbSql.AppendFormat(" ,[TB051],[TB052],[TB053],[TB054],[TB055],[TB056],[TB057],[TB058],[TB059],[TB060]");
+                    sbSql.AppendFormat(" ,[TB061],[TB062],[TB063],[TB064],[TB065],[TB066],[TB067],[TB068],[TB069],[TB070]");
+                    sbSql.AppendFormat(" ,[TB071],[TB072],[TB073]");
+                    sbSql.AppendFormat(" ,[UDF01],[UDF02],[UDF03],[UDF04],[UDF05],[UDF06],[UDF07],[UDF08],[UDF09],[UDF10]");
+                    sbSql.AppendFormat(" )");
+                    sbSql.AppendFormat(" SELECT ");
+                    sbSql.AppendFormat(" '{0}' [COMPANY],'{1}' [CREATOR],'{2}' [USR_GROUP],'{3}' [CREATE_DATE],'{4}' [MODIFIER],'{5}' [MODI_DATE],'{6}' [FLAG],'{7}' [CREATE_TIME],'{8}' [MODI_TIME],'{9}' [TRANS_TYPE]", INVTA.COMPANY, INVTA.CREATOR, INVTA.USR_GROUP, INVTA.CREATE_DATE, INVTA.MODIFIER, INVTA.MODI_DATE, INVTA.FLAG, INVTA.CREATE_TIME, INVTA.MODI_TIME, INVTA.TRANS_TYPE);
+                    sbSql.AppendFormat(" ,'{0}' [TRANS_NAME],'{1}' [sync_date],'{2}' [sync_time],'{3}' [sync_mark],'{4}' [sync_count],'{5}' [DataUser],'{6}' [DataGroup]", INVTA.TRANS_NAME, INVTA.sync_date, INVTA.sync_time, INVTA.sync_mark, INVTA.sync_count, INVTA.DataUser, INVTA.DataGroup);
+                    sbSql.AppendFormat(" ,'{0}' [TB001],'{1}' [TB002],RIGHT(REPLICATE('0',4) + CAST(ROW_NUMBER() OVER(ORDER BY [ID])  as NVARCHAR),4) [TB003],MB001 [TB004],MB002 [TB005],MB003 [TB006],CUP [TB007],MB004 [TB008],{2} [TB009],ISNULL((SELECT TOP 1 [LB010] FROM [TK].dbo.[INVLB] WHERE  LB001=[DRINKID] AND [LB010]>0 ORDER BY LB002 DESC)*[CUP],0)  [TB010]", TA001, TA002, 0);
+                    sbSql.AppendFormat(" ,ISNULL((SELECT TOP 1 [LB010] FROM [TK].dbo.[INVLB] WHERE  LB001=[DRINKID] AND [LB010]>0 ORDER BY LB002 DESC)*[CUP],0)*[CUP] [TB011],'{0}' [TB012],'{1}' [TB013],'{2}' [TB014],'{3}' [TB015],'{4}' [TB016],REASON [TB017],'{5}' [TB018],'{6}' [TB019],'{7}' [TB020]", TB012, null, null, null, null, "N", TA003, null);
+                    sbSql.AppendFormat(" ,'{0}' [TB021],{1} [TB022],'{2}' [TB023],'{3}' [TB024],MB047 [TB025],MB047*CUP [TB026],'{4}' [TB027],'{5}' [TB028],'{6}' [TB029],{7} [TB030]", null, 0, null, "N", null, null, null, 0);
+                    sbSql.AppendFormat(" ,'{0}' [TB031],'{1}' [TB032],'{2}' [TB033],'{3}' [TB034],'{4}' [TB035],'{5}' [TB036],{6} [TB037],{7} [TB038],{8} [TB039],'{9}' [TB040]", 0, null, null, null, null, null, 0, 0, 0, null, null);
+                    sbSql.AppendFormat(" ,'{0}' [TB041],'{1}' [TB042],'{2}' [TB043],'{3}' [TB044],{4} [TB045],'{5}' [TB046],{6} [TB047],'{7}' [TB048],'{8}' [TB049],{9} [TB050]", null, null, null, null, 0, null, 0, null, null, 0);
+                    sbSql.AppendFormat(" ,'{0}' [TB051],'{1}' [TB052],'{2}' [TB053],'{3}' [TB054],{4} [TB055],'{5}' [TB056],'{6}' [TB057],'{7}' [TB058],{8} [TB059],{9} [TB060]", null, "N", null, null, 0, null, null, null, 0, 0);
+                    sbSql.AppendFormat(" ,'{0}' [TB061],{1} [TB062],'{2}' [TB063],{3} [TB064],{4} [TB065],{5} [TB066],{6} [TB067],'{7}' [TB068],'{8}' [TB069],'{9}' [TB070]", null, 0, null, 0, 0, 0, 0, null, null, null);
+                    sbSql.AppendFormat(" ,'{0}' [TB071],'{1}' [TB072],'{2}' [TB073]", null, null, null);
+                    sbSql.AppendFormat(" ,[MKDRINKRECORD].[ID] [UDF01],'{1}' [UDF02],'{2}' [UDF03],'{3}' [UDF04],'{4}' [UDF05],{5} [UDF06],{6} [UDF07],{7} [UDF08],{8} [UDF09],{9} [UDF10]", null, null, null, null, null, 0, 0, 0, 0, 0);
+                    sbSql.AppendFormat(" FROM [TKMK].[dbo].[MKDRINKRECORD],[TK].dbo.[INVMB]");
+                    sbSql.AppendFormat(" WHERE [DRINKID]=MB001");
+                    sbSql.AppendFormat(" AND CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}'  ", dateTimePicker10.Value.ToString("yyyyMMdd"), dateTimePicker11.Value.ToString("yyyyMMdd"));
+                    sbSql.AppendFormat(" AND [DEP]='{0}'", textBox23.Text);
+                    sbSql.AppendFormat(" AND UDF01 NOT IN  (SELECT UDF01 FROM [TK].dbo.INVTB WHERE ISNULL(UDF01,'')<>'')  ");
                     sbSql.AppendFormat(" ");
                     sbSql.AppendFormat(" ");
                     sbSql.AppendFormat(" ");
@@ -2186,7 +2189,48 @@ namespace TKMK
 
         public void UPDATEINVTA()
         {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
 
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+               
+                sbSql.AppendFormat(" UPDATE [TK].dbo.INVTA");
+                sbSql.AppendFormat(" SET TA011=(SELECT SUM(TB007) FROM [TK].dbo.INVTB WHERE TB001='{0}' AND TB002='{1}') , TA012=(SELECT SUM(TB011) FROM [TK].dbo.INVTB WHERE TB001='{2}' AND TB002='{3}')",TA001,TA002,TA001,TA002);
+                sbSql.AppendFormat(" WHERE TA001='{0}' AND TA002='{1}'",TA001,TA002);
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
         }
 
 
@@ -2367,9 +2411,10 @@ namespace TKMK
             TA001 = "A111";
             TA003 = dateTimePicker12.Value.ToString("yyyyMMdd");         
             TA002 = GETMAXTA002(TA001, TA003);
-            //ADDINVTARESLUT(textBox23.Text, TA003, TA001, TA002);
+            TB012 = textBox22.Text;
+            ADDINVTARESLUT(textBox23.Text, TA003, TA001, TA002);
             ADDINVTAB2();
-            //UPDATEINVTA();
+            UPDATEINVTA();
 
             //CHECKINVTARESLUT();
         }

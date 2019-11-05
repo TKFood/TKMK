@@ -157,9 +157,10 @@
             this.label41 = new System.Windows.Forms.Label();
             this.button14 = new System.Windows.Forms.Button();
             this.textBox25 = new System.Windows.Forms.TextBox();
-            this.button15 = new System.Windows.Forms.Button();
             this.textBox31 = new System.Windows.Forms.TextBox();
             this.dateTimePicker12 = new System.Windows.Forms.DateTimePicker();
+            this.label36 = new System.Windows.Forms.Label();
+            this.textBox22 = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -1834,8 +1835,9 @@
             this.tableLayoutPanel9.Controls.Add(this.textBox25, 5, 1);
             this.tableLayoutPanel9.Controls.Add(this.textBox31, 2, 2);
             this.tableLayoutPanel9.Controls.Add(this.dateTimePicker12, 1, 1);
-            this.tableLayoutPanel9.Controls.Add(this.button14, 1, 3);
-            this.tableLayoutPanel9.Controls.Add(this.button15, 2, 3);
+            this.tableLayoutPanel9.Controls.Add(this.button14, 1, 5);
+            this.tableLayoutPanel9.Controls.Add(this.label36, 0, 3);
+            this.tableLayoutPanel9.Controls.Add(this.textBox22, 1, 3);
             this.tableLayoutPanel9.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel9.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel9.Name = "tableLayoutPanel9";
@@ -1893,7 +1895,7 @@
             // button14
             // 
             this.button14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button14.Location = new System.Drawing.Point(61, 123);
+            this.button14.Location = new System.Drawing.Point(61, 203);
             this.button14.Name = "button14";
             this.button14.Size = new System.Drawing.Size(112, 33);
             this.button14.TabIndex = 15;
@@ -1909,16 +1911,6 @@
             this.textBox25.Size = new System.Drawing.Size(114, 27);
             this.textBox25.TabIndex = 50;
             this.textBox25.Text = "21002";
-            // 
-            // button15
-            // 
-            this.button15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button15.Location = new System.Drawing.Point(179, 123);
-            this.button15.Name = "button15";
-            this.button15.Size = new System.Drawing.Size(106, 33);
-            this.button15.TabIndex = 51;
-            this.button15.Text = "刪除記錄";
-            this.button15.UseVisualStyleBackColor = true;
             // 
             // textBox31
             // 
@@ -1938,6 +1930,25 @@
             this.dateTimePicker12.Name = "dateTimePicker12";
             this.dateTimePicker12.Size = new System.Drawing.Size(112, 27);
             this.dateTimePicker12.TabIndex = 53;
+            // 
+            // label36
+            // 
+            this.label36.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label36.AutoSize = true;
+            this.label36.Location = new System.Drawing.Point(3, 124);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(52, 32);
+            this.label36.TabIndex = 54;
+            this.label36.Text = "出庫庫別";
+            // 
+            // textBox22
+            // 
+            this.textBox22.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox22.Location = new System.Drawing.Point(61, 126);
+            this.textBox22.Name = "textBox22";
+            this.textBox22.Size = new System.Drawing.Size(112, 27);
+            this.textBox22.TabIndex = 55;
+            this.textBox22.Text = "21002";
             // 
             // frmMKDRINKRECORD
             // 
@@ -2171,7 +2182,8 @@
         private System.Windows.Forms.TextBox textBox25;
         private System.Windows.Forms.TextBox textBox31;
         private System.Windows.Forms.Button button14;
-        private System.Windows.Forms.Button button15;
         private System.Windows.Forms.DateTimePicker dateTimePicker12;
+        private System.Windows.Forms.Label label36;
+        private System.Windows.Forms.TextBox textBox22;
     }
 }
