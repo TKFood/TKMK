@@ -633,7 +633,7 @@ namespace TKMK
                 sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[MKDRINKRECORD]");
                 sbSql.AppendFormat(@"  WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}'  ", dateTimePicker10.Value.ToString("yyyyMMdd"), dateTimePicker11.Value.ToString("yyyyMMdd"));
                 sbSql.AppendFormat(@"  AND [DEP]='{0}'",textBox23.Text);
-                sbSql.AppendFormat(@"  AND [ID] NOT IN  (SELECT UDF01 FROM [TK].dbo.INVTB WHERE ISNULL(UDF01,'')<>'')  ");
+                sbSql.AppendFormat(@"  AND [ID] NOT IN  (SELECT UDF01 FROM [TK].dbo.INVTB WHERE ISNULL(UDF01,'')<>''  AND TB018 NOT IN ('V'))");
                 sbSql.AppendFormat(@"  ORDER BY CONVERT(NVARCHAR,[DATES],111)");
                 sbSql.AppendFormat(@"   ");
 
