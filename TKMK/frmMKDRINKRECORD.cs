@@ -672,6 +672,62 @@ namespace TKMK
             }
         }
 
+        public void Search6()
+        {
+            ds.Clear();
+
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT [DEP] AS  '部門', CONVERT(NVARCHAR,[DATES],112) AS '日期',[TA001] AS  '費用單別',[TA002] AS  '費用單號'");
+                sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[INVTARESLUT] ");
+                sbSql.AppendFormat(@"  WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}'  ", dateTimePicker10.Value.ToString("yyyyMMdd"), dateTimePicker11.Value.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  AND [DEP]='{0}'", textBox23.Text);
+                sbSql.AppendFormat(@"  ORDER BY CONVERT(NVARCHAR,[DATES],111)");
+                sbSql.AppendFormat(@"  ");
+
+                adapter15 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder15 = new SqlCommandBuilder(adapter15);
+                sqlConn.Open();
+                ds15.Clear();
+                adapter15.Fill(ds15, "ds15");
+                sqlConn.Close();
+
+
+                if (ds15.Tables["ds15"].Rows.Count == 0)
+                {
+                    dataGridView8.DataSource = null;
+                }
+                else
+                {
+                    if (ds15.Tables["ds15"].Rows.Count >= 1)
+                    {
+                        dataGridView8.DataSource = ds15.Tables["ds15"];
+                        dataGridView8.AutoResizeColumns();
+
+
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
             if (dataGridView1.CurrentRow != null)
@@ -1054,9 +1110,9 @@ namespace TKMK
            
         }
 
-        public void ADDINVTARESLUT()
+        public void ADDINVTARESLUT(string DEP,string DATES,string TA001,string TA002)
         {
-            if (!string.IsNullOrEmpty(SID2) && !string.IsNullOrEmpty(TA001) && !string.IsNullOrEmpty(TA002))
+            if (!string.IsNullOrEmpty(TA001) && !string.IsNullOrEmpty(TA002))
             {
                 try
                 {
@@ -1073,8 +1129,8 @@ namespace TKMK
                     //TD002 = "20190930003";
 
                     sbSql.AppendFormat(" INSERT INTO [TKMK].[dbo].[INVTARESLUT]");
-                    sbSql.AppendFormat(" ([SID],[TA001],[TA002])");
-                    sbSql.AppendFormat(" VALUES ('{0}','{1}','{2}')", SID2, TA001, TA002);
+                    sbSql.AppendFormat(" ([DEP],[DATES],[TA001],[TA002])");
+                    sbSql.AppendFormat(" VALUES ('{0}','{1}','{2}','{3}')", DEP, DATES, TA001, TA002);
                     sbSql.AppendFormat(" ");
                     sbSql.AppendFormat(" ");
 
@@ -2027,6 +2083,7 @@ namespace TKMK
                     textBox31.Text = row.Cells["名稱"].Value.ToString();
 
                     Search5();
+                    Search6();
                 }
                 else
                 {
@@ -2151,7 +2208,7 @@ namespace TKMK
             TA001 = "A111";
             TB012 = textBox21.Text.ToString();
             TA002 = GETMAXTA002(TA001,TA003);
-            ADDINVTARESLUT();
+            ADDINVTARESLUT(textBox14.Text,textBox13.Text,TA001,TA002);
             ADDINVTAB();
             UPDATEINVTA();
 
@@ -2185,9 +2242,20 @@ namespace TKMK
             Search4();
         }
 
+        private void button14_Click(object sender, EventArgs e)
+        {
+            TA001 = "A111";
+            TA003 = dateTimePicker12.Value.ToString("yyyyMMdd");         
+            TA002 = GETMAXTA002(TA001, TA003);
+            ADDINVTARESLUT(textBox23.Text, TA003, TA001, TA002);
+            //ADDINVTAB();
+            //UPDATEINVTA();
+
+            //CHECKINVTARESLUT();
+        }
 
         #endregion
 
-      
+
     }
 }
