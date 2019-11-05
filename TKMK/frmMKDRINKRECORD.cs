@@ -51,6 +51,12 @@ namespace TKMK
         SqlCommandBuilder sqlCmdBuilder11 = new SqlCommandBuilder();
         SqlDataAdapter adapter12 = new SqlDataAdapter();
         SqlCommandBuilder sqlCmdBuilder12 = new SqlCommandBuilder();
+        SqlDataAdapter adapter13 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder13 = new SqlCommandBuilder();
+        SqlDataAdapter adapter14 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder14 = new SqlCommandBuilder();
+        SqlDataAdapter adapter15 = new SqlDataAdapter();
+        SqlCommandBuilder sqlCmdBuilder15 = new SqlCommandBuilder();
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
@@ -65,6 +71,9 @@ namespace TKMK
         DataSet ds10 = new DataSet();
         DataSet ds11 = new DataSet();
         DataSet ds12 = new DataSet();
+        DataSet ds13 = new DataSet();
+        DataSet ds14 = new DataSet();
+        DataSet ds15 = new DataSet();
         DataTable dt = new DataTable();
         string tablename = null;
         string EDITID;
@@ -532,6 +541,62 @@ namespace TKMK
                     {
                         dataGridView4.DataSource = ds9.Tables["ds9"];
                         dataGridView4.AutoResizeColumns();
+
+
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
+        public void Search4()
+        {
+            ds.Clear();
+
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+
+                sbSql.AppendFormat(@"  SELECT [DEP] AS '代號',[DEPNAME] AS '名稱'");
+                sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[MKDRINKRECORD]");
+                sbSql.AppendFormat(@"  WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}'",dateTimePicker10.Value.ToString("yyyyMMdd"), dateTimePicker11.Value.ToString("yyyyMMdd"));
+                sbSql.AppendFormat(@"  GROUP BY [DEP],[DEPNAME]");
+                sbSql.AppendFormat(@"  ");
+
+                adapter13 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder13 = new SqlCommandBuilder(adapter13);
+                sqlConn.Open();
+                ds13.Clear();
+                adapter13.Fill(ds13, "ds13");
+                sqlConn.Close();
+
+
+                if (ds13.Tables["ds13"].Rows.Count == 0)
+                {
+                    dataGridView6.DataSource = null;
+                }
+                else
+                {
+                    if (ds13.Tables["ds13"].Rows.Count >= 1)
+                    {
+                        dataGridView6.DataSource = ds13.Tables["ds13"];
+                        dataGridView6.AutoResizeColumns();
 
 
                     }
@@ -2033,6 +2098,10 @@ namespace TKMK
             {
                 //do something else
             }
+        }
+        private void button13_Click(object sender, EventArgs e)
+        {
+            Search4();
         }
 
         #endregion
