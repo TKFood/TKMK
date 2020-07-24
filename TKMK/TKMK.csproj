@@ -78,6 +78,12 @@
     <Compile Include="frmDRINKNAME.Designer.cs">
       <DependentUpon>frmDRINKNAME.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmGROUPSALES.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmGROUPSALES.Designer.cs">
+      <DependentUpon>frmGROUPSALES.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmLogin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -106,6 +112,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmDRINKNAME.resx">
       <DependentUpon>frmDRINKNAME.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmGROUPSALES.resx">
+      <DependentUpon>frmGROUPSALES.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmLogin.resx">
       <DependentUpon>FrmLogin.cs</DependentUpon>
