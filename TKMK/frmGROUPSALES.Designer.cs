@@ -427,6 +427,7 @@
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.ForeColor = System.Drawing.Color.Chocolate;
             this.button1.Location = new System.Drawing.Point(3, 163);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(134, 34);
@@ -437,6 +438,7 @@
             // button2
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.button2.ForeColor = System.Drawing.Color.SeaGreen;
             this.button2.Location = new System.Drawing.Point(283, 43);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(134, 34);
@@ -447,6 +449,7 @@
             // button3
             // 
             this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.button3.ForeColor = System.Drawing.Color.BlueViolet;
             this.button3.Location = new System.Drawing.Point(563, 43);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(134, 34);
@@ -457,6 +460,7 @@
             // button4
             // 
             this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.button4.ForeColor = System.Drawing.Color.Fuchsia;
             this.button4.Location = new System.Drawing.Point(423, 3);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(134, 34);
@@ -467,6 +471,7 @@
             // button5
             // 
             this.button5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.button5.ForeColor = System.Drawing.Color.Blue;
             this.button5.Location = new System.Drawing.Point(563, 3);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(134, 34);
@@ -487,6 +492,7 @@
             // button7
             // 
             this.button7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.button7.ForeColor = System.Drawing.Color.Red;
             this.button7.Location = new System.Drawing.Point(843, 3);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(112, 34);
@@ -497,6 +503,7 @@
             // button8
             // 
             this.button8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.button8.ForeColor = System.Drawing.Color.Blue;
             this.button8.Location = new System.Drawing.Point(961, 3);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(156, 34);
@@ -507,6 +514,7 @@
             // button9
             // 
             this.button9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.button9.ForeColor = System.Drawing.Color.Blue;
             this.button9.Location = new System.Drawing.Point(843, 83);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(112, 34);
@@ -517,6 +525,7 @@
             // button10
             // 
             this.button10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.button10.ForeColor = System.Drawing.Color.Red;
             this.button10.Location = new System.Drawing.Point(843, 123);
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(112, 34);
@@ -545,6 +554,10 @@
             this.dateTimePicker3.Name = "dateTimePicker3";
             this.dateTimePicker3.Size = new System.Drawing.Size(156, 27);
             this.dateTimePicker3.TabIndex = 70;
+            // 
+            // timer1
+            // 
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // frmGROUPSALES
             // 

@@ -41,9 +41,25 @@ namespace TKMK
             comboBox1load();
             comboBox2load();
             comboBox3load();
+
+            dateTimePicker1.Value = DateTime.Now;
+            dateTimePicker2.Value = DateTime.Now;
+            dateTimePicker3.Value = DateTime.Now;
+
+            timer1.Enabled = true;
+            timer1.Interval = 1000 * 1;
+            timer1.Start();
         }
 
         #region FUNCTION
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            dateTimePicker1.Value = DateTime.Now;
+            dateTimePicker2.Value = DateTime.Now;
+            dateTimePicker3.Value = DateTime.Now;
+
+        }
         public void comboBox1load()
         {
             connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
@@ -167,8 +183,9 @@ namespace TKMK
         {
 
         }
+
         #endregion
 
-      
+       
     }
 }
