@@ -245,6 +245,7 @@
             this.textBox121.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox121.Location = new System.Drawing.Point(143, 46);
             this.textBox121.Name = "textBox121";
+            this.textBox121.ReadOnly = true;
             this.textBox121.Size = new System.Drawing.Size(134, 27);
             this.textBox121.TabIndex = 45;
             // 

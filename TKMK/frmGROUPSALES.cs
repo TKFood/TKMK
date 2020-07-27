@@ -33,6 +33,7 @@ namespace TKMK
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
+        int result;
 
         public frmGROUPSALES()
         {
@@ -46,6 +47,8 @@ namespace TKMK
             dateTimePicker2.Value = DateTime.Now;
             dateTimePicker3.Value = DateTime.Now;
 
+            textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
+
             timer1.Enabled = true;
             timer1.Interval = 1000 * 1;
             timer1.Start();
@@ -58,6 +61,8 @@ namespace TKMK
             dateTimePicker1.Value = DateTime.Now;
             dateTimePicker2.Value = DateTime.Now;
             dateTimePicker3.Value = DateTime.Now;
+
+            textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
 
         }
         public void comboBox1load()
@@ -247,9 +252,67 @@ namespace TKMK
                 return serno.ToString();
             }
         }
-        public void ADDGROUPSALES()
+        public void ADDGROUPSALES(
+            string ID, string CREATEDATES, string SERNO, string CARNO, string CARNAME, string CARKIND, string ISEXCHANGE, string EXCHANGEMONEYS, string EXCHANGESALESMMONEYS, string SALESMMONEYS
+            , string SALESMNUMS, string SPECIALMONEYS, string COMMISSIONBASEMONEYS, string COMMISSIONPCTMONEYS, string TOTALCOMMISSIONMONEYS, string CARNUM, string GUSETNUM, string EXCHANNO, string EXCHANACOOUNT, string PURGROUPSTARTDATES
+            , string GROUPSTARTDATES, string PURGROUPENDDATES, string GROUPENDDATES, string STATUS
+            )
         {
 
+
+            try
+            {
+
+                //add ZWAREWHOUSEPURTH
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.AppendFormat(" INSERT INTO [TKMK].[dbo].[GROUPSALES]");
+                sbSql.AppendFormat(" (");
+                sbSql.AppendFormat(" [ID],[CREATEDATES],[SERNO],[CARNO],[CARNAME],[CARKIND],[ISEXCHANGE],[EXCHANGEMONEYS],[EXCHANGESALESMMONEYS],[SALESMMONEYS]");
+                sbSql.AppendFormat(" ,[SALESMNUMS],[SPECIALMONEYS],[COMMISSIONBASEMONEYS],[COMMISSIONPCTMONEYS],[TOTALCOMMISSIONMONEYS],[CARNUM],[GUSETNUM],[EXCHANNO],[EXCHANACOOUNT],[PURGROUPSTARTDATES]");
+                sbSql.AppendFormat(" ,[GROUPSTARTDATES],[PURGROUPENDDATES],[GROUPENDDATES],[STATUS]");
+                sbSql.AppendFormat(" )");
+                sbSql.AppendFormat(" VALUES");
+                sbSql.AppendFormat(" (");
+                sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}',{7},{8},{9},", ID, CREATEDATES, SERNO, CARNO, CARNAME, CARKIND, ISEXCHANGE, EXCHANGEMONEYS, EXCHANGESALESMMONEYS, SALESMMONEYS);
+                sbSql.AppendFormat(" {0},{1},{2},{3},{4},{5},{6},'{7}','{8}','{9}',", SALESMNUMS, SPECIALMONEYS, COMMISSIONBASEMONEYS, COMMISSIONPCTMONEYS, TOTALCOMMISSIONMONEYS, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, PURGROUPSTARTDATES);
+                sbSql.AppendFormat(" '{0}','{1}','{2}','{3}'", GROUPSTARTDATES, PURGROUPENDDATES, GROUPENDDATES, STATUS);
+                sbSql.AppendFormat(" )");
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
         }
         #endregion
 
@@ -260,8 +323,48 @@ namespace TKMK
         }
         private void button5_Click(object sender, EventArgs e)
         {
-            string  SERNO = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
-            ADDGROUPSALES();
+            string ID = Guid.NewGuid().ToString();
+            string CREATEDATES = dateTimePicker1.Value.ToString("yyyyMMdd");
+            string SERNO = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            string CARNO = textBox131.Text.Trim();
+            string CARNAME= textBox141.Text.Trim();
+            string CARKIND = comboBox1.Text.Trim();
+            string ISEXCHANGE = "N";
+
+            if (checkBox1.Checked==true)
+            {
+                 ISEXCHANGE = "Y";
+            }
+           else
+            {
+                 ISEXCHANGE = "N";
+            }
+
+            string EXCHANGEMONEYS = "0";
+            string EXCHANGESALESMMONEYS = "0";
+            string SALESMMONEYS = "0";
+            string SALESMNUMS = "0";
+            string SPECIALMONEYS = "0";
+            string COMMISSIONBASEMONEYS = "0";
+            string COMMISSIONPCTMONEYS = "0";
+            string TOTALCOMMISSIONMONEYS = "0";
+            string CARNUM= textBox142.Text.Trim();
+            string GUSETNUM= textBox143.Text.Trim();
+            string EXCHANNO = textBox144.Text.Trim();
+            string EXCHANACOOUNT= comboBox3.Text.Trim();
+            string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyyMMdd");
+            string GROUPSTARTDATES = dateTimePicker3.Value.ToString("yyyyMMdd");
+            string PURGROUPENDDATES = "1911/1/1";
+            string GROUPENDDATES = "1911/1/1";
+            string STATUS = "預約接團";
+
+            ADDGROUPSALES(
+                 ID, CREATEDATES, SERNO, CARNO, CARNAME, CARKIND, ISEXCHANGE, EXCHANGEMONEYS, EXCHANGESALESMMONEYS, SALESMMONEYS
+                , SALESMNUMS, SPECIALMONEYS, COMMISSIONBASEMONEYS, COMMISSIONPCTMONEYS, TOTALCOMMISSIONMONEYS, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, PURGROUPSTARTDATES
+                , GROUPSTARTDATES, PURGROUPENDDATES, GROUPENDDATES, STATUS
+                );
+
+            textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
         }
 
         #endregion
