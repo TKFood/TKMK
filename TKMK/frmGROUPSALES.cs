@@ -176,6 +176,81 @@ namespace TKMK
 
             }
         }
+
+        public string FINDSERNO(string CREATEDATES)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                StringBuilder sbSql = new StringBuilder();
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+                ds1.Clear();
+
+               
+                sbSql.AppendFormat(@"  SELECT ISNULL(MAX(SERNO),'0') SERNO FROM  [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(NVARCHAR,[CREATEDATES],112)='{0}'",CREATEDATES);
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    if (ds1.Tables["ds1"].Rows.Count >= 1)
+                    {
+                        string SERNO = SETSERNO(ds1.Tables["ds1"].Rows[0]["SERNO"].ToString());
+                        return SERNO;
+
+                    }
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public string SETSERNO(string TEMPSERNO)
+        {
+            if (TEMPSERNO.Equals("0"))
+            {
+                return "1";
+            }
+
+            else
+            {
+                int serno = Convert.ToInt16(TEMPSERNO);
+                serno = serno + 1;               
+                return serno.ToString();
+            }
+        }
+        public void ADDGROUPSALES()
+        {
+
+        }
         #endregion
 
         #region BUTTON
@@ -183,9 +258,14 @@ namespace TKMK
         {
 
         }
+        private void button5_Click(object sender, EventArgs e)
+        {
+            string  SERNO = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            ADDGROUPSALES();
+        }
 
         #endregion
 
-       
+
     }
 }
