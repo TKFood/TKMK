@@ -184,12 +184,12 @@
             this.tableLayoutPanel1.Controls.Add(this.button7, 6, 0);
             this.tableLayoutPanel1.Controls.Add(this.button8, 7, 0);
             this.tableLayoutPanel1.Controls.Add(this.button9, 6, 2);
-            this.tableLayoutPanel1.Controls.Add(this.button10, 6, 3);
             this.tableLayoutPanel1.Controls.Add(this.dateTimePicker2, 7, 2);
             this.tableLayoutPanel1.Controls.Add(this.dateTimePicker3, 7, 3);
             this.tableLayoutPanel1.Controls.Add(this.button2, 2, 1);
             this.tableLayoutPanel1.Controls.Add(this.button3, 4, 1);
             this.tableLayoutPanel1.Controls.Add(this.button4, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.button10, 6, 3);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -507,7 +507,6 @@
             // 
             this.dateTimePicker2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.dateTimePicker2.CustomFormat = "yyyy/MM/dd HH:mm:ss";
-            this.dateTimePicker2.Enabled = false;
             this.dateTimePicker2.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dateTimePicker2.Location = new System.Drawing.Point(961, 86);
             this.dateTimePicker2.Name = "dateTimePicker2";
@@ -518,7 +517,6 @@
             // 
             this.dateTimePicker3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.dateTimePicker3.CustomFormat = "yyyy/MM/dd HH:mm:ss";
-            this.dateTimePicker3.Enabled = false;
             this.dateTimePicker3.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dateTimePicker3.Location = new System.Drawing.Point(961, 126);
             this.dateTimePicker3.Name = "dateTimePicker3";
