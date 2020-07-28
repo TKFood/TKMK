@@ -35,6 +35,8 @@ namespace TKMK
         DataSet ds = new DataSet();
         int result;
 
+        string STATUSCONTROLLER = null;
+       
         public frmGROUPSALES()
         {
             InitializeComponent();
@@ -386,56 +388,81 @@ namespace TKMK
         }
         private void button5_Click(object sender, EventArgs e)
         {
-            string ID = Guid.NewGuid().ToString();
-            string CREATEDATES = dateTimePicker1.Value.ToString("yyyy/MM/dd HH:mm:ss");
-            string SERNO = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
-            string CARNO = textBox131.Text.Trim();
-            string CARNAME= textBox141.Text.Trim();
-            string CARKIND = comboBox1.Text.Trim();
-            string GROUPKIND= comboBox2.Text.Trim();
-            string ISEXCHANGE = "N";
+            STATUSCONTROLLER = "ADD";
 
-            if (checkBox1.Checked==true)
-            {
-                 ISEXCHANGE = "Y";
-            }
-           else
-            {
-                 ISEXCHANGE = "N";
-            }
+            
+           
 
-            string EXCHANGEMONEYS = "0";
-            string EXCHANGETOTALMONEYS = "0";
-            string EXCHANGESALESMMONEYS = "0";
-            string SALESMMONEYS = "0";
-            string SPECIALMNUMS = "0";
-            string SPECIALMONEYS = "0";
-            string COMMISSIONBASEMONEYS = "0";
-            string COMMISSIONPCTMONEYS = "0";
-            string TOTALCOMMISSIONMONEYS = "0";
-            string CARNUM= textBox142.Text.Trim();
-            string GUSETNUM= textBox143.Text.Trim();
-            string EXCHANNO = textBox144.Text.Trim();
-            string EXCHANACOOUNT= comboBox3.Text.Trim();
-            string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
-            string GROUPSTARTDATES = "1911/1/1";
-            string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss"); 
-            string GROUPENDDATES = "1911/1/1";
-            string STATUS = "預約接團";
-
-            ADDGROUPSALES(
-                 ID, CREATEDATES, SERNO, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, EXCHANGEMONEYS, EXCHANGETOTALMONEYS
-                 , EXCHANGESALESMMONEYS, SALESMMONEYS , SPECIALMNUMS, SPECIALMONEYS, COMMISSIONBASEMONEYS, COMMISSIONPCTMONEYS, TOTALCOMMISSIONMONEYS, CARNUM, GUSETNUM, EXCHANNO
-                 , EXCHANACOOUNT, PURGROUPSTARTDATES, GROUPSTARTDATES, PURGROUPENDDATES, GROUPENDDATES, STATUS
-                );
-
-            textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
-
-            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
         }
         private void button4_Click(object sender, EventArgs e)
         {
             SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+        }
+        private void button9_Click(object sender, EventArgs e)
+        {
+            if(STATUSCONTROLLER.Equals("ADD"))
+            {
+                string ID = Guid.NewGuid().ToString();
+                string CREATEDATES = dateTimePicker1.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                string SERNO = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
+                string CARNO = textBox131.Text.Trim();
+                string CARNAME = textBox141.Text.Trim();
+                string CARKIND = comboBox1.Text.Trim();
+                string GROUPKIND = comboBox2.Text.Trim();
+                string ISEXCHANGE = "N";
+
+                if (checkBox1.Checked == true)
+                {
+                    ISEXCHANGE = "Y";
+                }
+                else
+                {
+                    ISEXCHANGE = "N";
+                }
+
+                string EXCHANGEMONEYS = "0";
+                string EXCHANGETOTALMONEYS = "0";
+                string EXCHANGESALESMMONEYS = "0";
+                string SALESMMONEYS = "0";
+                string SPECIALMNUMS = "0";
+                string SPECIALMONEYS = "0";
+                string COMMISSIONBASEMONEYS = "0";
+                string COMMISSIONPCTMONEYS = "0";
+                string TOTALCOMMISSIONMONEYS = "0";
+                string CARNUM = textBox142.Text.Trim();
+                string GUSETNUM = textBox143.Text.Trim();
+                string EXCHANNO = textBox144.Text.Trim();
+                string EXCHANACOOUNT = comboBox3.Text.Trim();
+                string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                string GROUPSTARTDATES = "1911/1/1";
+                string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                string GROUPENDDATES = "1911/1/1";
+                string STATUS = "預約接團";
+
+                if (!string.IsNullOrEmpty(SERNO) && !string.IsNullOrEmpty(CARNO) && !string.IsNullOrEmpty(EXCHANNO) && !string.IsNullOrEmpty(EXCHANACOOUNT))
+                {
+                    ADDGROUPSALES(
+                    ID, CREATEDATES, SERNO, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, EXCHANGEMONEYS, EXCHANGETOTALMONEYS
+                    , EXCHANGESALESMMONEYS, SALESMMONEYS, SPECIALMNUMS, SPECIALMONEYS, COMMISSIONBASEMONEYS, COMMISSIONPCTMONEYS, TOTALCOMMISSIONMONEYS, CARNUM, GUSETNUM, EXCHANNO
+                    , EXCHANACOOUNT, PURGROUPSTARTDATES, GROUPSTARTDATES, PURGROUPENDDATES, GROUPENDDATES, STATUS
+                   );
+
+
+                    textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
+                    SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+                }
+                else
+                {
+                    MessageBox.Show("團務資料少填");
+                }
+            }
+            else
+            {
+
+            }
+
+
+            STATUSCONTROLLER = null;
         }
 
         #endregion
