@@ -35,7 +35,9 @@ namespace TKMK
         DataSet ds = new DataSet();
         int result;
 
+
         string STATUSCONTROLLER = null;
+        string ID = null;
         string ACCOUNT = null;
         string ISEXCHANGE = null;
         string CARKIND = null;
@@ -44,8 +46,12 @@ namespace TKMK
         string STARTTIMES = null;
         int SPECIALMNUMS = 0;
         int SPECIALMONEYS = 0;
+        int EXCHANGEMONEYS = 0;
+        int EXCHANGETOTALMONEYS = 0;
         int EXCHANGESALESMMONEYS = 0;
+        int COMMISSIONBASEMONEYS = 0;
         int SALESMMONEYS = 0;
+        decimal COMMISSIONPCT = 0;
         int GUSETNUM = 0;
 
         public frmGROUPSALES()
@@ -213,7 +219,7 @@ namespace TKMK
                 sbSql.AppendFormat(@"  SELECT ");
                 sbSql.AppendFormat(@"  [SERNO] AS '序號',[CARNO] AS '車號',[CARNAME] AS '車名',[CARKIND] AS '車種',[GROUPKIND]  AS '團類',[ISEXCHANGE] AS '兌換券',[EXCHANGEMONEYS] AS '領券額',[EXCHANGETOTALMONEYS] AS '券總額',[EXCHANGESALESMMONEYS] AS '券消費',[SALESMMONEYS] AS '消費總額'");
                 sbSql.AppendFormat(@"  ,[SPECIALMNUMS] AS '特賣數',[SPECIALMONEYS] AS '特賣獎金',[COMMISSIONBASEMONEYS] AS '茶水費',[COMMISSIONPCTMONEYS] AS '消費獎金',[TOTALCOMMISSIONMONEYS] AS '總獎金',[CARNUM] AS '車數',[GUSETNUM] AS '人數',[EXCHANNO] AS '優惠券名',[EXCHANACOOUNT] AS '優惠券帳號',CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間',CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間'");
-                sbSql.AppendFormat(@"  ,CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間',CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間',[STATUS] AS '狀態',[ID],[CREATEDATES]");
+                sbSql.AppendFormat(@"  ,CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間',CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間',[STATUS] AS '狀態',[COMMISSIONPCT] AS '抽佣比率',[ID],[CREATEDATES]");
                 sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[GROUPSALES]");
                 sbSql.AppendFormat(@"  WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'", CREATEDATES);
                 sbSql.AppendFormat(@"  ORDER BY CONVERT(nvarchar,[CREATEDATES],112),[SERNO]");
@@ -397,6 +403,7 @@ namespace TKMK
                 foreach (DataGridViewRow dr in this.dataGridView1.Rows)
                 {
                     //清空值
+                    ID = null;
                     STATUSCONTROLLER = null;
                     ACCOUNT = null;
                     ISEXCHANGE = null;
@@ -406,10 +413,16 @@ namespace TKMK
                     STARTTIMES = null;
                     SPECIALMNUMS = 0;
                     SPECIALMONEYS = 0;
+                    EXCHANGEMONEYS = 0;
+                    EXCHANGETOTALMONEYS = 0;
                     EXCHANGESALESMMONEYS = 0;
+                    COMMISSIONBASEMONEYS = 0;
+                    COMMISSIONPCT = 0;
                     SALESMMONEYS = 0;
                     GUSETNUM = 0;
 
+                    //依每筆資料找出key值
+                    ID = dr.Cells["ID"].Value.ToString().Trim();
                     ACCOUNT = dr.Cells["優惠券帳號"].Value.ToString().Trim();
                     ISEXCHANGE= dr.Cells["兌換券"].Value.ToString().Trim();
                     CARKIND= dr.Cells["車種"].Value.ToString().Trim();
@@ -419,12 +432,31 @@ namespace TKMK
 
                     //DateTime dt1 = DateTime.Now;
 
-                    int EXCHANGEMONEYS = FINDEXCHANGEMONEYS(CARKIND);
+                    //找出各項金額                   
                     SPECIALMNUMS = FINDSPECIALMNUMS(ACCOUNT, STARTDATES, STARTTIMES);
                     SPECIALMONEYS = FINDSPECIALMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
                     SALESMMONEYS = FINDSALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
-                    EXCHANGESALESMMONEYS = FINDEXCHANGESALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
+                    COMMISSIONPCT = FINDCOMMISSIONPCT(CARKIND, SALESMMONEYS);
+                    GUSETNUM = FINDGUSETNUM(ACCOUNT, STARTDATES, STARTTIMES);
 
+                    //金額條件判斷
+                    if (ISEXCHANGE.Equals("Y"))
+                    {
+                        int CARNUM = Convert.ToInt32(dr.Cells["車數"].Value.ToString().Trim());
+                        EXCHANGEMONEYS = FINDEXCHANGEMONEYS();
+                        EXCHANGETOTALMONEYS = EXCHANGEMONEYS * CARNUM;
+                        EXCHANGESALESMMONEYS = FINDEXCHANGESALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
+                        COMMISSIONBASEMONEYS = 0;
+                    }
+                    else if(ISEXCHANGE.Equals("N"))
+                    {
+                        EXCHANGEMONEYS = 0;
+                        EXCHANGETOTALMONEYS = 0;
+                        EXCHANGESALESMMONEYS = 0;
+                        COMMISSIONBASEMONEYS = FINDBASEMONEYS(CARKIND);
+                    }
+
+                    UPDATEGROUPPRODUCT(ID, EXCHANGEMONEYS.ToString(), EXCHANGETOTALMONEYS.ToString(), EXCHANGESALESMMONEYS.ToString(), SALESMMONEYS.ToString(), SPECIALMNUMS.ToString(), SPECIALMONEYS.ToString(), COMMISSIONBASEMONEYS.ToString(), COMMISSIONPCT.ToString(), (COMMISSIONPCT* SALESMMONEYS).ToString(), (SPECIALMONEYS+ COMMISSIONBASEMONEYS+ (COMMISSIONPCT * SALESMMONEYS)).ToString() , GUSETNUM.ToString());
                     //DateTime dt2 = DateTime.Now;
 
                     //MessageBox.Show(dt1.ToString("HH:mm:ss")+"-"+ dt2.ToString("HH:mm:ss"));
@@ -434,7 +466,7 @@ namespace TKMK
 
         }
 
-        public int FINDEXCHANGEMONEYS(string CARKIND)
+        public int FINDEXCHANGEMONEYS()
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -448,7 +480,7 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
                
-                sbSql.AppendFormat(@"  SELECT  [ID],[NAME],[BASEMONEYS]  FROM [TKMK].[dbo].[GROUPBASE] WHERE [NAME]='{0}'", CARKIND);
+                sbSql.AppendFormat(@"  SELECT [EXCHANGEMONEYS]  FROM [TKMK].[dbo].[GROUPEXCHANGEMONEYS]");
                 sbSql.AppendFormat(@"  ");
                 sbSql.AppendFormat(@"  ");
 
@@ -462,7 +494,7 @@ namespace TKMK
 
                 if (ds1.Tables["ds1"].Rows.Count >= 1)
                 {
-                    return Convert.ToInt32(ds1.Tables["ds1"].Rows[0]["BASEMONEYS"].ToString());
+                    return Convert.ToInt32(ds1.Tables["ds1"].Rows[0]["EXCHANGEMONEYS"].ToString());
 
                 }
                 else
@@ -688,6 +720,204 @@ namespace TKMK
             }
         }
 
+        public int FINDBASEMONEYS(string NAME)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT [BASEMONEYS] FROM [TKMK].[dbo].[GROUPBASE] WHERE [NAME]='大巴'");
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return Convert.ToInt32(ds1.Tables["ds1"].Rows[0]["BASEMONEYS"].ToString());
+
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
+            catch
+            {
+                return 0;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public decimal FINDCOMMISSIONPCT(string CARKIND,int MONEYS)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+               
+                sbSql.AppendFormat(@"  SELECT [ID],[PCTMONEYS],[NAME],[PCT]");
+                sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[GROUPPCT]");
+                sbSql.AppendFormat(@"  WHERE [NAME]='{0}' AND ({1}-[PCTMONEYS])>=0", CARKIND, MONEYS);
+                sbSql.AppendFormat(@"  ORDER BY ({0}-[PCTMONEYS])", MONEYS);
+                sbSql.AppendFormat(@"  ");
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return Convert.ToDecimal(ds1.Tables["ds1"].Rows[0]["PCT"].ToString());
+
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
+            catch
+            {
+                return 0;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public int FINDGUSETNUM(string TA009, string TA001, string TA005)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT COUNT(TA009) AS 'GUSETNUM'");
+                sbSql.AppendFormat(@"  FROM [TK].dbo.POSTA WITH (NOLOCK)");
+                sbSql.AppendFormat(@"  WHERE TA009='{0}'", TA009);
+                sbSql.AppendFormat(@"  AND TA001='{0}'", TA001);
+                sbSql.AppendFormat(@"  AND TA005>='{0}'", TA005);
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return Convert.ToInt32(ds1.Tables["ds1"].Rows[0]["GUSETNUM"].ToString());
+
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
+            catch
+            {
+                return 0;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public void UPDATEGROUPPRODUCT(string ID, string EXCHANGEMONEYS, string EXCHANGETOTALMONEYS, string EXCHANGESALESMMONEYS, string SALESMMONEYS, string SPECIALMNUMS, string SPECIALMONEYS, string COMMISSIONBASEMONEYS,string COMMISSIONPCT, string COMMISSIONPCTMONEYS, string TOTALCOMMISSIONMONEYS,string GUSETNUM)
+        {
+            try
+            {
+
+                //add ZWAREWHOUSEPURTH
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+
+                sbSql.AppendFormat(" UPDATE [TKMK].[dbo].[GROUPSALES]");
+                sbSql.AppendFormat(" SET [EXCHANGEMONEYS]={0},[EXCHANGETOTALMONEYS]={1},[EXCHANGESALESMMONEYS]={2},[SALESMMONEYS]={3},[SPECIALMNUMS]={4},[SPECIALMONEYS]={5},[COMMISSIONBASEMONEYS]={6},[COMMISSIONPCTMONEYS]={7},[COMMISSIONPCT]={8},[TOTALCOMMISSIONMONEYS]={9},[GUSETNUM]='{10}'", EXCHANGEMONEYS, EXCHANGETOTALMONEYS, EXCHANGESALESMMONEYS, SALESMMONEYS, SPECIALMNUMS, SPECIALMONEYS, COMMISSIONBASEMONEYS, COMMISSIONPCT, COMMISSIONPCTMONEYS, TOTALCOMMISSIONMONEYS, GUSETNUM);
+                sbSql.AppendFormat(" WHERE [ID]='{0}'", ID);
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
         #endregion
 
         #region BUTTON
