@@ -52,6 +52,8 @@ namespace TKMK
         int COMMISSIONBASEMONEYS = 0;
         int SALESMMONEYS = 0;
         decimal COMMISSIONPCT = 0;
+        int COMMISSIONPCTMONEYS = 0;
+        int TOTALCOMMISSIONMONEYS = 0;
         int GUSETNUM = 0;
 
         public frmGROUPSALES()
@@ -77,12 +79,12 @@ namespace TKMK
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            dateTimePicker1.Value = DateTime.Now;
-            dateTimePicker2.Value = DateTime.Now;
-            dateTimePicker3.Value = DateTime.Now;
+            //dateTimePicker1.Value = DateTime.Now;
+            //dateTimePicker2.Value = DateTime.Now;
+            //dateTimePicker3.Value = DateTime.Now;
 
-            textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
-            comboBox3load();
+            //textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            //comboBox3load();
 
         }
         public void comboBox1load()
@@ -218,7 +220,7 @@ namespace TKMK
 
                 sbSql.AppendFormat(@"  SELECT ");
                 sbSql.AppendFormat(@"  [SERNO] AS '序號',[CARNO] AS '車號',[CARNAME] AS '車名',[CARKIND] AS '車種',[GROUPKIND]  AS '團類',[ISEXCHANGE] AS '兌換券',[EXCHANGEMONEYS] AS '領券額',[EXCHANGETOTALMONEYS] AS '券總額',[EXCHANGESALESMMONEYS] AS '券消費',[SALESMMONEYS] AS '消費總額'");
-                sbSql.AppendFormat(@"  ,[SPECIALMNUMS] AS '特賣數',[SPECIALMONEYS] AS '特賣獎金',[COMMISSIONBASEMONEYS] AS '茶水費',[COMMISSIONPCTMONEYS] AS '消費獎金',[TOTALCOMMISSIONMONEYS] AS '總獎金',[CARNUM] AS '車數',[GUSETNUM] AS '人數',[EXCHANNO] AS '優惠券名',[EXCHANACOOUNT] AS '優惠券帳號',CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間',CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間'");
+                sbSql.AppendFormat(@"  ,[SPECIALMNUMS] AS '特賣數',[SPECIALMONEYS] AS '特賣獎金',[COMMISSIONBASEMONEYS] AS '茶水費',[COMMISSIONPCTMONEYS] AS '消費獎金',[TOTALCOMMISSIONMONEYS] AS '總獎金',[CARNUM] AS '車數',[GUSETNUM] AS '來客數',[EXCHANNO] AS '優惠券名',[EXCHANACOOUNT] AS '優惠券帳號',CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間',CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間'");
                 sbSql.AppendFormat(@"  ,CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間',CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間',[STATUS] AS '狀態',[COMMISSIONPCT] AS '抽佣比率',[ID],[CREATEDATES]");
                 sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[GROUPSALES]");
                 sbSql.AppendFormat(@"  WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'", CREATEDATES);
@@ -418,8 +420,10 @@ namespace TKMK
                     EXCHANGESALESMMONEYS = 0;
                     COMMISSIONBASEMONEYS = 0;
                     COMMISSIONPCT = 0;
+                    COMMISSIONPCTMONEYS = 0;
                     SALESMMONEYS = 0;
                     GUSETNUM = 0;
+                    TOTALCOMMISSIONMONEYS = 0;
 
                     //依每筆資料找出key值
                     ID = dr.Cells["ID"].Value.ToString().Trim();
@@ -436,7 +440,9 @@ namespace TKMK
                     SPECIALMNUMS = FINDSPECIALMNUMS(ACCOUNT, STARTDATES, STARTTIMES);
                     SPECIALMONEYS = FINDSPECIALMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
                     SALESMMONEYS = FINDSALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
+
                     COMMISSIONPCT = FINDCOMMISSIONPCT(CARKIND, SALESMMONEYS);
+                    COMMISSIONPCTMONEYS = Convert.ToInt32(COMMISSIONPCT * SALESMMONEYS);
                     GUSETNUM = FINDGUSETNUM(ACCOUNT, STARTDATES, STARTTIMES);
 
                     //金額條件判斷
@@ -456,7 +462,9 @@ namespace TKMK
                         COMMISSIONBASEMONEYS = FINDBASEMONEYS(CARKIND);
                     }
 
-                    UPDATEGROUPPRODUCT(ID, EXCHANGEMONEYS.ToString(), EXCHANGETOTALMONEYS.ToString(), EXCHANGESALESMMONEYS.ToString(), SALESMMONEYS.ToString(), SPECIALMNUMS.ToString(), SPECIALMONEYS.ToString(), COMMISSIONBASEMONEYS.ToString(), COMMISSIONPCT.ToString(), (COMMISSIONPCT* SALESMMONEYS).ToString(), (SPECIALMONEYS+ COMMISSIONBASEMONEYS+ (COMMISSIONPCT * SALESMMONEYS)).ToString() , GUSETNUM.ToString());
+                    TOTALCOMMISSIONMONEYS = Convert.ToInt32(SPECIALMONEYS + COMMISSIONBASEMONEYS + (COMMISSIONPCT * (SALESMMONEYS - SPECIALMONEYS)));
+
+                    UPDATEGROUPPRODUCT(ID, EXCHANGEMONEYS.ToString(), EXCHANGETOTALMONEYS.ToString(), EXCHANGESALESMMONEYS.ToString(), SALESMMONEYS.ToString(), SPECIALMNUMS.ToString(), SPECIALMONEYS.ToString(), COMMISSIONBASEMONEYS.ToString(), COMMISSIONPCT.ToString(), COMMISSIONPCTMONEYS.ToString(), TOTALCOMMISSIONMONEYS.ToString() , GUSETNUM.ToString());
                     //DateTime dt2 = DateTime.Now;
 
                     //MessageBox.Show(dt1.ToString("HH:mm:ss")+"-"+ dt2.ToString("HH:mm:ss"));
@@ -480,7 +488,7 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
                
-                sbSql.AppendFormat(@"  SELECT [EXCHANGEMONEYS]  FROM [TKMK].[dbo].[GROUPEXCHANGEMONEYS]");
+                sbSql.AppendFormat(@"  SELECT  CONVERT(INT,[EXCHANGEMONEYS],0)  FROM [TKMK].[dbo].[GROUPEXCHANGEMONEYS]");
                 sbSql.AppendFormat(@"  ");
                 sbSql.AppendFormat(@"  ");
 
@@ -527,7 +535,7 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  SELECT ISNULL(SUM(TB019),0) AS 'SPECIALMNUMS'");
+                sbSql.AppendFormat(@"  SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) AS 'SPECIALMNUMS'");
                 sbSql.AppendFormat(@"  FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)");
                 sbSql.AppendFormat(@"  WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006");
                 sbSql.AppendFormat(@"  AND TB010 IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCT])");
@@ -579,7 +587,7 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  SELECT ISNULL(SUM(TB033),0) AS 'SPECIALMONEYS'");
+                sbSql.AppendFormat(@"  SELECT  CONVERT(INT,ISNULL(SUM(TB033),0),0) AS 'SPECIALMONEYS'");
                 sbSql.AppendFormat(@"  FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)");
                 sbSql.AppendFormat(@"  WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006");
                 sbSql.AppendFormat(@"  AND TB010 IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCT])");
@@ -631,10 +639,10 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  SELECT ISNULL(SUM(TB033),0) AS 'SALESMMONEYS'");
+                sbSql.AppendFormat(@"  SELECT CONVERT(INT,ISNULL(SUM(TB033),0),0) AS 'SALESMMONEYS'");
                 sbSql.AppendFormat(@"  FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)");
                 sbSql.AppendFormat(@"  WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006");                
-                sbSql.AppendFormat(@"  WHERE TA009='{0}'", TA009);
+                sbSql.AppendFormat(@"  AND TA009='{0}'", TA009);
                 sbSql.AppendFormat(@"  AND TA001='{0}'", TA001);
                 sbSql.AppendFormat(@"  AND TA005>='{0}'", TA005);
                 sbSql.AppendFormat(@"  ");
@@ -734,7 +742,7 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  SELECT [BASEMONEYS] FROM [TKMK].[dbo].[GROUPBASE] WHERE [NAME]='大巴'");
+                sbSql.AppendFormat(@"  SELECT CONVERT(INT,[BASEMONEYS],0) AS 'BASEMONEYS' FROM [TKMK].[dbo].[GROUPBASE] WHERE [NAME]='大巴'");
                 sbSql.AppendFormat(@"  ");
                 sbSql.AppendFormat(@"  ");
 
@@ -885,7 +893,7 @@ namespace TKMK
 
 
                 sbSql.AppendFormat(" UPDATE [TKMK].[dbo].[GROUPSALES]");
-                sbSql.AppendFormat(" SET [EXCHANGEMONEYS]={0},[EXCHANGETOTALMONEYS]={1},[EXCHANGESALESMMONEYS]={2},[SALESMMONEYS]={3},[SPECIALMNUMS]={4},[SPECIALMONEYS]={5},[COMMISSIONBASEMONEYS]={6},[COMMISSIONPCTMONEYS]={7},[COMMISSIONPCT]={8},[TOTALCOMMISSIONMONEYS]={9},[GUSETNUM]='{10}'", EXCHANGEMONEYS, EXCHANGETOTALMONEYS, EXCHANGESALESMMONEYS, SALESMMONEYS, SPECIALMNUMS, SPECIALMONEYS, COMMISSIONBASEMONEYS, COMMISSIONPCT, COMMISSIONPCTMONEYS, TOTALCOMMISSIONMONEYS, GUSETNUM);
+                sbSql.AppendFormat(" SET [EXCHANGEMONEYS]={0},[EXCHANGETOTALMONEYS]={1},[EXCHANGESALESMMONEYS]={2},[SALESMMONEYS]={3},[SPECIALMNUMS]={4},[SPECIALMONEYS]={5},[COMMISSIONBASEMONEYS]={6},[COMMISSIONPCT]={7},[COMMISSIONPCTMONEYS]={8},[TOTALCOMMISSIONMONEYS]={9},[GUSETNUM]={10}", EXCHANGEMONEYS, EXCHANGETOTALMONEYS, EXCHANGESALESMMONEYS, SALESMMONEYS, SPECIALMNUMS, SPECIALMONEYS, COMMISSIONBASEMONEYS, COMMISSIONPCT, COMMISSIONPCTMONEYS, TOTALCOMMISSIONMONEYS, GUSETNUM);
                 sbSql.AppendFormat(" WHERE [ID]='{0}'", ID);
                 sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" ");
@@ -938,6 +946,8 @@ namespace TKMK
             SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
 
             SETMONEYS();
+
+            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
         }
         private void button9_Click(object sender, EventArgs e)
         {
