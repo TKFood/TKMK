@@ -52,7 +52,7 @@ namespace TKMK
             textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
 
             timer1.Enabled = true;
-            timer1.Interval = 1000 * 1;
+            timer1.Interval = 1000 * 10;
             timer1.Start();
         }
 
@@ -65,6 +65,7 @@ namespace TKMK
             dateTimePicker3.Value = DateTime.Now;
 
             textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            comboBox3load();
 
         }
         public void comboBox1load()
@@ -112,7 +113,7 @@ namespace TKMK
             connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
             sqlConn = new SqlConnection(connectionString);
             StringBuilder Sequel = new StringBuilder();
-            Sequel.AppendFormat(@"SELECT MI001,MI002 FROM [TK].dbo.WSCMI WHERE MI001 LIKE '68%' ORDER BY MI001 ");
+            Sequel.AppendFormat(@"SELECT MI001,MI002 FROM [TK].dbo.WSCMI WHERE MI001 LIKE '68%'  AND MI001 NOT IN (SELECT [EXCHANACOOUNT] FROM [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)=CONVERT(nvarchar,GETDATE(),112)) ORDER BY MI001 ");
             SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
             DataTable dt = new DataTable();
             sqlConn.Open();
@@ -378,6 +379,17 @@ namespace TKMK
             }
         }
 
+        public void SETMONEYS()
+        {
+            if (dataGridView1.Rows.Count > 0)
+            {
+                foreach (DataGridViewRow dr in this.dataGridView1.Rows)
+                {
+                    string ACCOUNT= dr.Cells["品號"].Value.ToString().Trim();
+                }
+            }
+
+        }
 
         #endregion
 
@@ -397,6 +409,8 @@ namespace TKMK
         private void button4_Click(object sender, EventArgs e)
         {
             SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+
+            SETMONEYS();
         }
         private void button9_Click(object sender, EventArgs e)
         {
@@ -434,7 +448,7 @@ namespace TKMK
                 string EXCHANNO = textBox144.Text.Trim();
                 string EXCHANACOOUNT = comboBox3.Text.Trim();
                 string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
-                string GROUPSTARTDATES = "1911/1/1";
+                string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                 string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
                 string GROUPENDDATES = "1911/1/1";
                 string STATUS = "預約接團";
