@@ -36,7 +36,18 @@ namespace TKMK
         int result;
 
         string STATUSCONTROLLER = null;
-       
+        string ACCOUNT = null;
+        string ISEXCHANGE = null;
+        string CARKIND = null;
+        string GROUPSTARTDATES = null;
+        string STARTDATES = null;
+        string STARTTIMES = null;
+        int SPECIALMNUMS = 0;
+        int SPECIALMONEYS = 0;
+        int EXCHANGESALESMMONEYS = 0;
+        int SALESMMONEYS = 0;
+        int GUSETNUM = 0;
+
         public frmGROUPSALES()
         {
             InitializeComponent();
@@ -113,7 +124,7 @@ namespace TKMK
             connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
             sqlConn = new SqlConnection(connectionString);
             StringBuilder Sequel = new StringBuilder();
-            Sequel.AppendFormat(@"SELECT MI001,MI002 FROM [TK].dbo.WSCMI WHERE MI001 LIKE '68%'  AND MI001 NOT IN (SELECT [EXCHANACOOUNT] FROM [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)=CONVERT(nvarchar,GETDATE(),112)) ORDER BY MI001 ");
+            Sequel.AppendFormat(@"SELECT MI001,MI002 FROM [TK].dbo.WSCMI WHERE MI001 LIKE '68%'  AND MI001 NOT IN (SELECT [EXCHANACOOUNT] FROM [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)=CONVERT(nvarchar,GETDATE(),112)  AND [STATUS]='預約接團' ) ORDER BY MI001 ");
             SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
             DataTable dt = new DataTable();
             sqlConn.Open();
@@ -385,10 +396,296 @@ namespace TKMK
             {
                 foreach (DataGridViewRow dr in this.dataGridView1.Rows)
                 {
-                    string ACCOUNT= dr.Cells["品號"].Value.ToString().Trim();
+                    //清空值
+                    STATUSCONTROLLER = null;
+                    ACCOUNT = null;
+                    ISEXCHANGE = null;
+                    CARKIND = null;
+                    GROUPSTARTDATES = null;
+                    STARTDATES = null;
+                    STARTTIMES = null;
+                    SPECIALMNUMS = 0;
+                    SPECIALMONEYS = 0;
+                    EXCHANGESALESMMONEYS = 0;
+                    SALESMMONEYS = 0;
+                    GUSETNUM = 0;
+
+                    ACCOUNT = dr.Cells["優惠券帳號"].Value.ToString().Trim();
+                    ISEXCHANGE= dr.Cells["兌換券"].Value.ToString().Trim();
+                    CARKIND= dr.Cells["車種"].Value.ToString().Trim();
+                    GROUPSTARTDATES= dr.Cells["實際到達時間"].Value.ToString().Trim();
+                    STARTDATES = GROUPSTARTDATES.Substring(0,10).Replace("-","").ToString();
+                    STARTTIMES = GROUPSTARTDATES.Substring(11,8);
+
+                    //DateTime dt1 = DateTime.Now;
+
+                    int EXCHANGEMONEYS = FINDEXCHANGEMONEYS(CARKIND);
+                    SPECIALMNUMS = FINDSPECIALMNUMS(ACCOUNT, STARTDATES, STARTTIMES);
+                    SPECIALMONEYS = FINDSPECIALMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
+                    SALESMMONEYS = FINDSALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
+                    EXCHANGESALESMMONEYS = FINDEXCHANGESALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
+
+                    //DateTime dt2 = DateTime.Now;
+
+                    //MessageBox.Show(dt1.ToString("HH:mm:ss")+"-"+ dt2.ToString("HH:mm:ss"));
+
                 }
             }
 
+        }
+
+        public int FINDEXCHANGEMONEYS(string CARKIND)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+               
+                sbSql.AppendFormat(@"  SELECT  [ID],[NAME],[BASEMONEYS]  FROM [TKMK].[dbo].[GROUPBASE] WHERE [NAME]='{0}'", CARKIND);
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return Convert.ToInt32(ds1.Tables["ds1"].Rows[0]["BASEMONEYS"].ToString());
+
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
+            catch
+            {
+                return 0;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public int FINDSPECIALMNUMS(string TA009,string TA001, string TA005)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT ISNULL(SUM(TB019),0) AS 'SPECIALMNUMS'");
+                sbSql.AppendFormat(@"  FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)");
+                sbSql.AppendFormat(@"  WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006");
+                sbSql.AppendFormat(@"  AND TB010 IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCT])");
+                sbSql.AppendFormat(@"  AND TA009='{0}'", TA009);
+                sbSql.AppendFormat(@"  AND TA001='{0}'", TA001);
+                sbSql.AppendFormat(@"  AND TA005>='{0}'", TA005);
+                sbSql.AppendFormat(@"  ");
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return Convert.ToInt32(ds1.Tables["ds1"].Rows[0]["SPECIALMNUMS"].ToString());
+
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
+            catch
+            {
+                return 0;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public int FINDSPECIALMONEYS(string TA009, string TA001, string TA005)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT ISNULL(SUM(TB033),0) AS 'SPECIALMONEYS'");
+                sbSql.AppendFormat(@"  FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)");
+                sbSql.AppendFormat(@"  WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006");
+                sbSql.AppendFormat(@"  AND TB010 IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCT])");
+                sbSql.AppendFormat(@"  AND TA009='{0}'", TA009);
+                sbSql.AppendFormat(@"  AND TA001='{0}'", TA001);
+                sbSql.AppendFormat(@"  AND TA005>='{0}'", TA005);
+                sbSql.AppendFormat(@"  ");
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return Convert.ToInt32(ds1.Tables["ds1"].Rows[0]["SPECIALMONEYS"].ToString());
+
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
+            catch
+            {
+                return 0;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public int FINDSALESMMONEYS(string TA009, string TA001, string TA005)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT ISNULL(SUM(TB033),0) AS 'SALESMMONEYS'");
+                sbSql.AppendFormat(@"  FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)");
+                sbSql.AppendFormat(@"  WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006");                
+                sbSql.AppendFormat(@"  WHERE TA009='{0}'", TA009);
+                sbSql.AppendFormat(@"  AND TA001='{0}'", TA001);
+                sbSql.AppendFormat(@"  AND TA005>='{0}'", TA005);
+                sbSql.AppendFormat(@"  ");
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return Convert.ToInt32(ds1.Tables["ds1"].Rows[0]["SALESMMONEYS"].ToString());
+
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
+            catch
+            {
+                return 0;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public int FINDEXCHANGESALESMMONEYS(string TA009, string TA001, string TA005)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT CONVERT(INT,ISNULL(SUM(TA017),0)) AS EXCHANGESALESMMONEYS");
+                sbSql.AppendFormat(@"  FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTC WITH (NOLOCK)");
+                sbSql.AppendFormat(@"  WHERE TA001=TC001 AND TA002=TC002 AND TA003=TC003  AND TA006=TC006");
+                sbSql.AppendFormat(@"  AND TC008='0009'");
+                sbSql.AppendFormat(@"  AND TA009='{0}'", TA009);
+                sbSql.AppendFormat(@"  AND TA001='{0}'", TA001);
+                sbSql.AppendFormat(@"  AND TA005>='{0}'", TA005);
+                sbSql.AppendFormat(@"  ");
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return Convert.ToInt32(ds1.Tables["ds1"].Rows[0]["EXCHANGESALESMMONEYS"].ToString());
+
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
+            catch
+            {
+                return 0;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
         }
 
         #endregion
