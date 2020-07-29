@@ -439,11 +439,7 @@ namespace TKMK
                     //找出各項金額                   
                     SPECIALMNUMS = FINDSPECIALMNUMS(ACCOUNT, STARTDATES, STARTTIMES);
                     SPECIALMONEYS = FINDSPECIALMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
-                    SALESMMONEYS = FINDSALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
-
-                    COMMISSIONPCT = FINDCOMMISSIONPCT(CARKIND, SALESMMONEYS);
-                    COMMISSIONPCTMONEYS = Convert.ToInt32(COMMISSIONPCT * SALESMMONEYS);
-                    GUSETNUM = FINDGUSETNUM(ACCOUNT, STARTDATES, STARTTIMES);
+                    SALESMMONEYS = FINDSALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);                  
 
                     //金額條件判斷
                     if (ISEXCHANGE.Equals("Y"))
@@ -453,6 +449,9 @@ namespace TKMK
                         EXCHANGETOTALMONEYS = EXCHANGEMONEYS * CARNUM;
                         EXCHANGESALESMMONEYS = FINDEXCHANGESALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
                         COMMISSIONBASEMONEYS = 0;
+
+                        SALESMMONEYS = SALESMMONEYS - EXCHANGETOTALMONEYS;
+
                     }
                     else if(ISEXCHANGE.Equals("N"))
                     {
@@ -460,8 +459,12 @@ namespace TKMK
                         EXCHANGETOTALMONEYS = 0;
                         EXCHANGESALESMMONEYS = 0;
                         COMMISSIONBASEMONEYS = FINDBASEMONEYS(CARKIND);
+                        
                     }
 
+                    COMMISSIONPCT = FINDCOMMISSIONPCT(CARKIND, SALESMMONEYS);
+                    COMMISSIONPCTMONEYS = Convert.ToInt32(COMMISSIONPCT * SALESMMONEYS);
+                    GUSETNUM = FINDGUSETNUM(ACCOUNT, STARTDATES, STARTTIMES);
                     TOTALCOMMISSIONMONEYS = Convert.ToInt32(SPECIALMONEYS + COMMISSIONBASEMONEYS + (COMMISSIONPCT * (SALESMMONEYS - SPECIALMONEYS)));
 
                     UPDATEGROUPPRODUCT(ID, EXCHANGEMONEYS.ToString(), EXCHANGETOTALMONEYS.ToString(), EXCHANGESALESMMONEYS.ToString(), SALESMMONEYS.ToString(), SPECIALMNUMS.ToString(), SPECIALMONEYS.ToString(), COMMISSIONBASEMONEYS.ToString(), COMMISSIONPCT.ToString(), COMMISSIONPCTMONEYS.ToString(), TOTALCOMMISSIONMONEYS.ToString() , GUSETNUM.ToString());
@@ -488,7 +491,7 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
                
-                sbSql.AppendFormat(@"  SELECT  CONVERT(INT,[EXCHANGEMONEYS],0)  FROM [TKMK].[dbo].[GROUPEXCHANGEMONEYS]");
+                sbSql.AppendFormat(@"  SELECT  CONVERT(INT,[EXCHANGEMONEYS],0) AS EXCHANGEMONEYS   FROM [TKMK].[dbo].[GROUPEXCHANGEMONEYS]");
                 sbSql.AppendFormat(@"  ");
                 sbSql.AppendFormat(@"  ");
 
