@@ -132,7 +132,7 @@ namespace TKMK
             connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
             sqlConn = new SqlConnection(connectionString);
             StringBuilder Sequel = new StringBuilder();
-            Sequel.AppendFormat(@"SELECT MI001,MI002 FROM [TK].dbo.WSCMI WHERE MI001 LIKE '68%'  AND MI001 NOT IN (SELECT [EXCHANACOOUNT] FROM [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)=CONVERT(nvarchar,GETDATE(),112)  AND [STATUS]='預約接團' ) ORDER BY MI001 ");
+            Sequel.AppendFormat(@"SELECT MI001,MI002 FROM [TK].dbo.WSCMI WHERE MI001 LIKE '68%'  AND MI001 NOT IN (SELECT [EXCHANACOOUNT] FROM [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'  AND [STATUS]='預約接團' ) ORDER BY MI001 ",dateTimePicker1.Value.ToString("yyyyMMdd"));
             SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
             DataTable dt = new DataTable();
             sqlConn.Open();
@@ -280,6 +280,7 @@ namespace TKMK
                     textBox141.Text = row.Cells["車名"].Value.ToString();
                     textBox142.Text = row.Cells["車數"].Value.ToString();
                     textBox143.Text = row.Cells["來客數"].Value.ToString();
+                    textBox144.Text = row.Cells["優惠券名"].Value.ToString();
 
                     comboBox1.Text = row.Cells["車種"].Value.ToString();
                     comboBox2.Text = row.Cells["團類"].Value.ToString();
@@ -429,7 +430,7 @@ namespace TKMK
             }
         }
 
-        public void UPDATEGROUPSALES(string ID, string CARNO, string CARNAME, string CARKIND, string GROUPKIND, string ISEXCHANGE, string CARNUM, string GUSETNUM, string EXCHANNO, string EXCHANACOOUNT, string PURGROUPSTARTDATES, string GROUPSTARTDATES)
+        public void UPDATEGROUPSALES(string ID, string CARNO, string CARNAME, string CARKIND, string GROUPKIND, string ISEXCHANGE, string CARNUM, string GUSETNUM, string EXCHANNO, string EXCHANACOOUNT)
         {
             try
             {
@@ -443,7 +444,7 @@ namespace TKMK
 
                 sbSql.AppendFormat(" UPDATE [TKMK].[dbo].[GROUPSALES]");
                 sbSql.AppendFormat(" SET [CARNO]='{0}',[CARNAME]='{1}',[CARKIND]='{2}',[GROUPKIND]='{3}',[ISEXCHANGE]='{4}',[CARNUM]='{5}'", CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM);
-                sbSql.AppendFormat(" ,[GUSETNUM]='{0}',[EXCHANNO]='{1}',[EXCHANACOOUNT]='{2}',[PURGROUPSTARTDATES]='{3}',[GROUPSTARTDATES]='{4}'", GUSETNUM, EXCHANNO, EXCHANACOOUNT, PURGROUPSTARTDATES, GROUPSTARTDATES);
+                sbSql.AppendFormat(" ,[GUSETNUM]='{0}',[EXCHANNO]='{1}',[EXCHANACOOUNT]='{2}'", GUSETNUM, EXCHANNO, EXCHANACOOUNT);
                 sbSql.AppendFormat(" WHERE [ID]='{0}'", ID);
                 sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" ");
@@ -1166,11 +1167,11 @@ namespace TKMK
                     string GUSETNUM = textBox143.Text.Trim();
                     string EXCHANNO = textBox144.Text.Trim();
                     string EXCHANACOOUNT = comboBox3.Text.Trim();
-                    string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
-                    string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
-                    string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                    //string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                    //string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                    //string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
 
-                    UPDATEGROUPSALES(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, PURGROUPSTARTDATES, GROUPSTARTDATES);
+                    UPDATEGROUPSALES(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT);
                 }
                 
             }
@@ -1198,6 +1199,7 @@ namespace TKMK
         }
         private void button3_Click(object sender, EventArgs e)
         {
+            comboBox3load();
             SETTEXT5();
             STATUSCONTROLLER = "EDIT";
         }
