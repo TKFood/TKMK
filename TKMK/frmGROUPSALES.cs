@@ -1013,6 +1013,9 @@ namespace TKMK
 
         public void SETTEXT1()
         {
+            textBox131.Text = null;
+            textBox141.Text = null;
+
             textBox131.ReadOnly = false;
             textBox141.ReadOnly = false;
             textBox142.ReadOnly = false;
@@ -1062,6 +1065,209 @@ namespace TKMK
         {
             
             comboBox3.Enabled = false;
+        }
+
+
+        public int SEARCHGROUPCAR(string CARNO)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT [CARNO],[CARNAME],[CARKIND]");
+                sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[GROUPCAR]");
+                sbSql.AppendFormat(@"  WHERE [CARNO]='{0}'", CARNO);
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return ds1.Tables["ds1"].Rows.Count;
+
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
+            catch
+            {
+                return 0;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public void SEARCHGROUPCARDETAIL(string CARNO)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT [CARNO],[CARNAME],[CARKIND]");
+                sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[GROUPCAR]");
+                sbSql.AppendFormat(@"  WHERE [CARNO]='{0}'", CARNO);
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    textBox141.Text=ds1.Tables["ds1"].Rows[0]["CARNAME"].ToString().Trim();
+                    comboBox1.Text = ds1.Tables["ds1"].Rows[0]["CARKIND"].ToString().Trim();
+
+                }
+                else
+                {
+                    
+                }
+
+            }
+            catch
+            {
+               
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+        public void ADDGROUPCAR(string CARNO,string CARNAME,string CARKIND)
+        {
+            try
+            {
+
+                //add ZWAREWHOUSEPURTH
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.AppendFormat(" INSERT INTO [TKMK].[dbo].[GROUPCAR]");
+                sbSql.AppendFormat(" ([CARNO],[CARNAME],[CARKIND])");
+                sbSql.AppendFormat(" VALUES");
+                sbSql.AppendFormat(" ('{0}','{1}','{2}')", CARNO, CARNAME, CARKIND);
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public void UPDATEGROUPCAR(string CARNO, string CARNAME, string CARKIND)
+        {
+            try
+            {
+
+                //add ZWAREWHOUSEPURTH
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.AppendFormat(" UPDATE [TKMK].[dbo].[GROUPCAR]");
+                sbSql.AppendFormat(" SET [CARNAME]='{0}',[CARKIND]='{1}'", CARNAME, CARKIND);
+                sbSql.AppendFormat(" WHERE [CARNO]='{0}'", CARNO);
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+        private void textBox131_TextChanged(object sender, EventArgs e)
+        {
+            SEARCHGROUPCARDETAIL(textBox131.Text.Trim());
         }
 
         #endregion
@@ -1144,6 +1350,20 @@ namespace TKMK
                 {
                     MessageBox.Show("團務資料少填");
                 }
+
+                if(!string.IsNullOrEmpty(CARNO)&& !string.IsNullOrEmpty(CARNAME) && !string.IsNullOrEmpty(CARKIND) )
+                {
+                    int ISCAR=SEARCHGROUPCAR(CARNO);
+
+                    if(ISCAR==0)
+                    {
+                        ADDGROUPCAR(CARNO, CARNAME, CARKIND);
+                    }
+                    else if(ISCAR==1)
+                    {
+                        UPDATEGROUPCAR(CARNO, CARNAME, CARKIND);
+                    }
+                }
             }
             else if(STATUSCONTROLLER.Equals("EDIT"))
             {
@@ -1171,9 +1391,28 @@ namespace TKMK
                     //string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     //string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
 
-                    UPDATEGROUPSALES(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, "預約接團");
+                    if (!string.IsNullOrEmpty(ID) && !string.IsNullOrEmpty(CARNO) && !string.IsNullOrEmpty(EXCHANNO) && !string.IsNullOrEmpty(EXCHANACOOUNT))
+                    {
+                        UPDATEGROUPSALES(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, "預約接團");
+                    }
+
+                    if (!string.IsNullOrEmpty(CARNO) && !string.IsNullOrEmpty(CARNAME) && !string.IsNullOrEmpty(CARKIND))
+                    {
+                        int ISCAR = SEARCHGROUPCAR(CARNO);
+
+                        if (ISCAR == 0)
+                        {
+                            ADDGROUPCAR(CARNO, CARNAME, CARKIND);
+                        }
+                        else if (ISCAR == 1)
+                        {
+                            UPDATEGROUPCAR(CARNO, CARNAME, CARKIND);
+                        }
+                    }
                 }
+
                 
+
             }
 
             SETTEXT2();
@@ -1305,8 +1544,9 @@ namespace TKMK
             SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"), "預約接團");
         }
 
+
         #endregion
 
-
+        
     }
 }

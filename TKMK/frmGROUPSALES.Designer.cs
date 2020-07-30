@@ -284,6 +284,7 @@
             this.textBox131.ReadOnly = true;
             this.textBox131.Size = new System.Drawing.Size(134, 27);
             this.textBox131.TabIndex = 46;
+            this.textBox131.TextChanged += new System.EventHandler(this.textBox131_TextChanged);
             // 
             // textBox141
             // 
