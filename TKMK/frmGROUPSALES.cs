@@ -265,6 +265,39 @@ namespace TKMK
             }
         }
 
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView1.CurrentRow != null)
+            {
+                int rowindex = dataGridView1.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView1.Rows[rowindex];
+                    ID = row.Cells["ID"].Value.ToString();
+
+                    textBox121.Text = row.Cells["序號"].Value.ToString();
+                    textBox131.Text = row.Cells["車號"].Value.ToString();
+                    textBox141.Text = row.Cells["車名"].Value.ToString();
+                    textBox142.Text = row.Cells["車數"].Value.ToString();
+                    textBox143.Text = row.Cells["來客數"].Value.ToString();
+
+                    comboBox1.Text = row.Cells["車種"].Value.ToString();
+                    comboBox2.Text = row.Cells["團類"].Value.ToString();
+                    comboBox3.Text = row.Cells["優惠券帳號"].Value.ToString();
+
+                    if(row.Cells["兌換券"].Value.ToString().Equals("Y"))
+                    {
+                        checkBox1.Checked = true;
+                    }
+                    else if(row.Cells["兌換券"].Value.ToString().Equals("N"))
+                    {
+                        checkBox1.Checked = false;
+                    }
+                   
+                }
+            }
+        }
+
         public string FINDSERNO(string CREATEDATES)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
@@ -345,8 +378,6 @@ namespace TKMK
 
             try
             {
-
-                //add ZWAREWHOUSEPURTH
                 connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
                 sqlConn = new SqlConnection(connectionString);
 
@@ -398,6 +429,55 @@ namespace TKMK
             }
         }
 
+        public void UPDATEGROUPSALES(string ID, string CARNO, string CARNAME, string CARKIND, string GROUPKIND, string ISEXCHANGE, string CARNUM, string GUSETNUM, string EXCHANNO, string EXCHANACOOUNT, string PURGROUPSTARTDATES, string GROUPSTARTDATES)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.AppendFormat(" UPDATE [TKMK].[dbo].[GROUPSALES]");
+                sbSql.AppendFormat(" SET [CARNO]='{0}',[CARNAME]='{1}',[CARKIND]='{2}',[GROUPKIND]='{3}',[ISEXCHANGE]='{4}',[CARNUM]='{5}'", CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM);
+                sbSql.AppendFormat(" ,[GUSETNUM]='{0}',[EXCHANNO]='{1}',[EXCHANACOOUNT]='{2}',[PURGROUPSTARTDATES]='{3}',[GROUPSTARTDATES]='{4}'", GUSETNUM, EXCHANNO, EXCHANACOOUNT, PURGROUPSTARTDATES, GROUPSTARTDATES);
+                sbSql.AppendFormat(" WHERE [ID]='{0}'", ID);
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
         public void SETMONEYS()
         {
             if (dataGridView1.Rows.Count > 0)
@@ -929,6 +1009,60 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
+
+        public void SETTEXT1()
+        {
+            textBox131.ReadOnly = false;
+            textBox141.ReadOnly = false;
+            textBox142.ReadOnly = false;
+            textBox143.ReadOnly = false;
+
+            comboBox1.Enabled = true;
+            comboBox2.Enabled = true;
+            comboBox3.Enabled = true;
+        }
+
+        public void SETTEXT2()
+        {
+            textBox131.ReadOnly = true;
+            textBox141.ReadOnly = true;
+            textBox142.ReadOnly = true;
+            textBox143.ReadOnly = true;
+
+            comboBox1.Enabled = false;
+            comboBox2.Enabled = false;
+            comboBox3.Enabled = false;
+        }
+
+        public void SETTEXT3()
+        {
+            textBox131.ReadOnly = false;
+            textBox141.ReadOnly = false;
+            textBox142.ReadOnly = false;
+            textBox143.ReadOnly = false;
+
+           
+        }
+
+        public void SETTEXT4()
+        {
+            textBox131.ReadOnly = true;
+            textBox141.ReadOnly = true;
+            textBox142.ReadOnly = true;
+            textBox143.ReadOnly = true;
+         
+        }
+        public void SETTEXT5()
+        {
+            comboBox3.Enabled = true;
+        }
+
+        public void SETTEXT6()
+        {
+            
+            comboBox3.Enabled = false;
+        }
+
         #endregion
 
         #region BUTTON
@@ -940,8 +1074,9 @@ namespace TKMK
         {
             STATUSCONTROLLER = "ADD";
 
-            
-           
+            SETTEXT1();
+
+
 
         }
         private void button4_Click(object sender, EventArgs e)
@@ -1000,8 +1135,7 @@ namespace TKMK
                     , EXCHANGESALESMMONEYS, SALESMMONEYS, SPECIALMNUMS, SPECIALMONEYS, COMMISSIONBASEMONEYS, COMMISSIONPCTMONEYS, TOTALCOMMISSIONMONEYS, CARNUM, GUSETNUM, EXCHANNO
                     , EXCHANACOOUNT, PURGROUPSTARTDATES, GROUPSTARTDATES, PURGROUPENDDATES, GROUPENDDATES, STATUS
                    );
-
-
+                    
                     textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
                     SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
                 }
@@ -1010,17 +1144,67 @@ namespace TKMK
                     MessageBox.Show("團務資料少填");
                 }
             }
-            else
+            else if(STATUSCONTROLLER.Equals("EDIT"))
             {
+                if(!string.IsNullOrEmpty(ID))
+                {
+                    string CARNO = textBox131.Text.Trim();
+                    string CARNAME = textBox141.Text.Trim();
+                    string CARKIND = comboBox1.Text.Trim();
+                    string GROUPKIND = comboBox2.Text.Trim();
+                    string ISEXCHANGE = "N";
 
+                    if (checkBox1.Checked == true)
+                    {
+                        ISEXCHANGE = "Y";
+                    }
+                    else
+                    {
+                        ISEXCHANGE = "N";
+                    }
+                    string CARNUM = textBox142.Text.Trim();
+                    string GUSETNUM = textBox143.Text.Trim();
+                    string EXCHANNO = textBox144.Text.Trim();
+                    string EXCHANACOOUNT = comboBox3.Text.Trim();
+                    string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                    string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                    string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
+
+                    UPDATEGROUPSALES(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, PURGROUPSTARTDATES, GROUPSTARTDATES);
+                }
+                
             }
 
-
+            SETTEXT2();
+            SETTEXT4();
+            SETTEXT6();
             STATUSCONTROLLER = null;
+
+            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
         }
+        private void button10_Click(object sender, EventArgs e)
+        {
+            SETTEXT2();
+            SETTEXT4();
+            SETTEXT6();
+            STATUSCONTROLLER = null;
+
+            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+        }
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            SETTEXT3();
+            STATUSCONTROLLER = "EDIT";
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            SETTEXT5();
+            STATUSCONTROLLER = "EDIT";
+        }
+
 
         #endregion
 
-
+      
     }
 }

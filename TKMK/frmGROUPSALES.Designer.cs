@@ -277,6 +277,7 @@
             this.textBox131.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox131.Location = new System.Drawing.Point(143, 86);
             this.textBox131.Name = "textBox131";
+            this.textBox131.ReadOnly = true;
             this.textBox131.Size = new System.Drawing.Size(134, 27);
             this.textBox131.TabIndex = 46;
             // 
@@ -285,6 +286,7 @@
             this.textBox141.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox141.Location = new System.Drawing.Point(143, 126);
             this.textBox141.Name = "textBox141";
+            this.textBox141.ReadOnly = true;
             this.textBox141.Size = new System.Drawing.Size(134, 27);
             this.textBox141.TabIndex = 47;
             // 
@@ -319,6 +321,7 @@
             this.textBox142.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox142.Location = new System.Drawing.Point(70, 3);
             this.textBox142.Name = "textBox142";
+            this.textBox142.ReadOnly = true;
             this.textBox142.Size = new System.Drawing.Size(61, 27);
             this.textBox142.TabIndex = 48;
             this.textBox142.Text = "1";
@@ -353,6 +356,7 @@
             this.textBox143.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox143.Location = new System.Drawing.Point(70, 3);
             this.textBox143.Name = "textBox143";
+            this.textBox143.ReadOnly = true;
             this.textBox143.Size = new System.Drawing.Size(61, 27);
             this.textBox143.TabIndex = 49;
             this.textBox143.Text = "1";
@@ -391,8 +395,9 @@
             // comboBox2
             // 
             this.comboBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBox2.Enabled = false;
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(423, 170);
+            this.comboBox2.Location = new System.Drawing.Point(423, 168);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(134, 24);
             this.comboBox2.TabIndex = 55;
@@ -400,8 +405,9 @@
             // comboBox3
             // 
             this.comboBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBox3.Enabled = false;
             this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(563, 130);
+            this.comboBox3.Location = new System.Drawing.Point(563, 128);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(134, 24);
             this.comboBox3.TabIndex = 56;
@@ -421,8 +427,9 @@
             // comboBox1
             // 
             this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBox1.Enabled = false;
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(423, 88);
+            this.comboBox1.Location = new System.Drawing.Point(423, 90);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(134, 24);
             this.comboBox1.TabIndex = 54;
@@ -437,6 +444,7 @@
             this.button1.TabIndex = 58;
             this.button1.Text = "修改車號名";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
             // 
             // button5
             // 
@@ -536,6 +544,7 @@
             this.button3.TabIndex = 60;
             this.button3.Text = "修改優惠券";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // button4
             // 
@@ -559,6 +568,7 @@
             this.button10.TabIndex = 67;
             this.button10.Text = "取消";
             this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
             // splitContainer2
             // 
@@ -590,6 +600,7 @@
             this.dataGridView1.RowTemplate.Height = 24;
             this.dataGridView1.Size = new System.Drawing.Size(1118, 370);
             this.dataGridView1.TabIndex = 3;
+            this.dataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView1_SelectionChanged);
             // 
             // tableLayoutPanel4
             // 
