@@ -1064,6 +1064,8 @@ namespace TKMK
         {
             textBox131.Text = null;
             textBox141.Text = null;
+            textBox142.Text = "1";
+            textBox143.Text = "1";
 
             textBox131.ReadOnly = false;
             textBox141.ReadOnly = false;
@@ -1403,6 +1405,7 @@ namespace TKMK
             STATUSCONTROLLER = "ADD";
 
             SETTEXT1();
+            comboBox3load();
 
 
 
