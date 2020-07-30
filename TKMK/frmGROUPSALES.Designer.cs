@@ -274,7 +274,7 @@
             this.textBox121.Name = "textBox121";
             this.textBox121.ReadOnly = true;
             this.textBox121.Size = new System.Drawing.Size(134, 27);
-            this.textBox121.TabIndex = 45;
+            this.textBox121.TabIndex = 20;
             // 
             // textBox131
             // 
@@ -283,7 +283,7 @@
             this.textBox131.Name = "textBox131";
             this.textBox131.ReadOnly = true;
             this.textBox131.Size = new System.Drawing.Size(134, 27);
-            this.textBox131.TabIndex = 46;
+            this.textBox131.TabIndex = 30;
             this.textBox131.TextChanged += new System.EventHandler(this.textBox131_TextChanged);
             // 
             // textBox141
@@ -293,7 +293,7 @@
             this.textBox141.Name = "textBox141";
             this.textBox141.ReadOnly = true;
             this.textBox141.Size = new System.Drawing.Size(134, 27);
-            this.textBox141.TabIndex = 47;
+            this.textBox141.TabIndex = 40;
             // 
             // tableLayoutPanel2
             // 
@@ -328,7 +328,7 @@
             this.textBox142.Name = "textBox142";
             this.textBox142.ReadOnly = true;
             this.textBox142.Size = new System.Drawing.Size(61, 27);
-            this.textBox142.TabIndex = 48;
+            this.textBox142.TabIndex = 60;
             this.textBox142.Text = "1";
             // 
             // tableLayoutPanel3
@@ -363,7 +363,7 @@
             this.textBox143.Name = "textBox143";
             this.textBox143.ReadOnly = true;
             this.textBox143.Size = new System.Drawing.Size(61, 27);
-            this.textBox143.TabIndex = 49;
+            this.textBox143.TabIndex = 70;
             this.textBox143.Text = "1";
             // 
             // label9
@@ -383,7 +383,7 @@
             this.textBox144.Name = "textBox144";
             this.textBox144.ReadOnly = true;
             this.textBox144.Size = new System.Drawing.Size(134, 27);
-            this.textBox144.TabIndex = 52;
+            this.textBox144.TabIndex = 100;
             this.textBox144.Text = "A01";
             // 
             // dateTimePicker1
@@ -395,7 +395,7 @@
             this.dateTimePicker1.Location = new System.Drawing.Point(143, 6);
             this.dateTimePicker1.Name = "dateTimePicker1";
             this.dateTimePicker1.Size = new System.Drawing.Size(274, 27);
-            this.dateTimePicker1.TabIndex = 53;
+            this.dateTimePicker1.TabIndex = 10;
             // 
             // comboBox2
             // 
@@ -405,7 +405,7 @@
             this.comboBox2.Location = new System.Drawing.Point(423, 168);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(134, 24);
-            this.comboBox2.TabIndex = 55;
+            this.comboBox2.TabIndex = 80;
             // 
             // comboBox3
             // 
@@ -415,7 +415,7 @@
             this.comboBox3.Location = new System.Drawing.Point(563, 128);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(134, 24);
-            this.comboBox3.TabIndex = 56;
+            this.comboBox3.TabIndex = 90;
             this.comboBox3.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
             // 
             // checkBox1
@@ -425,7 +425,7 @@
             this.checkBox1.Location = new System.Drawing.Point(563, 170);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(134, 20);
-            this.checkBox1.TabIndex = 57;
+            this.checkBox1.TabIndex = 110;
             this.checkBox1.Text = "領取兌換券";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
@@ -437,7 +437,7 @@
             this.comboBox1.Location = new System.Drawing.Point(423, 90);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(134, 24);
-            this.comboBox1.TabIndex = 54;
+            this.comboBox1.TabIndex = 50;
             // 
             // button1
             // 
@@ -446,7 +446,7 @@
             this.button1.Location = new System.Drawing.Point(3, 163);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(134, 34);
-            this.button1.TabIndex = 58;
+            this.button1.TabIndex = 580;
             this.button1.Text = "修改車號名";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click_1);
@@ -458,7 +458,7 @@
             this.button5.Location = new System.Drawing.Point(563, 3);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(134, 34);
-            this.button5.TabIndex = 62;
+            this.button5.TabIndex = 620;
             this.button5.Text = "登錄團資";
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
@@ -469,7 +469,7 @@
             this.button6.Location = new System.Drawing.Point(703, 3);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(134, 34);
-            this.button6.TabIndex = 63;
+            this.button6.TabIndex = 630;
             this.button6.Text = "取消預約";
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
@@ -481,7 +481,7 @@
             this.button7.Location = new System.Drawing.Point(843, 3);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(112, 34);
-            this.button7.TabIndex = 64;
+            this.button7.TabIndex = 640;
             this.button7.Text = "異常結案";
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.button7_Click);
@@ -493,7 +493,7 @@
             this.button8.Location = new System.Drawing.Point(961, 3);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(156, 34);
-            this.button8.TabIndex = 65;
+            this.button8.TabIndex = 650;
             this.button8.Text = "完成接團";
             this.button8.UseVisualStyleBackColor = true;
             this.button8.Click += new System.EventHandler(this.button8_Click);
@@ -505,7 +505,7 @@
             this.button9.Location = new System.Drawing.Point(843, 123);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(112, 34);
-            this.button9.TabIndex = 66;
+            this.button9.TabIndex = 120;
             this.button9.Text = "存檔";
             this.button9.UseVisualStyleBackColor = true;
             this.button9.Click += new System.EventHandler(this.button9_Click);
@@ -518,7 +518,7 @@
             this.dateTimePicker2.Location = new System.Drawing.Point(961, 126);
             this.dateTimePicker2.Name = "dateTimePicker2";
             this.dateTimePicker2.Size = new System.Drawing.Size(156, 27);
-            this.dateTimePicker2.TabIndex = 68;
+            this.dateTimePicker2.TabIndex = 680;
             // 
             // dateTimePicker3
             // 
@@ -528,7 +528,7 @@
             this.dateTimePicker3.Location = new System.Drawing.Point(961, 166);
             this.dateTimePicker3.Name = "dateTimePicker3";
             this.dateTimePicker3.Size = new System.Drawing.Size(156, 27);
-            this.dateTimePicker3.TabIndex = 70;
+            this.dateTimePicker3.TabIndex = 700;
             // 
             // button2
             // 
@@ -549,7 +549,7 @@
             this.button3.Location = new System.Drawing.Point(563, 43);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(134, 34);
-            this.button3.TabIndex = 60;
+            this.button3.TabIndex = 600;
             this.button3.Text = "修改優惠券";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
@@ -561,7 +561,7 @@
             this.button4.Location = new System.Drawing.Point(423, 3);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(134, 34);
-            this.button4.TabIndex = 61;
+            this.button4.TabIndex = 610;
             this.button4.Text = "立即更新";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
@@ -573,7 +573,7 @@
             this.button10.Location = new System.Drawing.Point(843, 163);
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(112, 34);
-            this.button10.TabIndex = 67;
+            this.button10.TabIndex = 670;
             this.button10.Text = "取消";
             this.button10.UseVisualStyleBackColor = true;
             this.button10.Click += new System.EventHandler(this.button10_Click);
@@ -835,7 +835,7 @@
             this.comboBox4.Location = new System.Drawing.Point(843, 88);
             this.comboBox4.Name = "comboBox4";
             this.comboBox4.Size = new System.Drawing.Size(112, 24);
-            this.comboBox4.TabIndex = 71;
+            this.comboBox4.TabIndex = 710;
             this.comboBox4.Text = "預約接團      ";
             // 
             // button11
@@ -845,7 +845,7 @@
             this.button11.Location = new System.Drawing.Point(961, 83);
             this.button11.Name = "button11";
             this.button11.Size = new System.Drawing.Size(156, 34);
-            this.button11.TabIndex = 72;
+            this.button11.TabIndex = 720;
             this.button11.Text = "查詢";
             this.button11.UseVisualStyleBackColor = true;
             this.button11.Click += new System.EventHandler(this.button11_Click);
