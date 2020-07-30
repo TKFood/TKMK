@@ -204,7 +204,7 @@ namespace TKMK
             }
         }
 
-        public void SEARCHGROUPSALES(string CREATEDATES)
+        public void SEARCHGROUPSALES(string CREATEDATES,string STATUS)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -223,7 +223,7 @@ namespace TKMK
                 sbSql.AppendFormat(@"  ,[SPECIALMNUMS] AS '特賣數',[SPECIALMONEYS] AS '特賣獎金',[COMMISSIONBASEMONEYS] AS '茶水費',[COMMISSIONPCTMONEYS] AS '消費獎金',[TOTALCOMMISSIONMONEYS] AS '總獎金',[CARNUM] AS '車數',[GUSETNUM] AS '來客數',[EXCHANNO] AS '優惠券名',[EXCHANACOOUNT] AS '優惠券帳號',CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間',CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間'");
                 sbSql.AppendFormat(@"  ,CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間',CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間',[STATUS] AS '狀態',[COMMISSIONPCT] AS '抽佣比率',[ID],[CREATEDATES]");
                 sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[GROUPSALES]");
-                sbSql.AppendFormat(@"  WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'", CREATEDATES);
+                sbSql.AppendFormat(@"  WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}' AND [STATUS]='{1}'", CREATEDATES, STATUS);
                 sbSql.AppendFormat(@"  ORDER BY CONVERT(nvarchar,[CREATEDATES],112),[SERNO]");
                 sbSql.AppendFormat(@"  ");
                 sbSql.AppendFormat(@"  ");
@@ -1082,11 +1082,11 @@ namespace TKMK
         }
         private void button4_Click(object sender, EventArgs e)
         {
-            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"),"預約接團");
 
             SETMONEYS();
 
-            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"), "預約接團");
         }
         private void button9_Click(object sender, EventArgs e)
         {
@@ -1138,7 +1138,7 @@ namespace TKMK
                    );
                     
                     textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
-                    SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+                    SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"), "預約接團");
                 }
                 else
                 {
@@ -1181,7 +1181,7 @@ namespace TKMK
             SETTEXT6();
             STATUSCONTROLLER = null;
 
-            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"), "預約接團");
         }
         private void button10_Click(object sender, EventArgs e)
         {
@@ -1190,7 +1190,7 @@ namespace TKMK
             SETTEXT6();
             STATUSCONTROLLER = null;
 
-            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"), "預約接團");
         }
         private void button1_Click_1(object sender, EventArgs e)
         {
@@ -1204,9 +1204,13 @@ namespace TKMK
             STATUSCONTROLLER = "EDIT";
         }
 
+        private void button11_Click(object sender, EventArgs e)
+        {
+            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"), comboBox4.Text.Trim());
+        }
 
         #endregion
 
-      
+
     }
 }

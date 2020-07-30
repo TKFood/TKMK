@@ -88,6 +88,8 @@
             this.label18 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.comboBox4 = new System.Windows.Forms.ComboBox();
+            this.button11 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -183,13 +185,15 @@
             this.tableLayoutPanel1.Controls.Add(this.button6, 5, 0);
             this.tableLayoutPanel1.Controls.Add(this.button7, 6, 0);
             this.tableLayoutPanel1.Controls.Add(this.button8, 7, 0);
-            this.tableLayoutPanel1.Controls.Add(this.button9, 6, 2);
-            this.tableLayoutPanel1.Controls.Add(this.dateTimePicker2, 7, 2);
-            this.tableLayoutPanel1.Controls.Add(this.dateTimePicker3, 7, 3);
             this.tableLayoutPanel1.Controls.Add(this.button2, 2, 1);
             this.tableLayoutPanel1.Controls.Add(this.button3, 4, 1);
             this.tableLayoutPanel1.Controls.Add(this.button4, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.button10, 6, 3);
+            this.tableLayoutPanel1.Controls.Add(this.button10, 6, 4);
+            this.tableLayoutPanel1.Controls.Add(this.dateTimePicker3, 7, 4);
+            this.tableLayoutPanel1.Controls.Add(this.button9, 6, 3);
+            this.tableLayoutPanel1.Controls.Add(this.dateTimePicker2, 7, 3);
+            this.tableLayoutPanel1.Controls.Add(this.button11, 7, 2);
+            this.tableLayoutPanel1.Controls.Add(this.comboBox4, 6, 2);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -494,7 +498,7 @@
             // 
             this.button9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.button9.ForeColor = System.Drawing.Color.Blue;
-            this.button9.Location = new System.Drawing.Point(843, 83);
+            this.button9.Location = new System.Drawing.Point(843, 123);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(112, 34);
             this.button9.TabIndex = 66;
@@ -507,7 +511,7 @@
             this.dateTimePicker2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.dateTimePicker2.CustomFormat = "yyyy/MM/dd HH:mm:ss";
             this.dateTimePicker2.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimePicker2.Location = new System.Drawing.Point(961, 86);
+            this.dateTimePicker2.Location = new System.Drawing.Point(961, 126);
             this.dateTimePicker2.Name = "dateTimePicker2";
             this.dateTimePicker2.Size = new System.Drawing.Size(156, 27);
             this.dateTimePicker2.TabIndex = 68;
@@ -517,7 +521,7 @@
             this.dateTimePicker3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.dateTimePicker3.CustomFormat = "yyyy/MM/dd HH:mm:ss";
             this.dateTimePicker3.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimePicker3.Location = new System.Drawing.Point(961, 126);
+            this.dateTimePicker3.Location = new System.Drawing.Point(961, 166);
             this.dateTimePicker3.Name = "dateTimePicker3";
             this.dateTimePicker3.Size = new System.Drawing.Size(156, 27);
             this.dateTimePicker3.TabIndex = 70;
@@ -562,7 +566,7 @@
             // 
             this.button10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.button10.ForeColor = System.Drawing.Color.Red;
-            this.button10.Location = new System.Drawing.Point(843, 123);
+            this.button10.Location = new System.Drawing.Point(843, 163);
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(112, 34);
             this.button10.TabIndex = 67;
@@ -815,6 +819,32 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // comboBox4
+            // 
+            this.comboBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBox4.FormattingEnabled = true;
+            this.comboBox4.Items.AddRange(new object[] {
+            "預約接團      ",
+            "取消預約",
+            "異常結案"});
+            this.comboBox4.Location = new System.Drawing.Point(843, 88);
+            this.comboBox4.Name = "comboBox4";
+            this.comboBox4.Size = new System.Drawing.Size(112, 24);
+            this.comboBox4.TabIndex = 71;
+            this.comboBox4.Text = "預約接團      ";
+            // 
+            // button11
+            // 
+            this.button11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.button11.ForeColor = System.Drawing.Color.BlueViolet;
+            this.button11.Location = new System.Drawing.Point(961, 83);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(156, 34);
+            this.button11.TabIndex = 72;
+            this.button11.Text = "查詢";
+            this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
+            // 
             // frmGROUPSALES
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 16F);
@@ -909,5 +939,7 @@
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Button button11;
+        private System.Windows.Forms.ComboBox comboBox4;
     }
 }
