@@ -430,7 +430,7 @@ namespace TKMK
             }
         }
 
-        public void UPDATEGROUPSALES(string ID, string CARNO, string CARNAME, string CARKIND, string GROUPKIND, string ISEXCHANGE, string CARNUM, string GUSETNUM, string EXCHANNO, string EXCHANACOOUNT)
+        public void UPDATEGROUPSALES(string ID, string CARNO, string CARNAME, string CARKIND, string GROUPKIND, string ISEXCHANGE, string CARNUM, string GUSETNUM, string EXCHANNO, string EXCHANACOOUNT,string STATUS)
         {
             try
             {
@@ -444,7 +444,7 @@ namespace TKMK
 
                 sbSql.AppendFormat(" UPDATE [TKMK].[dbo].[GROUPSALES]");
                 sbSql.AppendFormat(" SET [CARNO]='{0}',[CARNAME]='{1}',[CARKIND]='{2}',[GROUPKIND]='{3}',[ISEXCHANGE]='{4}',[CARNUM]='{5}'", CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM);
-                sbSql.AppendFormat(" ,[GUSETNUM]='{0}',[EXCHANNO]='{1}',[EXCHANACOOUNT]='{2}'", GUSETNUM, EXCHANNO, EXCHANACOOUNT);
+                sbSql.AppendFormat(" ,[GUSETNUM]='{0}',[EXCHANNO]='{1}',[EXCHANACOOUNT]='{2}',STATUS='{3}'", GUSETNUM, EXCHANNO, EXCHANACOOUNT, STATUS);
                 sbSql.AppendFormat(" WHERE [ID]='{0}'", ID);
                 sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" ");
@@ -1171,7 +1171,7 @@ namespace TKMK
                     //string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     //string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
 
-                    UPDATEGROUPSALES(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT);
+                    UPDATEGROUPSALES(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, "預約接團");
                 }
                 
             }
@@ -1207,6 +1207,102 @@ namespace TKMK
         private void button11_Click(object sender, EventArgs e)
         {
             SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"), comboBox4.Text.Trim());
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(ID))
+            {
+                string CARNO = textBox131.Text.Trim();
+                string CARNAME = textBox141.Text.Trim();
+                string CARKIND = comboBox1.Text.Trim();
+                string GROUPKIND = comboBox2.Text.Trim();
+                string ISEXCHANGE = "N";
+
+                if (checkBox1.Checked == true)
+                {
+                    ISEXCHANGE = "是";
+                }
+                else
+                {
+                    ISEXCHANGE = "否";
+                }
+                string CARNUM = textBox142.Text.Trim();
+                string GUSETNUM = textBox143.Text.Trim();
+                string EXCHANNO = textBox144.Text.Trim();
+                string EXCHANACOOUNT = comboBox3.Text.Trim();
+                //string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                //string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                //string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
+
+                UPDATEGROUPSALES(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, "取消預約");
+            }
+
+            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"), "預約接團");
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(ID))
+            {
+                string CARNO = textBox131.Text.Trim();
+                string CARNAME = textBox141.Text.Trim();
+                string CARKIND = comboBox1.Text.Trim();
+                string GROUPKIND = comboBox2.Text.Trim();
+                string ISEXCHANGE = "N";
+
+                if (checkBox1.Checked == true)
+                {
+                    ISEXCHANGE = "是";
+                }
+                else
+                {
+                    ISEXCHANGE = "否";
+                }
+                string CARNUM = textBox142.Text.Trim();
+                string GUSETNUM = textBox143.Text.Trim();
+                string EXCHANNO = textBox144.Text.Trim();
+                string EXCHANACOOUNT = comboBox3.Text.Trim();
+                //string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                //string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                //string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
+
+                UPDATEGROUPSALES(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, "異常結案");
+            }
+
+            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"), "預約接團");
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(ID))
+            {
+                string CARNO = textBox131.Text.Trim();
+                string CARNAME = textBox141.Text.Trim();
+                string CARKIND = comboBox1.Text.Trim();
+                string GROUPKIND = comboBox2.Text.Trim();
+                string ISEXCHANGE = "N";
+
+                if (checkBox1.Checked == true)
+                {
+                    ISEXCHANGE = "是";
+                }
+                else
+                {
+                    ISEXCHANGE = "否";
+                }
+                string CARNUM = textBox142.Text.Trim();
+                string GUSETNUM = textBox143.Text.Trim();
+                string EXCHANNO = textBox144.Text.Trim();
+                string EXCHANACOOUNT = comboBox3.Text.Trim();
+                //string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                //string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                //string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
+
+                UPDATEGROUPSALES(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, "完成接團");
+            }
+
+            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"), "預約接團");
         }
 
         #endregion

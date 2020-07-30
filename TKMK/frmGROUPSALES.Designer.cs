@@ -471,6 +471,7 @@
             this.button6.TabIndex = 63;
             this.button6.Text = "取消預約";
             this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // button7
             // 
@@ -482,6 +483,7 @@
             this.button7.TabIndex = 64;
             this.button7.Text = "異常結案";
             this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // button8
             // 
@@ -493,6 +495,7 @@
             this.button8.TabIndex = 65;
             this.button8.Text = "完成接團";
             this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
             // button9
             // 
@@ -826,7 +829,8 @@
             this.comboBox4.Items.AddRange(new object[] {
             "預約接團      ",
             "取消預約",
-            "異常結案"});
+            "異常結案",
+            "完成接團"});
             this.comboBox4.Location = new System.Drawing.Point(843, 88);
             this.comboBox4.Name = "comboBox4";
             this.comboBox4.Size = new System.Drawing.Size(112, 24);
