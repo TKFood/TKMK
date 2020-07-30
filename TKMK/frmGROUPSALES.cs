@@ -523,7 +523,7 @@ namespace TKMK
                     SALESMMONEYS = FINDSALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);                  
 
                     //金額條件判斷
-                    if (ISEXCHANGE.Equals("Y"))
+                    if (ISEXCHANGE.Equals("是"))
                     {
                         int CARNUM = Convert.ToInt32(dr.Cells["車數"].Value.ToString().Trim());
                         EXCHANGEMONEYS = FINDEXCHANGEMONEYS();
@@ -534,7 +534,7 @@ namespace TKMK
                         SALESMMONEYS = SALESMMONEYS - EXCHANGETOTALMONEYS;
 
                     }
-                    else if(ISEXCHANGE.Equals("N"))
+                    else if(ISEXCHANGE.Equals("否"))
                     {
                         EXCHANGEMONEYS = 0;
                         EXCHANGETOTALMONEYS = 0;
@@ -1103,11 +1103,11 @@ namespace TKMK
 
                 if (checkBox1.Checked == true)
                 {
-                    ISEXCHANGE = "Y";
+                    ISEXCHANGE = "是";
                 }
                 else
                 {
-                    ISEXCHANGE = "N";
+                    ISEXCHANGE = "否";
                 }
 
                 string EXCHANGEMONEYS = "0";
@@ -1157,11 +1157,11 @@ namespace TKMK
 
                     if (checkBox1.Checked == true)
                     {
-                        ISEXCHANGE = "Y";
+                        ISEXCHANGE = "是";
                     }
                     else
                     {
-                        ISEXCHANGE = "N";
+                        ISEXCHANGE = "否";
                     }
                     string CARNUM = textBox142.Text.Trim();
                     string GUSETNUM = textBox143.Text.Trim();
