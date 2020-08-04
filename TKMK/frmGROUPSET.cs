@@ -35,7 +35,8 @@ namespace TKMK
         DataSet ds = new DataSet();
         int result;
 
-        string STATUS;
+        string STATUSCARKIND;
+        string IDCARKIND;
 
         public frmGROUPSET()
         {
@@ -58,7 +59,7 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  SELECT [ID] AS '代號',[NAME] AS '名稱'  FROM [TKMK].[dbo].[CARKIND]");
+                sbSql.AppendFormat(@"  SELECT [ID] AS '代號',[NAME] AS '名稱'  FROM [TKMK].[dbo].[CARKIND] ORDER BY [ID]");
                 sbSql.AppendFormat(@"  ");
                 sbSql.AppendFormat(@"  ");
 
@@ -97,6 +98,145 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView1.CurrentRow != null)
+            {
+                int rowindex = dataGridView1.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView1.Rows[rowindex];
+                    IDCARKIND = row.Cells["代號"].Value.ToString();
+                    textBox11.Text = row.Cells["代號"].Value.ToString();
+                    textBox12.Text = row.Cells["名稱"].Value.ToString();
+                }
+                else
+                {
+                    IDCARKIND = null;
+                    textBox11.Text = null;
+                    textBox12.Text = null;
+                }
+            }
+        }
+
+        public void SETTEXT1()
+        {
+            textBox11.ReadOnly = false;
+            textBox12.ReadOnly = false;
+
+            textBox11.Text = null;
+            textBox12.Text = null;
+        }
+
+        public void SETTEXT2()
+        {
+            textBox11.ReadOnly = false;
+            textBox12.ReadOnly = false;
+
+           
+        }
+
+        public void SETTEXT3()
+        {
+            textBox11.ReadOnly = true;
+            textBox12.ReadOnly = true;
+
+
+        }
+
+        public void ADDCARKIND(string ID,string NAME)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.AppendFormat(" INSERT INTO [TKMK].[dbo].[CARKIND]");
+                sbSql.AppendFormat(" ([ID],[NAME])");
+                sbSql.AppendFormat(" VALUES");
+                sbSql.AppendFormat(" ('{0}','{1}')", ID, NAME);
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public void UPDATECARKIND(string IDCARKIND, string ID, string NAME)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.AppendFormat(" UPDATE [TKMK].[dbo].[CARKIND] ");
+                sbSql.AppendFormat(" SET [ID]='{0}',[NAME]='{1}'",ID,NAME);
+                sbSql.AppendFormat(" WHERE [ID]='{0}'", IDCARKIND);
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
 
         #endregion
 
@@ -105,6 +245,39 @@ namespace TKMK
         {
             SEARCHCARKIND();
         }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            STATUSCARKIND = "ADD";
+            SETTEXT1();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            STATUSCARKIND = "EDIT";
+            SETTEXT2();
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if(STATUSCARKIND.Equals("ADD"))
+            {
+                ADDCARKIND(textBox11.Text.Trim(), textBox12.Text.Trim());
+            }
+            else if (STATUSCARKIND.Equals("EDIT"))
+            {
+                UPDATECARKIND(IDCARKIND,textBox11.Text.Trim(), textBox12.Text.Trim());
+            }
+
+            SEARCHCARKIND();
+            SETTEXT3();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            SETTEXT3();
+        }
+
         #endregion
+
+
     }
 }
