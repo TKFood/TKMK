@@ -434,6 +434,29 @@ namespace TKMK
 
         }
 
+        private void dataGridView5_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView5.CurrentRow != null)
+            {
+                int rowindex = dataGridView5.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView5.Rows[rowindex];
+                    IDGROUPEXCHANGEMONEYS = row.Cells["代號"].Value.ToString();
+                    textBox51.Text = row.Cells["代號"].Value.ToString();
+                    textBox52.Text = row.Cells["兌換券金額"].Value.ToString();
+
+                }
+                else
+                {
+                    IDGROUPEXCHANGEMONEYS = null;
+                    textBox51.Text = null;
+                    textBox52.Text = null;
+                   
+                }
+            }
+        }
+
         public void ADDCARKIND(string ID,string NAME)
         {
             try
@@ -814,6 +837,100 @@ namespace TKMK
             }
         }
 
+        public void ADDGROUPEXCHANGEMONEYS(string ID, string EXCHANGEMONEYS)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.AppendFormat(" INSERT INTO [TKMK].[dbo].[GROUPEXCHANGEMONEYS]");
+                sbSql.AppendFormat(" ([ID],[EXCHANGEMONEYS])");
+                sbSql.AppendFormat(" VALUES");
+                sbSql.AppendFormat(" ('{0}','{1}')", ID, EXCHANGEMONEYS);
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public void UPDATEGROUPEXCHANGEMONEYS(string IDGROUPEXCHANGEMONEYS, string ID, string EXCHANGEMONEYS)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.AppendFormat(" UPDATE  [TKMK].[dbo].[GROUPEXCHANGEMONEYS]");
+                sbSql.AppendFormat(" SET [ID]='{0}',[EXCHANGEMONEYS]='{1}'", ID, EXCHANGEMONEYS);
+                sbSql.AppendFormat(" WHERE [ID]='{0}'", IDGROUPEXCHANGEMONEYS);
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
         public void SETTEXT1()
         {
             textBox11.ReadOnly = false;
@@ -938,6 +1055,30 @@ namespace TKMK
 
         }
 
+
+        public void SETTEXT13()
+        {
+            textBox51.ReadOnly = false;
+            textBox52.ReadOnly = false;
+
+            textBox51.Text = null;
+            textBox52.Text = null;
+            
+        }
+
+        public void SETTEXT14()
+        {
+            textBox51.ReadOnly = false;
+            textBox52.ReadOnly = false;
+
+        }
+
+        public void SETTEXT15()
+        {
+            textBox51.ReadOnly = true;
+            textBox52.ReadOnly = true;
+
+        }
         #endregion
 
         #region BUTTON
@@ -1095,25 +1236,40 @@ namespace TKMK
 
         private void button25_Click(object sender, EventArgs e)
         {
-
+            STATUSGROUPEXCHANGEMONEYS = "ADD";
+            SETTEXT13();
         }
 
         private void button24_Click(object sender, EventArgs e)
         {
-
+            STATUSGROUPEXCHANGEMONEYS = "EDIT";
+            SETTEXT14();
         }
 
         private void button23_Click(object sender, EventArgs e)
         {
 
+            if (STATUSGROUPEXCHANGEMONEYS.Equals("ADD"))
+            {
+                ADDGROUPEXCHANGEMONEYS(textBox51.Text.Trim(), textBox52.Text.Trim());
+            }
+            else if (STATUSGROUPEXCHANGEMONEYS.Equals("EDIT"))
+            {
+                UPDATEGROUPEXCHANGEMONEYS(IDGROUPEXCHANGEMONEYS, textBox51.Text.Trim(), textBox52.Text.Trim());
+            }
+
+            STATUSGROUPEXCHANGEMONEYS = null;
+            SEARCHGROUPEXCHANGEMONEYS();
+            SETTEXT15();
         }
 
         private void button22_Click(object sender, EventArgs e)
         {
-
+            SETTEXT15();
         }
+
         #endregion
 
-
+       
     }
 }

@@ -1407,6 +1407,7 @@
             this.dataGridView5.RowTemplate.Height = 24;
             this.dataGridView5.Size = new System.Drawing.Size(321, 441);
             this.dataGridView5.TabIndex = 9;
+            this.dataGridView5.SelectionChanged += new System.EventHandler(this.dataGridView5_SelectionChanged);
             // 
             // label18
             // 
