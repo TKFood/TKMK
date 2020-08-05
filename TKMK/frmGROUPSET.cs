@@ -346,7 +346,35 @@ namespace TKMK
                 }
             }
         }
+        private void dataGridView4_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView4.CurrentRow != null)
+            {
+                int rowindex = dataGridView4.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView4.Rows[rowindex];
+                    IDGROUPPRODUCT = row.Cells["代號"].Value.ToString();
+                    textBox41.Text = row.Cells["代號"].Value.ToString();
+                    textBox42.Text = row.Cells["名稱"].Value.ToString();
+                    textBox43.Text = row.Cells["組數"].Value.ToString();
+                    textBox44.Text = row.Cells["金額"].Value.ToString();
+                    textBox45.Text = row.Cells["合併計算"].Value.ToString();
+                    textBox46.Text = row.Cells["分拆計算"].Value.ToString();
+                }
+                else
+                {
+                    IDGROUPPRODUCT = null;
+                    textBox41.Text = null;
+                    textBox42.Text = null;
+                    textBox43.Text = null;
+                    textBox44.Text = null;
+                    textBox45.Text = null;
+                    textBox46.Text = null;
+                }
+            }
 
+        }
 
         public void ADDCARKIND(string ID,string NAME)
         {
@@ -633,6 +661,101 @@ namespace TKMK
             }
         }
 
+        public void ADDGROUPPRODUCT(string ID, string NAME, string NUM, string MONEYS, string MERGECAL, string SPLITCAL)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+
+                sbSql.AppendFormat(" INSERT INTO [TKMK].[dbo].[GROUPPRODUCT]");
+                sbSql.AppendFormat(" ([ID],[NAME],[NUM],[MONEYS],[MERGECAL],[SPLITCAL])");
+                sbSql.AppendFormat(" VALUES");
+                sbSql.AppendFormat(" ('{0}','{1}','{2}','{3}','{4}','{5}')", ID, NAME, NUM, MONEYS, MERGECAL, SPLITCAL);
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public void UPDATEGROUPPRODUCT(string IDGROUPPRODUCT, string ID, string NAME, string NUM, string MONEYS, string MERGECAL, string SPLITCAL)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.AppendFormat(" UPDATE [TKMK].[dbo].[GROUPPRODUCT]");
+                sbSql.AppendFormat(" SET [ID]='{0}',[NAME]='{1}',[NUM]='{2}',[MONEYS]='{3}',[MERGECAL]='{4}',[SPLITCAL]='{5}'", ID, NAME, NUM, MONEYS, MERGECAL, SPLITCAL);
+                sbSql.AppendFormat(" WHERE [ID]='{0}'", IDGROUPPRODUCT);
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
         public void SETTEXT1()
         {
             textBox11.ReadOnly = false;
@@ -716,6 +839,44 @@ namespace TKMK
             textBox33.ReadOnly = true;
             textBox34.ReadOnly = true;
             textBox35.ReadOnly = true;
+
+        }
+
+        public void SETTEXT10()
+        {
+            textBox41.ReadOnly = false;
+            textBox42.ReadOnly = false;
+            textBox43.ReadOnly = false;
+            textBox44.ReadOnly = false;
+            textBox45.ReadOnly = false;
+            textBox46.ReadOnly = false;
+
+            textBox41.Text = null;
+            textBox42.Text = null;
+            textBox43.Text = null;
+            textBox44.Text = null;
+            textBox45.Text = null;
+            textBox46.Text = null;
+        }
+
+        public void SETTEXT11()
+        {           
+            textBox41.ReadOnly = false;
+            textBox42.ReadOnly = false;
+            textBox43.ReadOnly = false;
+            textBox44.ReadOnly = false;
+            textBox45.ReadOnly = false;
+            textBox46.ReadOnly = false;
+        }
+
+        public void SETTEXT12()
+        {
+            textBox41.ReadOnly = true;
+            textBox42.ReadOnly = true;
+            textBox43.ReadOnly = true;
+            textBox44.ReadOnly = true;
+            textBox45.ReadOnly = true;
+            textBox46.ReadOnly = true;
 
         }
 
@@ -834,6 +995,40 @@ namespace TKMK
         {
             SEARCHGROUPPRODUCT();
         }
+        private void button20_Click(object sender, EventArgs e)
+        {
+            STATUSGROUPPRODUCT = "ADD";
+            SETTEXT10();
+        }
+
+        private void button19_Click(object sender, EventArgs e)
+        {
+            STATUSGROUPPRODUCT = "EDIT";
+            SETTEXT11();
+        }
+
+        private void button18_Click(object sender, EventArgs e)
+        {
+
+            if (STATUSGROUPPRODUCT.Equals("ADD"))
+            {
+                ADDGROUPPRODUCT(textBox41.Text.Trim(), textBox42.Text.Trim(), textBox43.Text.Trim(), textBox44.Text.Trim(), textBox45.Text.Trim(), textBox46.Text.Trim());
+            }
+            else if (STATUSGROUPPRODUCT.Equals("EDIT"))
+            {
+                UPDATEGROUPPRODUCT(IDGROUPPRODUCT, textBox41.Text.Trim(), textBox42.Text.Trim(), textBox43.Text.Trim(), textBox44.Text.Trim(), textBox45.Text.Trim(), textBox46.Text.Trim());
+            }
+
+            STATUSGROUPPRODUCT = null;
+            SEARCHGROUPPRODUCT();
+            SETTEXT12();
+        }
+
+        private void button17_Click(object sender, EventArgs e)
+        {
+            SETTEXT12();
+        }
+
 
         #endregion
 
