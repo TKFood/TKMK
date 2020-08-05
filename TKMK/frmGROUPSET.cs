@@ -41,6 +41,9 @@ namespace TKMK
         string IDGROUPBASE;
         string STATUSGROUPPCT;
         string IDGROUPPCT;
+        string STATUSGROUPPRODUCT;
+        string IDGROUPPRODUCT;
+
 
         public frmGROUPSET()
         {
@@ -215,6 +218,65 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
+
+        public void SEARCHGROUPPRODUCT()
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT  [ID] AS '代號',[NAME] AS '名稱',[NUM] AS '組數',[MONEYS] AS '金額',[MERGECAL] AS '合併計算',[SPLITCAL] AS '分拆計算'");
+                sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[GROUPPRODUCT]");
+                sbSql.AppendFormat(@"  ORDER BY[ID]");
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count == 0)
+                {
+                    dataGridView4.DataSource = null;
+                }
+                else
+                {
+                    if (ds1.Tables["ds1"].Rows.Count >= 1)
+                    {
+                        dataGridView4.DataSource = ds1.Tables["ds1"];
+                        dataGridView4.AutoResizeColumns();
+
+
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
             if (dataGridView1.CurrentRow != null)
@@ -767,6 +829,10 @@ namespace TKMK
         private void button12_Click(object sender, EventArgs e)
         {
             SETTEXT9();
+        }
+        private void button16_Click(object sender, EventArgs e)
+        {
+            SEARCHGROUPPRODUCT();
         }
 
         #endregion
