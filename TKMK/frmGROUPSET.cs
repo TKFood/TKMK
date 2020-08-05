@@ -43,6 +43,8 @@ namespace TKMK
         string IDGROUPPCT;
         string STATUSGROUPPRODUCT;
         string IDGROUPPRODUCT;
+        string STATUSGROUPEXCHANGEMONEYS;
+        string IDGROUPEXCHANGEMONEYS;
 
 
         public frmGROUPSET()
@@ -259,6 +261,62 @@ namespace TKMK
                     {
                         dataGridView4.DataSource = ds1.Tables["ds1"];
                         dataGridView4.AutoResizeColumns();
+
+
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public void SEARCHGROUPEXCHANGEMONEYS()
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT [ID] AS '代號',[EXCHANGEMONEYS] AS '兌換券金額'");
+                sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[GROUPEXCHANGEMONEYS]");
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count == 0)
+                {
+                    dataGridView5.DataSource = null;
+                }
+                else
+                {
+                    if (ds1.Tables["ds1"].Rows.Count >= 1)
+                    {
+                        dataGridView5.DataSource = ds1.Tables["ds1"];
+                        dataGridView5.AutoResizeColumns();
 
 
                     }
@@ -1030,6 +1088,30 @@ namespace TKMK
         }
 
 
+        private void button21_Click(object sender, EventArgs e)
+        {
+            SEARCHGROUPEXCHANGEMONEYS();
+        }
+
+        private void button25_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button24_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button23_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button22_Click(object sender, EventArgs e)
+        {
+
+        }
         #endregion
 
 
