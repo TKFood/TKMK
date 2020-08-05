@@ -456,6 +456,7 @@
             this.button7.TabIndex = 66;
             this.button7.Text = "取消";
             this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // button8
             // 
@@ -467,6 +468,7 @@
             this.button8.TabIndex = 65;
             this.button8.Text = "存檔";
             this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
             // button9
             // 
@@ -478,6 +480,7 @@
             this.button9.TabIndex = 64;
             this.button9.Text = "修改";
             this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
             // button10
             // 
@@ -489,6 +492,7 @@
             this.button10.TabIndex = 63;
             this.button10.Text = "新增";
             this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
             // dataGridView2
             // 

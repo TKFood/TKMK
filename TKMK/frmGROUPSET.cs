@@ -199,30 +199,7 @@ namespace TKMK
                 }
             }
         }
-        public void SETTEXT1()
-        {
-            textBox11.ReadOnly = false;
-            textBox12.ReadOnly = false;
-
-            textBox11.Text = null;
-            textBox12.Text = null;
-        }
-
-        public void SETTEXT2()
-        {
-            textBox11.ReadOnly = false;
-            textBox12.ReadOnly = false;
-
-           
-        }
-
-        public void SETTEXT3()
-        {
-            textBox11.ReadOnly = true;
-            textBox12.ReadOnly = true;
-
-
-        }
+    
 
         public void ADDCARKIND(string ID,string NAME)
         {
@@ -318,6 +295,154 @@ namespace TKMK
             }
         }
 
+        public void ADDGROUPBASE(string ID, string NAME,string BASEMONEYS)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.AppendFormat(" INSERT INTO [TKMK].[dbo].[GROUPBASE]");
+                sbSql.AppendFormat(" ([ID],[NAME],[BASEMONEYS])");
+                sbSql.AppendFormat(" VALUES");
+                sbSql.AppendFormat(" ('{0}','{1}','{2}')",ID,NAME,BASEMONEYS);
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public void UPDATEGROUPBASE(string IDGROUPBASE, string ID, string NAME, string BASEMONEYS)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+
+                sbSql.AppendFormat(" UPDATE [TKMK].[dbo].[GROUPBASE]");
+                sbSql.AppendFormat(" SET [ID]='{0}',[NAME]='{1}',[BASEMONEYS]='{2}'", ID, NAME, BASEMONEYS);
+                sbSql.AppendFormat(" WHERE [ID]='{0}'", IDGROUPBASE);
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public void SETTEXT1()
+        {
+            textBox11.ReadOnly = false;
+            textBox12.ReadOnly = false;
+
+            textBox11.Text = null;
+            textBox12.Text = null;
+        }
+
+        public void SETTEXT2()
+        {
+            textBox11.ReadOnly = false;
+            textBox12.ReadOnly = false;
+
+
+        }
+
+        public void SETTEXT3()
+        {
+            textBox11.ReadOnly = true;
+            textBox12.ReadOnly = true;
+
+
+        }
+
+        public void SETTEXT4()
+        {
+            textBox21.ReadOnly = false;
+            textBox22.ReadOnly = false;
+            textBox23.ReadOnly = false;
+
+            textBox21.Text = null;
+            textBox22.Text = null;
+            textBox23.Text = null;
+        }
+
+        public void SETTEXT5()
+        {
+            textBox21.ReadOnly = false;
+            textBox22.ReadOnly = false;
+            textBox23.ReadOnly = false;
+
+        }
+
+        public void SETTEXT6()
+        {
+            textBox21.ReadOnly = true;
+            textBox22.ReadOnly = true;
+            textBox23.ReadOnly = true;
+
+        }
+
         #endregion
 
         #region BUTTON
@@ -333,8 +458,7 @@ namespace TKMK
 
         private void button2_Click(object sender, EventArgs e)
         {
-            STATUSCARKIND = "EDIT";
-            SETTEXT2();
+           
         }
         private void button3_Click(object sender, EventArgs e)
         {
@@ -347,6 +471,7 @@ namespace TKMK
                 UPDATECARKIND(IDCARKIND,textBox11.Text.Trim(), textBox12.Text.Trim());
             }
 
+            STATUSCARKIND = null;
             SEARCHCARKIND();
             SETTEXT3();
         }
@@ -360,9 +485,39 @@ namespace TKMK
         {
             SEARCHGROUPBASE();
         }
+        private void button10_Click(object sender, EventArgs e)
+        {
+            STATUSGROUPBASE = "ADD";
+            SETTEXT4();
+        }
+        private void button9_Click(object sender, EventArgs e)
+        {
+            STATUSGROUPBASE = "EDIT";
+            SETTEXT5();
+        }
+        private void button8_Click(object sender, EventArgs e)
+        {
+
+            if (STATUSGROUPBASE.Equals("ADD"))
+            {
+                ADDGROUPBASE(textBox21.Text.Trim(), textBox22.Text.Trim(), textBox23.Text.Trim());
+            }
+            else if (STATUSGROUPBASE.Equals("EDIT"))
+            {
+                UPDATEGROUPBASE(IDGROUPBASE, textBox21.Text.Trim(), textBox22.Text.Trim(), textBox23.Text.Trim());
+            }
+
+            STATUSGROUPBASE = null;
+            SEARCHGROUPBASE();
+            SETTEXT6();
+        }
+        private void button7_Click(object sender, EventArgs e)
+        {
+            SETTEXT6();
+        }
 
         #endregion
 
-    
+
     }
 }
