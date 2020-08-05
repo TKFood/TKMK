@@ -87,6 +87,14 @@ namespace TKMK
             //comboBox3load();
 
         }
+
+        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        {
+            dateTimePicker2.Value = dateTimePicker1.Value;
+            dateTimePicker3.Value = dateTimePicker1.Value;
+
+            textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
+        }
         public void comboBox1load()
         {
             connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
@@ -166,7 +174,7 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  SELECT MI001,MI002 FROM [TK].dbo.WSCMI WHERE MI001 LIKE '68%' AND MI001='{0}' ORDER BY MI001 ",MI001);
+                sbSql.AppendFormat(@"  SELECT MI001,SUBSTRING(MI002,1,3) AS MI002 FROM [TK].dbo.WSCMI WHERE MI001 LIKE '68%' AND MI001='{0}' ORDER BY MI001 ", MI001);
                 sbSql.AppendFormat(@"  ");
                 sbSql.AppendFormat(@"  ");
 
@@ -1466,6 +1474,61 @@ namespace TKMK
 
         }
 
+        public void UPDATETKWSCMI(string MI001,string NAME)
+        {
+            try
+            {
+               
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+
+                sbSql.AppendFormat(" UPDATE [TK].[dbo].[WSCMI] SET [MI002]='{0}' WHERE MI001='{1}'",NAME,MI001);
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_WSCMI] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.138' AND MI001 ='{0}'", MI001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_WSCMI] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.135' AND MI001 ='{0}'", MI001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_WSCMI] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.134' AND MI001 ='{0}'", MI001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_WSCMI] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.133' AND MI001 ='{0}'", MI001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_WSCMI] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.132' AND MI001 ='{0}'", MI001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_WSCMI] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.130' AND MI001 ='{0}'", MI001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_WSCMI] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.137' AND MI001 ='{0}'", MI001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_WSCMI] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.131' AND MI001 ='{0}'", MI001);
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
         #endregion
 
         #region BUTTON
@@ -1563,6 +1626,8 @@ namespace TKMK
                         UPDATEGROUPCAR(CARNO, CARNAME, CARKIND);
                     }
                 }
+
+                UPDATETKWSCMI(EXCHANACOOUNT, EXCHANNO+' '+CARNAME);
             }
             else if(STATUSCONTROLLER.Equals("EDIT"))
             {
@@ -1608,11 +1673,15 @@ namespace TKMK
                             UPDATEGROUPCAR(CARNO, CARNAME, CARKIND);
                         }
                     }
+
+                    UPDATETKWSCMI(EXCHANACOOUNT, EXCHANNO + ' ' + CARNAME);
                 }
 
-                
+               
 
             }
+
+           
 
             SETTEXT2();
             SETTEXT4();
@@ -1728,8 +1797,9 @@ namespace TKMK
             SETFASTREPORT();
         }
 
+
         #endregion
 
-
+        
     }
 }
