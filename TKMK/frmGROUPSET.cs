@@ -37,6 +37,8 @@ namespace TKMK
 
         string STATUSCARKIND;
         string IDCARKIND;
+        string STATUSGROUPBASE;
+        string IDGROUPBASE;
 
         public frmGROUPSET()
         {
@@ -98,6 +100,62 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
+
+        public void SEARCHGROUPBASE()
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT [ID] AS '代號',[NAME] AS '名稱',[BASEMONEYS] AS '茶水費'");
+                sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[GROUPBASE]");
+                sbSql.AppendFormat(@"  ORDER BY [ID]");
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count == 0)
+                {
+                    dataGridView2.DataSource = null;
+                }
+                else
+                {
+                    if (ds1.Tables["ds1"].Rows.Count >= 1)
+                    {
+                        dataGridView2.DataSource = ds1.Tables["ds1"];
+                        dataGridView2.AutoResizeColumns();
+
+
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
             if (dataGridView1.CurrentRow != null)
@@ -119,6 +177,28 @@ namespace TKMK
             }
         }
 
+        private void dataGridView2_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView2.CurrentRow != null)
+            {
+                int rowindex = dataGridView2.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView2.Rows[rowindex];
+                    IDGROUPBASE = row.Cells["代號"].Value.ToString();
+                    textBox21.Text = row.Cells["代號"].Value.ToString();
+                    textBox22.Text = row.Cells["名稱"].Value.ToString();
+                    textBox23.Text = row.Cells["茶水費"].Value.ToString();
+                }
+                else
+                {
+                    IDGROUPBASE = null;
+                    textBox21.Text = null;
+                    textBox22.Text = null;
+                    textBox23.Text = null;
+                }
+            }
+        }
         public void SETTEXT1()
         {
             textBox11.ReadOnly = false;
@@ -276,8 +356,13 @@ namespace TKMK
             SETTEXT3();
         }
 
+        private void button6_Click(object sender, EventArgs e)
+        {
+            SEARCHGROUPBASE();
+        }
+
         #endregion
 
-
+    
     }
 }
