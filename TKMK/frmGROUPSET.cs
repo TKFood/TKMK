@@ -173,9 +173,9 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  SELECT [ID] AS '代號',[PCTMONEYS] AS '消費金額門檻',[NAME] AS '名稱',[PCT] AS '抽佣比例'");
+                sbSql.AppendFormat(@"  SELECT [MID] AS '代號', [ID] AS '車種',[PCTMONEYS] AS '消費金額門檻',[NAME] AS '名稱',[PCT] AS '抽佣比例'");
                 sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[GROUPPCT]");
-                sbSql.AppendFormat(@"  ORDER BY  [ID],[PCTMONEYS],[NAME]");
+                sbSql.AppendFormat(@"  ORDER BY [ID],[NAME],[PCTMONEYS]");
                 sbSql.AppendFormat(@"  ");
                 sbSql.AppendFormat(@"  ");
                 sbSql.AppendFormat(@"  ");
@@ -268,9 +268,10 @@ namespace TKMK
                     DataGridViewRow row = dataGridView3.Rows[rowindex];
                     IDGROUPPCT = row.Cells["代號"].Value.ToString();
                     textBox31.Text = row.Cells["代號"].Value.ToString();
-                    textBox32.Text = row.Cells["消費金額門檻"].Value.ToString();
-                    textBox33.Text = row.Cells["名稱"].Value.ToString();
-                    textBox34.Text = row.Cells["抽佣比例"].Value.ToString();
+                    textBox32.Text = row.Cells["車種"].Value.ToString();
+                    textBox33.Text = row.Cells["消費金額門檻"].Value.ToString();
+                    textBox34.Text = row.Cells["名稱"].Value.ToString();
+                    textBox35.Text = row.Cells["抽佣比例"].Value.ToString();
                 }
                 else
                 {
@@ -279,6 +280,7 @@ namespace TKMK
                     textBox32.Text = null;
                     textBox33.Text = null;
                     textBox34.Text = null;
+                    textBox35.Text = null;
                 }
             }
         }
@@ -474,6 +476,101 @@ namespace TKMK
             }
         }
 
+        public void ADDGROUPPCT(string MID, string ID, string PCTMONEYS, string NAME, string PCT)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.AppendFormat(" INSERT INTO [TKMK].[dbo].[GROUPPCT]");
+                sbSql.AppendFormat(" ([MID],[ID],[PCTMONEYS],[NAME],[PCT])");
+                sbSql.AppendFormat(" VALUES");
+                sbSql.AppendFormat(" ('{0}','{1}','{2}','{3}','{4}')", MID, ID,PCTMONEYS,NAME,PCT);
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public void UPDATEGROUPPCT(string IDGROUPPCT, string MID, string ID, string PCTMONEYS, string NAME, string PCT)
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+
+                sbSql.AppendFormat(" UPDATE [TKMK].[dbo].[GROUPPCT]");
+                sbSql.AppendFormat(" SET [MID]='{0}',[ID]='{1}',[PCTMONEYS]='{2}',[NAME]='{3}',[PCT]='{4}'",MID, ID, PCTMONEYS, NAME, PCT);
+                sbSql.AppendFormat(" WHERE [MID]='{0}'", IDGROUPPCT);
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
         public void SETTEXT1()
         {
             textBox11.ReadOnly = false;
@@ -523,6 +620,40 @@ namespace TKMK
             textBox21.ReadOnly = true;
             textBox22.ReadOnly = true;
             textBox23.ReadOnly = true;
+
+        }
+
+        public void SETTEXT7()
+        {
+            textBox31.ReadOnly = false;
+            textBox32.ReadOnly = false;
+            textBox33.ReadOnly = false;
+            textBox34.ReadOnly = false;
+            textBox35.ReadOnly = false;
+
+            textBox31.Text = null;
+            textBox32.Text = null;
+            textBox33.Text = null;
+            textBox34.Text = null;
+            textBox35.Text = null;
+        }
+
+        public void SETTEXT8()
+        {
+            textBox31.ReadOnly = false;
+            textBox32.ReadOnly = false;
+            textBox33.ReadOnly = false;
+            textBox34.ReadOnly = false;
+            textBox35.ReadOnly = false;
+        }
+
+        public void SETTEXT9()
+        {
+            textBox31.ReadOnly = true;
+            textBox32.ReadOnly = true;
+            textBox33.ReadOnly = true;
+            textBox34.ReadOnly = true;
+            textBox35.ReadOnly = true;
 
         }
 
@@ -604,9 +735,42 @@ namespace TKMK
         }
 
 
+        private void button15_Click(object sender, EventArgs e)
+        {
+            STATUSGROUPPCT = "ADD";
+            SETTEXT7();
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+            STATUSGROUPPCT = "EDIT";
+            SETTEXT8();
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+
+            if (STATUSGROUPPCT.Equals("ADD"))
+            {
+                ADDGROUPPCT(textBox31.Text.Trim(), textBox32.Text.Trim(), textBox33.Text.Trim(), textBox34.Text.Trim(), textBox35.Text.Trim());
+            }
+            else if (STATUSGROUPPCT.Equals("EDIT"))
+            {
+                UPDATEGROUPPCT(IDGROUPPCT, textBox31.Text.Trim(), textBox32.Text.Trim(), textBox33.Text.Trim(), textBox34.Text.Trim(), textBox35.Text.Trim());
+            }
+
+            STATUSGROUPPCT = null;
+            SEARCHGROUPPCT();
+            SETTEXT9();
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            SETTEXT9();
+        }
 
         #endregion
 
-      
+
     }
 }
