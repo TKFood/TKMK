@@ -39,6 +39,8 @@ namespace TKMK
         string IDCARKIND;
         string STATUSGROUPBASE;
         string IDGROUPBASE;
+        string STATUSGROUPPCT;
+        string IDGROUPPCT;
 
         public frmGROUPSET()
         {
@@ -156,6 +158,63 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
+
+        public void SEARCHGROUPPCT()
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT [ID] AS '代號',[PCTMONEYS] AS '消費金額門檻',[NAME] AS '名稱',[PCT] AS '抽佣比例'");
+                sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[GROUPPCT]");
+                sbSql.AppendFormat(@"  ORDER BY  [ID],[PCTMONEYS],[NAME]");
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count == 0)
+                {
+                    dataGridView3.DataSource = null;
+                }
+                else
+                {
+                    if (ds1.Tables["ds1"].Rows.Count >= 1)
+                    {
+                        dataGridView3.DataSource = ds1.Tables["ds1"];
+                        dataGridView3.AutoResizeColumns();
+
+
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
             if (dataGridView1.CurrentRow != null)
@@ -199,7 +258,31 @@ namespace TKMK
                 }
             }
         }
-    
+        private void dataGridView3_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView3.CurrentRow != null)
+            {
+                int rowindex = dataGridView3.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView3.Rows[rowindex];
+                    IDGROUPPCT = row.Cells["代號"].Value.ToString();
+                    textBox31.Text = row.Cells["代號"].Value.ToString();
+                    textBox32.Text = row.Cells["消費金額門檻"].Value.ToString();
+                    textBox33.Text = row.Cells["名稱"].Value.ToString();
+                    textBox34.Text = row.Cells["抽佣比例"].Value.ToString();
+                }
+                else
+                {
+                    IDGROUPPCT = null;
+                    textBox31.Text = null;
+                    textBox32.Text = null;
+                    textBox33.Text = null;
+                    textBox34.Text = null;
+                }
+            }
+        }
+
 
         public void ADDCARKIND(string ID,string NAME)
         {
@@ -515,9 +598,15 @@ namespace TKMK
         {
             SETTEXT6();
         }
+        private void button11_Click(object sender, EventArgs e)
+        {
+            SEARCHGROUPPCT();
+        }
+
+
 
         #endregion
 
-
+      
     }
 }
