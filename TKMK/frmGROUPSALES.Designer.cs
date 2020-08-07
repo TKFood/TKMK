@@ -100,6 +100,7 @@
             this.comboBox5 = new System.Windows.Forms.ComboBox();
             this.previewControl1 = new FastReport.Preview.PreviewControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.label29 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -211,6 +212,7 @@
             this.tableLayoutPanel1.Controls.Add(this.dateTimePicker2, 7, 3);
             this.tableLayoutPanel1.Controls.Add(this.button11, 7, 2);
             this.tableLayoutPanel1.Controls.Add(this.comboBox4, 6, 2);
+            this.tableLayoutPanel1.Controls.Add(this.label29, 3, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -1015,6 +1017,18 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // label29
+            // 
+            this.label29.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label29.AutoSize = true;
+            this.label29.Font = new System.Drawing.Font("新細明體", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.label29.ForeColor = System.Drawing.Color.Blue;
+            this.label29.Location = new System.Drawing.Point(423, 47);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(134, 11);
+            this.label29.TabIndex = 721;
+            this.label29.Text = "更新時間";
+            // 
             // frmGROUPSALES
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 16F);
@@ -1025,6 +1039,7 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "frmGROUPSALES";
             this.Text = "frmGROUPSALES";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmGROUPSALES_FormClosed);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -1128,5 +1143,6 @@
         private System.Windows.Forms.Label label28;
         private System.Windows.Forms.ComboBox comboBox5;
         private FastReport.Preview.PreviewControl previewControl1;
+        private System.Windows.Forms.Label label29;
     }
 }

@@ -80,15 +80,24 @@ namespace TKMK
         private void timer1_Tick(object sender, EventArgs e)
         {
             dateTimePicker1.Value = GETDBDATES();
+            textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            comboBox3load();
+            label29.Text = "";
+            label29.Text = "更新時間"+ dateTimePicker1.Value.ToString("yyyy/MM/dd HH:mm:ss");
+
             //dateTimePicker1.Value = DateTime.Now;
             //dateTimePicker2.Value = DateTime.Now;
             //dateTimePicker3.Value = DateTime.Now;
-
-            //textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
-            //comboBox3load();
-
         }
+        private void frmGROUPSALES_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            int NUMS= FINDSEARCHGROUPSALESNOTFINISH(dateTimePicker1.Value.ToString("yyyyMMdd"));
 
+            if(NUMS>0)
+            {
+                MessageBox.Show("仍有團務還未結案!");
+            }
+        }
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
             dateTimePicker2.Value = dateTimePicker1.Value;
@@ -1897,9 +1906,58 @@ namespace TKMK
             SETFASTREPORT();
         }
 
+        public int FINDSEARCHGROUPSALESNOTFINISH(string CREATEDATES)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT COUNT([CARNO]) AS NUMS ");                
+                sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[GROUPSALES]");
+                sbSql.AppendFormat(@"  WHERE [STATUS]='預約接團' AND CONVERT(nvarchar,[CREATEDATES],112)='{0}' ", CREATEDATES);                
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+                
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return Convert.ToInt32(ds1.Tables["ds1"].Rows[0]["NUMS"].ToString());
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
+            catch
+            {
+                return 0;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
 
         #endregion
 
-        
+
     }
 }
