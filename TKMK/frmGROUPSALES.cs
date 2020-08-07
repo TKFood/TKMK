@@ -141,7 +141,7 @@ namespace TKMK
             connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
             sqlConn = new SqlConnection(connectionString);
             StringBuilder Sequel = new StringBuilder();
-            Sequel.AppendFormat(@"SELECT MI001,MI002 FROM [TK].dbo.WSCMI WHERE MI001 LIKE '68%'  AND MI001 NOT IN (SELECT [EXCHANACOOUNT] FROM [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'  AND [STATUS]='預約接團' ) ORDER BY MI001 ",dateTimePicker1.Value.ToString("yyyyMMdd"));
+            Sequel.AppendFormat(@"SELECT LTRIM(RTRIM((MI001)))+' '+SUBSTRING(MI002,1,3) AS 'MI001',MI002 FROM [TK].dbo.WSCMI WHERE MI001 LIKE '68%'  AND MI001 NOT IN (SELECT [EXCHANACOOUNT] FROM [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'  AND [STATUS]='預約接團' ) ORDER BY MI001 ", dateTimePicker1.Value.ToString("yyyyMMdd"));
             SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
             DataTable dt = new DataTable();
             sqlConn.Open();
@@ -158,7 +158,7 @@ namespace TKMK
 
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SEARCHWSCMI(comboBox3.Text.Trim());
+            SEARCHWSCMI(comboBox3.Text.Trim().Substring(0,7).ToString());
         }
 
 
@@ -392,7 +392,7 @@ namespace TKMK
 
                     comboBox1.Text = row.Cells["車種"].Value.ToString();
                     comboBox2.Text = row.Cells["團類"].Value.ToString();
-                    comboBox3.Text = row.Cells["優惠券帳號"].Value.ToString();
+                    comboBox3.Text = row.Cells["優惠券帳號"].Value.ToString()+' '+ row.Cells["優惠券名"].Value.ToString();
 
                     if(row.Cells["兌換券"].Value.ToString().Equals("Y"))
                     {
@@ -1690,7 +1690,7 @@ namespace TKMK
                 string CARNUM = textBox142.Text.Trim();
                 string GUSETNUM = textBox143.Text.Trim();
                 string EXCHANNO = textBox144.Text.Trim();
-                string EXCHANACOOUNT = comboBox3.Text.Trim();
+                string EXCHANACOOUNT = comboBox3.Text.Trim().Substring(0,7).ToString();
                 string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                 string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                 string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
@@ -1750,7 +1750,7 @@ namespace TKMK
                     string CARNUM = textBox142.Text.Trim();
                     string GUSETNUM = textBox143.Text.Trim();
                     string EXCHANNO = textBox144.Text.Trim();
-                    string EXCHANACOOUNT = comboBox3.Text.Trim();
+                    string EXCHANACOOUNT = comboBox3.Text.Trim().Substring(0, 7).ToString();
                     //string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     //string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     //string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
