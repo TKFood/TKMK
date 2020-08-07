@@ -1232,6 +1232,7 @@ namespace TKMK
             textBox142.ReadOnly = false;
             textBox143.ReadOnly = false;
 
+            comboBox1.Enabled = true;
            
         }
 
@@ -1241,7 +1242,9 @@ namespace TKMK
             textBox141.ReadOnly = true;
             textBox142.ReadOnly = true;
             textBox143.ReadOnly = true;
-         
+
+            comboBox1.Enabled = false;
+
         }
         public void SETTEXT5()
         {
