@@ -85,6 +85,12 @@ namespace TKMK
             label29.Text = "";
             label29.Text = "更新時間"+ dateTimePicker1.Value.ToString("yyyy/MM/dd HH:mm:ss");
 
+
+            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            SETMONEYS();
+            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            SETNUMS(dateTimePicker1.Value.ToString("yyyyMMdd"));
+
             //dateTimePicker1.Value = DateTime.Now;
             //dateTimePicker2.Value = DateTime.Now;
             //dateTimePicker3.Value = DateTime.Now;
@@ -651,73 +657,77 @@ namespace TKMK
             {
                 foreach (DataGridViewRow dr in this.dataGridView1.Rows)
                 {
-                    //清空值
-                    ID = null;
-                    STATUSCONTROLLER = null;
-                    ACCOUNT = null;
-                    ISEXCHANGE = null;
-                    CARKIND = null;
-                    GROUPSTARTDATES = null;
-                    STARTDATES = null;
-                    STARTTIMES = null;
-                    SPECIALMNUMS = 0;
-                    SPECIALMONEYS = 0;
-                    EXCHANGEMONEYS = 0;
-                    EXCHANGETOTALMONEYS = 0;
-                    EXCHANGESALESMMONEYS = 0;
-                    COMMISSIONBASEMONEYS = 0;
-                    COMMISSIONPCT = 0;
-                    COMMISSIONPCTMONEYS = 0;
-                    SALESMMONEYS = 0;
-                    GUSETNUM = 0;
-                    TOTALCOMMISSIONMONEYS = 0;
-
-                    //依每筆資料找出key值
-                    ID = dr.Cells["ID"].Value.ToString().Trim();
-                    ACCOUNT = dr.Cells["優惠券帳號"].Value.ToString().Trim();
-                    ISEXCHANGE= dr.Cells["兌換券"].Value.ToString().Trim();
-                    CARKIND= dr.Cells["車種"].Value.ToString().Trim();
-                    GROUPSTARTDATES= dr.Cells["實際到達時間"].Value.ToString().Trim();
-                    STARTDATES = GROUPSTARTDATES.Substring(0,10).Replace("-","").ToString();
-                    STARTTIMES = GROUPSTARTDATES.Substring(11,8);
-
-                    //DateTime dt1 = DateTime.Now;
-
-                    //找出各項金額                   
-                    SPECIALMNUMS = FINDSPECIALMNUMS(ACCOUNT, STARTDATES, STARTTIMES);
-                    SPECIALMONEYS = FINDSPECIALMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
-                    SALESMMONEYS = FINDSALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);                  
-
-                    //金額條件判斷
-                    if (ISEXCHANGE.Equals("是"))
+                    //判断
+                    if (dr.Cells[21].Value.ToString().Trim().Equals("預約接團"))
                     {
-                        int CARNUM = Convert.ToInt32(dr.Cells["車數"].Value.ToString().Trim());
-                        EXCHANGEMONEYS = FINDEXCHANGEMONEYS();
-                        EXCHANGETOTALMONEYS = EXCHANGEMONEYS * CARNUM;
-                        EXCHANGESALESMMONEYS = FINDEXCHANGESALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
-                        COMMISSIONBASEMONEYS = 0;
-
-                        SALESMMONEYS = SALESMMONEYS - EXCHANGETOTALMONEYS;
-
-                    }
-                    else if(ISEXCHANGE.Equals("否"))
-                    {
+                        //清空值
+                        ID = null;
+                        STATUSCONTROLLER = null;
+                        ACCOUNT = null;
+                        ISEXCHANGE = null;
+                        CARKIND = null;
+                        GROUPSTARTDATES = null;
+                        STARTDATES = null;
+                        STARTTIMES = null;
+                        SPECIALMNUMS = 0;
+                        SPECIALMONEYS = 0;
                         EXCHANGEMONEYS = 0;
                         EXCHANGETOTALMONEYS = 0;
                         EXCHANGESALESMMONEYS = 0;
-                        COMMISSIONBASEMONEYS = FINDBASEMONEYS(CARKIND);
-                        
+                        COMMISSIONBASEMONEYS = 0;
+                        COMMISSIONPCT = 0;
+                        COMMISSIONPCTMONEYS = 0;
+                        SALESMMONEYS = 0;
+                        GUSETNUM = 0;
+                        TOTALCOMMISSIONMONEYS = 0;
+
+                        //依每筆資料找出key值
+                        ID = dr.Cells["ID"].Value.ToString().Trim();
+                        ACCOUNT = dr.Cells["優惠券帳號"].Value.ToString().Trim();
+                        ISEXCHANGE = dr.Cells["兌換券"].Value.ToString().Trim();
+                        CARKIND = dr.Cells["車種"].Value.ToString().Trim();
+                        GROUPSTARTDATES = dr.Cells["實際到達時間"].Value.ToString().Trim();
+                        STARTDATES = GROUPSTARTDATES.Substring(0, 10).Replace("-", "").ToString();
+                        STARTTIMES = GROUPSTARTDATES.Substring(11, 8);
+
+                        //DateTime dt1 = DateTime.Now;
+
+                        //找出各項金額                   
+                        SPECIALMNUMS = FINDSPECIALMNUMS(ACCOUNT, STARTDATES, STARTTIMES);
+                        SPECIALMONEYS = FINDSPECIALMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
+                        SALESMMONEYS = FINDSALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
+
+                        //金額條件判斷
+                        if (ISEXCHANGE.Equals("是"))
+                        {
+                            int CARNUM = Convert.ToInt32(dr.Cells["車數"].Value.ToString().Trim());
+                            EXCHANGEMONEYS = FINDEXCHANGEMONEYS();
+                            EXCHANGETOTALMONEYS = EXCHANGEMONEYS * CARNUM;
+                            EXCHANGESALESMMONEYS = FINDEXCHANGESALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
+                            COMMISSIONBASEMONEYS = 0;
+
+                            SALESMMONEYS = SALESMMONEYS - EXCHANGETOTALMONEYS;
+
+                        }
+                        else if (ISEXCHANGE.Equals("否"))
+                        {
+                            EXCHANGEMONEYS = 0;
+                            EXCHANGETOTALMONEYS = 0;
+                            EXCHANGESALESMMONEYS = 0;
+                            COMMISSIONBASEMONEYS = FINDBASEMONEYS(CARKIND);
+
+                        }
+
+                        COMMISSIONPCT = FINDCOMMISSIONPCT(CARKIND, SALESMMONEYS);
+                        COMMISSIONPCTMONEYS = Convert.ToInt32(COMMISSIONPCT * SALESMMONEYS);
+                        GUSETNUM = FINDGUSETNUM(ACCOUNT, STARTDATES, STARTTIMES);
+                        TOTALCOMMISSIONMONEYS = Convert.ToInt32(SPECIALMONEYS + COMMISSIONBASEMONEYS + (COMMISSIONPCT * (SALESMMONEYS - SPECIALMONEYS)));
+
+                        UPDATEGROUPPRODUCT(ID, EXCHANGEMONEYS.ToString(), EXCHANGETOTALMONEYS.ToString(), EXCHANGESALESMMONEYS.ToString(), SALESMMONEYS.ToString(), SPECIALMNUMS.ToString(), SPECIALMONEYS.ToString(), COMMISSIONBASEMONEYS.ToString(), COMMISSIONPCT.ToString(), COMMISSIONPCTMONEYS.ToString(), TOTALCOMMISSIONMONEYS.ToString(), GUSETNUM.ToString());
+                        //DateTime dt2 = DateTime.Now;
+
+                        //MessageBox.Show(dt1.ToString("HH:mm:ss")+"-"+ dt2.ToString("HH:mm:ss"));
                     }
-
-                    COMMISSIONPCT = FINDCOMMISSIONPCT(CARKIND, SALESMMONEYS);
-                    COMMISSIONPCTMONEYS = Convert.ToInt32(COMMISSIONPCT * SALESMMONEYS);
-                    GUSETNUM = FINDGUSETNUM(ACCOUNT, STARTDATES, STARTTIMES);
-                    TOTALCOMMISSIONMONEYS = Convert.ToInt32(SPECIALMONEYS + COMMISSIONBASEMONEYS + (COMMISSIONPCT * (SALESMMONEYS - SPECIALMONEYS)));
-
-                    UPDATEGROUPPRODUCT(ID, EXCHANGEMONEYS.ToString(), EXCHANGETOTALMONEYS.ToString(), EXCHANGESALESMMONEYS.ToString(), SALESMMONEYS.ToString(), SPECIALMNUMS.ToString(), SPECIALMONEYS.ToString(), COMMISSIONBASEMONEYS.ToString(), COMMISSIONPCT.ToString(), COMMISSIONPCTMONEYS.ToString(), TOTALCOMMISSIONMONEYS.ToString() , GUSETNUM.ToString());
-                    //DateTime dt2 = DateTime.Now;
-
-                    //MessageBox.Show(dt1.ToString("HH:mm:ss")+"-"+ dt2.ToString("HH:mm:ss"));
 
                 }
             }
