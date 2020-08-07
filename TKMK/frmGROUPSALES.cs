@@ -44,6 +44,8 @@ namespace TKMK
         string GROUPSTARTDATES = null;
         string STARTDATES = null;
         string STARTTIMES = null;
+        string STATUS = null;
+
         int SPECIALMNUMS = 0;
         int SPECIALMONEYS = 0;
         int EXCHANGEMONEYS = 0;
@@ -398,6 +400,8 @@ namespace TKMK
                     DataGridViewRow row = dataGridView1.Rows[rowindex];
                     ID = row.Cells["ID"].Value.ToString();
 
+                    STATUS= row.Cells["狀態"].Value.ToString().Trim();
+
                     textBox121.Text = row.Cells["序號"].Value.ToString();
                     textBox131.Text = row.Cells["車號"].Value.ToString();
                     textBox141.Text = row.Cells["車名"].Value.ToString();
@@ -418,6 +422,11 @@ namespace TKMK
                         checkBox1.Checked = false;
                     }
                    
+                }
+                else
+                {
+                    ID = null;
+                    STATUS = null;
                 }
             }
         }
@@ -1823,14 +1832,31 @@ namespace TKMK
         }
         private void button1_Click_1(object sender, EventArgs e)
         {
-            SETTEXT3();
-            STATUSCONTROLLER = "EDIT";
+            if(STATUS.Equals("預約接團"))
+            {
+                SETTEXT3();
+                STATUSCONTROLLER = "EDIT";
+            }
+            else
+            {
+                MessageBox.Show("不是預約接團，不能修改");
+            }
+
+           
         }
         private void button3_Click(object sender, EventArgs e)
         {
-            comboBox3load();
-            SETTEXT5();
-            STATUSCONTROLLER = "EDIT";
+            if (STATUS.Equals("預約接團"))
+            {
+                comboBox3load();
+                SETTEXT5();
+                STATUSCONTROLLER = "EDIT";
+            }
+            else
+            {
+                MessageBox.Show("不是預約接團，不能修改");
+            }
+
         }
 
         private void button11_Click(object sender, EventArgs e)
@@ -1840,78 +1866,103 @@ namespace TKMK
 
         private void button6_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(ID))
+            if (STATUS.Equals("預約接團"))
             {
-                string CARNO = textBox131.Text.Trim();
-                string CARNAME = textBox141.Text.Trim();
-                string CARKIND = comboBox1.Text.Trim();
-                string GROUPKIND = comboBox2.Text.Trim();
-                string ISEXCHANGE = "N";
-
-                if (checkBox1.Checked == true)
+                if (!string.IsNullOrEmpty(ID))
                 {
-                    ISEXCHANGE = "是";
-                }
-                else
-                {
-                    ISEXCHANGE = "否";
-                }
-                string CARNUM = textBox142.Text.Trim();
-                string GUSETNUM = textBox143.Text.Trim();
-                string EXCHANNO = textBox144.Text.Trim();
-                string EXCHANACOOUNT = comboBox3.Text.Trim();
-                //string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
-                //string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
-                //string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                    string CARNO = textBox131.Text.Trim();
+                    string CARNAME = textBox141.Text.Trim();
+                    string CARKIND = comboBox1.Text.Trim();
+                    string GROUPKIND = comboBox2.Text.Trim();
+                    string ISEXCHANGE = "N";
 
-                UPDATEGROUPSALES(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, "取消預約");
+                    if (checkBox1.Checked == true)
+                    {
+                        ISEXCHANGE = "是";
+                    }
+                    else
+                    {
+                        ISEXCHANGE = "否";
+                    }
+                    string CARNUM = textBox142.Text.Trim();
+                    string GUSETNUM = textBox143.Text.Trim();
+                    string EXCHANNO = textBox144.Text.Trim();
+                    string EXCHANACOOUNT = comboBox3.Text.Trim();
+                    //string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                    //string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                    //string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
+
+                    UPDATEGROUPSALES(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, "取消預約");
+                }
+
+                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            }
+            else
+            {
+                MessageBox.Show("不是預約接團，不能修改");
             }
 
-            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(ID))
+            if (STATUS.Equals("預約接團"))
             {
-                string CARNO = textBox131.Text.Trim();
-                string CARNAME = textBox141.Text.Trim();
-                string CARKIND = comboBox1.Text.Trim();
-                string GROUPKIND = comboBox2.Text.Trim();
-                string ISEXCHANGE = "N";
-
-                if (checkBox1.Checked == true)
+                if (!string.IsNullOrEmpty(ID))
                 {
-                    ISEXCHANGE = "是";
-                }
-                else
-                {
-                    ISEXCHANGE = "否";
-                }
-                string CARNUM = textBox142.Text.Trim();
-                string GUSETNUM = textBox143.Text.Trim();
-                string EXCHANNO = textBox144.Text.Trim();
-                string EXCHANACOOUNT = comboBox3.Text.Trim();
-                //string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
-                //string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
-                //string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                    string CARNO = textBox131.Text.Trim();
+                    string CARNAME = textBox141.Text.Trim();
+                    string CARKIND = comboBox1.Text.Trim();
+                    string GROUPKIND = comboBox2.Text.Trim();
+                    string ISEXCHANGE = "N";
 
-                UPDATEGROUPSALES(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, "異常結案");
+                    if (checkBox1.Checked == true)
+                    {
+                        ISEXCHANGE = "是";
+                    }
+                    else
+                    {
+                        ISEXCHANGE = "否";
+                    }
+                    string CARNUM = textBox142.Text.Trim();
+                    string GUSETNUM = textBox143.Text.Trim();
+                    string EXCHANNO = textBox144.Text.Trim();
+                    string EXCHANACOOUNT = comboBox3.Text.Trim();
+                    //string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                    //string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                    //string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
+
+                    UPDATEGROUPSALES(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, "異常結案");
+                }
+
+                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            }
+            else
+            {
+                MessageBox.Show("不是預約接團，不能修改");
             }
 
-            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(ID))
-            {                
-                string GROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
+            if (STATUS.Equals("預約接團"))
+            {
+                if (!string.IsNullOrEmpty(ID))
+                {
+                    string GROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
 
-                UPDATEGROUPSALESCOMPELETE(ID, GROUPENDDATES, "完成接團");
+                    UPDATEGROUPSALESCOMPELETE(ID, GROUPENDDATES, "完成接團");
+                }
+
+                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            }
+            else
+            {
+                MessageBox.Show("不是預約接團，不能修改");
             }
 
-            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
         }
 
         private void button12_Click(object sender, EventArgs e)
