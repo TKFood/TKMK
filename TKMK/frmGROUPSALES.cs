@@ -36,7 +36,7 @@ namespace TKMK
         int result;
 
 
-        string STATUSCONTROLLER = null;
+        string STATUSCONTROLLER = "VIEW";
         string ID = null;
         string ACCOUNT = null;
         string ISEXCHANGE = null;
@@ -78,20 +78,33 @@ namespace TKMK
         }
 
         #region FUNCTION
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Enter)
+            {
+                SendKeys.Send("{TAB}");
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            dateTimePicker1.Value = GETDBDATES();
-            textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
-            comboBox3load();
-            label29.Text = "";
-            label29.Text = "更新時間"+ dateTimePicker1.Value.ToString("yyyy/MM/dd HH:mm:ss");
+            if (STATUSCONTROLLER.Equals("VIEW") )
+            {
+                dateTimePicker1.Value = GETDBDATES();
+                textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
+                comboBox3load();
+                label29.Text = "";
+                label29.Text = "更新時間" + dateTimePicker1.Value.ToString("yyyy/MM/dd HH:mm:ss");
 
 
-            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
-            SETMONEYS();
-            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
-            SETNUMS(dateTimePicker1.Value.ToString("yyyyMMdd"));
+                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+                SETMONEYS();
+                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+                SETNUMS(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            }
+            
 
             //dateTimePicker1.Value = DateTime.Now;
             //dateTimePicker2.Value = DateTime.Now;
@@ -671,7 +684,7 @@ namespace TKMK
                     {
                         //清空值
                         ID = null;
-                        STATUSCONTROLLER = null;
+                        STATUSCONTROLLER = "VIEW";
                         ACCOUNT = null;
                         ISEXCHANGE = null;
                         CARKIND = null;
@@ -1820,7 +1833,7 @@ namespace TKMK
             SETTEXT2();
             SETTEXT4();
             SETTEXT6();
-            STATUSCONTROLLER = null;
+            STATUSCONTROLLER = "VIEW";
 
             SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
         }
@@ -1829,7 +1842,7 @@ namespace TKMK
             SETTEXT2();
             SETTEXT4();
             SETTEXT6();
-            STATUSCONTROLLER = null;
+            STATUSCONTROLLER = "VIEW";
 
             SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
         }

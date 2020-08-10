@@ -69,6 +69,7 @@
             this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
             this.button11 = new System.Windows.Forms.Button();
             this.comboBox4 = new System.Windows.Forms.ComboBox();
+            this.label29 = new System.Windows.Forms.Label();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
@@ -100,7 +101,6 @@
             this.comboBox5 = new System.Windows.Forms.ComboBox();
             this.previewControl1 = new FastReport.Preview.PreviewControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.label29 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -423,7 +423,7 @@
             this.comboBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox2.Enabled = false;
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(423, 147);
+            this.comboBox2.Location = new System.Drawing.Point(423, 145);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(134, 24);
             this.comboBox2.TabIndex = 80;
@@ -433,7 +433,7 @@
             this.comboBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox3.Enabled = false;
             this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(563, 112);
+            this.comboBox3.Location = new System.Drawing.Point(563, 110);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(134, 24);
             this.comboBox3.TabIndex = 90;
@@ -455,7 +455,7 @@
             this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox1.Enabled = false;
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(423, 75);
+            this.comboBox1.Location = new System.Drawing.Point(423, 77);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(134, 24);
             this.comboBox1.TabIndex = 50;
@@ -622,11 +622,23 @@
             "取消預約",
             "異常結案",
             "完成接團"});
-            this.comboBox4.Location = new System.Drawing.Point(843, 77);
+            this.comboBox4.Location = new System.Drawing.Point(843, 75);
             this.comboBox4.Name = "comboBox4";
             this.comboBox4.Size = new System.Drawing.Size(134, 24);
             this.comboBox4.TabIndex = 710;
             this.comboBox4.Text = "預約接團      ";
+            // 
+            // label29
+            // 
+            this.label29.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label29.AutoSize = true;
+            this.label29.Font = new System.Drawing.Font("新細明體", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.label29.ForeColor = System.Drawing.Color.Blue;
+            this.label29.Location = new System.Drawing.Point(423, 47);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(134, 11);
+            this.label29.TabIndex = 721;
+            this.label29.Text = "更新時間";
             // 
             // splitContainer2
             // 
@@ -995,7 +1007,7 @@
             this.comboBox5.Items.AddRange(new object[] {
             "遊覽車對帳明細表",
             "多年期月份團務比較表"});
-            this.comboBox5.Location = new System.Drawing.Point(123, 48);
+            this.comboBox5.Location = new System.Drawing.Point(123, 50);
             this.comboBox5.Name = "comboBox5";
             this.comboBox5.Size = new System.Drawing.Size(234, 24);
             this.comboBox5.TabIndex = 613;
@@ -1016,18 +1028,6 @@
             // timer1
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // label29
-            // 
-            this.label29.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label29.AutoSize = true;
-            this.label29.Font = new System.Drawing.Font("新細明體", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label29.ForeColor = System.Drawing.Color.Blue;
-            this.label29.Location = new System.Drawing.Point(423, 47);
-            this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(134, 11);
-            this.label29.TabIndex = 721;
-            this.label29.Text = "更新時間";
             // 
             // frmGROUPSALES
             // 
