@@ -306,9 +306,9 @@ namespace TKMK
                 sbSqlQuery.Clear();
 
                 sbSql.AppendFormat(@"  SELECT ");
-                sbSql.AppendFormat(@"  [SERNO] AS '序號',[CARNO] AS '車號',[CARNAME] AS '車名',[CARKIND] AS '車種',[GROUPKIND]  AS '團類',[ISEXCHANGE] AS '兌換券',[EXCHANGEMONEYS] AS '領券額',[EXCHANGETOTALMONEYS] AS '券總額',[EXCHANGESALESMMONEYS] AS '券消費',[SALESMMONEYS] AS '消費總額'");
+                sbSql.AppendFormat(@"  [SERNO] AS '序號',[CARNO] AS '車號',[CARNAME] AS '車名',[CARKIND] AS '車種',[GROUPKIND]  AS '團類',[ISEXCHANGE] AS '兌換券',[EXCHANGETOTALMONEYS] AS '券總額',[EXCHANGESALESMMONEYS] AS '券消費',[SALESMMONEYS] AS '消費總額'");
                 sbSql.AppendFormat(@"  ,[SPECIALMNUMS] AS '特賣數',[SPECIALMONEYS] AS '特賣獎金',[COMMISSIONBASEMONEYS] AS '茶水費',[COMMISSIONPCTMONEYS] AS '消費獎金',[TOTALCOMMISSIONMONEYS] AS '總獎金',[CARNUM] AS '車數',[GUSETNUM] AS '來客數',[EXCHANNO] AS '優惠券名',[EXCHANACOOUNT] AS '優惠券帳號',CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間',CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間',[STATUS] AS '狀態'");
-                sbSql.AppendFormat(@"  ,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間',CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間',[COMMISSIONPCT] AS '抽佣比率',[ID],[CREATEDATES]");
+                sbSql.AppendFormat(@"  ,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間',CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間',[COMMISSIONPCT] AS '抽佣比率',[EXCHANGEMONEYS] AS '領券額',[ID],[CREATEDATES]");
                 sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[GROUPSALES]");
                 sbSql.AppendFormat(@"  WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}' ", CREATEDATES);
                 sbSql.AppendFormat(@"  ORDER BY CONVERT(nvarchar,[CREATEDATES],112),CONVERT(int,[SERNO]) DESC");
@@ -336,11 +336,11 @@ namespace TKMK
                         dataGridView1.DataSource = ds1.Tables["ds1"];
 
                         dataGridView1.AutoResizeColumns();
-                        dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Tahoma", 7);
+                        dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Tahoma", 9);
                         dataGridView1.DefaultCellStyle.Font = new Font("Tahoma", 10);
                         dataGridView1.Columns[0].Width = 30;
-                        dataGridView1.Columns[1].Width = 60;
-                        dataGridView1.Columns[2].Width = 40;
+                        dataGridView1.Columns[1].Width = 80;
+                        dataGridView1.Columns[2].Width = 60;
                         dataGridView1.Columns[3].Width = 40;
                         dataGridView1.Columns[4].Width = 80;
                         dataGridView1.Columns[5].Width = 20;
@@ -356,7 +356,7 @@ namespace TKMK
                         dataGridView1.Columns[14].Width = 60;
                         dataGridView1.Columns[15].Width = 60;
                         dataGridView1.Columns[16].Width = 60;
-                        dataGridView1.Columns[17].Width = 60;
+                        dataGridView1.Columns[17].Width = 80;
                         dataGridView1.Columns[18].Width = 80;
 
                         dataGridView1.Columns[19].Width = 160;
@@ -1246,7 +1246,9 @@ namespace TKMK
             textBox143.ReadOnly = false;
 
             comboBox1.Enabled = true;
-           
+            comboBox2.Enabled = true;
+          
+
         }
 
         public void SETTEXT4()
@@ -1257,6 +1259,7 @@ namespace TKMK
             textBox143.ReadOnly = true;
 
             comboBox1.Enabled = false;
+            comboBox2.Enabled = false;
 
         }
         public void SETTEXT5()
