@@ -357,7 +357,7 @@ namespace TKMK
                         dataGridView1.Columns[15].Width = 60;
                         dataGridView1.Columns[16].Width = 60;
                         dataGridView1.Columns[17].Width = 80;
-                        dataGridView1.Columns[18].Width = 80;
+                        dataGridView1.Columns[18].Width = 160;
 
                         dataGridView1.Columns[19].Width = 160;
                         dataGridView1.Columns[20].Width = 160;
@@ -680,7 +680,7 @@ namespace TKMK
                 foreach (DataGridViewRow dr in this.dataGridView1.Rows)
                 {
                     //判断
-                    if (dr.Cells[21].Value.ToString().Trim().Equals("預約接團"))
+                    if (dr.Cells[20].Value.ToString().Trim().Equals("預約接團"))
                     {
                         //清空值
                         ID = null;
@@ -728,7 +728,11 @@ namespace TKMK
                             EXCHANGESALESMMONEYS = FINDEXCHANGESALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
                             COMMISSIONBASEMONEYS = 0;
 
-                            SALESMMONEYS = SALESMMONEYS - EXCHANGETOTALMONEYS;
+                            if(SALESMMONEYS>0)
+                            {
+                                SALESMMONEYS = SALESMMONEYS - EXCHANGETOTALMONEYS;
+                            }
+                            
 
                         }
                         else if (ISEXCHANGE.Equals("否"))
