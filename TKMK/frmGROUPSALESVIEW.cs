@@ -36,6 +36,8 @@ namespace TKMK
         int result;
 
         string STATUSCONTROLLER = "VIEW";
+        int ROWSINDEX = 0;
+        int COLUMNSINDEX = 0;
 
         public frmGROUPSALESVIEW()
         {
@@ -197,17 +199,17 @@ namespace TKMK
                         foreach (DataGridViewRow dgRow in dataGridView1.Rows)
                         {
                             //判断
-                            if (dgRow.Cells[21].Value.ToString().Trim().Equals("完成接團"))
+                            if (dgRow.Cells[20].Value.ToString().Trim().Equals("完成接團"))
                             {
                                 //将这行的背景色设置成Pink
                                 dgRow.DefaultCellStyle.ForeColor = Color.Blue;
                             }
-                            else if (dgRow.Cells[21].Value.ToString().Trim().Equals("取消預約"))
+                            else if (dgRow.Cells[20].Value.ToString().Trim().Equals("取消預約"))
                             {
                                 //将这行的背景色设置成Pink
                                 dgRow.DefaultCellStyle.ForeColor = Color.Pink;
                             }
-                            else if (dgRow.Cells[21].Value.ToString().Trim().Equals("異常結案"))
+                            else if (dgRow.Cells[20].Value.ToString().Trim().Equals("異常結案"))
                             {
                                 //将这行的背景色设置成Pink
                                 dgRow.DefaultCellStyle.ForeColor = Color.Red;
@@ -217,6 +219,12 @@ namespace TKMK
 
                 }
 
+
+                if (ROWSINDEX > 0 || COLUMNSINDEX > 0)
+                {
+                    dataGridView1.CurrentCell = dataGridView1.Rows[ROWSINDEX].Cells[COLUMNSINDEX];
+
+                }
             }
             catch
             {
