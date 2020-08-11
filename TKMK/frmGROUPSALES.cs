@@ -58,6 +58,9 @@ namespace TKMK
         int TOTALCOMMISSIONMONEYS = 0;
         int GUSETNUM = 0;
 
+        int ROWSINDEX = 0;
+        int COLUMNSINDEX = 0;
+
         public frmGROUPSALES()
         {
             InitializeComponent();
@@ -73,7 +76,7 @@ namespace TKMK
             textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
 
             timer1.Enabled = true;
-            timer1.Interval = 1000 * 60;
+            timer1.Interval = 1000 * 30;
             timer1.Start();
         }
 
@@ -392,6 +395,12 @@ namespace TKMK
 
                 }
 
+
+                if(ROWSINDEX > 0|| COLUMNSINDEX>0)
+                {
+                    dataGridView1.CurrentCell = dataGridView1.Rows[ROWSINDEX].Cells[COLUMNSINDEX];
+
+                }
             }
             catch
             {
@@ -408,6 +417,16 @@ namespace TKMK
             if (dataGridView1.CurrentRow != null)
             {
                 int rowindex = dataGridView1.CurrentRow.Index;
+
+                if(textBox1.Text.Equals("0"))
+                {
+                    textBox1.Text = dataGridView1.CurrentCell.RowIndex.ToString();
+                    ROWSINDEX = dataGridView1.CurrentCell.RowIndex;
+                    COLUMNSINDEX = dataGridView1.CurrentCell.ColumnIndex;
+                }
+               
+
+
                 if (rowindex >= 0)
                 {
                     DataGridViewRow row = dataGridView1.Rows[rowindex];
