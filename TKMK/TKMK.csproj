@@ -86,6 +86,12 @@
     <Compile Include="frmGROUPSALES.Designer.cs">
       <DependentUpon>frmGROUPSALES.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmGROUPSALESVIEW.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmGROUPSALESVIEW.Designer.cs">
+      <DependentUpon>frmGROUPSALESVIEW.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmGROUPSET.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -123,6 +129,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmGROUPSALES.resx">
       <DependentUpon>frmGROUPSALES.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmGROUPSALESVIEW.resx">
+      <DependentUpon>frmGROUPSALESVIEW.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmGROUPSET.resx">
       <DependentUpon>frmGROUPSET.cs</DependentUpon>
