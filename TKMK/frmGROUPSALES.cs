@@ -747,7 +747,7 @@ namespace TKMK
                             EXCHANGESALESMMONEYS = FINDEXCHANGESALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
                             COMMISSIONBASEMONEYS = 0;
 
-                            if(SALESMMONEYS>0)
+                            if(SALESMMONEYS> EXCHANGETOTALMONEYS)
                             {
                                 SALESMMONEYS = SALESMMONEYS - EXCHANGETOTALMONEYS;
                             }
@@ -1047,7 +1047,7 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  SELECT CONVERT(INT,[BASEMONEYS],0) AS 'BASEMONEYS' FROM [TKMK].[dbo].[GROUPBASE] WHERE [NAME]='大巴'");
+                sbSql.AppendFormat(@"  SELECT CONVERT(INT,[BASEMONEYS],0) AS 'BASEMONEYS' FROM [TKMK].[dbo].[GROUPBASE] WHERE [NAME]='{0}'", NAME);
                 sbSql.AppendFormat(@"  ");
                 sbSql.AppendFormat(@"  ");
 
