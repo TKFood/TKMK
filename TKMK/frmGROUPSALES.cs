@@ -422,7 +422,7 @@ namespace TKMK
                     }
                     else if (row.Cells["兌換券"].Value.ToString().Equals("N"))
                     {
-                        checkBox1.Checked = false;
+                        checkBox1.Checked = false; 
                     }
 
                 }

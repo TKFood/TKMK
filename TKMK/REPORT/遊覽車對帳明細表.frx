@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="08/04/2020 09:56:56" ReportInfo.Modified="08/14/2020 09:26:29" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="08/04/2020 09:56:56" ReportInfo.Modified="08/14/2020 09:49:23" ReportInfo.CreatorVersion="2016.4.4.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9IHrks48JwIA45bGmOOGK/G">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9Je3fhWsBBNccjwvKzx4F41">
       <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT &#13;&#10;CONVERT(NVARCHAR,[PURGROUPSTARTDATES],111) AS '日期'&#13;&#10;,[CARNAME] AS '車名'&#13;&#10;,[CARKIND] AS '車種'&#13;&#10;,[CARNO] AS '車號'&#13;&#10;,[CARNUM] AS '車數'&#13;&#10;,[GROUPKIND] AS '團類'&#13;&#10;,[GUSETNUM] AS '來客數'&#13;&#10;,[EXCHANNO] AS '優惠券'&#13;&#10;,[EXCHANACOOUNT] AS '優惠號'&#13;&#10;,[ISEXCHANGE] AS '領兌'&#13;&#10;,[EXCHANGETOTALMONEYS] AS '兌換券金額'&#13;&#10;,[EXCHANGESALESMMONEYS] AS '(兌)消費金額'&#13;&#10;,[COMMISSIONBASEMONEYS] AS '茶水費'&#13;&#10;,[SALESMMONEYS] AS '消費總額'&#13;&#10;,[SPECIALMNUMS] AS '特賣組數'&#13;&#10;,[SPECIALMONEYS] AS '特賣獎金'&#13;&#10;,[COMMISSIONPCTMONEYS] AS '消費獎金'&#13;&#10;,[TOTALCOMMISSIONMONEYS] AS '獎金合計'&#13;&#10;,[STATUS] AS '狀態'&#13;&#10;FROM [TKMK].[dbo].[GROUPSALES]&#13;&#10;WHERE CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)&gt;='20200701' AND CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)&lt;='20200831'&#13;&#10;ORDER BY CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112),[SERNO]">
         <Column Name="日期" DataType="System.String"/>
         <Column Name="車名" DataType="System.String"/>
@@ -44,6 +44,8 @@
     <Total Name="Total消費獎金2" Expression="[Table.消費獎金]" Evaluator="Data1" PrintOn="ReportSummary1"/>
     <Total Name="Total獎金合計1" Expression="[Table.獎金合計]" Evaluator="Data1" PrintOn="ColumnFooter1"/>
     <Total Name="Total獎金合計2" Expression="[Table.獎金合計]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+    <Total Name="Total車數1" Expression="[Table.車數]" Evaluator="Data1" PrintOn="ColumnFooter1"/>
+    <Total Name="Total車數2" Expression="[Table.車數]" Evaluator="Data1" PrintOn="ReportSummary1"/>
   </Dictionary>
   <ReportPage Name="Page1" Landscape="true" PaperWidth="297" PaperHeight="210" LeftMargin="2" RightMargin="2">
     <ColumnHeaderBand Name="ColumnHeader1" Width="1107.54" Height="85.05">
@@ -94,7 +96,7 @@
     </DataBand>
     <ReportSummaryBand Name="ReportSummary1" Top="135.22" Width="1107.54" Height="18.9">
       <TextObject Name="Text62" Width="264.6" Height="18.9" Border.Lines="All" Text="合計" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text63" Left="264.6" Width="37.8" Height="18.9" Border.Lines="All" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text63" Left="264.6" Width="37.8" Height="18.9" Border.Lines="All" Text="[Total車數2]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text64" Left="302.4" Width="85.05" Height="18.9" Border.Lines="All" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text65" Left="387.45" Width="47.25" Height="18.9" Border.Lines="All" Text="[Total來客數2]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text66" Left="434.7" Width="47.25" Height="18.9" Border.Lines="All" HorzAlign="Center" VertAlign="Center"/>
@@ -112,7 +114,7 @@
     </ReportSummaryBand>
     <ColumnFooterBand Name="ColumnFooter1" Top="112.2" Width="1107.54" Height="18.9">
       <TextObject Name="Text42" Width="264.6" Height="18.9" Border.Lines="All" Text="每頁小計" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text46" Left="264.6" Width="37.8" Height="18.9" Border.Lines="All" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text46" Left="264.6" Width="37.8" Height="18.9" Border.Lines="All" Text="[Total車數1]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text47" Left="302.4" Width="85.05" Height="18.9" Border.Lines="All" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text48" Left="387.45" Width="47.25" Height="18.9" Border.Lines="All" Text="[Total來客數1]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text49" Left="434.7" Width="47.25" Height="18.9" Border.Lines="All" HorzAlign="Center" VertAlign="Center"/>
