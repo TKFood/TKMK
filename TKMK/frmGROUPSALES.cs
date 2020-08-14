@@ -76,7 +76,7 @@ namespace TKMK
             textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
 
             timer1.Enabled = true;
-            timer1.Interval = 1000 * 30;
+            timer1.Interval = 1000 * 10;
             timer1.Start();
         }
 
@@ -400,6 +400,31 @@ namespace TKMK
                 {
                     dataGridView1.CurrentCell = dataGridView1.Rows[ROWSINDEX].Cells[COLUMNSINDEX];
 
+                    DataGridViewRow row = dataGridView1.Rows[ROWSINDEX];
+                    ID = row.Cells["ID"].Value.ToString();
+
+                    STATUS = row.Cells["狀態"].Value.ToString().Trim();
+
+                    textBox121.Text = row.Cells["序號"].Value.ToString();
+                    textBox131.Text = row.Cells["車號"].Value.ToString();
+                    textBox141.Text = row.Cells["車名"].Value.ToString();
+                    textBox142.Text = row.Cells["車數"].Value.ToString();
+                    textBox143.Text = row.Cells["來客數"].Value.ToString();
+                    textBox144.Text = row.Cells["優惠券名"].Value.ToString();
+
+                    comboBox1.Text = row.Cells["車種"].Value.ToString();
+                    comboBox2.Text = row.Cells["團類"].Value.ToString();
+                    comboBox3.Text = row.Cells["優惠券帳號"].Value.ToString() + ' ' + row.Cells["優惠券名"].Value.ToString();
+
+                    if (row.Cells["兌換券"].Value.ToString().Equals("Y"))
+                    {
+                        checkBox1.Checked = true;
+                    }
+                    else if (row.Cells["兌換券"].Value.ToString().Equals("N"))
+                    {
+                        checkBox1.Checked = false;
+                    }
+
                 }
             }
             catch
@@ -418,11 +443,13 @@ namespace TKMK
             {
                 int rowindex = dataGridView1.CurrentRow.Index;
 
-                if(textBox1.Text.Equals("0"))
+                if(dataGridView1.CurrentCell.RowIndex>0|| dataGridView1.CurrentCell.ColumnIndex>0)
                 {
                     textBox1.Text = dataGridView1.CurrentCell.RowIndex.ToString();
                     ROWSINDEX = dataGridView1.CurrentCell.RowIndex;
                     COLUMNSINDEX = dataGridView1.CurrentCell.ColumnIndex;
+
+                    rowindex = ROWSINDEX;  
                 }
                
 
