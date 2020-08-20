@@ -48,6 +48,7 @@ namespace TKMK
 
         int SPECIALMNUMS = 0;
         int SPECIALMONEYS = 0;
+        int SPECIALNUMSMONEYS = 0;
         int EXCHANGEMONEYS = 0;
         int EXCHANGETOTALMONEYS = 0;
         int EXCHANGESALESMMONEYS = 0;
@@ -813,6 +814,7 @@ namespace TKMK
 
                         //找出各項金額                   
                         SPECIALMNUMS = FINDSPECIALMNUMS(ACCOUNT, STARTDATES, STARTTIMES);
+                        SPECIALNUMSMONEYS = FINDSPECIALNUMSMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
                         SPECIALMONEYS = FINDSPECIALMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
                         SALESMMONEYS = FINDSALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
 
@@ -840,13 +842,13 @@ namespace TKMK
                             COMMISSIONBASEMONEYS = FINDBASEMONEYS(CARKIND);
 
                         }
-
+                        SALESMMONEYS = SALESMMONEYS - SPECIALMONEYS;
                         COMMISSIONPCT = FINDCOMMISSIONPCT(CARKIND, SALESMMONEYS);
                         COMMISSIONPCTMONEYS = Convert.ToInt32(COMMISSIONPCT * SALESMMONEYS);
                         GUSETNUM = FINDGUSETNUM(ACCOUNT, STARTDATES, STARTTIMES);
-                        TOTALCOMMISSIONMONEYS = Convert.ToInt32(SPECIALMONEYS + COMMISSIONBASEMONEYS + (COMMISSIONPCT * (SALESMMONEYS - SPECIALMONEYS)));
+                        TOTALCOMMISSIONMONEYS = Convert.ToInt32(SPECIALNUMSMONEYS + COMMISSIONBASEMONEYS + (COMMISSIONPCT * (SALESMMONEYS)));
 
-                        UPDATEGROUPPRODUCT(ID, EXCHANGEMONEYS.ToString(), EXCHANGETOTALMONEYS.ToString(), EXCHANGESALESMMONEYS.ToString(), SALESMMONEYS.ToString(), SPECIALMNUMS.ToString(), SPECIALMONEYS.ToString(), COMMISSIONBASEMONEYS.ToString(), COMMISSIONPCT.ToString(), COMMISSIONPCTMONEYS.ToString(), TOTALCOMMISSIONMONEYS.ToString(), GUSETNUM.ToString());
+                        UPDATEGROUPPRODUCT(ID, EXCHANGEMONEYS.ToString(), EXCHANGETOTALMONEYS.ToString(), EXCHANGESALESMMONEYS.ToString(), SALESMMONEYS.ToString(), SPECIALMNUMS.ToString(), SPECIALNUMSMONEYS.ToString(), COMMISSIONBASEMONEYS.ToString(), COMMISSIONPCT.ToString(), COMMISSIONPCTMONEYS.ToString(), TOTALCOMMISSIONMONEYS.ToString(), GUSETNUM.ToString());
                         //DateTime dt2 = DateTime.Now;
 
                         //MessageBox.Show(dt1.ToString("HH:mm:ss")+"-"+ dt2.ToString("HH:mm:ss"));
@@ -1008,6 +1010,60 @@ namespace TKMK
             }
         }
 
+        public int FINDSPECIALNUMSMONEYS(string TA009, string TA001, string TA005)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  
+                                    SELECT CONVERT(INT,ISNULL(SUM(TB019/[GROUPPRODUCT].NUM*[GROUPPRODUCT].MONEYS),0),0) AS 'SPECIALNUMSMONEYS' 
+                                    FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
+                                    LEFT JOIN [TKMK].[dbo].[GROUPPRODUCT] ON [GROUPPRODUCT].ID=TB010
+                                    WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006
+                                    AND TB010 IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCT] WHERE [SPLITCAL]='Y')
+                                    AND TA009='{0}'
+                                    AND TA001='{1}'
+                                    AND TA005>='{2}'
+                                    ", TA009, TA001, TA005);
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return Convert.ToInt32(ds1.Tables["ds1"].Rows[0]["SPECIALNUMSMONEYS"].ToString());
+
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
+            catch
+            {
+                return 0;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
         public int FINDSALESMMONEYS(string TA009, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
