@@ -1377,7 +1377,7 @@ namespace TKMK
 
         public void SETTEXT6()
         {
-            
+            checkBox1.Checked = false;
             comboBox3.Enabled = false;
         }
 
