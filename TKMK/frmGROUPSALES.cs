@@ -315,7 +315,7 @@ namespace TKMK
                 sbSql.AppendFormat(@"  ,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間',CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間',[COMMISSIONPCT] AS '抽佣比率',[EXCHANGEMONEYS] AS '領券額',[ID],[CREATEDATES]");
                 sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[GROUPSALES]");
                 sbSql.AppendFormat(@"  WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}' ", CREATEDATES);
-                sbSql.AppendFormat(@"  AND [STATUS] NOT IN ('取消預約') ");
+                sbSql.AppendFormat(@"  AND [STATUS]<>'取消預約'");
                 sbSql.AppendFormat(@"  ORDER BY CONVERT(nvarchar,[CREATEDATES],112),CONVERT(int,[SERNO]) DESC");
                 sbSql.AppendFormat(@"  ");
                 sbSql.AppendFormat(@"  ");
@@ -425,6 +425,150 @@ namespace TKMK
                     else if (row.Cells["兌換券"].Value.ToString().Equals("N"))
                     {
                         checkBox1.Checked = false; 
+                    }
+
+                }
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public void SEARCHGROUPSALES2(string CREATEDATES, string STATUS)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  SELECT ");
+                sbSql.AppendFormat(@"  [SERNO] AS '序號',[CARNAME] AS '車名',[CARNO] AS '車號',[CARKIND] AS '車種',[GROUPKIND]  AS '團類',[ISEXCHANGE] AS '兌換券',[EXCHANGETOTALMONEYS] AS '券總額',[EXCHANGESALESMMONEYS] AS '券消費',[SALESMMONEYS] AS '消費總額'");
+                sbSql.AppendFormat(@"  ,[SPECIALMNUMS] AS '特賣數',[SPECIALMONEYS] AS '特賣獎金',[COMMISSIONBASEMONEYS] AS '茶水費',[COMMISSIONPCTMONEYS] AS '消費獎金',[TOTALCOMMISSIONMONEYS] AS '總獎金',[CARNUM] AS '車數',[GUSETNUM] AS '來客數',[EXCHANNO] AS '優惠券名',[EXCHANACOOUNT] AS '優惠券帳號',CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間',CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間',[STATUS] AS '狀態'");
+                sbSql.AppendFormat(@"  ,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間',CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間',[COMMISSIONPCT] AS '抽佣比率',[EXCHANGEMONEYS] AS '領券額',[ID],[CREATEDATES]");
+                sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[GROUPSALES]");
+                sbSql.AppendFormat(@"  WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}' ", CREATEDATES);
+                sbSql.AppendFormat(@"  AND [STATUS]='{0}'", STATUS);
+                sbSql.AppendFormat(@"  ORDER BY CONVERT(nvarchar,[CREATEDATES],112),CONVERT(int,[SERNO]) DESC");
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count == 0)
+                {
+                    dataGridView1.DataSource = null;
+                }
+                else
+                {
+                    if (ds1.Tables["ds1"].Rows.Count >= 1)
+                    {
+                        dataGridView1.DataSource = ds1.Tables["ds1"];
+
+                        dataGridView1.AutoResizeColumns();
+                        dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Tahoma", 9);
+                        dataGridView1.DefaultCellStyle.Font = new Font("Tahoma", 10);
+                        dataGridView1.Columns[0].Width = 30;
+                        dataGridView1.Columns[1].Width = 80;
+                        dataGridView1.Columns[2].Width = 80;
+                        dataGridView1.Columns[3].Width = 40;
+                        dataGridView1.Columns[4].Width = 80;
+                        dataGridView1.Columns[5].Width = 20;
+
+                        dataGridView1.Columns[6].Width = 60;
+                        dataGridView1.Columns[7].Width = 60;
+                        dataGridView1.Columns[8].Width = 60;
+                        dataGridView1.Columns[9].Width = 60;
+                        dataGridView1.Columns[10].Width = 60;
+                        dataGridView1.Columns[11].Width = 60;
+                        dataGridView1.Columns[12].Width = 60;
+                        dataGridView1.Columns[13].Width = 60;
+                        dataGridView1.Columns[14].Width = 60;
+                        dataGridView1.Columns[15].Width = 60;
+                        dataGridView1.Columns[16].Width = 60;
+                        dataGridView1.Columns[17].Width = 80;
+                        dataGridView1.Columns[18].Width = 160;
+
+                        dataGridView1.Columns[19].Width = 160;
+                        dataGridView1.Columns[20].Width = 160;
+                        dataGridView1.Columns[21].Width = 100;
+                        dataGridView1.Columns[22].Width = 80;
+                        dataGridView1.Columns[23].Width = 80;
+                        dataGridView1.Columns[24].Width = 80;
+                        dataGridView1.Columns[25].Width = 200;
+                        dataGridView1.Columns[26].Width = 80;
+
+                        //根据列表中数据不同，显示不同颜色背景
+                        foreach (DataGridViewRow dgRow in dataGridView1.Rows)
+                        {
+                            //判断
+                            if (dgRow.Cells[20].Value.ToString().Trim().Equals("完成接團"))
+                            {
+                                //将这行的背景色设置成Pink
+                                dgRow.DefaultCellStyle.ForeColor = Color.Blue;
+                            }
+                            else if (dgRow.Cells[20].Value.ToString().Trim().Equals("取消預約"))
+                            {
+                                //将这行的背景色设置成Pink
+                                dgRow.DefaultCellStyle.ForeColor = Color.Pink;
+                            }
+                            else if (dgRow.Cells[20].Value.ToString().Trim().Equals("異常結案"))
+                            {
+                                //将这行的背景色设置成Pink
+                                dgRow.DefaultCellStyle.ForeColor = Color.Red;
+                            }
+                        }
+                    }
+
+                }
+
+
+                if (ROWSINDEX > 0 || COLUMNSINDEX > 0)
+                {
+                    dataGridView1.CurrentCell = dataGridView1.Rows[ROWSINDEX].Cells[COLUMNSINDEX];
+
+                    DataGridViewRow row = dataGridView1.Rows[ROWSINDEX];
+                    ID = row.Cells["ID"].Value.ToString();
+
+                    STATUS = row.Cells["狀態"].Value.ToString().Trim();
+
+                    textBox121.Text = row.Cells["序號"].Value.ToString();
+                    textBox131.Text = row.Cells["車號"].Value.ToString();
+                    textBox141.Text = row.Cells["車名"].Value.ToString();
+                    textBox142.Text = row.Cells["車數"].Value.ToString();
+                    textBox143.Text = row.Cells["來客數"].Value.ToString();
+                    textBox144.Text = row.Cells["優惠券名"].Value.ToString();
+
+                    comboBox1.Text = row.Cells["車種"].Value.ToString();
+                    comboBox2.Text = row.Cells["團類"].Value.ToString();
+                    comboBox3.Text = row.Cells["優惠券帳號"].Value.ToString() + ' ' + row.Cells["優惠券名"].Value.ToString();
+
+                    if (row.Cells["兌換券"].Value.ToString().Equals("Y"))
+                    {
+                        checkBox1.Checked = true;
+                    }
+                    else if (row.Cells["兌換券"].Value.ToString().Equals("N"))
+                    {
+                        checkBox1.Checked = false;
                     }
 
                 }
@@ -1609,8 +1753,8 @@ namespace TKMK
                 sbSql.AppendFormat(@"  ,(SELECT COUNT(CARNO) FROM [TKMK].[dbo].[GROUPSALES] GP WITH(NOLOCK) WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALES].GROUPSTARTDATES,112) AND STATUS='預約接團') AS CARNUM5");
                 sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[GROUPSALES] WITH(NOLOCK)");
                 sbSql.AppendFormat(@"  WHERE CONVERT(NVARCHAR,GROUPSTARTDATES,112)='{0}'", GROUPSTARTDATES);
-                sbSql.AppendFormat(@"  GROUP BY CONVERT(NVARCHAR,GROUPSTARTDATES,112)");
-                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  AND STATUS IN ('預約接團','完成接團')");
+                sbSql.AppendFormat(@"  GROUP BY CONVERT(NVARCHAR,GROUPSTARTDATES,112)");             
                 sbSql.AppendFormat(@"  ");
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -2037,7 +2181,7 @@ namespace TKMK
 
         private void button11_Click(object sender, EventArgs e)
         {
-            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            SEARCHGROUPSALES2(dateTimePicker1.Value.ToString("yyyyMMdd"),comboBox4.Text.Trim());
         }
 
         private void button6_Click(object sender, EventArgs e)

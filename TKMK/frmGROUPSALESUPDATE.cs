@@ -1668,6 +1668,7 @@ namespace TKMK
                 sbSql.AppendFormat(@"  ,(SELECT COUNT(CARNO) FROM [TKMK].[dbo].[GROUPSALES] GP WITH(NOLOCK) WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALES].GROUPSTARTDATES,112) AND STATUS='預約接團') AS CARNUM5");
                 sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[GROUPSALES] WITH(NOLOCK)");
                 sbSql.AppendFormat(@"  WHERE CONVERT(NVARCHAR,GROUPSTARTDATES,112)='{0}'", GROUPSTARTDATES);
+                sbSql.AppendFormat(@"  AND STATUS IN ('預約接團','完成接團')");
                 sbSql.AppendFormat(@"  GROUP BY CONVERT(NVARCHAR,GROUPSTARTDATES,112)");
                 sbSql.AppendFormat(@"  ");
                 sbSql.AppendFormat(@"  ");
