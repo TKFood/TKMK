@@ -240,6 +240,79 @@ namespace TKMK
             }
         }
 
+
+        public void SETFASTREPORT()
+        {
+            StringBuilder SQL = new StringBuilder();
+
+
+
+            Report report1 = new Report();
+            if (comboBox5.Text.Equals("遊覽車對帳明細表"))
+            {
+                report1.Load(@"REPORT\遊覽車對帳明細表.frx");
+
+                SQL = SETSQL();
+            }
+            else if (comboBox5.Text.Equals("多年期月份團務比較表"))
+            {
+                report1.Load(@"REPORT\多年期月份團務比較表.frx");
+
+                SQL = SETSQL2();
+            }
+
+            report1.Dictionary.Connections[0].ConnectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+            TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
+            table.SelectCommand = SQL.ToString();
+            report1.SetParameterValue("P1", dateTimePicker4.Value.ToString("yyyy/MM/dd"));
+            report1.SetParameterValue("P2", dateTimePicker5.Value.ToString("yyyy/MM/dd"));
+
+            report1.Preview = previewControl1;
+            report1.Show();
+        }
+
+        public StringBuilder SETSQL()
+        {
+            StringBuilder SB = new StringBuilder();
+
+            SB.AppendFormat(@" SELECT ");
+            SB.AppendFormat(@" CONVERT(NVARCHAR,[PURGROUPSTARTDATES],111) AS '日期',[CARNAME] AS '車名',[CARKIND] AS '車種',[CARNO] AS '車號',[CARNUM] AS '車數',[GROUPKIND] AS '團類',[GUSETNUM] AS '來客數',[EXCHANNO] AS '優惠券',[EXCHANACOOUNT] AS '優惠號',[ISEXCHANGE] AS '領兌'");
+            SB.AppendFormat(@" ,[EXCHANGETOTALMONEYS] AS '兌換券金額',[EXCHANGESALESMMONEYS] AS '(兌)消費金額',[COMMISSIONBASEMONEYS] AS '茶水費',[SALESMMONEYS] AS '消費總額',[SPECIALMNUMS] AS '特賣組數',[SPECIALMONEYS] AS '特賣獎金',[COMMISSIONPCTMONEYS] AS '消費獎金',[TOTALCOMMISSIONMONEYS] AS '獎金合計',[STATUS] AS '狀態'");
+            SB.AppendFormat(@" FROM [TKMK].[dbo].[GROUPSALES] WITH (NOLOCK) ");
+            SB.AppendFormat(@" WHERE CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)>='{0}' AND CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)<='{1}'", dateTimePicker4.Value.ToString("yyyyMMdd"), dateTimePicker5.Value.ToString("yyyyMMdd"));
+            SB.AppendFormat(@" AND [STATUS]='完成接團'");
+            SB.AppendFormat(@" ORDER BY CONVERT(NVARCHAR,[PURGROUPSTARTDATES], 112),[SERNO]");
+            SB.AppendFormat(@" ");
+
+            return SB;
+
+        }
+
+        public StringBuilder SETSQL2()
+        {
+            StringBuilder SB = new StringBuilder();
+
+            SB.AppendFormat(@" SELECT SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 ) AS '年月'");
+            SB.AppendFormat(@" ,(SELECT ISNULL(SUM(GS.[GUSETNUM]),0) FROM[TKMK].[dbo].[GROUPSALES] GS WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '來客數'");
+            SB.AppendFormat(@" ,(SELECT ISNULL(SUM(GS.[CARNUM]),0) FROM[TKMK].[dbo].[GROUPSALES] GS WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '來車數'");
+            SB.AppendFormat(@" ,(SELECT ISNULL(SUM(GS.[SALESMMONEYS]),0) FROM[TKMK].[dbo].[GROUPSALES] GS  WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '團客總金額'");
+            SB.AppendFormat(@" ,(SELECT SUM(ISNULL(TA017,0)) FROM [TK].dbo.POSTA WITH (NOLOCK) WHERE  TA002='106701' AND TA001 LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '消費總金額'");
+            SB.AppendFormat(@" ,((SELECT SUM(ISNULL(TA017,0)) FROM [TK].dbo.POSTA WITH (NOLOCK) WHERE TA002='106701' AND TA001 LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%')-(SELECT ISNULL(SUM(GS.[SALESMMONEYS]),0) FROM[TKMK].[dbo].[GROUPSALES] GS WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%')) AS '散客總金額'");
+            SB.AppendFormat(@" FROM [TKMK].[dbo].[GROUPSALES] WITH (NOLOCK)");
+            SB.AppendFormat(@" WHERE CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)>='{0}' AND CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)<='{1}'", dateTimePicker4.Value.ToString("yyyyMMdd"), dateTimePicker5.Value.ToString("yyyyMMdd"));
+            SB.AppendFormat(@" AND [STATUS]='完成接團'");
+            SB.AppendFormat(@" GROUP BY SUBSTRING(CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112),1,6 )");
+            SB.AppendFormat(@" ORDER BY SUBSTRING(CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112),1,6 )");
+            SB.AppendFormat(@"  ");
+            SB.AppendFormat(@" ");
+            SB.AppendFormat(@" ");
+
+
+
+            return SB;
+
+        }
+
         #endregion
 
         #region BUTTON
@@ -251,6 +324,10 @@ namespace TKMK
             label29.Text = "更新時間" + dateTimePicker1.Value.ToString("yyyy/MM/dd HH:mm:ss");
         }
 
+        private void button12_Click(object sender, EventArgs e)
+        {
+            SETFASTREPORT();
+        }
         #endregion
 
 
