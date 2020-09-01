@@ -912,30 +912,32 @@ namespace TKMK
                         SPECIALMONEYS = FINDSPECIALMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
                         SALESMMONEYS = FINDSALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
 
-                        //金額條件判斷
-                        if (ISEXCHANGE.Equals("是"))
+                        //兌換券金額條件判斷
+                        EXCHANGESALESMMONEYS = FINDEXCHANGESALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
+
+                        if(EXCHANGESALESMMONEYS>0)
                         {
                             int CARNUM = Convert.ToInt32(dr.Cells["車數"].Value.ToString().Trim());
                             EXCHANGEMONEYS = FINDEXCHANGEMONEYS();
                             EXCHANGETOTALMONEYS = EXCHANGEMONEYS * CARNUM;
-                            EXCHANGESALESMMONEYS = FINDEXCHANGESALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
+                            //EXCHANGESALESMMONEYS = FINDEXCHANGESALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
                             COMMISSIONBASEMONEYS = 0;
 
-                            if(SALESMMONEYS> EXCHANGETOTALMONEYS)
+                            if (SALESMMONEYS > EXCHANGETOTALMONEYS)
                             {
                                 SALESMMONEYS = SALESMMONEYS - EXCHANGETOTALMONEYS;
                             }
-                            
-
                         }
-                        else if (ISEXCHANGE.Equals("否"))
+                        else
                         {
                             EXCHANGEMONEYS = 0;
                             EXCHANGETOTALMONEYS = 0;
                             EXCHANGESALESMMONEYS = 0;
                             COMMISSIONBASEMONEYS = FINDBASEMONEYS(CARKIND);
-
                         }
+
+                      
+
                         SALESMMONEYS = SALESMMONEYS - SPECIALMONEYS;
                         COMMISSIONPCT = FINDCOMMISSIONPCT(CARKIND, SALESMMONEYS);
                         COMMISSIONPCTMONEYS = Convert.ToInt32(COMMISSIONPCT * SALESMMONEYS);
