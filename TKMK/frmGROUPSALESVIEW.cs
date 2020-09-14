@@ -205,6 +205,7 @@ namespace TKMK
                             dgRow.Cells["券總額"].Style.Font = new Font("Tahoma", 14);
                             dgRow.Cells["券消費"].Style.Font = new Font("Tahoma", 14);
                             dgRow.Cells["消費總額"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["消費獎金"].Style.Font = new Font("Tahoma", 14);
                             dgRow.Cells["特賣數"].Style.Font = new Font("Tahoma", 14);
                             dgRow.Cells["特賣獎金"].Style.Font = new Font("Tahoma", 14);
                             dgRow.Cells["茶水費"].Style.Font = new Font("Tahoma", 14);
