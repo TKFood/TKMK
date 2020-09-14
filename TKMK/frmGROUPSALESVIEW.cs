@@ -163,42 +163,53 @@ namespace TKMK
                     {
                         dataGridView1.DataSource = ds1.Tables["ds1"];
 
+
                         dataGridView1.AutoResizeColumns();
                         dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Tahoma", 9);
                         dataGridView1.DefaultCellStyle.Font = new Font("Tahoma", 10);
-                        dataGridView1.Columns[0].Width = 30;
-                        dataGridView1.Columns[1].Width = 80;
-                        dataGridView1.Columns[2].Width = 80;
-                        dataGridView1.Columns[3].Width = 40;
-                        dataGridView1.Columns[4].Width = 80;
-                        dataGridView1.Columns[5].Width = 20;
+                        dataGridView1.Columns["序號"].Width = 30;
+                        dataGridView1.Columns["車名"].Width = 80;
+                        dataGridView1.Columns["車號"].Width = 100;
+                        dataGridView1.Columns["車種"].Width = 40;
+                        dataGridView1.Columns["團類"].Width = 80;
+                        dataGridView1.Columns["兌換券"].Width = 20;
 
-                        dataGridView1.Columns[6].Width = 60;
-                        dataGridView1.Columns[7].Width = 60;
-                        dataGridView1.Columns[8].Width = 60;
-                        dataGridView1.Columns[9].Width = 60;
-                        dataGridView1.Columns[10].Width = 60;
-                        dataGridView1.Columns[11].Width = 60;
-                        dataGridView1.Columns[12].Width = 60;
-                        dataGridView1.Columns[13].Width = 60;
-                        dataGridView1.Columns[14].Width = 60;
-                        dataGridView1.Columns[15].Width = 60;
-                        dataGridView1.Columns[16].Width = 60;
-                        dataGridView1.Columns[17].Width = 80;
-                        dataGridView1.Columns[18].Width = 160;
+                        dataGridView1.Columns["券總額"].Width = 60;
+                        dataGridView1.Columns["券消費"].Width = 60;
+                        dataGridView1.Columns["消費總額"].Width = 60;
+                        dataGridView1.Columns["特賣數"].Width = 60;
+                        dataGridView1.Columns["特賣獎金"].Width = 60;
+                        dataGridView1.Columns["茶水費"].Width = 60;
+                        dataGridView1.Columns["消費獎金"].Width = 60;
+                        dataGridView1.Columns["總獎金"].Width = 60;
+                        dataGridView1.Columns["車數"].Width = 60;
+                        dataGridView1.Columns["來客數"].Width = 60;
+                        dataGridView1.Columns["優惠券名"].Width = 60;
+                        dataGridView1.Columns["優惠券帳號"].Width = 80;
+                        dataGridView1.Columns["實際到達時間"].Width = 160;
 
-                        dataGridView1.Columns[19].Width = 160;
-                        dataGridView1.Columns[20].Width = 160;
-                        dataGridView1.Columns[21].Width = 100;
-                        dataGridView1.Columns[22].Width = 80;
-                        dataGridView1.Columns[23].Width = 80;
-                        dataGridView1.Columns[24].Width = 80;
-                        dataGridView1.Columns[25].Width = 200;
-                        dataGridView1.Columns[26].Width = 80;
+                        dataGridView1.Columns["實際離開時間"].Width = 160;
+                        dataGridView1.Columns["狀態"].Width = 160;
+                        dataGridView1.Columns["預計到達時間"].Width = 100;
+                        dataGridView1.Columns["預計離開時間"].Width = 80;
+                        dataGridView1.Columns["抽佣比率"].Width = 80;
+                        dataGridView1.Columns["領券額"].Width = 80;
+                        dataGridView1.Columns["ID"].Width = 200;
+                        dataGridView1.Columns["CREATEDATES"].Width = 80;
 
                         //根据列表中数据不同，显示不同颜色背景
                         foreach (DataGridViewRow dgRow in dataGridView1.Rows)
                         {
+                            dgRow.Cells["車名"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["車號"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["券總額"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["券消費"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["消費總額"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["特賣數"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["特賣獎金"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["茶水費"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["總獎金"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["來客數"].Style.Font = new Font("Tahoma", 14);
                             //判断
                             if (dgRow.Cells[20].Value.ToString().Trim().Equals("完成接團"))
                             {
