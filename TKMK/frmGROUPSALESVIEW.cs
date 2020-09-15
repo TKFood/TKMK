@@ -176,7 +176,7 @@ namespace TKMK
 
                         dataGridView1.Columns["券總額"].Width = 60;
                         dataGridView1.Columns["券消費"].Width = 60;
-                        dataGridView1.Columns["消費總額"].Width = 60;
+                        dataGridView1.Columns["消費總額"].Width = 80;
                         dataGridView1.Columns["特賣數"].Width = 60;
                         dataGridView1.Columns["特賣獎金"].Width = 60;
                         dataGridView1.Columns["茶水費"].Width = 60;
