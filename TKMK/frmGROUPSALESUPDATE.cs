@@ -964,7 +964,7 @@ namespace TKMK
                         //兌換券金額條件判斷
                         EXCHANGESALESMMONEYS = FINDEXCHANGESALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
 
-                        if (EXCHANGESALESMMONEYS > 0)
+                        if (ISEXCHANGE.Trim().Equals("是"))
                         {
                             int CARNUM = Convert.ToInt32(dr.Cells["車數"].Value.ToString().Trim());
                             EXCHANGEMONEYS = FINDEXCHANGEMONEYS();
