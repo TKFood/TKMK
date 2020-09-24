@@ -180,8 +180,8 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 124F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 156F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
             this.tableLayoutPanel1.Controls.Add(this.textBox1, 0, 5);
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
@@ -439,7 +439,7 @@
             this.comboBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox2.Enabled = false;
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(423, 147);
+            this.comboBox2.Location = new System.Drawing.Point(423, 145);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(134, 24);
             this.comboBox2.TabIndex = 80;
@@ -449,7 +449,7 @@
             this.comboBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox3.Enabled = false;
             this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(563, 112);
+            this.comboBox3.Location = new System.Drawing.Point(563, 110);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(134, 24);
             this.comboBox3.TabIndex = 90;
@@ -471,7 +471,7 @@
             this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox1.Enabled = false;
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(423, 75);
+            this.comboBox1.Location = new System.Drawing.Point(423, 77);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(134, 24);
             this.comboBox1.TabIndex = 50;
@@ -517,7 +517,7 @@
             this.button7.ForeColor = System.Drawing.Color.Red;
             this.button7.Location = new System.Drawing.Point(843, 3);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(134, 29);
+            this.button7.Size = new System.Drawing.Size(118, 29);
             this.button7.TabIndex = 640;
             this.button7.Text = "異常結案";
             this.button7.UseVisualStyleBackColor = true;
@@ -527,9 +527,9 @@
             // 
             this.button8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.button8.ForeColor = System.Drawing.Color.Blue;
-            this.button8.Location = new System.Drawing.Point(983, 3);
+            this.button8.Location = new System.Drawing.Point(967, 3);
             this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(134, 29);
+            this.button8.Size = new System.Drawing.Size(150, 29);
             this.button8.TabIndex = 650;
             this.button8.Text = "完成接團";
             this.button8.UseVisualStyleBackColor = true;
@@ -577,7 +577,7 @@
             this.button10.ForeColor = System.Drawing.Color.Red;
             this.button10.Location = new System.Drawing.Point(843, 143);
             this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(134, 29);
+            this.button10.Size = new System.Drawing.Size(118, 29);
             this.button10.TabIndex = 670;
             this.button10.Text = "取消";
             this.button10.UseVisualStyleBackColor = true;
@@ -589,9 +589,9 @@
             this.dateTimePicker3.CustomFormat = "yyyy/MM/dd HH:mm:ss";
             this.dateTimePicker3.Enabled = false;
             this.dateTimePicker3.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimePicker3.Location = new System.Drawing.Point(983, 144);
+            this.dateTimePicker3.Location = new System.Drawing.Point(967, 144);
             this.dateTimePicker3.Name = "dateTimePicker3";
-            this.dateTimePicker3.Size = new System.Drawing.Size(134, 27);
+            this.dateTimePicker3.Size = new System.Drawing.Size(150, 27);
             this.dateTimePicker3.TabIndex = 700;
             // 
             // button9
@@ -600,7 +600,7 @@
             this.button9.ForeColor = System.Drawing.Color.Blue;
             this.button9.Location = new System.Drawing.Point(843, 108);
             this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(134, 29);
+            this.button9.Size = new System.Drawing.Size(118, 29);
             this.button9.TabIndex = 120;
             this.button9.Text = "存檔";
             this.button9.UseVisualStyleBackColor = true;
@@ -612,18 +612,18 @@
             this.dateTimePicker2.CustomFormat = "yyyy/MM/dd HH:mm:ss";
             this.dateTimePicker2.Enabled = false;
             this.dateTimePicker2.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimePicker2.Location = new System.Drawing.Point(983, 109);
+            this.dateTimePicker2.Location = new System.Drawing.Point(967, 109);
             this.dateTimePicker2.Name = "dateTimePicker2";
-            this.dateTimePicker2.Size = new System.Drawing.Size(134, 27);
+            this.dateTimePicker2.Size = new System.Drawing.Size(150, 27);
             this.dateTimePicker2.TabIndex = 680;
             // 
             // button11
             // 
             this.button11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.button11.ForeColor = System.Drawing.Color.BlueViolet;
-            this.button11.Location = new System.Drawing.Point(983, 73);
+            this.button11.Location = new System.Drawing.Point(967, 73);
             this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(134, 29);
+            this.button11.Size = new System.Drawing.Size(150, 29);
             this.button11.TabIndex = 720;
             this.button11.Text = "查詢";
             this.button11.UseVisualStyleBackColor = true;
@@ -638,9 +638,9 @@
             "取消預約",
             "異常結案",
             "完成接團"});
-            this.comboBox4.Location = new System.Drawing.Point(843, 77);
+            this.comboBox4.Location = new System.Drawing.Point(843, 75);
             this.comboBox4.Name = "comboBox4";
-            this.comboBox4.Size = new System.Drawing.Size(134, 24);
+            this.comboBox4.Size = new System.Drawing.Size(118, 24);
             this.comboBox4.TabIndex = 710;
             this.comboBox4.Text = "預約接團      ";
             // 
@@ -674,7 +674,7 @@
             this.button14.ForeColor = System.Drawing.Color.Red;
             this.button14.Location = new System.Drawing.Point(843, 178);
             this.button14.Name = "button14";
-            this.button14.Size = new System.Drawing.Size(134, 29);
+            this.button14.Size = new System.Drawing.Size(118, 29);
             this.button14.TabIndex = 724;
             this.button14.Text = "修改時間";
             this.button14.UseVisualStyleBackColor = true;
@@ -1046,7 +1046,7 @@
             this.comboBox5.Items.AddRange(new object[] {
             "遊覽車對帳明細表",
             "多年期月份團務比較表"});
-            this.comboBox5.Location = new System.Drawing.Point(123, 48);
+            this.comboBox5.Location = new System.Drawing.Point(123, 50);
             this.comboBox5.Name = "comboBox5";
             this.comboBox5.Size = new System.Drawing.Size(234, 24);
             this.comboBox5.TabIndex = 613;
