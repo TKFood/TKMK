@@ -933,10 +933,15 @@ namespace TKMK
                             //EXCHANGESALESMMONEYS = FINDEXCHANGESALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
                             COMMISSIONBASEMONEYS = 0;
 
-                            if (SALESMMONEYS > EXCHANGETOTALMONEYS)
+                            if(EXCHANGESALESMMONEYS>0)
                             {
-                                SALESMMONEYS = SALESMMONEYS - EXCHANGETOTALMONEYS;
+                                if (SALESMMONEYS > EXCHANGETOTALMONEYS)
+                                {
+                                    SALESMMONEYS = SALESMMONEYS - EXCHANGETOTALMONEYS;
+                                }                             
                             }
+                     
+                           
                         }
                         else
                         {
