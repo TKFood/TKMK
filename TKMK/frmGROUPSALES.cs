@@ -358,7 +358,7 @@ namespace TKMK
                         dataGridView1.Columns["總獎金"].Width = 60;
                         dataGridView1.Columns["車數"].Width = 60;
                         dataGridView1.Columns["來客數"].Width = 60;
-                        dataGridView1.Columns["優惠券名"].Width = 60;
+                        dataGridView1.Columns["優惠券名"].Width = 80;
                         dataGridView1.Columns["優惠券帳號"].Width = 80;
                         dataGridView1.Columns["實際到達時間"].Width = 160;
 
@@ -385,6 +385,7 @@ namespace TKMK
                             dgRow.Cells["茶水費"].Style.Font = new Font("Tahoma", 14);
                             dgRow.Cells["總獎金"].Style.Font = new Font("Tahoma", 14);
                             dgRow.Cells["來客數"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["優惠券名"].Style.Font = new Font("Tahoma", 14);
 
                             //判断
                             if (dgRow.Cells[20].Value.ToString().Trim().Equals("完成接團"))
