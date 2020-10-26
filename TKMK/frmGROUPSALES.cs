@@ -428,15 +428,7 @@ namespace TKMK
                     comboBox1.Text = row.Cells["車種"].Value.ToString();
                     comboBox2.Text = row.Cells["團類"].Value.ToString();
                     comboBox3.Text = row.Cells["優惠券帳號"].Value.ToString() + ' ' + row.Cells["優惠券名"].Value.ToString();
-
-                    if (row.Cells["兌換券"].Value.ToString().Equals("Y"))
-                    {
-                        checkBox1.Checked = true;
-                    }
-                    else if (row.Cells["兌換券"].Value.ToString().Equals("N"))
-                    {
-                        checkBox1.Checked = false; 
-                    }
+                    comboBox6.Text = row.Cells["兌換券"].Value.ToString();
 
                 }
             }
@@ -572,15 +564,7 @@ namespace TKMK
                     comboBox1.Text = row.Cells["車種"].Value.ToString();
                     comboBox2.Text = row.Cells["團類"].Value.ToString();
                     comboBox3.Text = row.Cells["優惠券帳號"].Value.ToString() + ' ' + row.Cells["優惠券名"].Value.ToString();
-
-                    if (row.Cells["兌換券"].Value.ToString().Equals("Y"))
-                    {
-                        checkBox1.Checked = true;
-                    }
-                    else if (row.Cells["兌換券"].Value.ToString().Equals("N"))
-                    {
-                        checkBox1.Checked = false;
-                    }
+                    comboBox6.Text = row.Cells["兌換券"].Value.ToString();
 
                 }
             }
@@ -628,16 +612,8 @@ namespace TKMK
                     comboBox1.Text = row.Cells["車種"].Value.ToString();
                     comboBox2.Text = row.Cells["團類"].Value.ToString();
                     comboBox3.Text = row.Cells["優惠券帳號"].Value.ToString()+' '+ row.Cells["優惠券名"].Value.ToString();
+                    comboBox6.Text = row.Cells["兌換券"].Value.ToString();
 
-                    if(row.Cells["兌換券"].Value.ToString().Equals("Y"))
-                    {
-                        checkBox1.Checked = true;
-                    }
-                    else if(row.Cells["兌換券"].Value.ToString().Equals("N"))
-                    {
-                        checkBox1.Checked = false;
-                    }
-                   
                 }
                 else
                 {
@@ -1494,6 +1470,7 @@ namespace TKMK
             comboBox1.Enabled = true;
             comboBox2.Enabled = true;
             comboBox3.Enabled = true;
+            comboBox6.Enabled = true;
         }
 
         public void SETTEXT2()
@@ -1506,6 +1483,7 @@ namespace TKMK
             comboBox1.Enabled = false;
             comboBox2.Enabled = false;
             comboBox3.Enabled = false;
+            comboBox6.Enabled = false;
         }
 
         public void SETTEXT3()
@@ -1517,7 +1495,7 @@ namespace TKMK
 
             comboBox1.Enabled = true;
             comboBox2.Enabled = true;
-          
+            comboBox6.Enabled = true;
 
         }
 
@@ -1530,17 +1508,19 @@ namespace TKMK
 
             comboBox1.Enabled = false;
             comboBox2.Enabled = false;
-
+            comboBox6.Enabled = false;
         }
         public void SETTEXT5()
         {
             comboBox3.Enabled = true;
+
         }
 
         public void SETTEXT6()
         {
-            checkBox1.Checked = false;
+           
             comboBox3.Enabled = false;
+         
         }
 
 
@@ -2041,16 +2021,9 @@ namespace TKMK
                 string CARNAME = textBox141.Text.Trim();
                 string CARKIND = comboBox1.Text.Trim();
                 string GROUPKIND = comboBox2.Text.Trim();
-                string ISEXCHANGE = "N";
+                string ISEXCHANGE = comboBox6.Text.Trim();
 
-                if (checkBox1.Checked == true)
-                {
-                    ISEXCHANGE = "是";
-                }
-                else
-                {
-                    ISEXCHANGE = "否";
-                }
+
 
                 string EXCHANGEMONEYS = "0";
                 string EXCHANGETOTALMONEYS = "0";
@@ -2111,16 +2084,8 @@ namespace TKMK
                     string CARNAME = textBox141.Text.Trim();
                     string CARKIND = comboBox1.Text.Trim();
                     string GROUPKIND = comboBox2.Text.Trim();
-                    string ISEXCHANGE = "N";
-
-                    if (checkBox1.Checked == true)
-                    {
-                        ISEXCHANGE = "是";
-                    }
-                    else
-                    {
-                        ISEXCHANGE = "否";
-                    }
+                    string ISEXCHANGE = comboBox6.Text.Trim();
+                    
                     string CARNUM = textBox142.Text.Trim();
                     string GUSETNUM = textBox143.Text.Trim();
                     string EXCHANNO = textBox144.Text.Trim();
@@ -2217,16 +2182,8 @@ namespace TKMK
                     string CARNAME = textBox141.Text.Trim();
                     string CARKIND = comboBox1.Text.Trim();
                     string GROUPKIND = comboBox2.Text.Trim();
-                    string ISEXCHANGE = "N";
+                    string ISEXCHANGE = comboBox6.Text.Trim();
 
-                    if (checkBox1.Checked == true)
-                    {
-                        ISEXCHANGE = "是";
-                    }
-                    else
-                    {
-                        ISEXCHANGE = "否";
-                    }
                     string CARNUM = textBox142.Text.Trim();
                     string GUSETNUM = textBox143.Text.Trim();
                     string EXCHANNO = textBox144.Text.Trim();
@@ -2258,16 +2215,8 @@ namespace TKMK
                     string CARNAME = textBox141.Text.Trim();
                     string CARKIND = comboBox1.Text.Trim();
                     string GROUPKIND = comboBox2.Text.Trim();
-                    string ISEXCHANGE = "N";
+                    string ISEXCHANGE = comboBox6.Text.Trim();
 
-                    if (checkBox1.Checked == true)
-                    {
-                        ISEXCHANGE = "是";
-                    }
-                    else
-                    {
-                        ISEXCHANGE = "否";
-                    }
                     string CARNUM = textBox142.Text.Trim();
                     string GUSETNUM = textBox143.Text.Trim();
                     string EXCHANNO = textBox144.Text.Trim();
