@@ -54,7 +54,6 @@
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.comboBox3 = new System.Windows.Forms.ComboBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
@@ -104,6 +103,8 @@
             this.comboBox5 = new System.Windows.Forms.ComboBox();
             this.previewControl1 = new FastReport.Preview.PreviewControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.label31 = new System.Windows.Forms.Label();
+            this.comboBox6 = new System.Windows.Forms.ComboBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -200,7 +201,6 @@
             this.tableLayoutPanel1.Controls.Add(this.dateTimePicker1, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.comboBox2, 3, 4);
             this.tableLayoutPanel1.Controls.Add(this.comboBox3, 4, 3);
-            this.tableLayoutPanel1.Controls.Add(this.checkBox1, 4, 4);
             this.tableLayoutPanel1.Controls.Add(this.comboBox1, 3, 2);
             this.tableLayoutPanel1.Controls.Add(this.button1, 0, 4);
             this.tableLayoutPanel1.Controls.Add(this.button5, 4, 0);
@@ -219,6 +219,8 @@
             this.tableLayoutPanel1.Controls.Add(this.label29, 3, 1);
             this.tableLayoutPanel1.Controls.Add(this.button13, 5, 5);
             this.tableLayoutPanel1.Controls.Add(this.button14, 6, 5);
+            this.tableLayoutPanel1.Controls.Add(this.label31, 4, 4);
+            this.tableLayoutPanel1.Controls.Add(this.comboBox6, 5, 4);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -454,17 +456,6 @@
             this.comboBox3.Size = new System.Drawing.Size(134, 24);
             this.comboBox3.TabIndex = 90;
             this.comboBox3.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(563, 147);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(134, 20);
-            this.checkBox1.TabIndex = 110;
-            this.checkBox1.Text = "領取兌換券";
-            this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // comboBox1
             // 
@@ -1068,6 +1059,30 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // label31
+            // 
+            this.label31.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label31.AutoSize = true;
+            this.label31.Location = new System.Drawing.Point(563, 149);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(134, 16);
+            this.label31.TabIndex = 726;
+            this.label31.Text = "領取兌換券";
+            // 
+            // comboBox6
+            // 
+            this.comboBox6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBox6.Enabled = false;
+            this.comboBox6.FormattingEnabled = true;
+            this.comboBox6.Items.AddRange(new object[] {
+            "否",
+            "是"});
+            this.comboBox6.Location = new System.Drawing.Point(703, 145);
+            this.comboBox6.Name = "comboBox6";
+            this.comboBox6.Size = new System.Drawing.Size(134, 24);
+            this.comboBox6.TabIndex = 727;
+            this.comboBox6.Text = "否";
+            // 
             // frmGROUPSALESUPDATE
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 16F);
@@ -1135,7 +1150,6 @@
         private System.Windows.Forms.DateTimePicker dateTimePicker1;
         private System.Windows.Forms.ComboBox comboBox2;
         private System.Windows.Forms.ComboBox comboBox3;
-        private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button5;
@@ -1185,5 +1199,7 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Button button13;
         private System.Windows.Forms.Button button14;
+        private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.ComboBox comboBox6;
     }
 }
