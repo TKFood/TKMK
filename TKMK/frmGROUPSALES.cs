@@ -2053,21 +2053,33 @@ namespace TKMK
                 string GROUPENDDATES = "1911/1/1";
                 string STATUS = "預約接團";
 
-                if (!string.IsNullOrEmpty(SERNO) && !string.IsNullOrEmpty(CARNO) && !string.IsNullOrEmpty(EXCHANNO) && !string.IsNullOrEmpty(EXCHANACOOUNT))
+                try
                 {
-                    ADDGROUPSALES(
-                    ID, CREATEDATES, SERNO, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, EXCHANGEMONEYS, EXCHANGETOTALMONEYS
-                    , EXCHANGESALESMMONEYS, SALESMMONEYS, SPECIALMNUMS, SPECIALMONEYS, COMMISSIONBASEMONEYS, COMMISSIONPCTMONEYS, TOTALCOMMISSIONMONEYS, CARNUM, GUSETNUM, EXCHANNO
-                    , EXCHANACOOUNT, PURGROUPSTARTDATES, GROUPSTARTDATES, PURGROUPENDDATES, GROUPENDDATES, STATUS
-                   );
-                    
-                    textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
-                    SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+                    if (!string.IsNullOrEmpty(SERNO) && !string.IsNullOrEmpty(CARNO) && !string.IsNullOrEmpty(EXCHANNO) && !string.IsNullOrEmpty(EXCHANACOOUNT) && Convert.ToInt32(CARNUM) >= 1)
+                    {
+                        ADDGROUPSALES(
+                        ID, CREATEDATES, SERNO, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, EXCHANGEMONEYS, EXCHANGETOTALMONEYS
+                        , EXCHANGESALESMMONEYS, SALESMMONEYS, SPECIALMNUMS, SPECIALMONEYS, COMMISSIONBASEMONEYS, COMMISSIONPCTMONEYS, TOTALCOMMISSIONMONEYS, CARNUM, GUSETNUM, EXCHANNO
+                        , EXCHANACOOUNT, PURGROUPSTARTDATES, GROUPSTARTDATES, PURGROUPENDDATES, GROUPENDDATES, STATUS
+                       );
+
+                        textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
+                        SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+                    }
+                    else
+                    {
+                        MessageBox.Show("團務資料少填 或車數 的填寫有問題");
+                    }
                 }
-                else
+                catch
                 {
-                    MessageBox.Show("團務資料少填");
+                    MessageBox.Show("團務資料少填 或 車數 的填寫有問題");
                 }
+                finally
+                {
+
+                }
+                
 
                 if(!string.IsNullOrEmpty(CARNO)&& !string.IsNullOrEmpty(CARNAME) && !string.IsNullOrEmpty(CARKIND) )
                 {
