@@ -11,6 +11,7 @@ using System.Data.SqlClient;
 using System.Configuration;
 using System.Reflection;
 using System.Diagnostics;
+using TKITDLL;
 
 namespace TKMK
 {
@@ -43,9 +44,18 @@ namespace TKMK
             //Placing the control to the Form
             this.Controls.Add(MnuStrip);
 
-            String connectionString;
-            connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
-            conn = new SqlConnection(connectionString);
+            String connectionString;  
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+        
+            conn = new SqlConnection(sqlsb.ConnectionString);
+
             String Sequel = "SELECT MAINMNU,MENUPARVAL,STATUS FROM MNU_PARENT";
             SqlDataAdapter da = new SqlDataAdapter(Sequel, conn);
             DataTable dt = new DataTable();
