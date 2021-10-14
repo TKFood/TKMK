@@ -159,13 +159,13 @@ namespace TKMK
             }
         }
 
-        public void SETFASTREPORT()
+        public void SETFASTREPORT(string SDATES, string EDATES)
         {
             StringBuilder SQL1 = new StringBuilder();
 
-            SQL1 = SETSQL();
+            SQL1 = SETSQL(SDATES, EDATES);
             Report report1 = new Report();
-            report1.Load(@"REPORT\電商路每日銷售金額.frx");
+            report1.Load(@"REPORT\觀光業績及車次明細表.frx");
 
             //20210902密
             Class1 TKID = new Class1();//用new 建立類別實體
@@ -191,14 +191,19 @@ namespace TKMK
             report1.Show();
         }
 
-        public StringBuilder SETSQL()
+        public StringBuilder SETSQL(string SDATES, string EDATES)
         {
             StringBuilder SB = new StringBuilder();
 
            
             SB.AppendFormat(@" 
+                            SELECT 
+                            [INDATES] AS '日期',[YEARS] AS '年',[WEEKS] AS '週',[TOTALMONEYS] AS 銷售組當日業績,[GROUPMONEYS] AS '團客業績',[VISITORMONEYS] AS '散客業績',[CARNUM] AS '遊覽車次',[CARAVGMONEYS] AS '每車平均業績'
+                            FROM [TKMK].[dbo].[TBFACTORYINCOME]
+                            WHERE [INDATES]>='{0}' AND [INDATES]<='{1}'
+ 
 
-                            ");
+                            ", SDATES, EDATES);
 
             return SB;
 
@@ -212,7 +217,7 @@ namespace TKMK
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            SETFASTREPORT();
+            SETFASTREPORT(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
         }
         private void button3_Click(object sender, EventArgs e)
         {
