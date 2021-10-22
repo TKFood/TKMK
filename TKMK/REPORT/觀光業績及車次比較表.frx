@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="10/14/2021 13:57:48" ReportInfo.Modified="10/14/2021 14:56:11" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="10/14/2021 13:57:48" ReportInfo.Modified="10/14/2021 15:21:34" ReportInfo.CreatorVersion="2016.4.4.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9KTgYTR2VjJdMZYi7XPZvE+">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9Louf79MrhdmYCJB7DxhcA2">
       <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT [YEARS] AS '年月',SUM([CARNUM]) AS '來車數' &#13;&#10;FROM [TKMK].[dbo].[TBFACTORYINCOME]&#13;&#10;WHERE [YEARS]='2021'&#13;&#10;GROUP BY [YEARS]&#13;&#10;UNION ALL&#13;&#10;SELECT [YEARS],SUM([CARNUM]) AS 'CARNUM'&#13;&#10;FROM [TKMK].[dbo].[TBFACTORYINCOME]&#13;&#10;WHERE [YEARS]='2020'&#13;&#10;GROUP BY [YEARS]&#13;&#10;UNION ALL&#13;&#10;SELECT SUBSTRING([INDATES],1,6),SUM([CARNUM]) AS 'CARNUM'&#13;&#10;FROM [TKMK].[dbo].[TBFACTORYINCOME]&#13;&#10;WHERE[INDATES] LIKE '202110%'&#13;&#10;GROUP BY SUBSTRING([INDATES],1,6)&#13;&#10;UNION ALL&#13;&#10;SELECT SUBSTRING([INDATES],1,6),SUM([CARNUM]) AS 'CARNUM'&#13;&#10;FROM [TKMK].[dbo].[TBFACTORYINCOME]&#13;&#10;WHERE [INDATES] LIKE '202010%'&#13;&#10;GROUP BY SUBSTRING([INDATES],1,6)">
         <Column Name="年月" DataType="System.String"/>
         <Column Name="來車數" DataType="System.Int32"/>
