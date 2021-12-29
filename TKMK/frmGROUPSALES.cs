@@ -87,7 +87,7 @@ namespace TKMK
             textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
 
             timer1.Enabled = true;
-            timer1.Interval = 1000 * 30;
+            timer1.Interval = 1000 * 60;
             timer1.Start();
         }
 
@@ -124,10 +124,21 @@ namespace TKMK
                 label29.Text = "更新時間" + dateTimePicker1.Value.ToString("yyyy/MM/dd HH:mm:ss");
 
 
+                MESSAGESHOW MSGSHOW = new MESSAGESHOW();
+                //鎖定控制項
+                this.Enabled = false;
+                //顯示跳出視窗
+                MSGSHOW.Show();                              
+
                 SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
                 SETMONEYS();
                 SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
                 SETNUMS(dateTimePicker1.Value.ToString("yyyyMMdd"));
+
+                //關閉跳出視窗
+                MSGSHOW.Close();
+                //解除鎖定
+                this.Enabled = true;
             }
             
 
