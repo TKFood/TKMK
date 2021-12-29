@@ -18,6 +18,7 @@ using System.Threading;
 using FastReport;
 using FastReport.Data;
 using TKITDLL;
+using System.Runtime.InteropServices;
 
 namespace TKMK
 {
@@ -63,6 +64,14 @@ namespace TKMK
         int ROWSINDEX = 0;
         int COLUMNSINDEX = 0;
 
+        [DllImport("user32.dll", EntryPoint = "FindWindow", CharSet = CharSet.Auto)]
+        private extern static IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern int PostMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
+        public const int WM_CLOSE = 0x10;
+
         public frmGROUPSALES()
         {
             InitializeComponent();
@@ -83,6 +92,17 @@ namespace TKMK
         }
 
         #region FUNCTION
+        private void KillMessageBox()
+        {
+            //依MessageBox的標題,找出MessageBox的視窗
+            IntPtr ptr = FindWindow(null, "MessageBox");
+            if (ptr != IntPtr.Zero)
+            {
+                //找到則關閉MessageBox視窗
+                PostMessage(ptr, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
+            }
+        }
+
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == Keys.Enter)
@@ -2261,6 +2281,26 @@ namespace TKMK
         }
         private void button4_Click(object sender, EventArgs e)
         {
+
+
+
+            //MessageBox.Show("更新中，請不要操作電腦", "MessageBox");
+            //System.Threading.Thread th;
+            //th = new Thread(new ThreadStart(delegate ()
+            //{
+            //    MESSAGESHOW MSGSHOW = new MESSAGESHOW();
+            //    MSGSHOW.StartPosition = FormStartPosition.CenterParent;
+            //    MSGSHOW.ShowDialog();
+            //}));
+
+            //th.Start();
+
+            MESSAGESHOW MSGSHOW = new MESSAGESHOW();
+            //鎖定控制項
+            this.Enabled = false;
+            //顯示跳出視窗
+            MSGSHOW.Show();
+
             SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
 
             SETMONEYS();
@@ -2271,6 +2311,19 @@ namespace TKMK
 
             label29.Text = "";
             label29.Text = "更新時間" + dateTimePicker1.Value.ToString("yyyy/MM/dd HH:mm:ss");
+
+
+
+            //關閉跳出視窗
+            MSGSHOW.Close();
+            //解除鎖定
+            this.Enabled = true;
+
+            //th.Abort();//關閉執行緒
+
+            //MSGSHOW.Close();
+
+            //KillMessageBox();
         }
         private void button9_Click(object sender, EventArgs e)
         {
