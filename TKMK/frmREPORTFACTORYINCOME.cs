@@ -123,7 +123,7 @@ namespace TKMK
                                     ,SUM(TA024) AS 'TOTALMONEYS'
                                     ,(SELECT ROUND(ISNULL(SUM([SALESMMONEYS]),0),0) FROM [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)=TA001) AS 'GROUPMONEYS'
                                     ,(SUM(TA026)-(SELECT ROUND(ISNULL(SUM([SALESMMONEYS]),0),0) FROM [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)=TA001)) AS 'VISITORMONEYS'
-                                    ,(SELECT ISNULL(SUM(CARNUM),0) FROM [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)=TA001) AS 'CARNUM'
+                                    ,(SELECT ISNULL(SUM(CARNUM),0) FROM [TKMK].[dbo].[GROUPSALES] WHERE  [STATUS]='完成接團' AND CONVERT(nvarchar,[CREATEDATES],112)=TA001) AS 'CARNUM'
                                     FROM [TK].dbo.POSTA
                                     WHERE TA002 IN ('106701','106702')
                                     AND TA001>='{0}' AND TA001<='{1}'
@@ -328,6 +328,58 @@ namespace TKMK
         }
 
 
+        public void SETFASTREPORT3(string YEARS)
+        {
+            StringBuilder SQL4 = new StringBuilder();
+
+            SQL4 = SETSQL4(YEARS);
+         
+
+            Report report1 = new Report();
+            report1.Load(@"REPORT\觀光賣場來車和金額.frx");
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+
+
+            TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
+            table.SelectCommand = SQL4.ToString();
+
+
+            //report1.SetParameterValue("P1", dateTimePicker1.Value.ToString("yyyyMMdd"));
+            //report1.SetParameterValue("P2", dateTimePicker2.Value.ToString("yyyyMMdd"));
+            report1.Preview = previewControl1;
+            report1.Show();
+        }
+
+        public StringBuilder SETSQL4(string YEARS)
+        {
+            StringBuilder SB = new StringBuilder();
+
+
+            SB.AppendFormat(@" 
+                            SELECT YEAR(CONVERT(DATETIME,INDATES)) AS '年度',MONTH(CONVERT(DATETIME,INDATES)) AS '月份',SUM([TOTALMONEYS]) '賣場總金額',SUM([GROUPMONEYS]) '團客金額',SUM([VISITORMONEYS]) '散客金額',SUM([CARNUM]) '來車數'
+                            FROM [TKMK].[dbo].[TBFACTORYINCOME]
+                            WHERE INDATES LIKE '{0}%'
+                            GROUP BY YEAR(CONVERT(DATETIME,INDATES)),MONTH(CONVERT(DATETIME,INDATES))
+ 
+
+                            ",YEARS );
+
+            return SB;
+
+        }
+
         #endregion
 
         #region BUTTON
@@ -342,6 +394,10 @@ namespace TKMK
         private void button3_Click(object sender, EventArgs e)
         {
             SETFASTREPORT2(dateTimePicker1.Value);
+        }
+        private void button4_Click(object sender, EventArgs e)
+        {
+            SETFASTREPORT3(dateTimePicker3.Value.ToString("yyyy"));
         }
 
         #endregion
