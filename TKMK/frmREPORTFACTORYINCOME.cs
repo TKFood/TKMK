@@ -368,13 +368,13 @@ namespace TKMK
 
 
             SB.AppendFormat(@" 
-                            SELECT YEAR(CONVERT(DATETIME,INDATES)) AS '年度',MONTH(CONVERT(DATETIME,INDATES)) AS '月份',SUM([TOTALMONEYS]) '賣場總金額',SUM([GROUPMONEYS]) '團客金額',SUM([VISITORMONEYS]) '散客金額',SUM([CARNUM]) '來車數'
+                            SELECT YEAR(CONVERT(DATETIME,INDATES)) AS '年度',MONTH(CONVERT(DATETIME,INDATES)) AS '月份',SUM([TOTALMONEYS]) '賣場總金額',SUM([GROUPMONEYS]) '團客金額',(SUM([TOTALMONEYS])-SUM([GROUPMONEYS])) '散客金額',SUM([CARNUM]) '來車數'
                             FROM [TKMK].[dbo].[TBFACTORYINCOME]
                             WHERE INDATES LIKE '{0}%'
                             GROUP BY YEAR(CONVERT(DATETIME,INDATES)),MONTH(CONVERT(DATETIME,INDATES))
  
 
-                            ",YEARS );
+                            ", YEARS );
 
             return SB;
 
