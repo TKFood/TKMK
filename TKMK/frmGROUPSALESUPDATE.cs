@@ -2333,7 +2333,7 @@ namespace TKMK
         private void button4_Click(object sender, EventArgs e)
         {
             SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
-
+             
             SETMONEYS();
 
             SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
