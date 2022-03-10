@@ -1039,10 +1039,14 @@ namespace TKMK
 
                         //DateTime dt1 = DateTime.Now;
 
-                        //找出各項金額                   
+                        //找出各項金額   
+                        //特賣數                
                         SPECIALMNUMS = FINDSPECIALMNUMS(ACCOUNT, STARTDATES, STARTTIMES);
+                        //特賣獎金
                         SPECIALNUMSMONEYS = FINDSPECIALNUMSMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
+                        //
                         SPECIALMONEYS = FINDSPECIALMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
+                        //銷售金額
                         SALESMMONEYS = FINDSALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
 
                         //兌換券金額條件判斷

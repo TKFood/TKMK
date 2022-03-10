@@ -1026,12 +1026,12 @@ namespace TKMK
 
                         //找出各項金額    
                         //SPECIALMNUMS，找出車子的基本輔助金額
-                        //SPECIALNUMSMONEYS，算出特賣品 組的金額
-                        //SPECIALMONEYS，算出特賣品的金額
-                        //SALESMMONEYS，算出該會員所有銷售金額
+                        //SPECIALNUMSMONEYS，算出特賣品 組的金額，重復SPECIALMONEYS先不用
+                        //SPECIALMONEYS，算出特賣品，銷售數量/每組*組數獎金 的金額
+                        //SALESMMONEYS，算出該會員所有銷售金額，扣掉特賣品不合併計算的總金額
 
                         SPECIALMNUMS = FINDSPECIALMNUMS(ACCOUNT, STARTDATES, STARTTIMES);
-                        SPECIALNUMSMONEYS = FINDSPECIALNUMSMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
+                        //SPECIALNUMSMONEYS = FINDSPECIALNUMSMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
                         SPECIALMONEYS = FINDSPECIALMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
                         SALESMMONEYS = FINDSALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
 
@@ -1066,13 +1066,13 @@ namespace TKMK
 
                       
 
-                        SALESMMONEYS = SALESMMONEYS - SPECIALMONEYS;
+                        //SALESMMONEYS = SALESMMONEYS - SPECIALMONEYS;
                         COMMISSIONPCT = FINDCOMMISSIONPCT(CARKIND, SALESMMONEYS);
                         COMMISSIONPCTMONEYS = Convert.ToInt32(COMMISSIONPCT * SALESMMONEYS);
                         GUSETNUM = FINDGUSETNUM(ACCOUNT, STARTDATES, STARTTIMES);
-                        TOTALCOMMISSIONMONEYS = Convert.ToInt32(SPECIALNUMSMONEYS + COMMISSIONBASEMONEYS + (COMMISSIONPCT * (SALESMMONEYS)));
+                        TOTALCOMMISSIONMONEYS = Convert.ToInt32(SPECIALMONEYS + COMMISSIONBASEMONEYS + (COMMISSIONPCT * (SALESMMONEYS)));
 
-                        UPDATEGROUPPRODUCT(ID, EXCHANGEMONEYS.ToString(), EXCHANGETOTALMONEYS.ToString(), EXCHANGESALESMMONEYS.ToString(), SALESMMONEYS.ToString(), SPECIALMNUMS.ToString(), SPECIALNUMSMONEYS.ToString(), COMMISSIONBASEMONEYS.ToString(), COMMISSIONPCT.ToString(), COMMISSIONPCTMONEYS.ToString(), TOTALCOMMISSIONMONEYS.ToString(), GUSETNUM.ToString());
+                        UPDATEGROUPPRODUCT(ID, EXCHANGEMONEYS.ToString(), EXCHANGETOTALMONEYS.ToString(), EXCHANGESALESMMONEYS.ToString(), SALESMMONEYS.ToString(), SPECIALMNUMS.ToString(), SPECIALMONEYS.ToString(), COMMISSIONBASEMONEYS.ToString(), COMMISSIONPCT.ToString(), COMMISSIONPCTMONEYS.ToString(), TOTALCOMMISSIONMONEYS.ToString(), GUSETNUM.ToString());
                         //DateTime dt2 = DateTime.Now;
 
                         //MessageBox.Show(dt1.ToString("HH:mm:ss")+"-"+ dt2.ToString("HH:mm:ss"));
@@ -1173,7 +1173,7 @@ namespace TKMK
                                     FROM [TKMK].[dbo].[GROUPPRODUCT]
                                     WHERE [VALID]='Y' AND [MERGECAL]='N' AND [SPLITCAL]='Y'
                                     ) AS TEMP
-                                    ");
+                                    ", TA009, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -1239,7 +1239,7 @@ namespace TKMK
                                     WHERE [VALID]='Y' AND [MERGECAL]='N' AND [SPLITCAL]='Y'
                                     ) AS TEMP
 
-                                    ");
+                                     ", TA009, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
