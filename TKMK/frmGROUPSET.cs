@@ -271,13 +271,11 @@ namespace TKMK
 
                 sbSql.Clear();
                 sbSqlQuery.Clear();
-
-                sbSql.AppendFormat(@"  SELECT  [ID] AS '代號',[NAME] AS '名稱',[NUM] AS '組數',[MONEYS] AS '金額',[MERGECAL] AS '合併計算',[SPLITCAL] AS '分拆計算'");
-                sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[GROUPPRODUCT]");
-                sbSql.AppendFormat(@"  ORDER BY[ID]");
-                sbSql.AppendFormat(@"  ");
-                sbSql.AppendFormat(@"  ");
-                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  
+                                    SELECT  [ID] AS '代號',[NAME] AS '名稱',[NUM] AS '組數',[MONEYS] AS '金額',[SPLITCAL] AS '是否分拆計算',[VALID] AS '是否使用'
+                                    FROM [TKMK].[dbo].[GROUPPRODUCT]
+                                    ORDER BY [ID]
+                                    ");
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -462,9 +460,9 @@ namespace TKMK
                     textBox41.Text = row.Cells["代號"].Value.ToString();
                     textBox42.Text = row.Cells["名稱"].Value.ToString();
                     textBox43.Text = row.Cells["組數"].Value.ToString();
-                    textBox44.Text = row.Cells["金額"].Value.ToString();
-                    textBox45.Text = row.Cells["合併計算"].Value.ToString();
-                    textBox46.Text = row.Cells["分拆計算"].Value.ToString();
+                    textBox44.Text = row.Cells["金額"].Value.ToString();                   
+                    textBox46.Text = row.Cells["是否分拆計算"].Value.ToString();
+                    textBox47.Text = row.Cells["是否使用"].Value.ToString();
                 }
                 else
                 {
@@ -473,8 +471,9 @@ namespace TKMK
                     textBox42.Text = null;
                     textBox43.Text = null;
                     textBox44.Text = null;
-                    textBox45.Text = null;
+                    
                     textBox46.Text = null;
+                    textBox47.Text = null;
                 }
             }
 
@@ -842,7 +841,7 @@ namespace TKMK
             }
         }
 
-        public void ADDGROUPPRODUCT(string ID, string NAME, string NUM, string MONEYS, string MERGECAL, string SPLITCAL)
+        public void ADDGROUPPRODUCT(string ID, string NAME, string NUM, string MONEYS, string SPLITCAL,string VALID)
         {
             try
             {
@@ -865,9 +864,9 @@ namespace TKMK
 
 
                 sbSql.AppendFormat(" INSERT INTO [TKMK].[dbo].[GROUPPRODUCT]");
-                sbSql.AppendFormat(" ([ID],[NAME],[NUM],[MONEYS],[MERGECAL],[SPLITCAL])");
+                sbSql.AppendFormat(" ([ID],[NAME],[NUM],[MONEYS],[SPLITCAL],[VALID])");
                 sbSql.AppendFormat(" VALUES");
-                sbSql.AppendFormat(" ('{0}','{1}','{2}','{3}','{4}','{5}')", ID, NAME, NUM, MONEYS, MERGECAL, SPLITCAL);
+                sbSql.AppendFormat(" ('{0}','{1}','{2}','{3}','{4}','{5}')", ID, NAME, NUM, MONEYS, SPLITCAL, VALID);
                 sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" ");
 
@@ -899,7 +898,7 @@ namespace TKMK
             }
         }
 
-        public void UPDATEGROUPPRODUCT(string IDGROUPPRODUCT, string ID, string NAME, string NUM, string MONEYS, string MERGECAL, string SPLITCAL)
+        public void UPDATEGROUPPRODUCT(string IDGROUPPRODUCT, string ID, string NAME, string NUM, string MONEYS, string SPLITCAL,string VALID)
         {
             try
             {
@@ -921,7 +920,7 @@ namespace TKMK
                 tran = sqlConn.BeginTransaction();
 
                 sbSql.AppendFormat(" UPDATE [TKMK].[dbo].[GROUPPRODUCT]");
-                sbSql.AppendFormat(" SET [ID]='{0}',[NAME]='{1}',[NUM]='{2}',[MONEYS]='{3}',[MERGECAL]='{4}',[SPLITCAL]='{5}'", ID, NAME, NUM, MONEYS, MERGECAL, SPLITCAL);
+                sbSql.AppendFormat(" SET [ID]='{0}',[NAME]='{1}',[NUM]='{2}',[MONEYS]='{3}',[SPLITCAL]='{4}',[VALID]='{5}'", ID, NAME, NUM, MONEYS, SPLITCAL, VALID);
                 sbSql.AppendFormat(" WHERE [ID]='{0}'", IDGROUPPRODUCT);
                 sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" ");
@@ -1159,15 +1158,17 @@ namespace TKMK
             textBox42.ReadOnly = false;
             textBox43.ReadOnly = false;
             textBox44.ReadOnly = false;
-            textBox45.ReadOnly = false;
+            
             textBox46.ReadOnly = false;
+            textBox47.ReadOnly = false;
 
             textBox41.Text = null;
             textBox42.Text = null;
             textBox43.Text = null;
             textBox44.Text = null;
-            textBox45.Text = null;
+            
             textBox46.Text = null;
+            textBox47.Text = null;
         }
 
         public void SETTEXT11()
@@ -1176,8 +1177,9 @@ namespace TKMK
             textBox42.ReadOnly = false;
             textBox43.ReadOnly = false;
             textBox44.ReadOnly = false;
-            textBox45.ReadOnly = false;
+           
             textBox46.ReadOnly = false;
+            textBox47.ReadOnly = false;
         }
 
         public void SETTEXT12()
@@ -1186,9 +1188,9 @@ namespace TKMK
             textBox42.ReadOnly = true;
             textBox43.ReadOnly = true;
             textBox44.ReadOnly = true;
-            textBox45.ReadOnly = true;
+           
             textBox46.ReadOnly = true;
-
+            textBox47.ReadOnly = true;
         }
 
 
@@ -1347,11 +1349,11 @@ namespace TKMK
 
             if (STATUSGROUPPRODUCT.Equals("ADD"))
             {
-                ADDGROUPPRODUCT(textBox41.Text.Trim(), textBox42.Text.Trim(), textBox43.Text.Trim(), textBox44.Text.Trim(), textBox45.Text.Trim(), textBox46.Text.Trim());
+                ADDGROUPPRODUCT(textBox41.Text.Trim(), textBox42.Text.Trim(), textBox43.Text.Trim(), textBox44.Text.Trim(),  textBox46.Text.Trim(), textBox47.Text.Trim());
             }
             else if (STATUSGROUPPRODUCT.Equals("EDIT"))
             {
-                UPDATEGROUPPRODUCT(IDGROUPPRODUCT, textBox41.Text.Trim(), textBox42.Text.Trim(), textBox43.Text.Trim(), textBox44.Text.Trim(), textBox45.Text.Trim(), textBox46.Text.Trim());
+                UPDATEGROUPPRODUCT(IDGROUPPRODUCT, textBox41.Text.Trim(), textBox42.Text.Trim(), textBox43.Text.Trim(), textBox44.Text.Trim(),  textBox46.Text.Trim(), textBox47.Text.Trim());
             }
 
             STATUSGROUPPRODUCT = null;
