@@ -1040,11 +1040,12 @@ namespace TKMK
                         //DateTime dt1 = DateTime.Now;
 
                         //找出各項金額   
-                        //特賣數                
-                        SPECIALMNUMS = FINDSPECIALMNUMS(ACCOUNT, STARTDATES, STARTTIMES);
-                        //特賣獎金
-                        //SPECIALNUMSMONEYS = FINDSPECIALNUMSMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
-                        //特賣獎金
+
+                        //找出各項金額    
+                        //SPECIALMNUMS，算出特賣品的銷貨數量，只要VALID='Y'，就計算
+                        //SPECIALNUMSMONEYS，算出特賣品 組的金額，重復SPECIALMONEYS，先不用
+                        //SPECIALMONEYS，算出特賣品，銷售數量/每組*組數獎金 的金額，只要VALID='Y'，就計算
+                        //SALESMMONEYS，算出該會員所有銷售金額，扣掉特賣品不合併計算的總金額，AND TB010  NOT IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCT] WHERE [VALID]='Y' AND [SPLITCAL]='Y') 
                         SPECIALMONEYS = FINDSPECIALMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
                         //銷售金額
                         SALESMMONEYS = FINDSALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
@@ -1073,6 +1074,8 @@ namespace TKMK
                             EXCHANGEMONEYS = 0;
                             EXCHANGETOTALMONEYS = 0;
                             EXCHANGESALESMMONEYS = 0;
+
+                            //COMMISSIONBASEMONEYS，找出車子的基本輔助金額
                             COMMISSIONBASEMONEYS = FINDBASEMONEYS(CARKIND);
                         }
 
@@ -1176,12 +1179,12 @@ namespace TKMK
                 sbSql.AppendFormat(@"  
                                     SELECT SUM(NUMS) AS SPECIALMNUMS
                                     FROM (
-                                    SELECT [ID],[NAME],[NUM],[MONEYS],[MERGECAL],[SPLITCAL],[VALID]
+                                    SELECT [ID],[NAME],[NUM],[MONEYS],[SPLITCAL],[VALID]
                                     ,(SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}') AS 'NUMS'
                                     ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM]) AS 'BASENUMS'
                                     ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM])*[MONEYS] AS 'SPECIALMONEYS'
                                     FROM [TKMK].[dbo].[GROUPPRODUCT]
-                                    WHERE [VALID]='Y'  AND [SPLITCAL]='Y'
+                                    WHERE [VALID]='Y' 
                                     ) AS TEMP
                                     ", TA009, TA001, TA005);
 
@@ -1240,12 +1243,12 @@ namespace TKMK
                 sbSql.AppendFormat(@"
                                     SELECT SUM(SPECIALMONEYS) AS SPECIALMONEYS
                                     FROM (
-                                    SELECT [ID],[NAME],[NUM],[MONEYS],[MERGECAL],[SPLITCAL],[VALID]
+                                    SELECT [ID],[NAME],[NUM],[MONEYS],[SPLITCAL],[VALID]
                                     ,(SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}') AS 'NUMS'
                                     ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM]) AS 'BASENUMS'
                                     ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM])*[MONEYS] AS 'SPECIALMONEYS'
                                     FROM [TKMK].[dbo].[GROUPPRODUCT]
-                                    WHERE [VALID]='Y' AND  [SPLITCAL]='Y'
+                                    WHERE [VALID]='Y' 
                                     ) AS TEMP
 
                                    ", TA009, TA001, TA005);
