@@ -1181,7 +1181,7 @@ namespace TKMK
                                     ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM]) AS 'BASENUMS'
                                     ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM])*[MONEYS] AS 'SPECIALMONEYS'
                                     FROM [TKMK].[dbo].[GROUPPRODUCT]
-                                    WHERE [VALID]='Y' AND [MERGECAL]='N' AND [SPLITCAL]='Y'
+                                    WHERE [VALID]='Y'  AND [SPLITCAL]='Y'
                                     ) AS TEMP
                                     ", TA009, TA001, TA005);
 
@@ -1245,7 +1245,7 @@ namespace TKMK
                                     ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM]) AS 'BASENUMS'
                                     ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM])*[MONEYS] AS 'SPECIALMONEYS'
                                     FROM [TKMK].[dbo].[GROUPPRODUCT]
-                                    WHERE [VALID]='Y' AND [MERGECAL]='N' AND [SPLITCAL]='Y'
+                                    WHERE [VALID]='Y' AND  [SPLITCAL]='Y'
                                     ) AS TEMP
 
                                    ", TA009, TA001, TA005);
@@ -1370,7 +1370,7 @@ namespace TKMK
                                     SELECT CONVERT(INT,ISNULL(SUM(TB033),0),0) AS 'SALESMMONEYS'
                                     FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
                                     WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006  
-                                    AND TB010  NOT IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCT] WHERE [SPLITCAL]='Y')              
+                                    AND TB010  NOT IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCT] WHERE [VALID]='Y' AND [SPLITCAL]='Y')              
                                     AND TA009='{0}'
                                     AND TA001='{1}'
                                     AND TA005>='{2}'
