@@ -131,6 +131,12 @@
     <Compile Include="frmREPORTFACTORYINCOME.Designer.cs">
       <DependentUpon>frmREPORTFACTORYINCOME.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmREPORTSTORES.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmREPORTSTORES.Designer.cs">
+      <DependentUpon>frmREPORTSTORES.cs</DependentUpon>
+    </Compile>
     <Compile Include="frnRECOPTGH.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -171,6 +177,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmREPORTFACTORYINCOME.resx">
       <DependentUpon>frmREPORTFACTORYINCOME.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmREPORTSTORES.resx">
+      <DependentUpon>frmREPORTSTORES.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frnRECOPTGH.resx">
       <DependentUpon>frnRECOPTGH.cs</DependentUpon>
