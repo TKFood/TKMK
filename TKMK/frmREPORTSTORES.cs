@@ -48,9 +48,19 @@ namespace TKMK
         public frmREPORTSTORES()
         {
             InitializeComponent();
+
+            SETDATES();
         }
 
         #region FUNCTION
+        public void SETDATES()
+        {
+            DateTime FirstDay = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            DateTime LastDay = new DateTime(DateTime.Now.AddMonths(1).Year, DateTime.Now.AddMonths(1).Month, 1).AddDays(-1);
+
+            dateTimePicker1.Value = FirstDay;
+            dateTimePicker2.Value = LastDay;
+        }
         public void SETFASTREPORT(string SDATES, string EDATES)
         {
             StringBuilder SQL1 = new StringBuilder();
