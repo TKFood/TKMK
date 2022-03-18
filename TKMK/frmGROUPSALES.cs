@@ -1029,9 +1029,8 @@ namespace TKMK
                         //SPECIALNUMSMONEYS，算出特賣品 組的金額，重復SPECIALMONEYS，先不用
                         //SPECIALMONEYS，算出特賣品，銷售數量/每組*組數獎金 的金額，只要VALID='Y'，就計算
                         //SALESMMONEYS，算出該會員所有銷售金額，扣掉特賣品不合併計算的總金額，AND TB010  NOT IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCT] WHERE [VALID]='Y' AND [SPLITCAL]='Y') 
-
-                        SPECIALMNUMS = FINDSPECIALMNUMS(ACCOUNT, STARTDATES, STARTTIMES);
                         //SPECIALNUMSMONEYS = FINDSPECIALNUMSMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
+                        SPECIALMNUMS = FINDSPECIALMNUMS(ACCOUNT, STARTDATES, STARTTIMES);
                         SPECIALMONEYS = FINDSPECIALMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
                         SALESMMONEYS = FINDSALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
 
@@ -1141,7 +1140,7 @@ namespace TKMK
             }
         }
 
-        public int FINDSPECIALMNUMS(string TA009,string TA001, string TA005)
+        public int FINDSPECIALMNUMS(string TA009, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -1163,7 +1162,6 @@ namespace TKMK
 
                 sbSql.Clear();
                 sbSqlQuery.Clear();
-
 
                 sbSql.AppendFormat(@"  
                                     SELECT SUM(NUMS) AS SPECIALMNUMS
