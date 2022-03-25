@@ -98,7 +98,7 @@ namespace TKMK
             StringBuilder SB = new StringBuilder();
 
 
-            SB.AppendFormat(@" 
+            SB.AppendFormat(@"  
                             SELECT
                             [ID] AS 'ID'
                             ,[STORE1] AS '門店督導表'
@@ -153,7 +153,7 @@ namespace TKMK
 
                             ", SDATES, EDATES);
 
-            return SB;
+            return SB; 
 
         }
 
