@@ -149,7 +149,7 @@ namespace TKMK
                             FROM [TKMK].[dbo].[TBSTORESCHECK]
                             WHERE [STORE3]>='{0}' AND [STORE3]<='{1}'
                             ORDER BY [STORE2],[STORE3]
- 
+  
 
                             ", SDATES, EDATES);
 
