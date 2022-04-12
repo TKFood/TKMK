@@ -145,11 +145,12 @@ namespace TKMK
                             ,[STORE42] AS '說明-此次督導缺失、輔導內容及規劃說明'
                             ,[STORE43] AS '其他督導宣達內容'
                             ,[STORE44] AS '門店值班 簽名及回應'
+                            ,[NAME] AS '填表人'
                             ,CONVERT(INT,[STORE8])+CONVERT(INT,[STORE10])+CONVERT(INT,[STORE11])+CONVERT(INT,[STORE12])+CONVERT(INT,[STORE13])+CONVERT(INT,[STORE14])+CONVERT(INT,[STORE17])+CONVERT(INT,[STORE18])+CONVERT(INT,[STORE19])+CONVERT(INT,[STORE22])+CONVERT(INT,[STORE23])+CONVERT(INT,[STORE24])+CONVERT(INT,[STORE26])+CONVERT(INT,[STORE29])+CONVERT(INT,[STORE30])+CONVERT(INT,[STORE31])+CONVERT(INT,[STORE32])+CONVERT(INT,[STORE33])+CONVERT(INT,[STORE35])+CONVERT(INT,[STORE36]) AS '總分'
                             FROM [TKMK].[dbo].[TBSTORESCHECK]
                             WHERE [STORE3]>='{0}' AND [STORE3]<='{1}'
                             ORDER BY [STORE2],[STORE3]
-  
+   
 
                             ", SDATES, EDATES);
 
