@@ -2297,6 +2297,59 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
+
+        private void textBox142_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(textBox142.Text))
+                {
+                    textBox142.Text = "1";
+                }
+                else if (Convert.ToInt32(textBox142.Text) == 0)
+                {
+                    textBox142.Text = "1";
+                }
+
+            }
+
+            catch
+            {
+                textBox142.Text = "1";
+            }
+            finally
+            {
+
+            }
+            
+        }
+
+        private void textBox143_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(textBox143.Text))
+                {
+                    textBox143.Text = "1";
+                }
+                else if (Convert.ToInt32(textBox143.Text) == 0)
+                {
+                    textBox143.Text = "1";
+                }
+
+            }
+
+            catch
+            {
+                textBox143.Text = "1";
+            }
+            finally
+            {
+
+            }
+        }
+
+
         #endregion
 
         #region BUTTON
@@ -2624,10 +2677,11 @@ namespace TKMK
             SETFASTREPORT();
         }
 
-       
+
+
 
         #endregion
 
-
+      
     }
 }
