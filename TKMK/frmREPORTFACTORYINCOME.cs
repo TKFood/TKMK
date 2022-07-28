@@ -380,6 +380,78 @@ namespace TKMK
 
         }
 
+        public void SETFASTREPORT4(string SDATE,string EDATES)
+        {
+            StringBuilder SQL4 = new StringBuilder();
+
+            SQL4.Clear();
+            SQL4.AppendFormat(@"
+                                --20220728 查團車
+                                SELECT  
+                                CONVERT(nvarchar,[CREATEDATES],112) AS '日期'
+                                ,[SERNO] AS '序號'
+                                ,[CARNAME] AS '車名'
+                                ,[CARNO] AS '車號'
+                                ,[CARKIND] AS '車種'
+                                ,[GROUPKIND]  AS '團類'
+                                ,[ISEXCHANGE] AS '兌換券'
+                                ,[EXCHANGETOTALMONEYS] AS '券總額'
+                                ,[EXCHANGESALESMMONEYS] AS '券消費'
+                                ,[SALESMMONEYS] AS '消費總額'
+                                ,[SPECIALMNUMS] AS '特賣數'
+                                ,[SPECIALMONEYS] AS '特賣獎金'
+                                ,[COMMISSIONBASEMONEYS] AS '茶水費'
+                                ,[COMMISSIONPCTMONEYS] AS '消費獎金'
+                                ,[TOTALCOMMISSIONMONEYS] AS '總獎金'
+                                ,[CARNUM] AS '車數'
+                                ,[GUSETNUM] AS '來客數'
+                                ,[EXCHANNO] AS '優惠券名'
+                                ,[EXCHANACOOUNT] AS '優惠券帳號'
+                                ,CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間'
+                                ,CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間'
+                                ,[STATUS] AS '狀態'
+                                ,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間'
+                                ,CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間'
+                                ,[EXCHANGEMONEYS] AS '領券額'
+                                ,[ID]
+                                ,[CREATEDATES]
+                                FROM [TKMK].[dbo].[GROUPSALES]
+                                WHERE CONVERT(nvarchar,[CREATEDATES],112)>='{0}' AND CONVERT(nvarchar,[CREATEDATES],112)<='{1}'
+                                AND [STATUS]<>'取消預約'
+                                ORDER BY CONVERT(nvarchar,[CREATEDATES],112),SERNO
+
+                                ", SDATE,EDATES);
+
+
+             Report report1 = new Report();
+            report1.Load(@"REPORT\團車明細.frx");
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+
+
+            TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
+            table.SelectCommand = SQL4.ToString();
+
+
+            //report1.SetParameterValue("P1", dateTimePicker1.Value.ToString("yyyyMMdd"));
+            //report1.SetParameterValue("P2", dateTimePicker2.Value.ToString("yyyyMMdd"));
+            report1.Preview = previewControl1;
+            report1.Show();
+        }
+
+       
+
         #endregion
 
         #region BUTTON
@@ -398,6 +470,10 @@ namespace TKMK
         private void button4_Click(object sender, EventArgs e)
         {
             SETFASTREPORT3(dateTimePicker3.Value.ToString("yyyy"));
+        }
+        private void button5_Click(object sender, EventArgs e)
+        {
+            SETFASTREPORT4(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
         }
 
         #endregion
