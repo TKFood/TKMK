@@ -365,16 +365,16 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  SELECT ");
-                sbSql.AppendFormat(@"  [SERNO] AS '序號',[CARNAME] AS '車名',[CARNO] AS '車號',[CARKIND] AS '車種',[GROUPKIND]  AS '團類',[ISEXCHANGE] AS '兌換券',[EXCHANGETOTALMONEYS] AS '券總額',[EXCHANGESALESMMONEYS] AS '券消費',[SALESMMONEYS] AS '消費總額'");
-                sbSql.AppendFormat(@"  ,[SPECIALMNUMS] AS '特賣數',[SPECIALMONEYS] AS '特賣獎金',[COMMISSIONBASEMONEYS] AS '茶水費',[COMMISSIONPCTMONEYS] AS '消費獎金',[TOTALCOMMISSIONMONEYS] AS '總獎金',[CARNUM] AS '車數',[GUSETNUM] AS '來客數',[EXCHANNO] AS '優惠券名',[EXCHANACOOUNT] AS '優惠券帳號',CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間',CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間',[STATUS] AS '狀態'");
-                sbSql.AppendFormat(@"  ,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間',CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間',[COMMISSIONPCT] AS '抽佣比率',[EXCHANGEMONEYS] AS '領券額',[ID],[CREATEDATES]");
-                sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[GROUPSALES]");
-                sbSql.AppendFormat(@"  WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}' ", CREATEDATES);
-                sbSql.AppendFormat(@"  ORDER BY CONVERT(nvarchar,[CREATEDATES],112),CONVERT(int,[SERNO]) DESC");
-                sbSql.AppendFormat(@"  ");
-                sbSql.AppendFormat(@"  ");
-                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  
+                                    SELECT 
+                                    [SERNO] AS '序號',[CARNAME] AS '車名',[CARNO] AS '車號',[CARKIND] AS '車種',[GROUPKIND]  AS '團類',[ISEXCHANGE] AS '兌換券',[EXCHANGETOTALMONEYS] AS '券總額',[EXCHANGESALESMMONEYS] AS '券消費',[SALESMMONEYS] AS '消費總額'
+                                    ,[SPECIALMNUMS] AS '特賣數',[SPECIALMONEYS] AS '特賣獎金',[COMMISSIONBASEMONEYS] AS '茶水費',[COMMISSIONPCTMONEYS] AS '消費獎金',[TOTALCOMMISSIONMONEYS] AS '總獎金',[CARNUM] AS '車數',[GUSETNUM] AS '來客數',[EXCHANNO] AS '優惠券名',[EXCHANACOOUNT] AS '優惠券帳號',CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間',CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間',[STATUS] AS '狀態'
+                                    ,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間',CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間',[COMMISSIONPCT] AS '抽佣比率',[EXCHANGEMONEYS] AS '領券額',[ID],[CREATEDATES]
+                                    FROM [TKMK].[dbo].[GROUPSALES]
+                                    WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}' 
+                                    ORDER BY CONVERT(nvarchar,[CREATEDATES],112),CONVERT(int,[SERNO]) DESC
+
+                                    ", CREATEDATES);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -664,6 +664,9 @@ namespace TKMK
                     comboBox2.Text = row.Cells["團類"].Value.ToString();
                     comboBox3.Text = row.Cells["優惠券帳號"].Value.ToString() + ' ' + row.Cells["優惠券名"].Value.ToString();
                     comboBox6.Text = row.Cells["兌換券"].Value.ToString();
+
+                    dateTimePicker2.Value = Convert.ToDateTime(row.Cells["實際到達時間"].Value.ToString());
+                    dateTimePicker3.Value = Convert.ToDateTime(row.Cells["實際離開時間"].Value.ToString());
 
                 }
                 else
