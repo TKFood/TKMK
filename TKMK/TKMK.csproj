@@ -107,6 +107,12 @@
     <Compile Include="frmGROUPSET.Designer.cs">
       <DependentUpon>frmGROUPSET.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmIMPORTERP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmIMPORTERP.Designer.cs">
+      <DependentUpon>frmIMPORTERP.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmLogin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -171,6 +177,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmGROUPSET.resx">
       <DependentUpon>frmGROUPSET.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmIMPORTERP.resx">
+      <DependentUpon>frmIMPORTERP.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmLogin.resx">
       <DependentUpon>FrmLogin.cs</DependentUpon>
