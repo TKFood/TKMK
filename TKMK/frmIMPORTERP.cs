@@ -125,7 +125,7 @@ namespace TKMK
                 {
                     _path = @"F:\銷售明細.csv";
                     //constr = @"Provider = Microsoft.Jet.OLEDB.4.0; Data Source = F:\銷售明細.csv; Extended Properties = 'TEXT;IMEX=1;HDR=Yes;FMT=Delimited;CharacterSet=UNICODE;'";
-                    constr = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + _path + ";Extended Properties='Text;FMT=Delimited;HDR=YES;'";
+                    constr = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + _path.Remove(_path.LastIndexOf("\\") + 1) + ";Extended Properties='Text;FMT=Delimited;HDR=YES;'";
                 }
                 else
                 {
@@ -139,7 +139,26 @@ namespace TKMK
 
 
                 DataTable excelShema = Econ.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
-                string firstSheetName = excelShema.Rows[0]["TABLE_NAME"].ToString();
+                string firstSheetName = null;
+                //找到csv的正確table表
+                if (CHECKEXCELFORMAT.CompareTo(".csv") == 0)
+                {
+                    for (int i = 0; i < excelShema.Rows.Count; i++)
+                    {
+                        firstSheetName = Convert.ToString(excelShema.Rows[i]["TABLE_NAME"]);
+
+                        if (firstSheetName.Contains("csv"))
+                        {
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                     excelShema.Rows[0]["TABLE_NAME"].ToString();
+                }
+                   
+                   
 
                 string Query = string.Format("Select * FROM [{0}]", firstSheetName);
                 OleDbCommand Ecom = new OleDbCommand(Query, Econ);
