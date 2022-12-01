@@ -600,6 +600,85 @@ namespace TKMK
             }
         }
 
+        public void UPDATE_TBJabezPOS_TA001TA002TA003()
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(@" 
+                                    
+                                    UPDATE [TKMK].[dbo].[TBJabezPOS]
+                                    SET [TA001]=CONVERT(NVARCHAR,CONVERT(DATETIME,[日期]),112)
+                                    WHERE ISNULL([TA001],'')=''
+
+                                    UPDATE [TKMK].[dbo].[TBJabezPOS]
+                                    SET [TA002]=[DVALUES]
+                                    FROM [TKMK].[dbo].[TBZPARAS]
+                                    WHERE ISNULL([TA002],'')=''
+                                    AND [TBZPARAS].KINDS='TBJabezPOS' AND [TBZPARAS].PARASNAMES='店號'
+
+                                    UPDATE [TKMK].[dbo].[TBJabezPOS]
+                                    SET [TA003]=[DVALUES]
+                                    FROM [TKMK].[dbo].[TBZPARAS]
+                                    WHERE ISNULL([TA003],'')=''
+                                    AND [TBZPARAS].KINDS='TBJabezPOS' AND [TBZPARAS].PARASNAMES='機號'
+                                        ");
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易                      
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public void UPDATE_TBJabezPOS_TA006()
+        {
+
+        }
+
+        public void UPDATE_TBJabezPOS_TB007TC007()
+        {
+
+        }
+
         #endregion
 
         #region BUTTON
@@ -614,8 +693,24 @@ namespace TKMK
 
             MessageBox.Show("完成");
         }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            //更新TA001、TA002、TA003
+            UPDATE_TBJabezPOS_TA001TA002TA003();
+            //更新TA006
+
+            //更新TB007、TC007
+
+            Search(dateTimePicker1.Value.ToString("yyyy/MM"));
+
+
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+        }
         #endregion
 
-       
+
     }
 }
