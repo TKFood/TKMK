@@ -99,7 +99,7 @@ namespace TKMK
                                     ,[TA006]
                                     ,[TB007]
                                     ,[TC007]
-                                     ,RIGHT('00000'+CAST(row_number() OVER(PARTITION BY [TA001],[TA002],[TA003] ORDER BY [TA001],[TA002],[TA003]) AS nvarchar(10)),5)  AS SEQ
+                                     
                                     FROM [TKMK].[dbo].[TBJabezPOS]
                                     WHERE [日期] LIKE '%{0}%'
                                     ORDER BY [機台],[日期],[序號],[時間]
@@ -671,12 +671,280 @@ namespace TKMK
 
         public void UPDATE_TBJabezPOS_TA006()
         {
+            DataSet ds = new DataSet();
 
+            try
+            {
+                sbSql.Clear();
+
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+                
+                sbSql.AppendFormat(@"                                    
+                                   SELECT  
+                                    [機台]
+                                    ,[日期]
+                                    ,[序號]
+                                    ,[時間]
+                                    ,[商品編號]
+                                    ,[商品規格]
+                                    ,[單價]
+                                    ,[數量]
+                                    ,[小計]
+                                    ,[TA001]
+                                    ,[TA002]
+                                    ,[TA003]
+                                    ,[TA006]
+                                    ,[TB007]
+                                    ,[TC007]
+                                    ,RIGHT('00000'+CAST(row_number() OVER(PARTITION BY [TA001],[TA002],[TA003] ORDER BY [TA001],[TA002],[TA003]) AS nvarchar(10)),5)  AS SEQ 
+                                    ,([機台]+[日期]+[序號]) AS 'KEYS'
+                                    FROM [TKMK].[dbo].[TBJabezPOS]
+                                    WHERE ISNULL(TA006,'')=''
+                                    ORDER BY [機台],[日期],[序號],[時間]
+
+                                         ");
+
+                adapter = new SqlDataAdapter(sbSql.ToString(), sqlConn);
+                sqlCmdBuilder = new SqlCommandBuilder(adapter);
+
+                sqlConn.Open();
+                ds.Clear();
+                adapter.Fill(ds, "ds");
+                sqlConn.Close();
+
+
+                if (ds.Tables["ds"].Rows.Count >= 0)
+                {
+                    UPDATE_TBJabezPOS_TA006_ACT(ds.Tables["ds"]);
+                }
+
+
+
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
+        public void UPDATE_TBJabezPOS_TA006_ACT(DataTable DT)
+        {
+            StringBuilder SQLEXECUT = new StringBuilder();
+
+            foreach(DataRow DR in DT.Rows)
+            {
+                SQLEXECUT.AppendFormat(@"
+                                        UPDATE [TKMK].[dbo].[TBJabezPOS]
+                                        SET [TA006]='{1}'
+                                        WHERE ([機台]+[日期]+[序號])='{0}'
+
+                                        ", DR["KEYS"].ToString(), DR["SEQ"].ToString());
+            }
+
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                sbSql = SQLEXECUT;
+                //sbSql.AppendFormat(@"  ");
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易                      
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
         }
 
         public void UPDATE_TBJabezPOS_TB007TC007()
         {
+            DataSet ds = new DataSet();
 
+            try
+            {
+                sbSql.Clear();
+
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.AppendFormat(@"                                    
+                                   SELECT  
+                                    [機台]
+                                    ,[日期]
+                                    ,[序號]
+                                    ,[時間]
+                                    ,[商品編號]
+                                    ,[商品規格]
+                                    ,[單價]
+                                    ,[數量]
+                                    ,[小計]
+                                    ,[TA001]
+                                    ,[TA002]
+                                    ,[TA003]
+                                    ,[TA006]
+                                    ,[TB007]
+                                    ,[TC007]
+                                    ,RIGHT('0000'+CAST(row_number() OVER(PARTITION BY [TA001],[TA002],[TA003],[TA006] ORDER BY [TA001],[TA002],[TA003],[TA006]) AS nvarchar(10)),4)  AS SEQ 
+                                    ,([TA001]+[TA002]+[TA003]+[TA006]) AS 'KEYS'
+                                    FROM [TKMK].[dbo].[TBJabezPOS]
+                                    WHERE ISNULL([TB007],'')=''
+
+
+                                         ");
+
+                adapter = new SqlDataAdapter(sbSql.ToString(), sqlConn);
+                sqlCmdBuilder = new SqlCommandBuilder(adapter);
+
+                sqlConn.Open();
+                ds.Clear();
+                adapter.Fill(ds, "ds");
+                sqlConn.Close();
+
+
+                if (ds.Tables["ds"].Rows.Count >= 0)
+                {
+                    UPDATE_TBJabezPOS_TB007TC007_ACT(ds.Tables["ds"]);
+                }
+
+
+
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
+        public void UPDATE_TBJabezPOS_TB007TC007_ACT(DataTable DT)
+        {
+            StringBuilder SQLEXECUT = new StringBuilder();
+
+            foreach (DataRow DR in DT.Rows)
+            {
+                SQLEXECUT.AppendFormat(@"
+                                        UPDATE [TKMK].[dbo].[TBJabezPOS]
+                                        SET [TB007]='{1}',[TC007]='{1}'
+                                        WHERE ([TA001]+[TA002]+[TA003]+[TA006])='{0}'
+
+                                        ", DR["KEYS"].ToString(), DR["SEQ"].ToString());
+            }
+
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                sbSql = SQLEXECUT;
+                //sbSql.AppendFormat(@"  ");
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易                      
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
         }
 
         #endregion
@@ -698,10 +966,13 @@ namespace TKMK
             //更新TA001、TA002、TA003
             UPDATE_TBJabezPOS_TA001TA002TA003();
             //更新TA006
-
+            UPDATE_TBJabezPOS_TA006();
             //更新TB007、TC007
+            UPDATE_TBJabezPOS_TB007TC007();
+
 
             Search(dateTimePicker1.Value.ToString("yyyy/MM"));
+            MessageBox.Show("完成");
 
 
         }
