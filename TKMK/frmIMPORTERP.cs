@@ -59,34 +59,97 @@ namespace TKMK
         #region FUNCTION
         public void CHECKADDDATA()
         {
-            //IEnumerable<DataRow> tempExcept = null;
+            //新增暫存資料     
+             IMPORTEXCEL();
 
-            //DataTable DT1 = SEARCHTBJabezPOS();
-            DataTable DT2 = IMPORTEXCEL();
+            //檢查暫存中的新資料
+            DataTable NEWTDATATABLE = SEARCHNEWDATA();
+            //匯入到TBJabezPOS中
+            if(NEWTDATATABLE.Rows.Count>0)
+            {
+                ADD_TO_TBJabezPOS(NEWTDATATABLE);
+            }
+            
 
-            //找DataTable差集
-            //要有相同的欄位名稱
-            //找DataTable差集
-            //如果兩個datatable中有部分欄位相同，可以使用Contains比較　　
-            //var tempExcept = from r in DT2.AsEnumerable()
-            //                 where
-            //                 !(from rr in DT1.AsEnumerable() select rr.Field<string>("訂單編號")).Contains(
-            //                 r.Field<string>("訂單編號"))
-            //                 select r;
-
-
-            //var tempExcept = DT2.AsEnumerable();
-
-            //if (tempExcept.Count() > 0)
-            //{
-            //    //差集集合
-            //    DataTable dt3 = tempExcept.CopyToDataTable();
-
-            //    INSERTINTOTEMP91APPCOP(dt3);
-            //}
         }
 
-        public DataTable IMPORTEXCEL()
+        public DataTable SEARCHTBJabezPOS()
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            //THISYEARS = "21";
+
+            try
+            {
+                //connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                //sqlConn = new SqlConnection(connectionString);
+
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+
+
+                //核準過TASK_RESULT='0'
+                //AND DOC_NBR  LIKE 'QC1002{0}%'
+
+                sbSql.AppendFormat(@"  
+                                    SELECT 
+                                    [機台]
+                                    ,[日期]
+                                    ,[序號]
+                                    ,[時間]
+                                    ,[商品編號]
+                                    ,[商品規格]
+                                    ,[單價]
+                                    ,[數量]
+                                    ,[小計]
+                                    FROM [TKMK].[dbo].[TBJabezPOS]
+                                    ");
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return ds1.Tables["ds1"];
+
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public void IMPORTEXCEL()
         {
             //記錄選到的檔案路徑
             _path = null;
@@ -97,11 +160,11 @@ namespace TKMK
             DialogResult dr = od.ShowDialog();
             if (dr == DialogResult.Abort)
             {
-                return null;
+
             }
             if (dr == DialogResult.Cancel)
             {
-                return null;
+                
             }
 
 
@@ -123,7 +186,7 @@ namespace TKMK
                 }
                 else if (CHECKEXCELFORMAT.CompareTo(".csv") == 0)
                 {
-                    _path = @"F:\銷售明細.csv";
+                    //_path = @"F:\銷售明細.csv";
                     //constr = @"Provider = Microsoft.Jet.OLEDB.4.0; Data Source = F:\銷售明細.csv; Extended Properties = 'TEXT;IMEX=1;HDR=Yes;FMT=Delimited;CharacterSet=UNICODE;'";
                     constr = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + _path.Remove(_path.LastIndexOf("\\") + 1) + ";Extended Properties='Text;FMT=Delimited;HDR=YES;'";
                 }
@@ -165,31 +228,290 @@ namespace TKMK
 
 
                 DataTable dtExcelData = new DataTable();
+                dtExcelData.Columns.Add("機台", typeof(string));
+                dtExcelData.Columns.Add("日期", typeof(string));
+                dtExcelData.Columns.Add("序號", typeof(string));
+                dtExcelData.Columns.Add("時間", typeof(string));
+                dtExcelData.Columns.Add("商品編號", typeof(string));
+                dtExcelData.Columns.Add("商品規格", typeof(string));
+                dtExcelData.Columns.Add("單價", typeof(decimal));
+                dtExcelData.Columns.Add("數量", typeof(decimal));
+                dtExcelData.Columns.Add("小計", typeof(decimal));
+
+                DataTable Exceldt = new DataTable();
+                Exceldt.Columns.Add("機台", typeof(string));
+                Exceldt.Columns.Add("日期", typeof(string));
+                Exceldt.Columns.Add("序號", typeof(string));
+                Exceldt.Columns.Add("時間", typeof(string));
+                Exceldt.Columns.Add("商品編號", typeof(string));
+                Exceldt.Columns.Add("商品規格", typeof(string));
+                Exceldt.Columns.Add("單價", typeof(decimal));
+                Exceldt.Columns.Add("數量", typeof(decimal));
+                Exceldt.Columns.Add("小計", typeof(decimal));
 
                 OleDbDataAdapter oda = new OleDbDataAdapter(Query, Econ);
                 Econ.Close();
                 oda.Fill(dtExcelData);
-                DataTable Exceldt = dtExcelData;
+
+                //轉換日期為文字
+                foreach(DataRow  DR in dtExcelData.Rows)
+                {
+                    DataRow NEWDR = Exceldt.NewRow();
+                    NEWDR["機台"] = DR["機台"].ToString();
+                    NEWDR["日期"]= Convert.ToDateTime(DR["日期"].ToString()).ToString("yyyy/MM/dd");
+                    NEWDR["序號"] = DR["序號"].ToString();
+                    NEWDR["時間"] = Convert.ToDateTime(DR["時間"].ToString()).ToString("HH:mm:ss");
+                    NEWDR["商品編號"] = DR["商品編號"].ToString();
+                    NEWDR["商品規格"] = DR["商品規格"].ToString();
+                    NEWDR["單價"] = DR["單價"].ToString();
+                    NEWDR["數量"] = DR["數量"].ToString();
+                    NEWDR["小計"] = DR["小計"].ToString();
+
+                    Exceldt.Rows.Add(NEWDR);
+                }
+
+                //DataTable Exceldt = dtExcelData;
 
                 //把第一列的欄位名移除
                 //Exceldt.Rows[0].Delete();
 
                 if (Exceldt.Rows.Count > 0)
                 {
-                    return Exceldt;
+                    ADD_TO_TBJabezPOS_TEMP(Exceldt);
                 }
                 else
                 {
-                    return null;
+                    
                 }
 
 
             }
             catch (Exception ex)
             {
-                return null;
+                
                 //MessageBox.Show(string.Format("錯誤:{0}", ex.Message), "Not Imported", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
+            }
+        }
+        /// <summary>
+        ///新增暫存資料到 TBJabezPOS_TEMP 
+        /// </summary>
+        /// <param name="DT"></param>
+        public void ADD_TO_TBJabezPOS_TEMP(DataTable DT)
+        {
+            CLEAR_TBJabezPOS_TEMP();
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);           
+           
+            using (SqlBulkCopy bulkCopy = new SqlBulkCopy(sqlConn))
+            {
+                sqlConn.Open();
+                bulkCopy.DestinationTableName = "TBJabezPOS_TEMP";
+
+                //對應資料行
+                //   bulkCopy.ColumnMappings.Add("來源欄位", "目標欄位");
+                bulkCopy.ColumnMappings.Add("機台", "機台");
+                bulkCopy.ColumnMappings.Add("日期", "日期");
+                bulkCopy.ColumnMappings.Add("序號", "序號");
+                bulkCopy.ColumnMappings.Add("時間", "時間");
+                bulkCopy.ColumnMappings.Add("商品編號", "商品編號");
+                bulkCopy.ColumnMappings.Add("商品規格", "商品規格");
+                bulkCopy.ColumnMappings.Add("單價", "單價");
+                bulkCopy.ColumnMappings.Add("數量", "數量");
+                bulkCopy.ColumnMappings.Add("小計", "小計");
+                try
+                {
+                    bulkCopy.WriteToServer(DT);
+                }
+                catch (Exception e)
+                {
+                    Console.Write(e.Message);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 清空暫存的 TBJabezPOS_TEMP
+        /// </summary>
+        public void CLEAR_TBJabezPOS_TEMP()
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+                                
+                sbSql.AppendFormat(@" 
+                                    DELETE  [TKMK].[dbo].[TBJabezPOS_TEMP]
+                                        ");
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易                      
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public DataTable SEARCHNEWDATA()
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            //THISYEARS = "21";
+
+            try
+            {
+                //connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                //sqlConn = new SqlConnection(connectionString);
+
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+
+
+                //核準過TASK_RESULT='0'
+                //AND DOC_NBR  LIKE 'QC1002{0}%'
+
+                sbSql.AppendFormat(@"                                   
+                                    SELECT
+                                     [機台]
+                                    ,[日期]
+                                    ,[序號]
+                                    ,[時間]
+                                    ,[商品編號]
+                                    ,[商品規格]
+                                    ,[單價]
+                                    ,[數量]
+                                    ,[小計]
+                                    FROM [TKMK].[dbo].[TBJabezPOS_TEMP]
+                                    WHERE [機台]+[日期]+[序號] NOT IN (SELECT [機台]+[日期]+[序號] FROM [TKMK].[dbo].[TBJabezPOS])
+                                    ");
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return ds1.Tables["ds1"];
+
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+        /// <summary>
+        /// 新增到TBJabezPOS
+        /// </summary>
+        /// <param name="DT"></param>
+        public void ADD_TO_TBJabezPOS(DataTable DT)
+        {
+            CLEAR_TBJabezPOS_TEMP();
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            using (SqlBulkCopy bulkCopy = new SqlBulkCopy(sqlConn))
+            {
+                sqlConn.Open();
+                bulkCopy.DestinationTableName = "TBJabezPOS";
+                //對應資料行
+                //   bulkCopy.ColumnMappings.Add("來源欄位", "目標欄位");
+                bulkCopy.ColumnMappings.Add("機台", "機台");
+                bulkCopy.ColumnMappings.Add("日期", "日期");
+                bulkCopy.ColumnMappings.Add("序號", "序號");
+                bulkCopy.ColumnMappings.Add("時間", "時間");
+                bulkCopy.ColumnMappings.Add("商品編號", "商品編號");
+                bulkCopy.ColumnMappings.Add("商品規格", "商品規格");
+                bulkCopy.ColumnMappings.Add("單價", "單價");
+                bulkCopy.ColumnMappings.Add("數量", "數量");
+                bulkCopy.ColumnMappings.Add("小計", "小計");
+                try
+                {
+                    bulkCopy.WriteToServer(DT);
+                }
+                catch (Exception e)
+                {
+                    Console.Write(e.Message);
+                }
             }
         }
 
