@@ -57,6 +57,91 @@ namespace TKMK
         }
 
         #region FUNCTION
+
+        public void Search(string YYYYMM)
+        {
+            DataSet ds = new DataSet();
+            StringBuilder sbSqlQUERY = new StringBuilder();
+      
+
+            try
+            {
+                sbSql.Clear();
+                sbSqlQUERY.Clear();
+
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+              
+
+                sbSql.AppendFormat(@"
+                                    SELECT  
+                                    [機台]
+                                    ,[日期]
+                                    ,[序號]
+                                    ,[時間]
+                                    ,[商品編號]
+                                    ,[商品規格]
+                                    ,[單價]
+                                    ,[數量]
+                                    ,[小計]
+                                    ,[TA001]
+                                    ,[TA002]
+                                    ,[TA003]
+                                    ,[TA006]
+                                    ,[TB007]
+                                    ,[TC007]
+                                     ,RIGHT('00000'+CAST(row_number() OVER(PARTITION BY [TA001],[TA002],[TA003] ORDER BY [TA001],[TA002],[TA003]) AS nvarchar(10)),5)  AS SEQ
+                                    FROM [TKMK].[dbo].[TBJabezPOS]
+                                    WHERE [日期] LIKE '%{0}%'
+                                    ORDER BY [機台],[日期],[序號],[時間]
+
+                                         ", YYYYMM);
+
+                adapter = new SqlDataAdapter(sbSql.ToString(), sqlConn);
+                sqlCmdBuilder = new SqlCommandBuilder(adapter);
+
+                sqlConn.Open();
+                ds.Clear();
+                adapter.Fill(ds, "ds");
+                sqlConn.Close();
+
+
+                if (ds.Tables["ds"].Rows.Count == 0)
+                {
+                    dataGridView1.DataSource = null;
+
+                }
+                else
+                {
+                    dataGridView1.DataSource = ds.Tables["ds"];
+                    dataGridView1.AutoResizeColumns();
+                    //rownum = ds.Tables[talbename].Rows.Count - 1;                       
+
+                    //dataGridView1.CurrentCell = dataGridView1[0, 2];
+
+                }
+
+
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
         public void CHECKADDDATA()
         {
             //新增暫存資料     
@@ -518,7 +603,11 @@ namespace TKMK
         #endregion
 
         #region BUTTON
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Search(dateTimePicker1.Value.ToString("yyyy/MM"));
 
+        }
         private void button4_Click(object sender, EventArgs e)
         {
             CHECKADDDATA();
@@ -526,5 +615,7 @@ namespace TKMK
             MessageBox.Show("完成");
         }
         #endregion
+
+       
     }
 }
