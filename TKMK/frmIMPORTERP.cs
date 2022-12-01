@@ -1792,7 +1792,7 @@ namespace TKMK
         }
         private void button3_Click(object sender, EventArgs e)
         {
-            ADD_ERP_POSTAPOSTBPOSTC();
+            ADD_ERP_POSTAPOSTBPOSTC(); 
 
             Search(dateTimePicker1.Value.ToString("yyyy/MM"), comboBox1.Text);
             MessageBox.Show("完成");
