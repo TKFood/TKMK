@@ -56,7 +56,8 @@ namespace TKMK
             InitializeComponent();
 
             comboBox1load();
-
+            comboBox2load();
+            textBox1.Text = "106702";
         }
 
         #region FUNCTION
@@ -88,6 +89,45 @@ namespace TKMK
             sqlConn.Close();
 
 
+        }
+
+        public void comboBox2load()
+        {
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"SELECT [PARASNAMES],[DVALUES] FROM [TKMK].[dbo].[TBZPARAS] WHERE [PARASNAMES] IN ('1硯徑墨','2觀光')  ORDER BY PARASNAMES ");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("PARASNAMES", typeof(string));
+            dt.Columns.Add("DVALUES", typeof(string));
+
+            da.Fill(dt);
+            comboBox2.DataSource = dt.DefaultView;
+            comboBox2.ValueMember = "DVALUES";
+            comboBox2.DisplayMember = "PARASNAMES";
+            sqlConn.Close();
+
+
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(!string.IsNullOrEmpty(comboBox2.Text))
+            {
+                textBox1.Text = comboBox2.SelectedValue.ToString();
+            }
         }
         public void Search(string YYYYMM,string ISIMPORT)
         {
@@ -643,7 +683,7 @@ namespace TKMK
             }
         }
 
-        public void UPDATE_TBJabezPOS_TA001TA002TA003()
+        public void UPDATE_TBJabezPOS_TA001TA002TA003(string TA002)
         {
             try
             {
@@ -672,17 +712,16 @@ namespace TKMK
                                     WHERE ISNULL([TA001],'')=''
 
                                     UPDATE [TKMK].[dbo].[TBJabezPOS]
-                                    SET [TA002]=[DVALUES]
-                                    FROM [TKMK].[dbo].[TBZPARAS]
+                                    SET [TA002]='{0}'
                                     WHERE ISNULL([TA002],'')=''
-                                    AND [TBZPARAS].KINDS='TBJabezPOS' AND [TBZPARAS].PARASNAMES='店號'
+                                 
 
                                     UPDATE [TKMK].[dbo].[TBJabezPOS]
                                     SET [TA003]=[DVALUES]
                                     FROM [TKMK].[dbo].[TBZPARAS]
                                     WHERE ISNULL([TA003],'')=''
                                     AND [TBZPARAS].KINDS='TBJabezPOS' AND [TBZPARAS].PARASNAMES='機號'
-                                        ");
+                                        ", TA002);
 
 
                 cmd.Connection = sqlConn;
@@ -1778,7 +1817,7 @@ namespace TKMK
         private void button2_Click(object sender, EventArgs e)
         {
             //更新TA001、TA002、TA003
-            UPDATE_TBJabezPOS_TA001TA002TA003();
+            UPDATE_TBJabezPOS_TA001TA002TA003(textBox1.Text);
             //更新TA006
             UPDATE_TBJabezPOS_TA006();
             //更新TB007、TC007
@@ -1798,8 +1837,9 @@ namespace TKMK
             MessageBox.Show("完成");
 
         }
+
         #endregion
 
-
+    
     }
 }
