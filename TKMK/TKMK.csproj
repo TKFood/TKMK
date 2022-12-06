@@ -149,6 +149,12 @@
     <Compile Include="frmREPORTSTORES.Designer.cs">
       <DependentUpon>frmREPORTSTORES.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmREPORTTBSTOREDAILY.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmREPORTTBSTOREDAILY.Designer.cs">
+      <DependentUpon>frmREPORTTBSTOREDAILY.cs</DependentUpon>
+    </Compile>
     <Compile Include="frnRECOPTGH.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -198,6 +204,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmREPORTSTORES.resx">
       <DependentUpon>frmREPORTSTORES.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmREPORTTBSTOREDAILY.resx">
+      <DependentUpon>frmREPORTTBSTOREDAILY.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frnRECOPTGH.resx">
       <DependentUpon>frnRECOPTGH.cs</DependentUpon>
