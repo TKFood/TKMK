@@ -154,27 +154,38 @@ namespace TKMK
                 if (ISIMPORT.Equals("Y"))
                 {
                     sbSqlQUERY.AppendFormat(@" 
-                                            AND  REPLACE(TA001+TA002+TA003+TA006,' ','') IN (SELECT  REPLACE(TA001+TA002+TA003+TA006,' ','') FROM [TK].dbo.POSTATEMP)
+                                            AND  REPLACE(ISNULL(TA001,'')+ISNULL(TA002,'')+ISNULL(TA003,'')+ISNULL(TA006,''),' ','')  IN (SELECT  REPLACE(TA001+TA002+TA003+TA006,' ','') FROM [TK].dbo.POSTATEMP)
                                             ");
                 }
                 else
                 {
                     sbSqlQUERY.AppendFormat(@" 
-                                            AND  REPLACE(TA001+TA002+TA003+TA006,' ','') NOT IN (SELECT  REPLACE(TA001+TA002+TA003+TA006,' ','') FROM [TK].dbo.POSTATEMP)
+                                            AND  REPLACE(ISNULL(TA001,'')+ISNULL(TA002,'')+ISNULL(TA003,'')+ISNULL(TA006,''),' ','') NOT IN (SELECT  REPLACE(TA001+TA002+TA003+TA006,' ','') FROM [TK].dbo.POSTATEMP)
                                             ");
                 }
 
                 sbSql.AppendFormat(@"
                                     SELECT  
-                                    [機台]
+                                    [營業點]
+                                    ,[機台]
                                     ,[日期]
                                     ,[序號]
                                     ,[時間]
+                                    ,[訂單屬性]
+                                    ,[發票]
+                                    ,[統編]
+                                    ,[收銀員]
+                                    ,[會員]
+                                    ,[註記]
+                                    ,[附餐內容物]
                                     ,[商品編號]
-                                    ,[商品規格]
+                                    ,[商品名稱]
                                     ,[單價]
                                     ,[數量]
                                     ,[小計]
+                                    ,[口味]
+                                    ,[加料]
+                                    ,[容量]
                                     ,[TA001]
                                     ,[TA002]
                                     ,[TA003]
@@ -185,7 +196,7 @@ namespace TKMK
                                     FROM [TKMK].[dbo].[TBJabezPOS]
                                     WHERE [日期] LIKE '%{0}%'
                                     {1}
-                                    ORDER BY [機台],[日期],[序號],[時間]
+                                    ORDER BY [營業點],[機台],[日期],[序號],[時間]
 
                                          ", YYYYMM, sbSqlQUERY.ToString());
 
@@ -233,7 +244,7 @@ namespace TKMK
             //檢查暫存中的新資料
             DataTable NEWTDATATABLE = SEARCHNEWDATA();
             //匯入到TBJabezPOS中
-            if(NEWTDATATABLE.Rows.Count>0)
+            if(NEWTDATATABLE !=null&& NEWTDATATABLE.Rows.Count>0)
             {
                 ADD_TO_TBJabezPOS(NEWTDATATABLE);
             }
@@ -386,7 +397,7 @@ namespace TKMK
                 }
                 else
                 {
-                     excelShema.Rows[0]["TABLE_NAME"].ToString();
+                    firstSheetName=excelShema.Rows[0]["TABLE_NAME"].ToString();
                 }
                    
                    
@@ -396,26 +407,48 @@ namespace TKMK
 
 
                 DataTable dtExcelData = new DataTable();
+                dtExcelData.Columns.Add("營業點", typeof(string));
                 dtExcelData.Columns.Add("機台", typeof(string));
                 dtExcelData.Columns.Add("日期", typeof(string));
                 dtExcelData.Columns.Add("序號", typeof(string));
                 dtExcelData.Columns.Add("時間", typeof(string));
+                dtExcelData.Columns.Add("訂單屬性", typeof(string));
+                dtExcelData.Columns.Add("發票", typeof(string));
+                dtExcelData.Columns.Add("統編", typeof(string));
+                dtExcelData.Columns.Add("收銀員", typeof(string));
+                dtExcelData.Columns.Add("會員", typeof(string));
+                dtExcelData.Columns.Add("註記", typeof(string));
+                dtExcelData.Columns.Add("附餐內容物", typeof(string));
                 dtExcelData.Columns.Add("商品編號", typeof(string));
-                dtExcelData.Columns.Add("商品規格", typeof(string));
+                dtExcelData.Columns.Add("商品名稱", typeof(string));
                 dtExcelData.Columns.Add("單價", typeof(decimal));
                 dtExcelData.Columns.Add("數量", typeof(decimal));
-                dtExcelData.Columns.Add("小計", typeof(decimal));
+                dtExcelData.Columns.Add("小計", typeof(decimal));             
+                dtExcelData.Columns.Add("口味", typeof(string));
+                dtExcelData.Columns.Add("加料", typeof(string));
+                dtExcelData.Columns.Add("容量", typeof(string));
 
                 DataTable Exceldt = new DataTable();
+                Exceldt.Columns.Add("營業點", typeof(string));
                 Exceldt.Columns.Add("機台", typeof(string));
                 Exceldt.Columns.Add("日期", typeof(string));
                 Exceldt.Columns.Add("序號", typeof(string));
                 Exceldt.Columns.Add("時間", typeof(string));
+                Exceldt.Columns.Add("訂單屬性", typeof(string));
+                Exceldt.Columns.Add("發票", typeof(string));
+                Exceldt.Columns.Add("統編", typeof(string));
+                Exceldt.Columns.Add("收銀員", typeof(string));
+                Exceldt.Columns.Add("會員", typeof(string));
+                Exceldt.Columns.Add("註記", typeof(string));
+                Exceldt.Columns.Add("附餐內容物", typeof(string));
                 Exceldt.Columns.Add("商品編號", typeof(string));
-                Exceldt.Columns.Add("商品規格", typeof(string));
+                Exceldt.Columns.Add("商品名稱", typeof(string));
                 Exceldt.Columns.Add("單價", typeof(decimal));
                 Exceldt.Columns.Add("數量", typeof(decimal));
                 Exceldt.Columns.Add("小計", typeof(decimal));
+                Exceldt.Columns.Add("口味", typeof(string));
+                Exceldt.Columns.Add("加料", typeof(string));
+                Exceldt.Columns.Add("容量", typeof(string));
 
                 OleDbDataAdapter oda = new OleDbDataAdapter(Query, Econ);
                 Econ.Close();
@@ -425,15 +458,27 @@ namespace TKMK
                 foreach(DataRow  DR in dtExcelData.Rows)
                 {
                     DataRow NEWDR = Exceldt.NewRow();
+                    NEWDR["營業點"] = DR["營業點"].ToString();
                     NEWDR["機台"] = DR["機台"].ToString();
-                    NEWDR["日期"]= Convert.ToDateTime(DR["日期"].ToString()).ToString("yyyy/MM/dd");
+                    NEWDR["日期"] = DR["日期"].ToString();
                     NEWDR["序號"] = DR["序號"].ToString();
-                    NEWDR["時間"] = Convert.ToDateTime(DR["時間"].ToString()).ToString("HH:mm:ss");
+                    NEWDR["時間"] = DR["時間"].ToString();
+                    NEWDR["訂單屬性"] = DR["訂單屬性"].ToString();
+                    NEWDR["發票"] = DR["發票"].ToString();
+                    NEWDR["統編"] = DR["統編"].ToString();
+                    NEWDR["收銀員"] = DR["收銀員"].ToString();
+                    NEWDR["會員"] = DR["會員"].ToString();
+                    NEWDR["註記"] = DR["註記"].ToString();
+                    NEWDR["附餐內容物"] = DR["附餐內容物"].ToString();
                     NEWDR["商品編號"] = DR["商品編號"].ToString();
-                    NEWDR["商品規格"] = DR["商品規格"].ToString();
+                    NEWDR["商品名稱"] = DR["商品名稱"].ToString();
                     NEWDR["單價"] = DR["單價"].ToString();
                     NEWDR["數量"] = DR["數量"].ToString();
                     NEWDR["小計"] = DR["小計"].ToString();
+                    NEWDR["口味"] = DR["口味"].ToString();
+                    NEWDR["加料"] = DR["加料"].ToString();
+                    NEWDR["容量"] = DR["容量"].ToString();
+
 
                     Exceldt.Rows.Add(NEWDR);
                 }
@@ -486,15 +531,27 @@ namespace TKMK
 
                 //對應資料行
                 //   bulkCopy.ColumnMappings.Add("來源欄位", "目標欄位");
+                bulkCopy.ColumnMappings.Add("營業點", "營業點");
                 bulkCopy.ColumnMappings.Add("機台", "機台");
                 bulkCopy.ColumnMappings.Add("日期", "日期");
                 bulkCopy.ColumnMappings.Add("序號", "序號");
                 bulkCopy.ColumnMappings.Add("時間", "時間");
+                bulkCopy.ColumnMappings.Add("訂單屬性", "訂單屬性");
+                bulkCopy.ColumnMappings.Add("發票", "發票");
+                bulkCopy.ColumnMappings.Add("統編", "統編");
+                bulkCopy.ColumnMappings.Add("收銀員", "收銀員");
+                bulkCopy.ColumnMappings.Add("會員", "會員");
+                bulkCopy.ColumnMappings.Add("註記", "註記");
+                bulkCopy.ColumnMappings.Add("附餐內容物", "附餐內容物");
                 bulkCopy.ColumnMappings.Add("商品編號", "商品編號");
-                bulkCopy.ColumnMappings.Add("商品規格", "商品規格");
+                bulkCopy.ColumnMappings.Add("商品名稱", "商品名稱");
                 bulkCopy.ColumnMappings.Add("單價", "單價");
                 bulkCopy.ColumnMappings.Add("數量", "數量");
                 bulkCopy.ColumnMappings.Add("小計", "小計");
+                bulkCopy.ColumnMappings.Add("口味", "口味");
+                bulkCopy.ColumnMappings.Add("加料", "加料");
+                bulkCopy.ColumnMappings.Add("容量", "容量");
+
                 try
                 {
                     bulkCopy.WriteToServer(DT);
@@ -596,18 +653,29 @@ namespace TKMK
                 //AND DOC_NBR  LIKE 'QC1002{0}%'
 
                 sbSql.AppendFormat(@"                                   
-                                    SELECT
-                                     [機台]
+                                    SELECT 
+                                    [營業點]
+                                    ,[機台]
                                     ,[日期]
                                     ,[序號]
                                     ,[時間]
+                                    ,[訂單屬性]
+                                    ,[發票]
+                                    ,[統編]
+                                    ,[收銀員]
+                                    ,[會員]
+                                    ,[註記]
+                                    ,[附餐內容物]
                                     ,[商品編號]
-                                    ,[商品規格]
+                                    ,[商品名稱]
                                     ,[單價]
                                     ,[數量]
                                     ,[小計]
+                                    ,[口味]
+                                    ,[加料]
+                                    ,[容量]
                                     FROM [TKMK].[dbo].[TBJabezPOS_TEMP]
-                                    WHERE [機台]+[日期]+[序號] NOT IN (SELECT [機台]+[日期]+[序號] FROM [TKMK].[dbo].[TBJabezPOS])
+                                    WHERE REPLACE([營業點]+[機台]+[日期]+[序號],' ','') NOT IN (SELECT REPLACE([營業點]+[機台]+[日期]+[序號],' ','') FROM [TKMK].[dbo].[TBJabezPOS])  
                                     ");
 
 
@@ -663,15 +731,27 @@ namespace TKMK
                 bulkCopy.DestinationTableName = "TBJabezPOS";
                 //對應資料行
                 //   bulkCopy.ColumnMappings.Add("來源欄位", "目標欄位");
+                bulkCopy.ColumnMappings.Add("營業點", "營業點");
                 bulkCopy.ColumnMappings.Add("機台", "機台");
                 bulkCopy.ColumnMappings.Add("日期", "日期");
                 bulkCopy.ColumnMappings.Add("序號", "序號");
                 bulkCopy.ColumnMappings.Add("時間", "時間");
+                bulkCopy.ColumnMappings.Add("訂單屬性", "訂單屬性");
+                bulkCopy.ColumnMappings.Add("發票", "發票");
+                bulkCopy.ColumnMappings.Add("統編", "統編");
+                bulkCopy.ColumnMappings.Add("收銀員", "收銀員");
+                bulkCopy.ColumnMappings.Add("會員", "會員");
+                bulkCopy.ColumnMappings.Add("註記", "註記");
+                bulkCopy.ColumnMappings.Add("附餐內容物", "附餐內容物");
                 bulkCopy.ColumnMappings.Add("商品編號", "商品編號");
-                bulkCopy.ColumnMappings.Add("商品規格", "商品規格");
+                bulkCopy.ColumnMappings.Add("商品名稱", "商品名稱");
                 bulkCopy.ColumnMappings.Add("單價", "單價");
                 bulkCopy.ColumnMappings.Add("數量", "數量");
                 bulkCopy.ColumnMappings.Add("小計", "小計");
+                bulkCopy.ColumnMappings.Add("口味", "口味");
+                bulkCopy.ColumnMappings.Add("加料", "加料");
+                bulkCopy.ColumnMappings.Add("容量", "容量");
+
                 try
                 {
                     bulkCopy.WriteToServer(DT);
@@ -1805,7 +1885,7 @@ namespace TKMK
         #region BUTTON
         private void button1_Click(object sender, EventArgs e)
         {
-            Search(dateTimePicker1.Value.ToString("yyyy/MM"), comboBox1.Text);
+            Search(dateTimePicker1.Value.ToString("yyyyMM"), comboBox1.Text);
 
         }
         private void button4_Click(object sender, EventArgs e)
