@@ -788,7 +788,7 @@ namespace TKMK
                 sbSql.AppendFormat(@" 
                                     
                                     UPDATE [TKMK].[dbo].[TBJabezPOS]
-                                    SET [TA001]=CONVERT(NVARCHAR,CONVERT(DATETIME,[日期]),112)
+                                    SET [TA001]=[日期]
                                     WHERE ISNULL([TA001],'')=''
 
                                     UPDATE [TKMK].[dbo].[TBJabezPOS]
@@ -853,15 +853,26 @@ namespace TKMK
                 
                 sbSql.AppendFormat(@"                                    
                                    SELECT  
-                                    [機台]
+                                    [營業點]
+                                    ,[機台]
                                     ,[日期]
                                     ,[序號]
                                     ,[時間]
+                                    ,[訂單屬性]
+                                    ,[發票]
+                                    ,[統編]
+                                    ,[收銀員]
+                                    ,[會員]
+                                    ,[註記]
+                                    ,[附餐內容物]
                                     ,[商品編號]
-                                    ,[商品規格]
+                                    ,[商品名稱]
                                     ,[單價]
                                     ,[數量]
                                     ,[小計]
+                                    ,[口味]
+                                    ,[加料]
+                                    ,[容量]
                                     ,[TA001]
                                     ,[TA002]
                                     ,[TA003]
@@ -869,7 +880,7 @@ namespace TKMK
                                     ,[TB007]
                                     ,[TC007]
                                     ,RIGHT('00000'+CAST(row_number() OVER(PARTITION BY [TA001],[TA002],[TA003] ORDER BY [TA001],[TA002],[TA003]) AS nvarchar(10)),5)  AS SEQ 
-                                    ,([機台]+[日期]+[序號]) AS 'KEYS'
+                                    ,([營業點]+[機台]+[日期]+[序號]) AS 'KEYS'
                                     FROM [TKMK].[dbo].[TBJabezPOS]
                                     WHERE ISNULL(TA006,'')=''
                                     ORDER BY [機台],[日期],[序號],[時間]
@@ -913,7 +924,7 @@ namespace TKMK
                 SQLEXECUT.AppendFormat(@"
                                         UPDATE [TKMK].[dbo].[TBJabezPOS]
                                         SET [TA006]='{1}'
-                                        WHERE ([機台]+[日期]+[序號])='{0}'
+                                        WHERE ([營業點]+[機台]+[日期]+[序號])='{0}'
 
                                         ", DR["KEYS"].ToString(), DR["SEQ"].ToString());
             }
@@ -992,15 +1003,26 @@ namespace TKMK
 
                 sbSql.AppendFormat(@"                                    
                                    SELECT  
-                                    [機台]
+                                    [營業點]
+                                    ,[機台]
                                     ,[日期]
                                     ,[序號]
                                     ,[時間]
+                                    ,[訂單屬性]
+                                    ,[發票]
+                                    ,[統編]
+                                    ,[收銀員]
+                                    ,[會員]
+                                    ,[註記]
+                                    ,[附餐內容物]
                                     ,[商品編號]
-                                    ,[商品規格]
+                                    ,[商品名稱]
                                     ,[單價]
                                     ,[數量]
                                     ,[小計]
+                                    ,[口味]
+                                    ,[加料]
+                                    ,[容量]
                                     ,[TA001]
                                     ,[TA002]
                                     ,[TA003]
@@ -1314,7 +1336,7 @@ namespace TKMK
                                     ,1 [TA011]
                                     ,'' [TA012]
                                     ,'' [TA013]
-                                    ,'' [TA014]
+                                    ,[發票] [TA014]
                                     ,0 [TA015]
                                     ,[數量] [TA016]
                                     ,[小計] [TA017]
@@ -1341,7 +1363,7 @@ namespace TKMK
                                     ,'1' [TA038]
                                     ,'' [TA039]
                                     ,'N' [TA040]
-                                    ,'' [TA041]
+                                    ,[發票] [TA041]
                                     ,'' [TA042]
                                     ,'' [TA043]
                                     ,'' [TA044]
