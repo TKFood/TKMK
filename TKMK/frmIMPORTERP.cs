@@ -47,6 +47,7 @@ namespace TKMK
         DataGridViewRow row;
         int result;
 
+        string _filename = null;
         string _path = null;
         DataTable EXCEL = null;
 
@@ -58,9 +59,24 @@ namespace TKMK
             comboBox1load();
             comboBox2load();
             textBox1.Text = "106702";
+
+            SET_TEXTBOX();
+
         }
 
         #region FUNCTION
+
+        public void SET_TEXTBOX()
+        {
+            string MESS = "";
+
+            MESS = MESS + "1:本程式限在POS機上執行"+Environment.NewLine;
+            MESS = MESS + "2:本程式需先下載 銷售明細表 csv格式，再匯入暫存DB中，並整理出POST相關資料" + Environment.NewLine;
+            MESS = MESS + "3:本程式由暫存DB，再匯到POS的本機DB" + Environment.NewLine;
+            MESS = MESS + "4:用POS的上傳功能，將本機DB資料匯入到ERP的DB中" + Environment.NewLine;
+
+            textBox2.Text = MESS;
+        }
         public void comboBox1load()
         {
             //20210902密
@@ -239,7 +255,8 @@ namespace TKMK
         public void CHECKADDDATA()
         {
             //新增暫存資料     
-             IMPORTEXCEL();
+            //IMPORTEXCEL();
+            ImportCSV();
 
             //檢查暫存中的新資料
             DataTable NEWTDATATABLE = SEARCHNEWDATA();
@@ -421,9 +438,9 @@ namespace TKMK
                 dtExcelData.Columns.Add("附餐內容物", typeof(string));
                 dtExcelData.Columns.Add("商品編號", typeof(string));
                 dtExcelData.Columns.Add("商品名稱", typeof(string));
-                dtExcelData.Columns.Add("單價", typeof(decimal));
-                dtExcelData.Columns.Add("數量", typeof(decimal));
-                dtExcelData.Columns.Add("小計", typeof(decimal));             
+                dtExcelData.Columns.Add("單價", typeof(string));
+                dtExcelData.Columns.Add("數量", typeof(string));
+                dtExcelData.Columns.Add("小計", typeof(string));             
                 dtExcelData.Columns.Add("口味", typeof(string));
                 dtExcelData.Columns.Add("加料", typeof(string));
                 dtExcelData.Columns.Add("容量", typeof(string));
@@ -443,9 +460,9 @@ namespace TKMK
                 Exceldt.Columns.Add("附餐內容物", typeof(string));
                 Exceldt.Columns.Add("商品編號", typeof(string));
                 Exceldt.Columns.Add("商品名稱", typeof(string));
-                Exceldt.Columns.Add("單價", typeof(decimal));
-                Exceldt.Columns.Add("數量", typeof(decimal));
-                Exceldt.Columns.Add("小計", typeof(decimal));
+                Exceldt.Columns.Add("單價", typeof(string));
+                Exceldt.Columns.Add("數量", typeof(string));
+                Exceldt.Columns.Add("小計", typeof(string));
                 Exceldt.Columns.Add("口味", typeof(string));
                 Exceldt.Columns.Add("加料", typeof(string));
                 Exceldt.Columns.Add("容量", typeof(string));
@@ -506,6 +523,71 @@ namespace TKMK
 
             }
         }
+
+        public void ImportCSV()
+        {
+            //記錄選到的檔案路徑
+            _filename = null;
+            _path = null;
+
+            OpenFileDialog od = new OpenFileDialog();
+            od.Filter = "Excell|*.csv;";
+
+            DialogResult dr = od.ShowDialog();
+            if (dr == DialogResult.Abort)
+            {
+
+            }
+            if (dr == DialogResult.Cancel)
+            {
+
+            }
+
+
+            textBox3.Text = od.FileName.ToString();
+            _filename= od.FileName.ToString();
+
+
+            var table = new DataTable();
+            using (var streamReader = new StreamReader(_filename))
+            {
+                // 設定分隔符號為逗號
+                var separator = ',';
+                // 讀取 CSV 標題行
+                var header = streamReader.ReadLine();
+                if (!string.IsNullOrEmpty(header))
+                {
+                    var columns = header.Split(separator);
+                    foreach (var column in columns)
+                    {
+                        table.Columns.Add(column.Trim());
+                    }
+                }
+
+                // 讀取 CSV 內容
+                while (!streamReader.EndOfStream)
+                {
+                    var line = streamReader.ReadLine();
+                    if (!string.IsNullOrEmpty(line))
+                    {
+                        var values = line.Split(separator);
+                        var row = table.NewRow();
+                        for (int i = 0; i < values.Length; i++)
+                        {
+                            row[i] = values[i].Trim();
+                        }
+                        table.Rows.Add(row);
+                    }
+                }
+            }
+
+            //return table;
+
+            ADD_TO_TBJabezPOS_TEMP(table);
+
+        }
+
+
         /// <summary>
         ///新增暫存資料到 TBJabezPOS_TEMP 
         /// </summary>
@@ -1138,7 +1220,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbLOCAL"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -1450,8 +1532,8 @@ namespace TKMK
                                     ,0 [UDF08]
                                     ,0 [UDF09]
                                     ,0 [UDF10]
-                                    FROM [TKMK].[dbo].[TBJabezPOS]
-                                    WHERE REPLACE([TBJabezPOS].TA001+[TBJabezPOS].TA002+[TBJabezPOS].TA003+[TBJabezPOS].TA006,' ','') NOT IN (SELECT REPLACE(TA001+TA002+TA003+TA006,' ','') FROM [TK].dbo.POSTATEMP)
+                                    FROM [192.168.1.105].[TKMK].[dbo].[TBJabezPOS]
+                                    WHERE REPLACE([TBJabezPOS].TA001+[TBJabezPOS].TA002+[TBJabezPOS].TA003+[TBJabezPOS].TA006,' ','') NOT IN (SELECT REPLACE(TA001+TA002+TA003+TA006,' ','') FROM [192.168.1.105].[TK].dbo.POSTATEMP)
 
                                     INSERT INTO  [TK].[dbo].[POSTBTEMP]
                                     (
@@ -1692,10 +1774,10 @@ namespace TKMK
                                     ,0 [UDF08]
                                     ,0 [UDF09]
                                     ,0 [UDF10]
-                                    FROM [TKMK].[dbo].[TBJabezPOS],[TK].dbo.INVMB
+                                    FROM [192.168.1.105].[TKMK].[dbo].[TBJabezPOS],[TK].dbo.INVMB
                                     WHERE 1=1
                                     AND [商品編號]=MB001
-                                    AND REPLACE([TBJabezPOS].TA001+[TBJabezPOS].TA002+[TBJabezPOS].TA003+[TBJabezPOS].TA006+[TBJabezPOS].TB007,' ','' )NOT IN (SELECT REPLACE(TB001+TB002+TB003+TB006+TB007, ' ','') FROM [TK].dbo.POSTBTEMP)
+                                    AND REPLACE([TBJabezPOS].TA001+[TBJabezPOS].TA002+[TBJabezPOS].TA003+[TBJabezPOS].TA006+[TBJabezPOS].TB007,' ','' )NOT IN (SELECT REPLACE(TB001+TB002+TB003+TB006+TB007, ' ','') FROM [192.168.1.105].[TK].dbo.POSTBTEMP)
 
                                     INSERT INTO  [TK].[dbo].[POSTCTEMP]
                                     (
@@ -1869,8 +1951,8 @@ namespace TKMK
                                     ,0 [UDF08]
                                     ,0 [UDF09]
                                     ,0 [UDF10]
-                                    FROM [TKMK].[dbo].[TBJabezPOS]
-                                    WHERE REPLACE([TBJabezPOS].TA001+[TBJabezPOS].TA002+[TBJabezPOS].TA003+[TBJabezPOS].TA006+[TBJabezPOS].TC007,' ','') NOT IN (SELECT REPLACE(TC001+TC002+TC003+TC006+TC007,' ','') FROM [TK].dbo.POSTCTEMP)
+                                    FROM [192.168.1.105].[TKMK].[dbo].[TBJabezPOS]
+                                    WHERE REPLACE([TBJabezPOS].TA001+[TBJabezPOS].TA002+[TBJabezPOS].TA003+[TBJabezPOS].TA006+[TBJabezPOS].TC007,' ','') NOT IN (SELECT REPLACE(TC001+TC002+TC003+TC006+TC007,' ','') FROM [192.168.1.105].[TK].dbo.POSTCTEMP)
 
                                     ");
 
@@ -1913,6 +1995,7 @@ namespace TKMK
         private void button4_Click(object sender, EventArgs e)
         {
             CHECKADDDATA();
+            
 
             MessageBox.Show("完成");
         }
