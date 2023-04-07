@@ -170,13 +170,13 @@ namespace TKMK
                 if (ISIMPORT.Equals("Y"))
                 {
                     sbSqlQUERY.AppendFormat(@" 
-                                            AND  REPLACE(ISNULL(TA001,'')+ISNULL(TA002,'')+ISNULL(TA003,'')+ISNULL(TA006,''),' ','')  IN (SELECT  REPLACE(TA001+TA002+TA003+TA006,' ','') FROM [TK].dbo.POSTATEMP)
+                                            AND  REPLACE(ISNULL(TA001,'')+ISNULL(TA002,'')+ISNULL(TA003,'')+ISNULL(TA006,''),' ','')  IN (SELECT  REPLACE(TA001+TA002+TA003+TA006,' ','') FROM [TK].dbo.POSTA)
                                             ");
                 }
                 else
                 {
                     sbSqlQUERY.AppendFormat(@" 
-                                            AND  REPLACE(ISNULL(TA001,'')+ISNULL(TA002,'')+ISNULL(TA003,'')+ISNULL(TA006,''),' ','') NOT IN (SELECT  REPLACE(TA001+TA002+TA003+TA006,' ','') FROM [TK].dbo.POSTATEMP)
+                                            AND  REPLACE(ISNULL(TA001,'')+ISNULL(TA002,'')+ISNULL(TA003,'')+ISNULL(TA006,''),' ','') NOT IN (SELECT  REPLACE(TA001+TA002+TA003+TA006,' ','') FROM [TK].dbo.POSTA)
                                             ");
                 }
 
@@ -1239,7 +1239,7 @@ namespace TKMK
              
                 sbSql.AppendFormat(@"  
 
-                                    INSERT INTO  [TK].[dbo].[POSTATEMP]
+                                    INSERT INTO [COSMOS_POS].dbo.POSTA
                                     (
                                     [COMPANY]
                                     ,[CREATOR]
@@ -1535,7 +1535,7 @@ namespace TKMK
                                     FROM [192.168.1.105].[TKMK].[dbo].[TBJabezPOS]
                                     WHERE REPLACE([TBJabezPOS].TA001+[TBJabezPOS].TA002+[TBJabezPOS].TA003+[TBJabezPOS].TA006,' ','') NOT IN (SELECT REPLACE(TA001+TA002+TA003+TA006,' ','') FROM [192.168.1.105].[TK].dbo.POSTATEMP)
 
-                                    INSERT INTO  [TK].[dbo].[POSTBTEMP]
+                                    INSERT INTO  [COSMOS_POS].dbo.POSTB
                                     (
                                      [COMPANY]
                                     ,[CREATOR]
@@ -1774,12 +1774,12 @@ namespace TKMK
                                     ,0 [UDF08]
                                     ,0 [UDF09]
                                     ,0 [UDF10]
-                                    FROM [192.168.1.105].[TKMK].[dbo].[TBJabezPOS],[TK].dbo.INVMB
+                                    FROM [192.168.1.105].[TKMK].[dbo].[TBJabezPOS],[192.168.1.105].[TK].dbo.INVMB
                                     WHERE 1=1
                                     AND [商品編號]=MB001
                                     AND REPLACE([TBJabezPOS].TA001+[TBJabezPOS].TA002+[TBJabezPOS].TA003+[TBJabezPOS].TA006+[TBJabezPOS].TB007,' ','' )NOT IN (SELECT REPLACE(TB001+TB002+TB003+TB006+TB007, ' ','') FROM [192.168.1.105].[TK].dbo.POSTBTEMP)
 
-                                    INSERT INTO  [TK].[dbo].[POSTCTEMP]
+                                    INSERT INTO  [COSMOS_POS].dbo.POSTC
                                     (
                                     [COMPANY]
                                     ,[CREATOR]
