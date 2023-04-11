@@ -45,9 +45,9 @@
             this.label4 = new System.Windows.Forms.Label();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBox2 = new System.Windows.Forms.TextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.textBox2 = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -216,7 +216,7 @@
             // 
             this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(144, 48);
+            this.comboBox1.Location = new System.Drawing.Point(144, 50);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(153, 24);
             this.comboBox1.TabIndex = 48;
@@ -259,7 +259,7 @@
             // 
             this.comboBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(615, 48);
+            this.comboBox2.Location = new System.Drawing.Point(615, 50);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(132, 24);
             this.comboBox2.TabIndex = 50;
@@ -273,6 +273,16 @@
             this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(132, 27);
             this.textBox1.TabIndex = 51;
+            // 
+            // textBox2
+            // 
+            this.tableLayoutPanel1.SetColumnSpan(this.textBox2, 4);
+            this.textBox2.Location = new System.Drawing.Point(3, 123);
+            this.textBox2.Multiline = true;
+            this.textBox2.Name = "textBox2";
+            this.textBox2.ReadOnly = true;
+            this.textBox2.Size = new System.Drawing.Size(606, 95);
+            this.textBox2.TabIndex = 52;
             // 
             // dataGridView1
             // 
@@ -296,16 +306,6 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // textBox2
-            // 
-            this.tableLayoutPanel1.SetColumnSpan(this.textBox2, 4);
-            this.textBox2.Location = new System.Drawing.Point(3, 123);
-            this.textBox2.Multiline = true;
-            this.textBox2.Name = "textBox2";
-            this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(606, 95);
-            this.textBox2.TabIndex = 52;
             // 
             // frmIMPORTERP
             // 
