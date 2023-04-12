@@ -1996,8 +1996,8 @@ namespace TKMK
         private void button4_Click(object sender, EventArgs e)
         {
             CHECKADDDATA();
-            
 
+            Search(dateTimePicker1.Value.ToString("yyyyMM"), comboBox1.Text);
             MessageBox.Show("完成");
         }
         private void button2_Click(object sender, EventArgs e)
