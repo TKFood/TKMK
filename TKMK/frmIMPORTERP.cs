@@ -382,7 +382,7 @@ namespace TKMK
             dataTab2.Columns.Add("營業點", typeof(string));
             dataTab2.Columns.Add("機台", typeof(string));
             dataTab2.Columns.Add("日期", typeof(string));
-            dataTab2.Columns.Add("序號", typeof(string));           
+            dataTab2.Columns.Add("序號", typeof(string));
             dataTab2.Columns.Add("時間", typeof(string));
             dataTab2.Columns.Add("訂單屬性", typeof(string));
             dataTab2.Columns.Add("發票", typeof(string));
@@ -588,9 +588,9 @@ namespace TKMK
                 bulkCopy.ColumnMappings.Add("附餐/內容物", "附餐內容物");
                 bulkCopy.ColumnMappings.Add("商品編號", "商品編號");
                 bulkCopy.ColumnMappings.Add("商品名稱", "商品名稱");
-                //bulkCopy.ColumnMappings.Add("單價", "單價");
-                //bulkCopy.ColumnMappings.Add("數量", "數量");
-                //bulkCopy.ColumnMappings.Add("小計", "小計");
+                bulkCopy.ColumnMappings.Add("單價", "單價");
+                bulkCopy.ColumnMappings.Add("數量", "數量");
+                bulkCopy.ColumnMappings.Add("小計", "小計");
                 bulkCopy.ColumnMappings.Add("口味", "口味");
                 bulkCopy.ColumnMappings.Add("加料", "加料");
                 bulkCopy.ColumnMappings.Add("容量", "容量");
