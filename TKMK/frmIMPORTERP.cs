@@ -255,8 +255,10 @@ namespace TKMK
         public void CHECKADDDATA()
         {
             //新增暫存資料     
-            //IMPORTEXCEL();
-            ImportCSV();
+            IMPORTEXCEL();
+            //ImportCSV();
+
+
 
             //檢查暫存中的新資料
             DataTable NEWTDATATABLE = SEARCHNEWDATA();
@@ -348,10 +350,11 @@ namespace TKMK
         public void IMPORTEXCEL()
         {
             //記錄選到的檔案路徑
+            _filename = null;
             _path = null;
 
             OpenFileDialog od = new OpenFileDialog();
-            od.Filter = "Excell|*.xls;*.xlsx;*.csv;";
+            od.Filter = "Excell|*.xls;";
 
             DialogResult dr = od.ShowDialog();
             if (dr == DialogResult.Abort)
@@ -360,168 +363,125 @@ namespace TKMK
             }
             if (dr == DialogResult.Cancel)
             {
-                
+
             }
 
 
             textBox3.Text = od.FileName.ToString();
-            _path = od.FileName.ToString();
+            _filename = od.FileName.ToString();
 
-            try
+            //string pathToExcelFile = @"F:\rcPOS9002_20230515.xls";
+            string pathToExcelFile = _filename;
+            string sheetName = "";
+            string connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + pathToExcelFile + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+            DataTable dataTabl = new DataTable();
+            DataTable dataTab2 = new DataTable();
+            DataTable dataTab3 = new DataTable();
+
+            //自訂dataTab2的匯入欄位+轉decimal
+            dataTab2.Columns.Add("營業點", typeof(string));
+            dataTab2.Columns.Add("機台", typeof(string));
+            dataTab2.Columns.Add("日期", typeof(string));
+            dataTab2.Columns.Add("序號", typeof(string));           
+            dataTab2.Columns.Add("時間", typeof(string));
+            dataTab2.Columns.Add("訂單屬性", typeof(string));
+            dataTab2.Columns.Add("發票", typeof(string));
+            dataTab2.Columns.Add("統編", typeof(string));
+            dataTab2.Columns.Add("收銀員", typeof(string));
+            dataTab2.Columns.Add("會員", typeof(string));
+            dataTab2.Columns.Add("註記", typeof(string));
+            dataTab2.Columns.Add("附餐/內容物", typeof(string));
+            dataTab2.Columns.Add("商品編號", typeof(string));
+            dataTab2.Columns.Add("商品名稱", typeof(string));
+            dataTab2.Columns.Add("單價", typeof(decimal));
+            dataTab2.Columns.Add("數量", typeof(decimal));
+            dataTab2.Columns.Add("小計", typeof(decimal));
+            dataTab2.Columns.Add("口味", typeof(string));
+            dataTab2.Columns.Add("加料", typeof(string));
+            dataTab2.Columns.Add("容量", typeof(string));
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
             {
-                //  ExcelConn(_path);
-                //找出不同excel的格式，設定連接字串
-                //xls跟非xls
-                string constr = null;
-                string CHECKEXCELFORMAT = _path.Substring(_path.Length - 4, 4);
-
-
-                if (CHECKEXCELFORMAT.CompareTo(".xls") == 0)
+                connection.Open();
+                dataTabl = connection.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+                if (dataTabl != null)
                 {
-                    constr = @"provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + _path + ";Extended Properties='Excel 8.0;HRD=Yes;IMEX=1';";  
-                }
-                else if (CHECKEXCELFORMAT.CompareTo(".csv") == 0)
-                {
-                    //_path = @"F:\銷售明細.csv";
-                    //constr = @"Provider = Microsoft.Jet.OLEDB.4.0; Data Source = F:\銷售明細.csv; Extended Properties = 'TEXT;IMEX=1;HDR=Yes;FMT=Delimited;CharacterSet=UNICODE;'";
-                    constr = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + _path.Remove(_path.LastIndexOf("\\") + 1) + ";Extended Properties='Text;FMT=Delimited;HDR=YES;'";
-                }
-                else
-                {
-                    constr = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + _path + ";Extended Properties='Excel 12.0;HDR=NO';";  
-                }
-
-                //找出excel的第1張分頁名稱，用query中                
-                OleDbConnection Econ = new OleDbConnection(constr);
-                Econ.Open();
-
-
-
-                DataTable excelShema = Econ.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
-                string firstSheetName = null;
-                //找到csv的正確table表
-                if (CHECKEXCELFORMAT.CompareTo(".csv") == 0)
-                {
-                    for (int i = 0; i < excelShema.Rows.Count; i++)
+                    if (!string.IsNullOrEmpty(sheetName))
                     {
-                        firstSheetName = Convert.ToString(excelShema.Rows[i]["TABLE_NAME"]);
-
-                        if (firstSheetName.Contains("csv"))
-                        {
-                            break;
-                        }
+                        sheetName = sheetName + "$";
+                    }
+                    else
+                    {
+                        sheetName = dataTabl.Rows[0]["TABLE_NAME"].ToString();
                     }
                 }
-                else
+                string sql = string.Format("SELECT * FROM [{0}]", sheetName);
+                using (OleDbDataAdapter adapter = new OleDbDataAdapter(sql, connection))
                 {
-                    firstSheetName=excelShema.Rows[0]["TABLE_NAME"].ToString();
+                    DataSet dataSet = new DataSet();
+                    adapter.Fill(dataSet);
+                    dataTab2 = dataSet.Tables[0];
+                    // 讀取到的資料存放在 dataTable 變數中
                 }
-                   
-                   
-
-                string Query = string.Format("Select * FROM [{0}]", firstSheetName);
-                OleDbCommand Ecom = new OleDbCommand(Query, Econ);
-
-
-                DataTable dtExcelData = new DataTable();
-                dtExcelData.Columns.Add("營業點", typeof(string));
-                dtExcelData.Columns.Add("機台", typeof(string));
-                dtExcelData.Columns.Add("日期", typeof(string));
-                dtExcelData.Columns.Add("序號", typeof(string));
-                dtExcelData.Columns.Add("時間", typeof(string));
-                dtExcelData.Columns.Add("訂單屬性", typeof(string));
-                dtExcelData.Columns.Add("發票", typeof(string));
-                dtExcelData.Columns.Add("統編", typeof(string));
-                dtExcelData.Columns.Add("收銀員", typeof(string));
-                dtExcelData.Columns.Add("會員", typeof(string));
-                dtExcelData.Columns.Add("註記", typeof(string));
-                dtExcelData.Columns.Add("附餐內容物", typeof(string));
-                dtExcelData.Columns.Add("商品編號", typeof(string));
-                dtExcelData.Columns.Add("商品名稱", typeof(string));
-                dtExcelData.Columns.Add("單價", typeof(string));
-                dtExcelData.Columns.Add("數量", typeof(string));
-                dtExcelData.Columns.Add("小計", typeof(string));             
-                dtExcelData.Columns.Add("口味", typeof(string));
-                dtExcelData.Columns.Add("加料", typeof(string));
-                dtExcelData.Columns.Add("容量", typeof(string));
-
-                DataTable Exceldt = new DataTable();
-                Exceldt.Columns.Add("營業點", typeof(string));
-                Exceldt.Columns.Add("機台", typeof(string));
-                Exceldt.Columns.Add("日期", typeof(string));
-                Exceldt.Columns.Add("序號", typeof(string));
-                Exceldt.Columns.Add("時間", typeof(string));
-                Exceldt.Columns.Add("訂單屬性", typeof(string));
-                Exceldt.Columns.Add("發票", typeof(string));
-                Exceldt.Columns.Add("統編", typeof(string));
-                Exceldt.Columns.Add("收銀員", typeof(string));
-                Exceldt.Columns.Add("會員", typeof(string));
-                Exceldt.Columns.Add("註記", typeof(string));
-                Exceldt.Columns.Add("附餐內容物", typeof(string));
-                Exceldt.Columns.Add("商品編號", typeof(string));
-                Exceldt.Columns.Add("商品名稱", typeof(string));
-                Exceldt.Columns.Add("單價", typeof(string));
-                Exceldt.Columns.Add("數量", typeof(string));
-                Exceldt.Columns.Add("小計", typeof(string));
-                Exceldt.Columns.Add("口味", typeof(string));
-                Exceldt.Columns.Add("加料", typeof(string));
-                Exceldt.Columns.Add("容量", typeof(string));
-
-                OleDbDataAdapter oda = new OleDbDataAdapter(Query, Econ);
-                Econ.Close();
-                oda.Fill(dtExcelData);
-
-                //轉換日期為文字
-                foreach(DataRow  DR in dtExcelData.Rows)
-                {
-                    DataRow NEWDR = Exceldt.NewRow();
-                    NEWDR["營業點"] = DR["營業點"].ToString();
-                    NEWDR["機台"] = DR["機台"].ToString();
-                    NEWDR["日期"] = DR["日期"].ToString();
-                    NEWDR["序號"] = DR["序號"].ToString();
-                    NEWDR["時間"] = DR["時間"].ToString();
-                    NEWDR["訂單屬性"] = DR["訂單屬性"].ToString();
-                    NEWDR["發票"] = DR["發票"].ToString();
-                    NEWDR["統編"] = DR["統編"].ToString();
-                    NEWDR["收銀員"] = DR["收銀員"].ToString();
-                    NEWDR["會員"] = DR["會員"].ToString();
-                    NEWDR["註記"] = DR["註記"].ToString();
-                    NEWDR["附餐內容物"] = DR["附餐內容物"].ToString();
-                    NEWDR["商品編號"] = DR["商品編號"].ToString();
-                    NEWDR["商品名稱"] = DR["商品名稱"].ToString();
-                    NEWDR["單價"] = DR["單價"].ToString();
-                    NEWDR["數量"] = DR["數量"].ToString();
-                    NEWDR["小計"] = DR["小計"].ToString();
-                    NEWDR["口味"] = DR["口味"].ToString();
-                    NEWDR["加料"] = DR["加料"].ToString();
-                    NEWDR["容量"] = DR["容量"].ToString();
-
-
-                    Exceldt.Rows.Add(NEWDR);
-                }
-
-                //DataTable Exceldt = dtExcelData;
-
-                //把第一列的欄位名移除
-                //Exceldt.Rows[0].Delete();
-
-                if (Exceldt.Rows.Count > 0)
-                {
-                    ADD_TO_TBJabezPOS_TEMP(Exceldt);
-                }
-                else
-                {
-                    
-                }
-
-
             }
-            catch (Exception ex)
+
+            dataTab3 = dataTab2;
+
+            //另外新增自訂序號
+            dataTab3.Columns.Add("自訂序號", typeof(int));
+            // 建立一個 DataView，並將 DataTable 設為資料來源
+            DataView dv = new DataView(dataTab3);
+            // 設定排序條件，先按 Name 欄位進行升序排序，如果 Name 相同，再按 Age 欄位進行升序排序，如果 Age 相同，最後按 Salary 欄位進行升序排序
+            dv.Sort = "營業點 ASC, 機台 ASC, 日期 ASC,序號 ASC";
+            // 將排序後的 DataView 轉換回 DataTable
+            DataTable sortedDt = dv.ToTable();
+
+            DataTable KEYDT = SET_DETAILS_KEYS(sortedDt);
+
+            //ADD_TO_TBJabezPOS_TEMP(dataTab3);
+        }
+
+        public DataTable SET_DETAILS_KEYS(DataTable SDT)
+        {
+            int ROWS = 0;
+            int KEYORDER = 1;
+                       
+            string 營業點 = "";
+            string 機台 = "";
+            string 日期 = "";
+            string 序號 = "";
+            string NEW營業點 = "";
+            string NEW機台 = "";
+            string NEW日期 = "";
+            string NEW序號 = "";
+
+            foreach (DataRow DR in SDT.Rows)
             {
-                
-                //MessageBox.Show(string.Format("錯誤:{0}", ex.Message), "Not Imported", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                NEW營業點 = DR["營業點"].ToString();
+                NEW機台 = DR["機台"].ToString();
+                NEW日期 = DR["日期"].ToString();
+                NEW序號 = DR["序號"].ToString();
 
+                if(營業點.Equals(NEW營業點) && 機台.Equals(NEW機台) && 日期.Equals(NEW日期) && 序號.Equals(NEW序號)  )
+                {
+                    KEYORDER = KEYORDER + 1;
+                    SDT.Rows[ROWS]["自訂序號"] = KEYORDER;                    
+                }
+                else
+                {
+                    KEYORDER = 1;
+                    SDT.Rows[ROWS]["自訂序號"] = KEYORDER;                   
+                }
+
+                營業點 = NEW營業點;
+                機台 = NEW機台;
+                日期 = NEW日期;
+                序號 = NEW序號;
+
+                ROWS = ROWS + 1;
             }
+
+            return SDT;
         }
 
         public void ImportCSV()
@@ -531,7 +491,7 @@ namespace TKMK
             _path = null;
 
             OpenFileDialog od = new OpenFileDialog();
-            od.Filter = "Excell|*.csv;";
+            od.Filter = "Excell|*.xls;";
 
             DialogResult dr = od.ShowDialog();
             if (dr == DialogResult.Abort)
@@ -587,7 +547,7 @@ namespace TKMK
 
         }
 
-
+    
         /// <summary>
         ///新增暫存資料到 TBJabezPOS_TEMP 
         /// </summary>
@@ -624,12 +584,12 @@ namespace TKMK
                 bulkCopy.ColumnMappings.Add("收銀員", "收銀員");
                 bulkCopy.ColumnMappings.Add("會員", "會員");
                 bulkCopy.ColumnMappings.Add("註記", "註記");
-                bulkCopy.ColumnMappings.Add("附餐內容物", "附餐內容物");
+                bulkCopy.ColumnMappings.Add("附餐/內容物", "附餐內容物");
                 bulkCopy.ColumnMappings.Add("商品編號", "商品編號");
                 bulkCopy.ColumnMappings.Add("商品名稱", "商品名稱");
-                bulkCopy.ColumnMappings.Add("單價", "單價");
-                bulkCopy.ColumnMappings.Add("數量", "數量");
-                bulkCopy.ColumnMappings.Add("小計", "小計");
+                //bulkCopy.ColumnMappings.Add("單價", "單價");
+                //bulkCopy.ColumnMappings.Add("數量", "數量");
+                //bulkCopy.ColumnMappings.Add("小計", "小計");
                 bulkCopy.ColumnMappings.Add("口味", "口味");
                 bulkCopy.ColumnMappings.Add("加料", "加料");
                 bulkCopy.ColumnMappings.Add("容量", "容量");
