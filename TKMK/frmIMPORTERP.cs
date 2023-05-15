@@ -260,13 +260,13 @@ namespace TKMK
 
 
 
-            //檢查暫存中的新資料
-            DataTable NEWTDATATABLE = SEARCHNEWDATA();
-            //匯入到TBJabezPOS中
-            if(NEWTDATATABLE !=null&& NEWTDATATABLE.Rows.Count>0)
-            {
-                ADD_TO_TBJabezPOS(NEWTDATATABLE);
-            }
+            ////檢查暫存中的新資料
+            //DataTable NEWTDATATABLE = SEARCHNEWDATA();
+            ////匯入到TBJabezPOS中
+            //if(NEWTDATATABLE !=null&& NEWTDATATABLE.Rows.Count>0)
+            //{
+            //    ADD_TO_TBJabezPOS(NEWTDATATABLE);
+            //}
             
 
         }
@@ -438,7 +438,7 @@ namespace TKMK
 
             DataTable KEYDT = SET_DETAILS_KEYS(sortedDt);
 
-            //ADD_TO_TBJabezPOS_TEMP(dataTab3);
+            ADD_TO_TBJabezPOS_TEMP(KEYDT);
         }
 
         public DataTable SET_DETAILS_KEYS(DataTable SDT)
@@ -577,6 +577,7 @@ namespace TKMK
                 bulkCopy.ColumnMappings.Add("機台", "機台");
                 bulkCopy.ColumnMappings.Add("日期", "日期");
                 bulkCopy.ColumnMappings.Add("序號", "序號");
+                bulkCopy.ColumnMappings.Add("自訂序號", "自訂序號");
                 bulkCopy.ColumnMappings.Add("時間", "時間");
                 bulkCopy.ColumnMappings.Add("訂單屬性", "訂單屬性");
                 bulkCopy.ColumnMappings.Add("發票", "發票");
