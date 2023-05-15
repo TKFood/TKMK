@@ -432,7 +432,7 @@ namespace TKMK
             // 建立一個 DataView，並將 DataTable 設為資料來源
             DataView dv = new DataView(dataTab3);
             // 設定排序條件，先按 Name 欄位進行升序排序，如果 Name 相同，再按 Age 欄位進行升序排序，如果 Age 相同，最後按 Salary 欄位進行升序排序
-            dv.Sort = "營業點 ASC, 機台 ASC, 日期 ASC,序號 ASC";
+            dv.Sort = "營業點 ASC, 機台 ASC, 日期 ASC,序號 ASC,商品編號 ASC";
             // 將排序後的 DataView 轉換回 DataTable
             DataTable sortedDt = dv.ToTable();
 
