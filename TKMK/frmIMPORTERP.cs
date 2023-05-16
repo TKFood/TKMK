@@ -441,6 +441,9 @@ namespace TKMK
             ADD_TO_TBJabezPOS_TEMP(KEYDT);
         }
 
+        //處理明細序號
+        //處理金額是空白
+
         public DataTable SET_DETAILS_KEYS(DataTable SDT)
         {
             int ROWS = 0;
@@ -472,6 +475,16 @@ namespace TKMK
                     KEYORDER = 1;
                     SDT.Rows[ROWS]["自訂序號"] = KEYORDER;                   
                 }
+
+                if(string.IsNullOrEmpty(DR["單價"].ToString()))
+                {
+                    SDT.Rows[ROWS]["單價"] = 0;
+                }
+                if (string.IsNullOrEmpty(DR["數量"].ToString()))
+                {
+                    SDT.Rows[ROWS]["數量"] = 0;
+                }
+
 
                 營業點 = NEW營業點;
                 機台 = NEW機台;
