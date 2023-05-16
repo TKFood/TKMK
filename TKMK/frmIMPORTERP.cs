@@ -726,7 +726,8 @@ namespace TKMK
                                     DELETE [TKMK].[dbo].[TBJabezPOS_TEMP]
                                     WHERE [商品名稱]='小計後加減價'
 
-
+                                    UPDATE [TKMK].[dbo].[TBJabezPOS_TEMP]
+                                    SET [明細金額]=[小計]+[明細折扣]
                                         ");
 
 
