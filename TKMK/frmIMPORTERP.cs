@@ -1480,18 +1480,18 @@ namespace TKMK
                                     ,'' [TA013]
                                     ,[發票] [TA014]
                                     ,0 [TA015]
-                                    ,[數量] [TA016]
-                                    ,[小計] [TA017]
+                                    ,SUM([數量]) [TA016]
+                                    ,SUM([明細金額]) [TA017]
                                     ,0 [TA018]
-                                    ,[小計] [TA019]
+                                    ,SUM([明細金額]) [TA019]
                                     ,0 [TA020]
-                                    ,CONVERT(INT,[小計]*0.05) [TA021]
+                                    ,CONVERT(INT,SUM([明細金額])*0.05) [TA021]
                                     ,0 [TA022]
                                     ,0 [TA023]
-                                    ,[小計] [TA024]
-                                    ,[小計] [TA025]
-                                    ,([小計]-CONVERT(INT,[小計]*0.05)) [TA026]
-                                    ,CONVERT(INT,[小計]*0.05) [TA027]
+                                    ,SUM([明細金額]) [TA024]
+                                    ,SUM([明細金額]) [TA025]
+                                    ,(SUM([明細金額])-CONVERT(INT,SUM([明細金額])*0.05)) [TA026]
+                                    ,CONVERT(INT,SUM([明細金額])*0.05) [TA027]
                                     ,0 [TA028]
                                     ,0 [TA029]
                                     ,0 [TA030]
@@ -1594,6 +1594,7 @@ namespace TKMK
                                     ,0 [UDF10]
                                     FROM [192.168.1.105].[TKMK].[dbo].[TBJabezPOS]
                                     WHERE REPLACE([TBJabezPOS].TA001+[TBJabezPOS].TA002+[TBJabezPOS].TA003+[TBJabezPOS].TA006,' ','') NOT IN (SELECT REPLACE(TA001+TA002+TA003+TA006,' ','') FROM [COSMOS_POS].dbo.POSTA  WHERE TA002 IN ('106702')  AND TA003 IN ('900'))
+                                    GROUP BY [TA001],[TA002],[TA003],[TA006],[時間],[發票]
 
                                     INSERT INTO  [COSMOS_POS].dbo.POSTB
                                     (
@@ -1716,7 +1717,7 @@ namespace TKMK
                                     ,[UDF10]
                                     )
 
-                                    SELECT 
+                                   SELECT 
                                     'TK' [COMPANY]
                                     ,'150073' [CREATOR]
                                     ,'' [USR_GROUP]
@@ -1764,9 +1765,9 @@ namespace TKMK
                                     ,0 [TB028]
                                     ,0 [TB029]
                                     ,0 [TB030]
-                                    ,([小計]-CONVERT(INT,[小計]*0.05)) [TB031]
-                                    ,CONVERT(INT,[小計]*0.05) [TB032]
-                                    ,([小計]) [TB033]
+                                    ,([明細金額]-CONVERT(INT,[明細金額]*0.05)) [TB031]
+                                    ,CONVERT(INT,[明細金額]*0.05) [TB032]
+                                    ,([明細金額]) [TB033]
                                     ,'' [TB034]
                                     ,'' [TB035]
                                     ,'' [TB036]
@@ -1952,7 +1953,7 @@ namespace TKMK
                                     ,[TA006] [TC006]
                                     ,[TC007] [TC007]
                                     ,'0001' [TC008]
-                                    ,[小計] [TC009]
+                                    ,SUM([明細金額])[TC009]
                                     ,'N' [TC010]
                                     ,'' [TC011]
                                     ,'6' [TC012]
@@ -2013,6 +2014,7 @@ namespace TKMK
                                     ,0 [UDF10]
                                     FROM [192.168.1.105].[TKMK].[dbo].[TBJabezPOS]
                                     WHERE REPLACE([TBJabezPOS].TA001+[TBJabezPOS].TA002+[TBJabezPOS].TA003+[TBJabezPOS].TA006+[TBJabezPOS].TC007,' ','') NOT IN (SELECT REPLACE(TC001+TC002+TC003+TC006+TC007,' ','') FROM [COSMOS_POS].dbo.POSTC  WHERE TC002 IN ('106702')  AND TC003 IN ('900') )
+                                    GROUP BY [TA001],[TA002],[TA003],[TA006],[時間],[發票],[TC007]
 
 
                                     ");
