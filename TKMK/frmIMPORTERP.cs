@@ -439,6 +439,7 @@ namespace TKMK
             DataTable KEYDT = SET_DETAILS_KEYS(sortedDt);
 
             ADD_TO_TBJabezPOS_TEMP(KEYDT);
+            UPDATE_TBJabezPOS_TEMP();
         }
 
         //處理明細序號
@@ -557,6 +558,7 @@ namespace TKMK
             //return table;
 
             ADD_TO_TBJabezPOS_TEMP(table);
+           
 
         }
 
@@ -619,6 +621,137 @@ namespace TKMK
             }
         }
 
+        public void UPDATE_TBJabezPOS_TEMP()
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                //更新 總金額
+                //更新 總折扣<0 的合計
+                //更新 明細折扣 分攤
+                //更新 明細折扣的最後一筆=0
+                //更新 明細折扣的最後一筆=該筆內的其他明細折扣合計
+                sbSql.AppendFormat(@" 
+                               
+                                    UPDATE [TKMK].[dbo].[TBJabezPOS_TEMP]
+                                    SET [TBJabezPOS_TEMP].[總金額]=TEMP.TMONEYS
+                                    FROM (
+                                    SELECT 
+                                     [營業點]
+                                    ,[機台]
+                                    ,[日期]
+                                    ,[序號]
+                                    ,SUM([小計]) AS TMONEYS
+                                    FROM [TKMK].[dbo].[TBJabezPOS_TEMP]
+                                    WHERE [小計]>=0
+                                    GROUP BY  [營業點],[機台],[日期],[序號]
+                                    ) AS TEMP
+                                    WHERE TEMP.[營業點]=[TBJabezPOS_TEMP].[營業點] AND TEMP.[機台]=[TBJabezPOS_TEMP].[機台] AND TEMP.[日期]=[TBJabezPOS_TEMP].[日期] AND TEMP.[序號]=[TBJabezPOS_TEMP].[序號]
+                                    AND [TBJabezPOS_TEMP].[總金額]<>TEMP.TMONEYS
+                                    AND [TBJabezPOS_TEMP].[小計]>0
+                 
+                                    UPDATE [TKMK].[dbo].[TBJabezPOS_TEMP]
+                                    SET [TBJabezPOS_TEMP].[總折扣]=TEMP.[小計]
+                                    FROM (
+                                    SELECT  
+                                    [營業點]
+                                    ,[機台]
+                                    ,[日期]
+                                    ,[序號]
+                                    ,[自訂序號]
+                                    ,[小計]
+                                    FROM [TKMK].[dbo].[TBJabezPOS_TEMP]
+                                    WHERE [商品名稱]='小計後加減價'
+                                    ) AS TEMP
+                                    WHERE TEMP.[營業點]=[TBJabezPOS_TEMP].[營業點] AND TEMP.[機台]=[TBJabezPOS_TEMP].[機台] AND TEMP.[日期]=[TBJabezPOS_TEMP].[日期] AND TEMP.[序號]=[TBJabezPOS_TEMP].[序號]
+                                    AND [TBJabezPOS_TEMP].總折扣<>TEMP.[小計] 
+  
+                                     UPDATE [TKMK].[dbo].[TBJabezPOS_TEMP]
+                                     SET [明細折扣]=ROUND([小計]/[總金額]*[總折扣],0)
+                                     WHERE [總折扣]<>0 AND [小計]>0
+
+                                     UPDATE [TKMK].[dbo].[TBJabezPOS_TEMP]
+                                     SET [明細折扣]=0
+                                     FROM 
+                                     (
+                                     SELECT 
+                                     [營業點]
+                                    ,[機台]
+                                    ,[日期]
+                                    ,[序號]
+                                    ,MAX([自訂序號]) [自訂序號]
+                                    FROM [TKMK].[dbo].[TBJabezPOS_TEMP]
+                                    WHERE [明細折扣]<0
+                                    GROUP BY  [營業點],[機台],[日期],[序號]
+                                    ) AS TEMP
+                                    WHERE TEMP.[營業點]=[TBJabezPOS_TEMP].[營業點] AND TEMP.[機台]=[TBJabezPOS_TEMP].[機台] AND TEMP.[日期]=[TBJabezPOS_TEMP].[日期] AND TEMP.[序號]=[TBJabezPOS_TEMP].[序號]
+                                    AND TEMP.[自訂序號]=[TBJabezPOS_TEMP].[自訂序號]
+
+                                    UPDATE [TKMK].[dbo].[TBJabezPOS_TEMP]
+                                    SET [TBJabezPOS_TEMP].[明細折扣]=[TBJabezPOS_TEMP].[總折扣]-DISTMONEYS
+                                    FROM 
+                                    (
+                                    SELECT 
+                                     [營業點]
+                                    ,[機台]
+                                    ,[日期]
+                                    ,[序號]
+                                    ,MAX([自訂序號]) [自訂序號]
+                                    ,(SELECT SUM([明細折扣]) FROM [TKMK].[dbo].[TBJabezPOS_TEMP] TEMP1 WHERE TEMP1.營業點=[TBJabezPOS_TEMP].營業點 AND  TEMP1.[機台]=[TBJabezPOS_TEMP].[機台] AND  TEMP1.[日期]=[TBJabezPOS_TEMP].[日期] AND  TEMP1.[序號]=[TBJabezPOS_TEMP].[序號]   ) AS DISTMONEYS
+                                    FROM [TKMK].[dbo].[TBJabezPOS_TEMP]
+                                    WHERE [總折扣]<0 AND [明細折扣]=0
+                                    GROUP BY  [營業點],[機台],[日期],[序號]
+                                    ) AS TEMP
+                                    WHERE TEMP.[營業點]=[TBJabezPOS_TEMP].[營業點] AND TEMP.[機台]=[TBJabezPOS_TEMP].[機台] AND TEMP.[日期]=[TBJabezPOS_TEMP].[日期] AND TEMP.[序號]=[TBJabezPOS_TEMP].[序號]
+                                    AND TEMP.[自訂序號]=[TBJabezPOS_TEMP].[自訂序號]
+                                    AND [小計]>0
+
+                                        ");
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易                      
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
         /// <summary>
         /// 清空暫存的 TBJabezPOS_TEMP
         /// </summary>
