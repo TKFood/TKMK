@@ -59,7 +59,7 @@ namespace TKMK
 
             comboBox1load();
             comboBox2load();
-            textBox1.Text = "106702";
+            textBox1.Text = "106604";
 
             SET_TEXTBOX();
 
