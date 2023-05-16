@@ -722,6 +722,10 @@ namespace TKMK
                                     WHERE TEMP.[營業點]=[TBJabezPOS_TEMP].[營業點] AND TEMP.[機台]=[TBJabezPOS_TEMP].[機台] AND TEMP.[日期]=[TBJabezPOS_TEMP].[日期] AND TEMP.[序號]=[TBJabezPOS_TEMP].[序號]
                                     AND TEMP.[自訂序號]=[TBJabezPOS_TEMP].[自訂序號]
                                     AND [小計]>0
+                                    
+                                    DELETE [TKMK].[dbo].[TBJabezPOS_TEMP]
+                                    WHERE [商品名稱]='小計後加減價'
+
 
                                         ");
 
