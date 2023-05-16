@@ -25,6 +25,7 @@ using FastReport;
 using FastReport.Data;
 using TKITDLL;
 using System.Data.OleDb;
+using System.Net;
 
 namespace TKMK
 {
@@ -71,7 +72,7 @@ namespace TKMK
             string MESS = "";
 
             MESS = MESS + "1:本程式限在POS機上執行"+Environment.NewLine;
-            MESS = MESS + "2:本程式需先下載 銷售明細表 csv格式，再匯入暫存DB中，並整理出POST相關資料" + Environment.NewLine;
+            MESS = MESS + "2:本程式需先下載 銷售明細表 xls格式，再匯入暫存DB中，並整理出POST相關資料" + Environment.NewLine;
             MESS = MESS + "3:本程式由暫存DB，再匯到POS的本機DB" + Environment.NewLine;
             MESS = MESS + "4:用POS的上傳功能，將本機DB資料匯入到ERP的DB中" + Environment.NewLine;
 
@@ -2040,6 +2041,28 @@ namespace TKMK
             }
         }
 
+        public void DOWNLOAD_EXCEL()
+        {
+            string url = @"\\192.168.1.109\prog更新\TKMK\REPORT\rcPOS9002_20230515v2.xls";            
+
+            using (FolderBrowserDialog FDB = new FolderBrowserDialog())
+            {
+                DialogResult RESULT = FDB.ShowDialog();
+                if(RESULT==DialogResult.OK&&!string.IsNullOrWhiteSpace(FDB.SelectedPath))
+                {
+                    string PATH = FDB.SelectedPath;
+
+                    using (WebClient client = new WebClient())
+                    {
+                        client.DownloadFile(url, PATH+"\\"+"text.xls");
+
+                        MessageBox.Show("完成");
+                    }
+                }
+            }
+            
+        }
+
         #endregion
 
         #region BUTTON
@@ -2079,8 +2102,13 @@ namespace TKMK
 
         }
 
+        private void button5_Click(object sender, EventArgs e)
+        {
+            DOWNLOAD_EXCEL();
+        }
+
         #endregion
 
-    
+
     }
 }
