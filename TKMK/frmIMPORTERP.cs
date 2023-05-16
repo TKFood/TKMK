@@ -254,20 +254,22 @@ namespace TKMK
         }
         public void CHECKADDDATA()
         {
-            //新增暫存資料     
+            //新增暫存資料   
+            //並給明細序號
+            //計算折扣後金額  
             IMPORTEXCEL();
             //ImportCSV();
 
 
 
-            ////檢查暫存中的新資料
-            //DataTable NEWTDATATABLE = SEARCHNEWDATA();
-            ////匯入到TBJabezPOS中
-            //if(NEWTDATATABLE !=null&& NEWTDATATABLE.Rows.Count>0)
-            //{
-            //    ADD_TO_TBJabezPOS(NEWTDATATABLE);
-            //}
-            
+            //檢查暫存中的新資料
+            DataTable NEWTDATATABLE = SEARCHNEWDATA();
+            //匯入到TBJabezPOS中
+            if (NEWTDATATABLE != null && NEWTDATATABLE.Rows.Count > 0)
+            {
+                ADD_TO_TBJabezPOS(NEWTDATATABLE);
+            }
+
 
         }
 
@@ -848,26 +850,7 @@ namespace TKMK
 
                 sbSql.AppendFormat(@"                                   
                                     SELECT 
-                                    [營業點]
-                                    ,[機台]
-                                    ,[日期]
-                                    ,[序號]
-                                    ,[時間]
-                                    ,[訂單屬性]
-                                    ,[發票]
-                                    ,[統編]
-                                    ,[收銀員]
-                                    ,[會員]
-                                    ,[註記]
-                                    ,[附餐內容物]
-                                    ,[商品編號]
-                                    ,[商品名稱]
-                                    ,[單價]
-                                    ,[數量]
-                                    ,[小計]
-                                    ,[口味]
-                                    ,[加料]
-                                    ,[容量]
+                                    *
                                     FROM [TKMK].[dbo].[TBJabezPOS_TEMP]
                                     WHERE REPLACE([營業點]+[機台]+[日期]+[序號],' ','') NOT IN (SELECT REPLACE([營業點]+[機台]+[日期]+[序號],' ','') FROM [TKMK].[dbo].[TBJabezPOS])  
                                     ");
@@ -929,6 +912,7 @@ namespace TKMK
                 bulkCopy.ColumnMappings.Add("機台", "機台");
                 bulkCopy.ColumnMappings.Add("日期", "日期");
                 bulkCopy.ColumnMappings.Add("序號", "序號");
+                bulkCopy.ColumnMappings.Add("自訂序號", "自訂序號");
                 bulkCopy.ColumnMappings.Add("時間", "時間");
                 bulkCopy.ColumnMappings.Add("訂單屬性", "訂單屬性");
                 bulkCopy.ColumnMappings.Add("發票", "發票");
@@ -945,6 +929,10 @@ namespace TKMK
                 bulkCopy.ColumnMappings.Add("口味", "口味");
                 bulkCopy.ColumnMappings.Add("加料", "加料");
                 bulkCopy.ColumnMappings.Add("容量", "容量");
+                bulkCopy.ColumnMappings.Add("總金額", "總金額");
+                bulkCopy.ColumnMappings.Add("總折扣", "總折扣");
+                bulkCopy.ColumnMappings.Add("明細折扣", "明細折扣");
+                bulkCopy.ColumnMappings.Add("明細金額", "明細金額");
 
                 try
                 {
