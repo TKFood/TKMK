@@ -1040,13 +1040,14 @@ namespace TKMK
 
                 
                 sbSql.AppendFormat(@"                                    
-                                   SELECT  
-                                    *
+                                    SELECT  
+                                    [TA001],[TA002],[TA003]
                                     ,RIGHT('00000'+CAST(row_number() OVER(PARTITION BY [TA001],[TA002],[TA003] ORDER BY [TA001],[TA002],[TA003]) AS nvarchar(10)),5)  AS SEQ 
-                                    ,([營業點]+[機台]+[日期]+[序號]+CONVERT(NVARCHAR,[自訂序號])) AS 'KEYS'
+                                    ,([營業點]+[機台]+[日期]+[序號]) AS 'KEYS'
                                     FROM [TKMK].[dbo].[TBJabezPOS]
                                     WHERE ISNULL(TA006,'')=''
-                                    ORDER BY [機台],[日期],[序號],[時間]
+                                    GROUP BY [TA001],[TA002],[TA003],[營業點]+[機台]+[日期]+[序號]
+                                    ORDER BY [營業點]+[機台]+[日期]+[序號]
 
                                          ");
 
@@ -1087,7 +1088,7 @@ namespace TKMK
                 SQLEXECUT.AppendFormat(@"
                                         UPDATE [TKMK].[dbo].[TBJabezPOS]
                                         SET [TA006]='{1}'
-                                        WHERE ([營業點]+[機台]+[日期]+[序號]+CONVERT(NVARCHAR,[自訂序號]))='{0}'
+                                        WHERE ([營業點]+[機台]+[日期]+[序號])='{0}'
 
                                         ", DR["KEYS"].ToString(), DR["SEQ"].ToString());
             }
@@ -1168,7 +1169,7 @@ namespace TKMK
                                    SELECT  
                                    *
                                     ,RIGHT('0000'+CAST(row_number() OVER(PARTITION BY [TA001],[TA002],[TA003],[TA006] ORDER BY [TA001],[TA002],[TA003],[TA006]) AS nvarchar(10)),4)  AS SEQ 
-                                    ,([TA001]+[TA002]+[TA003]+[TA006]) AS 'KEYS'
+                                    ,([TA001]+[TA002]+[TA003]+[TA006]+CONVERT(NVARCHAR,[自訂序號])) AS 'KEYS'
                                     FROM [TKMK].[dbo].[TBJabezPOS]
                                     WHERE ISNULL([TB007],'')=''
 
@@ -1211,8 +1212,11 @@ namespace TKMK
             {
                 SQLEXECUT.AppendFormat(@"
                                         UPDATE [TKMK].[dbo].[TBJabezPOS]
-                                        SET [TB007]='{1}',[TC007]='{1}'
-                                        WHERE ([TA001]+[TA002]+[TA003]+[TA006])='{0}'
+                                        SET [TB007]='{1}'
+                                        WHERE ([TA001]+[TA002]+[TA003]+[TA006]+CONVERT(NVARCHAR,[自訂序號]))='{0}'
+                                        
+                                        UPDATE [TKMK].[dbo].[TBJabezPOS]
+                                        SET [TC007]='001'
 
                                         ", DR["KEYS"].ToString(), DR["SEQ"].ToString());
             }
