@@ -170,22 +170,23 @@ namespace TKMK
                 if (ISIMPORT.Equals("Y"))
                 {
                     sbSqlQUERY.AppendFormat(@" 
-                                            AND  REPLACE(ISNULL(TA001,'')+ISNULL(TA002,'')+ISNULL(TA003,'')+ISNULL(TA006,''),' ','')  IN (SELECT  REPLACE(TA001+TA002+TA003+TA006,' ','') FROM [TK].dbo.POSTA)
+                                            AND  REPLACE(ISNULL(TA001,'')+ISNULL(TA002,'')+ISNULL(TA003,'')+ISNULL(TA006,''),' ','')  IN (SELECT  REPLACE(TA001+TA002+TA003+TA006,' ','') FROM [TK].dbo.POSTA WHERE TA002 IN ('106702')  AND TA003 IN ('900') )
                                             ");
                 }
                 else
                 {
                     sbSqlQUERY.AppendFormat(@" 
-                                            AND  REPLACE(ISNULL(TA001,'')+ISNULL(TA002,'')+ISNULL(TA003,'')+ISNULL(TA006,''),' ','') NOT IN (SELECT  REPLACE(TA001+TA002+TA003+TA006,' ','') FROM [TK].dbo.POSTA)
+                                            AND  REPLACE(ISNULL(TA001,'')+ISNULL(TA002,'')+ISNULL(TA003,'')+ISNULL(TA006,''),' ','') NOT IN (SELECT  REPLACE(TA001+TA002+TA003+TA006,' ','') FROM [TK].dbo.POSTA WHERE TA002 IN ('106702')  AND TA003 IN ('900') )
                                             ");
                 }
 
                 sbSql.AppendFormat(@"
-                                    SELECT  
+                                    SELECT
                                     [營業點]
                                     ,[機台]
                                     ,[日期]
                                     ,[序號]
+                                    ,[自訂序號]
                                     ,[時間]
                                     ,[訂單屬性]
                                     ,[發票]
@@ -202,6 +203,10 @@ namespace TKMK
                                     ,[口味]
                                     ,[加料]
                                     ,[容量]
+                                    ,[總金額]
+                                    ,[總折扣]
+                                    ,[明細折扣]
+                                    ,[明細金額]
                                     ,[TA001]
                                     ,[TA002]
                                     ,[TA003]
@@ -212,7 +217,7 @@ namespace TKMK
                                     FROM [TKMK].[dbo].[TBJabezPOS]
                                     WHERE [日期] LIKE '%{0}%'
                                     {1}
-                                    ORDER BY [營業點],[機台],[日期],[序號],[時間]
+                                    ORDER BY [營業點],[機台],[日期],[序號],[時間],[自訂序號]
 
                                          ", YYYYMM, sbSqlQUERY.ToString());
 
@@ -1035,34 +1040,9 @@ namespace TKMK
                 
                 sbSql.AppendFormat(@"                                    
                                    SELECT  
-                                    [營業點]
-                                    ,[機台]
-                                    ,[日期]
-                                    ,[序號]
-                                    ,[時間]
-                                    ,[訂單屬性]
-                                    ,[發票]
-                                    ,[統編]
-                                    ,[收銀員]
-                                    ,[會員]
-                                    ,[註記]
-                                    ,[附餐內容物]
-                                    ,[商品編號]
-                                    ,[商品名稱]
-                                    ,[單價]
-                                    ,[數量]
-                                    ,[小計]
-                                    ,[口味]
-                                    ,[加料]
-                                    ,[容量]
-                                    ,[TA001]
-                                    ,[TA002]
-                                    ,[TA003]
-                                    ,[TA006]
-                                    ,[TB007]
-                                    ,[TC007]
+                                    *
                                     ,RIGHT('00000'+CAST(row_number() OVER(PARTITION BY [TA001],[TA002],[TA003] ORDER BY [TA001],[TA002],[TA003]) AS nvarchar(10)),5)  AS SEQ 
-                                    ,([營業點]+[機台]+[日期]+[序號]) AS 'KEYS'
+                                    ,([營業點]+[機台]+[日期]+[序號]+CONVERT(NVARCHAR,[自訂序號])) AS 'KEYS'
                                     FROM [TKMK].[dbo].[TBJabezPOS]
                                     WHERE ISNULL(TA006,'')=''
                                     ORDER BY [機台],[日期],[序號],[時間]
@@ -1106,7 +1086,7 @@ namespace TKMK
                 SQLEXECUT.AppendFormat(@"
                                         UPDATE [TKMK].[dbo].[TBJabezPOS]
                                         SET [TA006]='{1}'
-                                        WHERE ([營業點]+[機台]+[日期]+[序號])='{0}'
+                                        WHERE ([營業點]+[機台]+[日期]+[序號]+CONVERT(NVARCHAR,[自訂序號]))='{0}'
 
                                         ", DR["KEYS"].ToString(), DR["SEQ"].ToString());
             }
@@ -1185,32 +1165,7 @@ namespace TKMK
 
                 sbSql.AppendFormat(@"                                    
                                    SELECT  
-                                    [營業點]
-                                    ,[機台]
-                                    ,[日期]
-                                    ,[序號]
-                                    ,[時間]
-                                    ,[訂單屬性]
-                                    ,[發票]
-                                    ,[統編]
-                                    ,[收銀員]
-                                    ,[會員]
-                                    ,[註記]
-                                    ,[附餐內容物]
-                                    ,[商品編號]
-                                    ,[商品名稱]
-                                    ,[單價]
-                                    ,[數量]
-                                    ,[小計]
-                                    ,[口味]
-                                    ,[加料]
-                                    ,[容量]
-                                    ,[TA001]
-                                    ,[TA002]
-                                    ,[TA003]
-                                    ,[TA006]
-                                    ,[TB007]
-                                    ,[TC007]
+                                   *
                                     ,RIGHT('0000'+CAST(row_number() OVER(PARTITION BY [TA001],[TA002],[TA003],[TA006] ORDER BY [TA001],[TA002],[TA003],[TA006]) AS nvarchar(10)),4)  AS SEQ 
                                     ,([TA001]+[TA002]+[TA003]+[TA006]) AS 'KEYS'
                                     FROM [TKMK].[dbo].[TBJabezPOS]
