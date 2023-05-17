@@ -1296,7 +1296,7 @@ namespace TKMK
 
                 sbSql.Clear();
 
-             
+                //發票 TA014、TA041 不匯入 
                 sbSql.AppendFormat(@"  
 
                                     INSERT INTO [COSMOS_POS].dbo.POSTA
@@ -1478,7 +1478,7 @@ namespace TKMK
                                     ,1 [TA011]
                                     ,'' [TA012]
                                     ,'' [TA013]
-                                    ,[發票] [TA014]
+                                    ,'' [TA014]
                                     ,0 [TA015]
                                     ,SUM([數量]) [TA016]
                                     ,SUM([明細金額]) [TA017]
@@ -1505,7 +1505,7 @@ namespace TKMK
                                     ,'1' [TA038]
                                     ,'' [TA039]
                                     ,'N' [TA040]
-                                    ,[發票] [TA041]
+                                    ,'' [TA041]
                                     ,'' [TA042]
                                     ,'' [TA043]
                                     ,'' [TA044]
@@ -1594,7 +1594,7 @@ namespace TKMK
                                     ,0 [UDF10]
                                     FROM [192.168.1.105].[TKMK].[dbo].[TBJabezPOS]
                                     WHERE REPLACE([TBJabezPOS].TA001+[TBJabezPOS].TA002+[TBJabezPOS].TA003+[TBJabezPOS].TA006,' ','') NOT IN (SELECT REPLACE(TA001+TA002+TA003+TA006,' ','') FROM [COSMOS_POS].dbo.POSTA  WHERE TA002 IN ('106702')  AND TA003 IN ('900'))
-                                    GROUP BY [TA001],[TA002],[TA003],[TA006],[時間],[發票]
+                                    GROUP BY [TA001],[TA002],[TA003],[TA006],[時間]
 
                                     INSERT INTO  [COSMOS_POS].dbo.POSTB
                                     (
@@ -2014,7 +2014,7 @@ namespace TKMK
                                     ,0 [UDF10]
                                     FROM [192.168.1.105].[TKMK].[dbo].[TBJabezPOS]
                                     WHERE REPLACE([TBJabezPOS].TA001+[TBJabezPOS].TA002+[TBJabezPOS].TA003+[TBJabezPOS].TA006+[TBJabezPOS].TC007,' ','') NOT IN (SELECT REPLACE(TC001+TC002+TC003+TC006+TC007,' ','') FROM [COSMOS_POS].dbo.POSTC  WHERE TC002 IN ('106702')  AND TC003 IN ('900') )
-                                    GROUP BY [TA001],[TA002],[TA003],[TA006],[時間],[發票],[TC007]
+                                    GROUP BY [TA001],[TA002],[TA003],[TA006],[時間],[TC007]
 
 
                                     ");
