@@ -1275,7 +1275,9 @@ namespace TKMK
 
         public void ADD_ERP_POSTAPOSTBPOSTC()
         {
-            
+            string TA002 = "106604";
+            string TA003 = "001";
+
             try
             {
                 //20210902密
@@ -1593,7 +1595,7 @@ namespace TKMK
                                     ,0 [UDF09]
                                     ,0 [UDF10]
                                     FROM [192.168.1.105].[TKMK].[dbo].[TBJabezPOS]
-                                    WHERE REPLACE([TBJabezPOS].TA001+[TBJabezPOS].TA002+[TBJabezPOS].TA003+[TBJabezPOS].TA006,' ','') NOT IN (SELECT REPLACE(TA001+TA002+TA003+TA006,' ','') FROM [COSMOS_POS].dbo.POSTA  WHERE TA002 IN ('106702')  AND TA003 IN ('900'))
+                                    WHERE REPLACE([TBJabezPOS].TA001+[TBJabezPOS].TA002+[TBJabezPOS].TA003+[TBJabezPOS].TA006,' ','') NOT IN (SELECT REPLACE(TA001+TA002+TA003+TA006,' ','') FROM [COSMOS_POS].dbo.POSTA  WHERE TA002 IN ('{0}')  AND TA003 IN ('{1}'))
                                     GROUP BY [TA001],[TA002],[TA003],[TA006],[時間]
 
                                     INSERT INTO  [COSMOS_POS].dbo.POSTB
@@ -1838,7 +1840,7 @@ namespace TKMK
                                     FROM [192.168.1.105].[TKMK].[dbo].[TBJabezPOS],[192.168.1.105].[TK].dbo.INVMB
                                     WHERE 1=1
                                     AND [商品編號]=MB001
-                                    AND REPLACE([TBJabezPOS].TA001+[TBJabezPOS].TA002+[TBJabezPOS].TA003+[TBJabezPOS].TA006+[TBJabezPOS].TB007,' ','' )NOT IN (SELECT REPLACE(TB001+TB002+TB003+TB006+TB007, ' ','') FROM [COSMOS_POS].dbo.POSTB  WHERE TB002 IN ('106702')  AND TB003 IN ('900') )
+                                    AND REPLACE([TBJabezPOS].TA001+[TBJabezPOS].TA002+[TBJabezPOS].TA003+[TBJabezPOS].TA006+[TBJabezPOS].TB007,' ','' )NOT IN (SELECT REPLACE(TB001+TB002+TB003+TB006+TB007, ' ','') FROM [COSMOS_POS].dbo.POSTB  WHERE TB002 IN ('{0}')  AND TB003 IN ('{1}') )
 
                                     INSERT INTO  [COSMOS_POS].dbo.POSTC
                                     (
@@ -2013,11 +2015,11 @@ namespace TKMK
                                     ,0 [UDF09]
                                     ,0 [UDF10]
                                     FROM [192.168.1.105].[TKMK].[dbo].[TBJabezPOS]
-                                    WHERE REPLACE([TBJabezPOS].TA001+[TBJabezPOS].TA002+[TBJabezPOS].TA003+[TBJabezPOS].TA006+[TBJabezPOS].TC007,' ','') NOT IN (SELECT REPLACE(TC001+TC002+TC003+TC006+TC007,' ','') FROM [COSMOS_POS].dbo.POSTC  WHERE TC002 IN ('106702')  AND TC003 IN ('900') )
+                                    WHERE REPLACE([TBJabezPOS].TA001+[TBJabezPOS].TA002+[TBJabezPOS].TA003+[TBJabezPOS].TA006+[TBJabezPOS].TC007,' ','') NOT IN (SELECT REPLACE(TC001+TC002+TC003+TC006+TC007,' ','') FROM [COSMOS_POS].dbo.POSTC  WHERE TC002 IN ('{0}')  AND TC003 IN ('{1}') )
                                     GROUP BY [TA001],[TA002],[TA003],[TA006],[時間],[TC007]
 
 
-                                    ");
+                                    ", TA002, TA003);
 
 
                 cmd.Connection = sqlConn;
