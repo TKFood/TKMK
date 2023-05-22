@@ -1377,8 +1377,8 @@ namespace TKMK
 
         public void ADD_ERP_POSTAPOSTBPOSTC()
         {
-            string TA002 = "106604";
-            string TA003 = "001";
+            string TA002 = textBox1.Text;
+            string TA003 = textBox4.Text;
 
             try
             {
