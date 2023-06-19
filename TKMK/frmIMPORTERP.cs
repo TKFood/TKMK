@@ -72,10 +72,11 @@ namespace TKMK
         {
             string MESS = "";
 
-            MESS = MESS + "1:本程式限在POS機上執行"+Environment.NewLine;
-            MESS = MESS + "2:本程式需先下載 銷售明細表 xls格式，再匯入暫存DB中，並整理出POST相關資料" + Environment.NewLine;
-            MESS = MESS + "3:本程式由暫存DB，再匯到POS的本機DB" + Environment.NewLine;
-            MESS = MESS + "4:用POS的上傳功能，將本機DB資料匯入到ERP的DB中" + Environment.NewLine;
+            MESS = MESS + "10:匯入的excel要先編輯，另存新xls" + Environment.NewLine;
+            MESS = MESS + "20:本程式限在POS機上執行"+Environment.NewLine;
+            MESS = MESS + "30:本程式需先下載 銷售明細表 xls格式，再匯入暫存DB中，並整理出POST相關資料" + Environment.NewLine;
+            MESS = MESS + "40:本程式由暫存DB，再匯到POS的本機DB" + Environment.NewLine;
+            MESS = MESS + "50:用POS的上傳功能，將本機DB資料匯入到ERP的DB中" + Environment.NewLine;
 
             textBox2.Text = MESS;
         }
