@@ -983,6 +983,63 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
+
+        public void UPDATEGROUPSALESCOMPELETE_STATUS(string ID, string STATUS)
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+     
+                sbSql.AppendFormat(@" 
+                                    UPDATE [TKMK].[dbo].[GROUPSALES]
+                                    SET STATUS='{1}'
+                                    WHERE [ID]='{0}'
+                                    ", ID, STATUS);
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
         public void SETMONEYS()
         {
             if (dataGridView1.Rows.Count > 0)
@@ -2761,9 +2818,10 @@ namespace TKMK
             {
                 if (!string.IsNullOrEmpty(ID))
                 {
-                    string GROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                    //string GROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                    //UPDATEGROUPSALESCOMPELETE(ID, GROUPENDDATES, "完成接團");
 
-                    UPDATEGROUPSALESCOMPELETE(ID, GROUPENDDATES, "完成接團");
+                    UPDATEGROUPSALESCOMPELETE_STATUS(ID, "完成接團");
                 }
 
                 SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
