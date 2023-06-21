@@ -2188,7 +2188,7 @@ namespace TKMK
         public StringBuilder SETSQL()
         {           
             StringBuilder SB = new StringBuilder();
-           
+            
     
             SB.AppendFormat(@" 
                             SELECT 
