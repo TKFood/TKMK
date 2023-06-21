@@ -2349,6 +2349,114 @@ namespace TKMK
             }
         }
 
+        public void GROUPSALES_UPDATE_GROUPSTARTDATES(string ID,string GROUPSTARTDATES)
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+
+                sbSql.AppendFormat(@" 
+                                    UPDATE  [TKMK].[dbo].[GROUPSALES]
+                                    SET GROUPSTARTDATES='{1}'
+                                    WHERE ID='{0}'
+                                    ", ID, GROUPSTARTDATES);
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+        public void GROUPSALES_UPDATE_GROUPENDDATES(string ID, string GROUPENDDATES)
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+
+                sbSql.AppendFormat(@" 
+                                    UPDATE  [TKMK].[dbo].[GROUPSALES]
+                                    SET GROUPENDDATES='{1}'
+                                    WHERE ID='{0}'
+                                    ", ID, GROUPENDDATES);
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
 
         #endregion
 
@@ -2364,14 +2472,9 @@ namespace TKMK
             SETTEXT1();
             comboBox3load();
 
-
-
         }
         private void button4_Click(object sender, EventArgs e)
         {
-
-
-
             //MessageBox.Show("更新中，請不要操作電腦", "MessageBox");
             //System.Threading.Thread th;
             //th = new Thread(new ThreadStart(delegate ()
@@ -2388,13 +2491,13 @@ namespace TKMK
             this.Enabled = false;
             //顯示跳出視窗
             MSGSHOW.Show();
-
+            //查詢本日來車資料
             SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
-
+            //計算佣金
             SETMONEYS();
-
+            //查詢本日來車資料
             SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
-
+            //查詢本日的合計
             SETNUMS(dateTimePicker1.Value.ToString("yyyyMMdd"));
 
             label29.Text = "";
@@ -2677,11 +2780,30 @@ namespace TKMK
             SETFASTREPORT();
         }
 
+        private void button13_Click(object sender, EventArgs e)
+        {
+            string DTIMES = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            if(!string.IsNullOrEmpty(ID))
+            {
+                GROUPSALES_UPDATE_GROUPSTARTDATES(ID, DTIMES);
+            }
+            
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+            string DTIMES = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            if (!string.IsNullOrEmpty(ID))
+            {
+                GROUPSALES_UPDATE_GROUPENDDATES(ID, DTIMES);
+            }
+               
+        }
 
 
 
         #endregion
 
-      
+
     }
 }
