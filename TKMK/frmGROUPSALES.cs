@@ -2191,11 +2191,30 @@ namespace TKMK
            
     
             SB.AppendFormat(@" 
-                             SELECT 
-                             [GROUPSALES].[SERNO] AS '序號',CONVERT(NVARCHAR,[PURGROUPSTARTDATES],111) AS '日期',[CARNAME] AS '車名',[CARKIND] AS '車種',[CARNO] AS '車號',[CARNUM] AS '車數',[GROUPKIND] AS '團類',[GUSETNUM] AS '來客數',[EXCHANNO] AS '優惠券',[EXCHANACOOUNT] AS '優惠號',[ISEXCHANGE] AS '領兌'
-                             ,[EXCHANGETOTALMONEYS] AS '兌換券金額',[EXCHANGESALESMMONEYS] AS '(兌)消費金額',[COMMISSIONBASEMONEYS] AS '茶水費',[SALESMMONEYS] AS '消費總額',[SPECIALMNUMS] AS '特賣組數',[SPECIALMONEYS] AS '特賣獎金',[COMMISSIONPCTMONEYS] AS '消費獎金',[TOTALCOMMISSIONMONEYS] AS '獎金合計',[STATUS] AS '狀態'
-                             ,CONVERT(NVARCHAR,[PURGROUPSTARTDATES],108) AS '到達時間'
-                             FROM [TKMK].[dbo].[GROUPSALES] WITH (NOLOCK) 
+                            SELECT 
+                            [GROUPSALES].[SERNO] AS '序號'
+                            ,CONVERT(NVARCHAR,[PURGROUPSTARTDATES],111) AS '日期'
+                            ,[CARNAME] AS '車名',[CARKIND] AS '車種'
+                            ,[CARNO] AS '車號',[CARNUM] AS '車數'
+                            ,[GROUPKIND] AS '團類',[GUSETNUM] AS '來客數'
+                            ,[EXCHANNO] AS '優惠券',[EXCHANACOOUNT] AS '優惠號'
+                            ,[ISEXCHANGE] AS '領兌'
+                            ,[EXCHANGETOTALMONEYS] AS '兌換券金額'
+                            ,[EXCHANGESALESMMONEYS] AS '(兌)消費金額'
+                            ,[COMMISSIONBASEMONEYS] AS '茶水費'
+                            ,[SALESMMONEYS] AS '消費總額'
+                            ,[SPECIALMNUMS] AS '特賣組數'
+                            ,[SPECIALMONEYS] AS '特賣獎金'
+                            ,[COMMISSIONPCTMONEYS] AS '消費獎金'
+                            ,[TOTALCOMMISSIONMONEYS] AS '獎金合計'
+                            ,[STATUS] AS '狀態'
+                            ,CONVERT(NVARCHAR,[GROUPSTARTDATES],108) AS '到達時間'
+                            ,CONVERT(NVARCHAR,[GROUPENDDATES],108) AS '離開時間'
+                            ,[GROUPSTARTDATES]
+                            ,[GROUPENDDATES]
+                            ,DATEDIFF(HOUR, CONVERT(DATETIME,[GROUPSTARTDATES]), CONVERT(DATETIME,[GROUPENDDATES])) AS '停留小時'
+                            ,DATEDIFF(MINUTE, CONVERT(DATETIME,[GROUPSTARTDATES]), CONVERT(DATETIME,[GROUPENDDATES])) AS '停留分鐘'
+                            FROM [TKMK].[dbo].[GROUPSALES] WITH (NOLOCK) 
                              WHERE CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)>='{0}' AND CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)<='{1}'
                              AND [STATUS]='完成接團'
                              ORDER BY CONVERT(NVARCHAR,[PURGROUPSTARTDATES], 112),[SERNO]
