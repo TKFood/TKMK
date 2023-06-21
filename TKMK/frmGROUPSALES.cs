@@ -2786,6 +2786,7 @@ namespace TKMK
             if(!string.IsNullOrEmpty(ID))
             {
                 GROUPSALES_UPDATE_GROUPSTARTDATES(ID, DTIMES);
+                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
             }
             
         }
@@ -2796,6 +2797,7 @@ namespace TKMK
             if (!string.IsNullOrEmpty(ID))
             {
                 GROUPSALES_UPDATE_GROUPENDDATES(ID, DTIMES);
+                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
             }
                
         }
