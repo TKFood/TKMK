@@ -497,7 +497,7 @@ namespace TKMK
                         dataGridView1.Columns["預計離開時間"].Width = 80;
                         //dataGridView1.Columns["抽佣比率"].Width = 80;
                         dataGridView1.Columns["領券額"].Width = 80;
-                        dataGridView1.Columns["ID"].Width = 200;
+                        dataGridView1.Columns["ID"].Width = 100;
                         dataGridView1.Columns["CREATEDATES"].Width = 80;
 
                         //根据列表中数据不同，显示不同颜色背景
@@ -1270,7 +1270,7 @@ namespace TKMK
         #region BUTTON
         private void button4_Click(object sender, EventArgs e)
         {
-
+            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
         }
         private void button5_Click(object sender, EventArgs e)
         {
@@ -1469,10 +1469,37 @@ namespace TKMK
 
             SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
         }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (STATUS.Equals("預約接團"))
+            {
+                SETTEXT3();
+                STATUSCONTROLLER = "EDIT";
+            }
+            else
+            {
+                MessageBox.Show("不是預約接團，不能修改");
+            }
+
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+            if (STATUS.Equals("預約接團"))
+            {
+                comboBox3load();
+                SETTEXT5();
+                STATUSCONTROLLER = "EDIT";
+            }
+            else
+            {
+                MessageBox.Show("不是預約接團，不能修改");
+            }
+        }
 
 
         #endregion
 
-       
+
     }
 }

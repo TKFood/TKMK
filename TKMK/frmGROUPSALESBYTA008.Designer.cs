@@ -430,6 +430,7 @@
             this.button3.TabIndex = 600;
             this.button3.Text = "修改業務員";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // textBox144
             // 
@@ -575,8 +576,9 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(114, 29);
             this.button1.TabIndex = 580;
-            this.button1.Text = "修改車號名";
+            this.button1.Text = "修改來車";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // splitContainer2
             // 
