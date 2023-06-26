@@ -94,6 +94,9 @@ namespace TKMK
         }
 
         #region FUNCTION
+        /// <summary>
+        /// 下拉 車種
+        /// </summary>
         public void comboBox1load()
         {
             //20210902密
@@ -122,7 +125,9 @@ namespace TKMK
             sqlConn.Close();
 
         }
-
+        /// <summary>
+        /// 下拉 團類
+        /// </summary>
         public void comboBox2load()
         {
             //20210902密
@@ -151,7 +156,9 @@ namespace TKMK
             sqlConn.Close();
 
         }
-
+        /// <summary>
+        /// 下拉 業務員/會員
+        /// </summary>
         public void comboBox3load()
         {
             //20210902密
@@ -180,7 +187,9 @@ namespace TKMK
             sqlConn.Close();
 
         }
-
+        /// <summary>
+        /// 下拉 來車公司
+        /// </summary>
         public void comboBox5load()
         {
             //20210902密
@@ -209,11 +218,20 @@ namespace TKMK
 
         }
 
+        /// <summary>
+        /// 下拉 業務員/會員，文字框更新
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
             SEARCHWSCMI(comboBox3.Text.Trim().Substring(0, 7).ToString());
         }
 
+        /// <summary>
+        /// 尋找 業務員/會員
+        /// </summary>
+        /// <param name="MI001"></param>
         public void SEARCHWSCMI(string MI001)
         {
             SqlDataAdapter adapter = new SqlDataAdapter();
@@ -275,7 +293,11 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
-
+        /// <summary>
+        /// 自動編 流水號
+        /// </summary>
+        /// <param name="CREATEDATES"></param>
+        /// <returns></returns>
         public string FINDSERNO(string CREATEDATES)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
@@ -303,7 +325,7 @@ namespace TKMK
 
 
                 sbSql.AppendFormat(@"  
-                                    SELECT ISNULL(MAX(SERNO),'0') SERNO FROM  [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(NVARCHAR,[CREATEDATES],112)='{0}'"
+                                    SELECT ISNULL(MAX(SERNO),'0') SERNO FROM  [TKMK].[dbo].[GROUPSALESBYTA008] WHERE CONVERT(NVARCHAR,[CREATEDATES],112)='{0}'"
                                     , CREATEDATES);
                 sbSql.AppendFormat(@"  ");  
 
@@ -341,6 +363,11 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
+        /// <summary>
+        /// 格式化 流水號
+        /// </summary>
+        /// <param name="TEMPSERNO"></param>
+        /// <returns></returns>
         public string SETSERNO(string TEMPSERNO)
         {
             if (TEMPSERNO.Equals("0"))
@@ -355,7 +382,10 @@ namespace TKMK
                 return serno.ToString();
             }
         }
-
+        /// <summary>
+        /// 找出團務資料
+        /// </summary>
+        /// <param name="CREATEDATES"></param>
         public void SEARCHGROUPSALES(string CREATEDATES)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
@@ -591,6 +621,11 @@ namespace TKMK
             }
         }
 
+        /// <summary>
+        /// 尋找來車 記錄
+        /// </summary>
+        /// <param name="CARNO"></param>
+        /// <returns></returns>
         public int SEARCHGROUPCAR(string CARNO)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
@@ -648,7 +683,39 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
-
+        /// <summary>
+        /// 新增團務 資料
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <param name="CREATEDATES"></param>
+        /// <param name="SERNO"></param>
+        /// <param name="CARCOMPANY"></param>
+        /// <param name="TA008NO"></param>
+        /// <param name="TA008"></param>
+        /// <param name="CARNO"></param>
+        /// <param name="CARNAME"></param>
+        /// <param name="CARKIND"></param>
+        /// <param name="GROUPKIND"></param>
+        /// <param name="ISEXCHANGE"></param>
+        /// <param name="EXCHANGEMONEYS"></param>
+        /// <param name="EXCHANGETOTALMONEYS"></param>
+        /// <param name="EXCHANGESALESMMONEYS"></param>
+        /// <param name="SPECIALMNUMS"></param>
+        /// <param name="SPECIALMONEYS"></param>
+        /// <param name="SALESMMONEYS"></param>
+        /// <param name="COMMISSIONBASEMONEYS"></param>
+        /// <param name="COMMISSIONPCT"></param>
+        /// <param name="COMMISSIONPCTMONEYS"></param>
+        /// <param name="TOTALCOMMISSIONMONEYS"></param>
+        /// <param name="CARNUM"></param>
+        /// <param name="GUSETNUM"></param>
+        /// <param name="EXCHANNO"></param>
+        /// <param name="EXCHANACOOUNT"></param>
+        /// <param name="PURGROUPSTARTDATES"></param>
+        /// <param name="GROUPSTARTDATES"></param>
+        /// <param name="PURGROUPENDDATES"></param>
+        /// <param name="GROUPENDDATES"></param>
+        /// <param name="STATUS"></param>
         public void ADDGROUPSALES(
             string ID
             , string CREATEDATES
@@ -828,7 +895,23 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
-
+        /// <summary>
+        /// 更新 團務 資料
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <param name="CARCOMPANY"></param>
+        /// <param name="TA008NO"></param>
+        /// <param name="TA008"></param>
+        /// <param name="CARNO"></param>
+        /// <param name="CARNAME"></param>
+        /// <param name="CARKIND"></param>
+        /// <param name="GROUPKIND"></param>
+        /// <param name="ISEXCHANGE"></param>
+        /// <param name="CARNUM"></param>
+        /// <param name="GUSETNUM"></param>
+        /// <param name="EXCHANNO"></param>
+        /// <param name="EXCHANACOOUNT"></param>
+        /// <param name="STATUS"></param>
         public void UPDATEGROUPSALES(
                                       string ID                                    
                                     , string CARCOMPANY
@@ -927,6 +1010,12 @@ namespace TKMK
             }
         }
 
+        /// <summary>
+        /// 新增來車 記錄
+        /// </summary>
+        /// <param name="CARNO"></param>
+        /// <param name="CARNAME"></param>
+        /// <param name="CARKIND"></param>
         public void ADDGROUPCAR(string CARNO, string CARNAME, string CARKIND)
         {
             try
@@ -982,6 +1071,12 @@ namespace TKMK
             }
         }
 
+        /// <summary>
+        /// 更新 記錄
+        /// </summary>
+        /// <param name="CARNO"></param>
+        /// <param name="CARNAME"></param>
+        /// <param name="CARKIND"></param>
         public void UPDATEGROUPCAR(string CARNO, string CARNAME, string CARKIND)
         {
             try
@@ -1033,7 +1128,11 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
-
+        /// <summary>
+        /// 更新 業務員/會員到POS機
+        /// </summary>
+        /// <param name="MI001"></param>
+        /// <param name="NAME"></param>
         public void UPDATETKWSCMI(string MI001, string NAME)
         {
             try
@@ -1165,6 +1264,7 @@ namespace TKMK
         {
             comboBox3.Enabled = false;
         }
+
         #endregion
 
         #region BUTTON
