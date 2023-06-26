@@ -518,17 +518,17 @@ namespace TKMK
                             dgRow.Cells["業務員名"].Style.Font = new Font("Tahoma", 14);                               
 
                             //判断
-                            if (dgRow.Cells[20].Value.ToString().Trim().Equals("完成接團"))
+                            if (dgRow.Cells["狀態"].Value.ToString().Trim().Equals("完成接團"))
                             {
                                 //将这行的背景色设置成Pink
                                 dgRow.DefaultCellStyle.ForeColor = Color.Blue;
                             }
-                            else if (dgRow.Cells[20].Value.ToString().Trim().Equals("取消預約"))
+                            else if (dgRow.Cells["狀態"].Value.ToString().Trim().Equals("取消預約"))
                             {
                                 //将这行的背景色设置成Pink
                                 dgRow.DefaultCellStyle.ForeColor = Color.Pink;
                             }
-                            else if (dgRow.Cells[20].Value.ToString().Trim().Equals("異常結案"))
+                            else if (dgRow.Cells["狀態"].Value.ToString().Trim().Equals("異常結案"))
                             {
                                 //将这行的背景色设置成Pink
                                 dgRow.DefaultCellStyle.ForeColor = Color.Red;
@@ -1196,6 +1196,177 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
+        /// <summary>
+        /// 更新 團務的接團
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <param name="STATUS"></param>
+        public void UPDATEGROUPSALESCOMPELETE_STATUS(string ID, string STATUS)
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+
+                sbSql.AppendFormat(@" 
+                                    UPDATE [TKMK].[dbo].[GROUPSALESBYTA008]
+                                    SET STATUS='{1}'
+                                    WHERE [ID]='{0}'
+                                    ", ID, STATUS);
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public void GROUPSALES_UPDATE_GROUPSTARTDATES(string ID, string GROUPSTARTDATES)
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+
+                sbSql.AppendFormat(@" 
+                                    UPDATE  [TKMK].[dbo].[GROUPSALESBYTA008]
+                                    SET GROUPSTARTDATES='{1}'
+                                    WHERE ID='{0}'
+                                    ", ID, GROUPSTARTDATES);
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+        public void GROUPSALES_UPDATE_GROUPENDDATES(string ID, string GROUPENDDATES)
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+
+                sbSql.AppendFormat(@" 
+                                    UPDATE  [TKMK].[dbo].[GROUPSALESBYTA008]
+                                    SET GROUPENDDATES='{1}'
+                                    WHERE ID='{0}'
+                                    ", ID, GROUPENDDATES);
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
         public void SETTEXT1()
         {
             textBox131.Text = null;
@@ -1497,6 +1668,143 @@ namespace TKMK
             }
         }
 
+        private void button13_Click(object sender, EventArgs e)
+        {
+            string DTIMES = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            if (!string.IsNullOrEmpty(ID))
+            {
+                GROUPSALES_UPDATE_GROUPSTARTDATES(ID, DTIMES);
+                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            }
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+            string DTIMES = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            if (!string.IsNullOrEmpty(ID))
+            {
+                GROUPSALES_UPDATE_GROUPENDDATES(ID, DTIMES);
+                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            if (STATUS.Equals("預約接團"))
+            {
+                if (!string.IsNullOrEmpty(ID))
+                {
+                    string CARNO = textBox131.Text.Trim();
+                    string CARNAME = textBox141.Text.Trim();
+                    string CARKIND = comboBox1.Text.Trim();
+                    string GROUPKIND = comboBox2.Text.Trim();
+                    string ISEXCHANGE = comboBox6.Text.Trim();
+
+                    string CARNUM = textBox142.Text.Trim();
+                    string GUSETNUM = textBox143.Text.Trim();
+                    string EXCHANNO = textBox144.Text.Trim();
+                    string EXCHANACOOUNT = comboBox3.Text.Trim().Substring(0, 7).ToString();
+                    string CARCOMPANY = comboBox5.SelectedValue.ToString();
+                    string TA008NO = textBox144.Text.Trim();
+                    string TA008 = comboBox3.Text.Trim().Substring(0, 7).ToString();               
+                    
+                    UPDATEGROUPSALES(
+                                      ID
+                                    , CARCOMPANY
+                                    , TA008NO
+                                    , TA008
+                                    , CARNO
+                                    , CARNAME
+                                    , CARKIND
+                                    , GROUPKIND
+                                    , ISEXCHANGE
+                                    , CARNUM
+                                    , GUSETNUM
+                                    , EXCHANNO
+                                    , EXCHANACOOUNT
+                                    , "取消預約"
+                                    );
+                }
+
+                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            }
+            else
+            {
+                MessageBox.Show("不是預約接團，不能修改");
+            }
+
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            if (STATUS.Equals("預約接團"))
+            {
+                if (!string.IsNullOrEmpty(ID))
+                {
+                    string CARNO = textBox131.Text.Trim();
+                    string CARNAME = textBox141.Text.Trim();
+                    string CARKIND = comboBox1.Text.Trim();
+                    string GROUPKIND = comboBox2.Text.Trim();
+                    string ISEXCHANGE = comboBox6.Text.Trim();
+
+                    string CARNUM = textBox142.Text.Trim();
+                    string GUSETNUM = textBox143.Text.Trim();
+                    string EXCHANNO = textBox144.Text.Trim();
+                    string EXCHANACOOUNT = comboBox3.Text.Trim().Substring(0, 7).ToString();
+                    string CARCOMPANY = comboBox5.SelectedValue.ToString();
+                    string TA008NO = textBox144.Text.Trim();
+                    string TA008 = comboBox3.Text.Trim().Substring(0, 7).ToString();
+                  
+                    UPDATEGROUPSALES(
+                                      ID
+                                    , CARCOMPANY
+                                    , TA008NO
+                                    , TA008
+                                    , CARNO
+                                    , CARNAME
+                                    , CARKIND
+                                    , GROUPKIND
+                                    , ISEXCHANGE
+                                    , CARNUM
+                                    , GUSETNUM
+                                    , EXCHANNO
+                                    , EXCHANACOOUNT
+                                    , "異常結案"
+                                    );
+                }
+
+                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            }
+            else
+            {
+                MessageBox.Show("不是預約接團，不能修改");
+            }
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            if (STATUS.Equals("預約接團"))
+            {
+                if (!string.IsNullOrEmpty(ID))
+                {
+                    //string GROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                    //UPDATEGROUPSALESCOMPELETE(ID, GROUPENDDATES, "完成接團");
+
+                    UPDATEGROUPSALESCOMPELETE_STATUS(ID, "完成接團");
+                }
+
+                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            }
+            else
+            {
+                MessageBox.Show("不是預約接團，不能修改");
+            }
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+        }
 
         #endregion
 

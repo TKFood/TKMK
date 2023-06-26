@@ -651,6 +651,7 @@
             this.button11.TabIndex = 720;
             this.button11.Text = "查詢";
             this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
             // 
             // button8
             // 
@@ -662,6 +663,7 @@
             this.button8.TabIndex = 650;
             this.button8.Text = "完成接團";
             this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
             // button7
             // 
@@ -673,6 +675,7 @@
             this.button7.TabIndex = 640;
             this.button7.Text = "異常結案";
             this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // button6
             // 
@@ -683,6 +686,7 @@
             this.button6.TabIndex = 630;
             this.button6.Text = "取消預約";
             this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // button14
             // 
@@ -693,6 +697,7 @@
             this.button14.TabIndex = 724;
             this.button14.Text = "指定出場時間";
             this.button14.UseVisualStyleBackColor = true;
+            this.button14.Click += new System.EventHandler(this.button14_Click);
             // 
             // button13
             // 
@@ -703,6 +708,7 @@
             this.button13.TabIndex = 723;
             this.button13.Text = "指定入場時間";
             this.button13.UseVisualStyleBackColor = true;
+            this.button13.Click += new System.EventHandler(this.button13_Click);
             // 
             // dataGridView1
             // 
