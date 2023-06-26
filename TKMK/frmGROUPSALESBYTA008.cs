@@ -1040,9 +1040,9 @@ namespace TKMK
 
                 sbSql.AppendFormat(@" 
                                     INSERT INTO [TKMK].[dbo].[GROUPCAR]
-                                    [CARNO],[CARNAME],[CARKIND])
-                                     VALUES
-                                    '{0}','{1}','{2}'
+                                    ([CARNO],[CARNAME],[CARKIND])
+                                    VALUES
+                                    ('{0}','{1}','{2}')
                                     ", CARNO, CARNAME, CARKIND);
 
 
