@@ -398,7 +398,7 @@
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(134, 16);
             this.label9.TabIndex = 8;
-            this.label9.Text = "優惠券綁定";
+            this.label9.Text = "綁定業務員";
             // 
             // textBox144
             // 
@@ -601,7 +601,7 @@
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(134, 29);
             this.button3.TabIndex = 600;
-            this.button3.Text = "修改優惠券";
+            this.button3.Text = "修改業務員";
             this.button3.UseVisualStyleBackColor = true;
             // 
             // tableLayoutPanel6
