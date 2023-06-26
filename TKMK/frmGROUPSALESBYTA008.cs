@@ -356,6 +356,74 @@ namespace TKMK
             }
         }
 
+        public void SETTEXT1()
+        {
+            textBox131.Text = null;
+            textBox141.Text = null;
+            textBox142.Text = "1";
+            textBox143.Text = "1";
+
+            textBox131.ReadOnly = false;
+            textBox141.ReadOnly = false;
+            textBox142.ReadOnly = false;
+            textBox143.ReadOnly = false;
+
+            comboBox1.Enabled = true;
+            comboBox2.Enabled = true;
+            comboBox3.Enabled = true;
+            comboBox5.Enabled = true;
+            comboBox6.Enabled = true;
+        }
+
+        public void SETTEXT2()
+        {
+            textBox131.ReadOnly = true;
+            textBox141.ReadOnly = true;
+            textBox142.ReadOnly = true;
+            textBox143.ReadOnly = true;
+
+            comboBox1.Enabled = false;
+            comboBox2.Enabled = false;
+            comboBox3.Enabled = false;
+            comboBox5.Enabled = false;
+            comboBox6.Enabled = false;
+        }
+
+        public void SETTEXT3()
+        {
+            textBox131.ReadOnly = false;
+            textBox141.ReadOnly = false;
+            textBox142.ReadOnly = false;
+            textBox143.ReadOnly = false;
+
+            comboBox1.Enabled = true;
+            comboBox2.Enabled = true;
+            comboBox5.Enabled = true;
+            comboBox6.Enabled = true;
+
+        }
+
+        public void SETTEXT4()
+        {
+            textBox131.ReadOnly = true;
+            textBox141.ReadOnly = true;
+            textBox142.ReadOnly = true;
+            textBox143.ReadOnly = true;
+
+            comboBox1.Enabled = false;
+            comboBox2.Enabled = false;
+            comboBox5.Enabled = false;
+            comboBox6.Enabled = false;
+        }
+        public void SETTEXT5()
+        {
+            comboBox3.Enabled = true;
+        }
+
+        public void SETTEXT6()
+        {
+            comboBox3.Enabled = false;
+        }
         #endregion
 
         #region BUTTON
@@ -363,6 +431,16 @@ namespace TKMK
         {
 
         }
+        private void button5_Click(object sender, EventArgs e)
+        {
+            STATUSCONTROLLER = "ADD";
+
+            SETTEXT1();
+            comboBox3load();
+        }
+
         #endregion
+
+      
     }
 }
