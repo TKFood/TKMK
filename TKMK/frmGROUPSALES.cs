@@ -235,7 +235,7 @@ namespace TKMK
             sqlConn = new SqlConnection(sqlsb.ConnectionString);
 
             StringBuilder Sequel = new StringBuilder();
-            Sequel.AppendFormat(@"SELECT LTRIM(RTRIM((MI001)))+' '+SUBSTRING(MI002,1,3) AS 'MI001',MI002 FROM [TK].dbo.WSCMI WHERE MI001 LIKE '68%'  AND MI001 NOT IN (SELECT [EXCHANACOOUNT] FROM [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'  AND [STATUS]='預約接團' ) ORDER BY MI001 ", dateTimePicker1.Value.ToString("yyyyMMdd"));
+            Sequel.AppendFormat(@"SELECT LTRIM(RTRIM((MI001)))+' '+SUBSTRING(MI002,1,3) AS 'MI001',MI002 FROM [TK].dbo.WSCMI WHERE ( MI001 LIKE '68%' OR  MI001 LIKE '69%')   AND MI001 NOT IN (SELECT [EXCHANACOOUNT] FROM [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'  AND [STATUS]='預約接團' ) ORDER BY MI001 ", dateTimePicker1.Value.ToString("yyyyMMdd"));
             SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
             DataTable dt = new DataTable();
             sqlConn.Open();
@@ -284,6 +284,20 @@ namespace TKMK
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
             SEARCHWSCMI(comboBox3.Text.Trim().Substring(0,7).ToString());
+
+            if (comboBox3.SelectedValue.ToString().StartsWith("68"))
+            {
+                comboBox7.SelectedValue = "金海豚";
+            }
+            else if (comboBox3.SelectedValue.ToString().StartsWith("69"))
+            {
+                comboBox7.SelectedValue = "老楊";
+            }
+            else
+            {
+                comboBox7.SelectedValue = "老楊";
+            }
+
         }
 
 
@@ -2574,7 +2588,6 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
-
         #endregion
 
         #region BUTTON
@@ -2926,8 +2939,9 @@ namespace TKMK
 
 
 
+
         #endregion
 
-
+       
     }
 }
