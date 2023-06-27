@@ -430,7 +430,7 @@ namespace TKMK
                 sbSql.AppendFormat(@" SELECT  
                                     [SERNO] AS '序號',[CARNAME] AS '車名',[CARNO] AS '車號',[CARKIND] AS '車種',[GROUPKIND]  AS '團類',[ISEXCHANGE] AS '兌換券',[EXCHANGETOTALMONEYS] AS '券總額',[EXCHANGESALESMMONEYS] AS '券消費',[SALESMMONEYS] AS '消費總額'
                                     ,[SPECIALMNUMS] AS '特賣數',[SPECIALMONEYS] AS '特賣獎金',[COMMISSIONBASEMONEYS] AS '茶水費',[COMMISSIONPCTMONEYS] AS '消費獎金',[TOTALCOMMISSIONMONEYS] AS '總獎金',[CARNUM] AS '車數',[GUSETNUM] AS '來客數',[EXCHANNO] AS '優惠券名',[EXCHANACOOUNT] AS '優惠券帳號',CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間',CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間',[STATUS] AS '狀態'
-                                    ,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間',CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間',[EXCHANGEMONEYS] AS '領券額',[ID],[CREATEDATES]
+                                    ,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間',CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間',[EXCHANGEMONEYS] AS '領券額',[CARCOMPANY] AS '來車公司',[ID],[CREATEDATES]
                                     FROM [TKMK].[dbo].[GROUPSALES]
                                     WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'
                                     AND [STATUS]<>'取消預約'
@@ -833,6 +833,7 @@ namespace TKMK
             string ID, string CREATEDATES, string SERNO, string CARNO, string CARNAME, string CARKIND,string GROUPKIND, string ISEXCHANGE, string EXCHANGEMONEYS,string EXCHANGETOTALMONEYS
             , string EXCHANGESALESMMONEYS , string SALESMMONEYS , string SPECIALMNUMS, string SPECIALMONEYS, string COMMISSIONBASEMONEYS, string COMMISSIONPCTMONEYS, string TOTALCOMMISSIONMONEYS, string CARNUM, string GUSETNUM, string EXCHANNO
             , string EXCHANACOOUNT, string PURGROUPSTARTDATES , string GROUPSTARTDATES, string PURGROUPENDDATES, string GROUPENDDATES, string STATUS
+            ,string CARCOMPANY
             )
         {
 
@@ -861,12 +862,12 @@ namespace TKMK
                 sbSql.AppendFormat(" [ID],[CREATEDATES],[SERNO],[CARNO],[CARNAME],[CARKIND],[GROUPKIND],[ISEXCHANGE],[EXCHANGEMONEYS],[EXCHANGETOTALMONEYS]");
                 sbSql.AppendFormat(" ,[EXCHANGESALESMMONEYS],[SALESMMONEYS],[SPECIALMNUMS],[SPECIALMONEYS],[COMMISSIONBASEMONEYS],[COMMISSIONPCTMONEYS],[TOTALCOMMISSIONMONEYS],[CARNUM],[GUSETNUM],[EXCHANNO]");
                 sbSql.AppendFormat(" ,[EXCHANACOOUNT],[PURGROUPSTARTDATES],[GROUPSTARTDATES],[PURGROUPENDDATES],[GROUPENDDATES],[STATUS]");
-                sbSql.AppendFormat(" )");
+                sbSql.AppendFormat(" ,[CARCOMPANY])");
                 sbSql.AppendFormat(" VALUES");
                 sbSql.AppendFormat(" (");
                 sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}',{8},{9},", ID, CREATEDATES, SERNO, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, EXCHANGEMONEYS, EXCHANGETOTALMONEYS);
                 sbSql.AppendFormat("  {0},{1},{2},{3},{4},{5},{6},{7},{8},'{9}',", EXCHANGESALESMMONEYS, SALESMMONEYS, SPECIALMNUMS, SPECIALMONEYS, COMMISSIONBASEMONEYS, COMMISSIONPCTMONEYS, TOTALCOMMISSIONMONEYS, CARNUM, GUSETNUM, EXCHANNO);
-                sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}'", EXCHANACOOUNT, PURGROUPSTARTDATES, GROUPSTARTDATES, PURGROUPENDDATES, GROUPENDDATES, STATUS);
+                sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}'", EXCHANACOOUNT, PURGROUPSTARTDATES, GROUPSTARTDATES, PURGROUPENDDATES, GROUPENDDATES, STATUS, CARCOMPANY);
                 sbSql.AppendFormat(" )");
                 sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" ");
@@ -899,7 +900,7 @@ namespace TKMK
             }
         }
 
-        public void UPDATEGROUPSALES(string ID, string CARNO, string CARNAME, string CARKIND, string GROUPKIND, string ISEXCHANGE, string CARNUM, string GUSETNUM, string EXCHANNO, string EXCHANACOOUNT,string STATUS)
+        public void UPDATEGROUPSALES(string ID, string CARNO, string CARNAME, string CARKIND, string GROUPKIND, string ISEXCHANGE, string CARNUM, string GUSETNUM, string EXCHANNO, string EXCHANACOOUNT,string STATUS,string CARCOMPANY)
         {
             try
             {
@@ -923,8 +924,8 @@ namespace TKMK
                 sbSql.AppendFormat(" UPDATE [TKMK].[dbo].[GROUPSALES]");
                 sbSql.AppendFormat(" SET [CARNO]='{0}',[CARNAME]='{1}',[CARKIND]='{2}',[GROUPKIND]='{3}',[ISEXCHANGE]='{4}',[CARNUM]='{5}'", CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM);
                 sbSql.AppendFormat(" ,[GUSETNUM]='{0}',[EXCHANNO]='{1}',[EXCHANACOOUNT]='{2}',STATUS='{3}'", GUSETNUM, EXCHANNO, EXCHANACOOUNT, STATUS);
-                sbSql.AppendFormat(" WHERE [ID]='{0}'", ID);
-                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(" ,[CARCOMPANY]='{0}'", CARCOMPANY);
+                sbSql.AppendFormat(" WHERE [ID]='{0}'", ID);             
                 sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" ");
@@ -1835,6 +1836,7 @@ namespace TKMK
             comboBox1.Enabled = true;
             comboBox2.Enabled = true;
             comboBox6.Enabled = true;
+            comboBox7.Enabled = true;
 
         }
 
@@ -1848,6 +1850,7 @@ namespace TKMK
             comboBox1.Enabled = false;
             comboBox2.Enabled = false;
             comboBox6.Enabled = false;
+            comboBox7.Enabled = false;
         }
         public void SETTEXT5()
         {
@@ -2225,13 +2228,13 @@ namespace TKMK
 
         public StringBuilder SETSQL()
         {           
-            StringBuilder SB = new StringBuilder();
-            
-    
+            StringBuilder SB = new StringBuilder();            
+     
             SB.AppendFormat(@" 
                             SELECT 
                             [GROUPSALES].[SERNO] AS '序號'
                             ,CONVERT(NVARCHAR,[PURGROUPSTARTDATES],111) AS '日期'
+                            ,[CARCOMPANY] AS '來車公司'
                             ,[CARNAME] AS '車名',[CARKIND] AS '車種'
                             ,[CARNO] AS '車號',[CARNUM] AS '車數'
                             ,[GROUPKIND] AS '團類',[GUSETNUM] AS '來客數'
@@ -2663,7 +2666,7 @@ namespace TKMK
                 string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
                 string GROUPENDDATES = "1911/1/1";
                 string STATUS = "預約接團";
-
+                string CARCOMPANY= comboBox7.SelectedValue.ToString();
                 try
                 {
                     if (!string.IsNullOrEmpty(SERNO) && !string.IsNullOrEmpty(CARNO) && !string.IsNullOrEmpty(EXCHANNO) && !string.IsNullOrEmpty(EXCHANACOOUNT) && Convert.ToInt32(CARNUM) >= 1)
@@ -2672,6 +2675,7 @@ namespace TKMK
                         ID, CREATEDATES, SERNO, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, EXCHANGEMONEYS, EXCHANGETOTALMONEYS
                         , EXCHANGESALESMMONEYS, SALESMMONEYS, SPECIALMNUMS, SPECIALMONEYS, COMMISSIONBASEMONEYS, COMMISSIONPCTMONEYS, TOTALCOMMISSIONMONEYS, CARNUM, GUSETNUM, EXCHANNO
                         , EXCHANACOOUNT, PURGROUPSTARTDATES, GROUPSTARTDATES, PURGROUPENDDATES, GROUPENDDATES, STATUS
+                        , CARCOMPANY
                        );
 
                         textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
@@ -2722,13 +2726,14 @@ namespace TKMK
                     string GUSETNUM = textBox143.Text.Trim();
                     string EXCHANNO = textBox144.Text.Trim();
                     string EXCHANACOOUNT = comboBox3.Text.Trim().Substring(0, 7).ToString();
+                    string CARCOMPANY = comboBox7.SelectedValue.ToString();
                     //string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     //string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     //string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
 
                     if (!string.IsNullOrEmpty(ID) && !string.IsNullOrEmpty(CARNO) && !string.IsNullOrEmpty(EXCHANNO) && !string.IsNullOrEmpty(EXCHANACOOUNT))
                     {
-                        UPDATEGROUPSALES(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, "預約接團");
+                        UPDATEGROUPSALES(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, "預約接團", CARCOMPANY);
                     }
 
                     if (!string.IsNullOrEmpty(CARNO) && !string.IsNullOrEmpty(CARNAME) && !string.IsNullOrEmpty(CARKIND))
@@ -2819,12 +2824,13 @@ namespace TKMK
                     string CARNUM = textBox142.Text.Trim();
                     string GUSETNUM = textBox143.Text.Trim();
                     string EXCHANNO = textBox144.Text.Trim();
-                    string EXCHANACOOUNT = comboBox3.Text.Trim().Substring(0, 7).ToString(); 
+                    string EXCHANACOOUNT = comboBox3.Text.Trim().Substring(0, 7).ToString();
+                    string CARCOMPANY = comboBox7.SelectedValue.ToString();
                     //string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     //string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     //string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
 
-                    UPDATEGROUPSALES(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, "取消預約");
+                    UPDATEGROUPSALES(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, "取消預約", CARCOMPANY);
                 }
 
                 SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
@@ -2853,11 +2859,12 @@ namespace TKMK
                     string GUSETNUM = textBox143.Text.Trim();
                     string EXCHANNO = textBox144.Text.Trim();
                     string EXCHANACOOUNT = comboBox3.Text.Trim().Substring(0, 7).ToString();
+                    string CARCOMPANY = comboBox7.SelectedValue.ToString();
                     //string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     //string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     //string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
 
-                    UPDATEGROUPSALES(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, "異常結案");
+                    UPDATEGROUPSALES(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, "異常結案", CARCOMPANY);
                 }
 
                 SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));

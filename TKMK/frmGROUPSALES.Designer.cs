@@ -504,7 +504,7 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(134, 29);
             this.button1.TabIndex = 580;
-            this.button1.Text = "修改車號名";
+            this.button1.Text = "修改來車";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click_1);
             // 
