@@ -559,8 +559,8 @@
             // tableLayoutPanel3
             // 
             this.tableLayoutPanel3.ColumnCount = 2;
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70.17544F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 29.82456F));
             this.tableLayoutPanel3.Controls.Add(this.textBox143, 1, 0);
             this.tableLayoutPanel3.Controls.Add(this.label8, 0, 0);
             this.tableLayoutPanel3.Location = new System.Drawing.Point(603, 143);
@@ -574,10 +574,10 @@
             // textBox143
             // 
             this.textBox143.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox143.Location = new System.Drawing.Point(60, 3);
+            this.textBox143.Location = new System.Drawing.Point(82, 3);
             this.textBox143.Name = "textBox143";
             this.textBox143.ReadOnly = true;
-            this.textBox143.Size = new System.Drawing.Size(51, 27);
+            this.textBox143.Size = new System.Drawing.Size(29, 27);
             this.textBox143.TabIndex = 70;
             this.textBox143.Text = "1";
             // 
@@ -587,9 +587,9 @@
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(3, 6);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(51, 16);
+            this.label8.Size = new System.Drawing.Size(73, 16);
             this.label8.TabIndex = 7;
-            this.label8.Text = "人數";
+            this.label8.Text = "交易筆數";
             // 
             // button1
             // 

@@ -426,7 +426,7 @@ namespace TKMK
                                     ,[COMMISSIONPCTMONEYS] AS '消費獎金'
                                     ,[TOTALCOMMISSIONMONEYS] AS '總獎金'
                                     ,[CARNUM] AS '車數'
-                                    ,[GUSETNUM] AS '來客數'
+                                    ,[GUSETNUM] AS '交易筆數'
                                     ,[CARCOMPANY] AS '來車公司'
                                     ,[TA008NO] AS '業務員名'
                                     ,[TA008] AS '業務員帳號'
@@ -484,7 +484,7 @@ namespace TKMK
                         dataGridView1.Columns["消費獎金"].Width = 60;
                         dataGridView1.Columns["總獎金"].Width = 60;
                         dataGridView1.Columns["車數"].Width = 60;
-                        dataGridView1.Columns["來客數"].Width = 60;
+                        dataGridView1.Columns["交易筆數"].Width = 60;
                         dataGridView1.Columns["業務員名"].Width = 80;
                         dataGridView1.Columns["業務員帳號"].Width = 80;
                         dataGridView1.Columns["優惠券名"].Width = 80;
@@ -513,7 +513,7 @@ namespace TKMK
                             dgRow.Cells["特賣獎金"].Style.Font = new Font("Tahoma", 14);
                             dgRow.Cells["茶水費"].Style.Font = new Font("Tahoma", 14);
                             dgRow.Cells["總獎金"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["來客數"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["交易筆數"].Style.Font = new Font("Tahoma", 14);
                             dgRow.Cells["優惠券名"].Style.Font = new Font("Tahoma", 14);
                             dgRow.Cells["業務員名"].Style.Font = new Font("Tahoma", 14);                               
 
@@ -552,7 +552,7 @@ namespace TKMK
                     textBox131.Text = row.Cells["車號"].Value.ToString();
                     textBox141.Text = row.Cells["車名"].Value.ToString();
                     textBox142.Text = row.Cells["車數"].Value.ToString();
-                    textBox143.Text = row.Cells["來客數"].Value.ToString();
+                    textBox143.Text = row.Cells["交易筆數"].Value.ToString();
                     //textBox144.Text = row.Cells["優惠券名"].Value.ToString();
                     textBox144.Text = row.Cells["業務員名"].Value.ToString();
 
@@ -602,7 +602,7 @@ namespace TKMK
                     textBox131.Text = row.Cells["車號"].Value.ToString();
                     textBox141.Text = row.Cells["車名"].Value.ToString();
                     textBox142.Text = row.Cells["車數"].Value.ToString();
-                    textBox143.Text = row.Cells["來客數"].Value.ToString();
+                    textBox143.Text = row.Cells["交易筆數"].Value.ToString();
                     //textBox144.Text = row.Cells["優惠券名"].Value.ToString();
                     textBox144.Text = row.Cells["業務員名"].Value.ToString();
 
