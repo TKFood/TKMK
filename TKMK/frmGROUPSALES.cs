@@ -285,18 +285,18 @@ namespace TKMK
         {
             SEARCHWSCMI(comboBox3.Text.Trim().Substring(0,7).ToString());
 
-            if (comboBox3.SelectedValue.ToString().StartsWith("68"))
-            {
-                comboBox7.SelectedValue = "金海豚";
-            }
-            else if (comboBox3.SelectedValue.ToString().StartsWith("69"))
-            {
-                comboBox7.SelectedValue = "老楊";
-            }
-            else
-            {
-                comboBox7.SelectedValue = "老楊";
-            }
+            //if (comboBox3.SelectedValue.ToString().StartsWith("68"))
+            //{
+            //    comboBox7.SelectedValue = "金海豚";
+            //}
+            //else if (comboBox3.SelectedValue.ToString().StartsWith("69"))
+            //{
+            //    comboBox7.SelectedValue = "老楊";
+            //}
+            //else
+            //{
+            //    comboBox7.SelectedValue = "老楊";
+            //}
 
         }
 
