@@ -1556,7 +1556,7 @@ namespace TKMK
 
 
                         //SALESMMONEYS = SALESMMONEYS - SPECIALMONEYS;
-                        COMMISSIONPCT = FINDCOMMISSIONPCT(CARKIND, SALESMMONEYS);
+                        COMMISSIONPCT = FINDCOMMISSIONPCT(CARKIND, SALESMMONEYS, STARTDATES);
                         COMMISSIONPCTMONEYS = Convert.ToInt32(COMMISSIONPCT * SALESMMONEYS);
                         GUSETNUM = FINDGUSETNUM(ACCOUNT, STARTDATES, STARTTIMES);
                         TOTALCOMMISSIONMONEYS = Convert.ToInt32(SPECIALMONEYS + COMMISSIONBASEMONEYS + (COMMISSIONPCT * (SALESMMONEYS)));
@@ -1571,7 +1571,13 @@ namespace TKMK
             }
 
         }
-
+        /// <summary>
+        /// 計算 特賣商品的 數量
+        /// </summary>
+        /// <param name="TA009"></param>
+        /// <param name="TA001"></param>
+        /// <param name="TA005"></param>
+        /// <returns></returns>
         public int FINDSPECIALMNUMS(string TA009, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
@@ -1636,6 +1642,13 @@ namespace TKMK
             }
         }
 
+        /// <summary>
+        /// 計算 特賣商品的 金額
+        /// </summary>
+        /// <param name="TA009"></param>
+        /// <param name="TA001"></param>
+        /// <param name="TA005"></param>
+        /// <returns></returns>
         public int FINDSPECIALMONEYS(string TA009, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
@@ -1702,7 +1715,13 @@ namespace TKMK
             }
         }
 
-
+        /// <summary>
+        /// 找出消費金額 業務/會員
+        /// </summary>
+        /// <param name="TA009"></param>
+        /// <param name="TA001"></param>
+        /// <param name="TA005"></param>
+        /// <returns></returns>
         public int FINDSALESMMONEYS(string TA009, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
@@ -1766,7 +1785,13 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
-
+        /// <summary>
+        /// 計算出 用抵換券 購買的消費金額
+        /// </summary>
+        /// <param name="TA009"></param>
+        /// <param name="TA001"></param>
+        /// <param name="TA005"></param>
+        /// <returns></returns>
         public int FINDEXCHANGESALESMMONEYS(string TA009, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
@@ -1830,6 +1855,10 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
+        /// <summary>
+        /// 計算 抵換券 的金額
+        /// </summary>
+        /// <returns></returns>
         public int FINDEXCHANGEMONEYS()
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
@@ -1888,7 +1917,11 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
-
+        /// <summary>
+        /// 計算車來 的 基查 保底金額
+        /// </summary>
+        /// <param name="NAME"></param>
+        /// <returns></returns>
         public int FINDBASEMONEYS(string NAME)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
@@ -1947,8 +1980,14 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
-
-        public decimal FINDCOMMISSIONPCT(string CARKIND, int MONEYS)
+        /// <summary>
+        /// 依 車種、消費金額、日期 決定抽佣比率
+        /// </summary>
+        /// <param name="CARKIND"></param>
+        /// <param name="MONEYS"></param>
+        /// <param name="CALDATES"></param>
+        /// <returns></returns>
+        public decimal FINDCOMMISSIONPCT(string CARKIND, int MONEYS,string CALDATES)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -1973,10 +2012,13 @@ namespace TKMK
 
                 sbSql.AppendFormat(@"  
                                     SELECT [ID],[PCTMONEYS],[NAME],[PCT]
+                                    ,CONVERT(NVARCHAR,SDATES,112) SDATES,CONVERT(NVARCHAR,EDATES,112) EDATES
                                     FROM [TKMK].[dbo].[GROUPPCT]
                                     WHERE [NAME]='{0}' AND ({1}-[PCTMONEYS])>=0
+                                    AND CONVERT(NVARCHAR,SDATES,112)<='{2}'
+                                    AND CONVERT(NVARCHAR,EDATES,112)>='{2}'
                                     ORDER BY ({1}-[PCTMONEYS])
-                                    ", CARKIND, MONEYS);
+                                    ", CARKIND, MONEYS,CALDATES);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -2006,7 +2048,13 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
-
+        /// <summary>
+        /// 計算 成交筆數 
+        /// </summary>
+        /// <param name="TA009"></param>
+        /// <param name="TA001"></param>
+        /// <param name="TA005"></param>
+        /// <returns></returns>
         public int FINDGUSETNUM(string TA009, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
@@ -2067,7 +2115,21 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
-
+        /// <summary>
+        /// 更新團務的各項金額 
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <param name="EXCHANGEMONEYS"></param>
+        /// <param name="EXCHANGETOTALMONEYS"></param>
+        /// <param name="EXCHANGESALESMMONEYS"></param>
+        /// <param name="SALESMMONEYS"></param>
+        /// <param name="SPECIALMNUMS"></param>
+        /// <param name="SPECIALMONEYS"></param>
+        /// <param name="COMMISSIONBASEMONEYS"></param>
+        /// <param name="COMMISSIONPCT"></param>
+        /// <param name="COMMISSIONPCTMONEYS"></param>
+        /// <param name="TOTALCOMMISSIONMONEYS"></param>
+        /// <param name="GUSETNUM"></param>
         public void UPDATEGROUPPRODUCT(string ID, string EXCHANGEMONEYS, string EXCHANGETOTALMONEYS, string EXCHANGESALESMMONEYS, string SALESMMONEYS, string SPECIALMNUMS, string SPECIALMONEYS, string COMMISSIONBASEMONEYS, string COMMISSIONPCT, string COMMISSIONPCTMONEYS, string TOTALCOMMISSIONMONEYS, string GUSETNUM)
         {
             try
@@ -2125,7 +2187,10 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
-
+        /// <summary>
+        /// 顯示合計 資料
+        /// </summary>
+        /// <param name="GROUPSTARTDATES"></param>
         public void SETNUMS(string GROUPSTARTDATES)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
@@ -2207,7 +2272,11 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
-
+        /// <summary>
+        /// 計算接團數
+        /// </summary>
+        /// <param name="CREATEDATES"></param>
+        /// <returns></returns>
         public int FINDSEARCHGROUPSALESNOTFINISH(string CREATEDATES)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();

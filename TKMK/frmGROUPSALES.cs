@@ -1125,7 +1125,7 @@ namespace TKMK
                       
 
                         //SALESMMONEYS = SALESMMONEYS - SPECIALMONEYS;
-                        COMMISSIONPCT = FINDCOMMISSIONPCT(CARKIND, SALESMMONEYS);
+                        COMMISSIONPCT = FINDCOMMISSIONPCT(CARKIND, SALESMMONEYS, STARTDATES);
                         COMMISSIONPCTMONEYS = Convert.ToInt32(COMMISSIONPCT * SALESMMONEYS);
                         GUSETNUM = FINDGUSETNUM(ACCOUNT, STARTDATES, STARTTIMES);
                         TOTALCOMMISSIONMONEYS = Convert.ToInt32(SPECIALMONEYS + COMMISSIONBASEMONEYS + (COMMISSIONPCT * (SALESMMONEYS)));
@@ -1578,7 +1578,7 @@ namespace TKMK
             }
         }
 
-        public decimal FINDCOMMISSIONPCT(string CARKIND,int MONEYS)
+        public decimal FINDCOMMISSIONPCT(string CARKIND,int MONEYS, string CALDATES)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -1601,12 +1601,16 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-               
-                sbSql.AppendFormat(@"  SELECT [ID],[PCTMONEYS],[NAME],[PCT]");
-                sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[GROUPPCT]");
-                sbSql.AppendFormat(@"  WHERE [NAME]='{0}' AND ({1}-[PCTMONEYS])>=0", CARKIND, MONEYS);
-                sbSql.AppendFormat(@"  ORDER BY ({0}-[PCTMONEYS])", MONEYS);
-                sbSql.AppendFormat(@"  ");
+
+                sbSql.AppendFormat(@"  
+                                    SELECT [ID],[PCTMONEYS],[NAME],[PCT]
+                                    ,CONVERT(NVARCHAR,SDATES,112) SDATES,CONVERT(NVARCHAR,EDATES,112) EDATES
+                                    FROM [TKMK].[dbo].[GROUPPCT]
+                                    WHERE [NAME]='{0}' AND ({1}-[PCTMONEYS])>=0
+                                    AND CONVERT(NVARCHAR,SDATES,112)<='{2}'
+                                    AND CONVERT(NVARCHAR,EDATES,112)>='{2}'
+                                    ORDER BY ({1}-[PCTMONEYS])
+                                    ", CARKIND, MONEYS, CALDATES);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
