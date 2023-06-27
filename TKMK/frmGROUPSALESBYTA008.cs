@@ -2131,7 +2131,7 @@ namespace TKMK
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
             DataSet ds1 = new DataSet();
-
+             
             try
             {
                 //20210902密
