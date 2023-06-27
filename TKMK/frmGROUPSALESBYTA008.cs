@@ -373,7 +373,7 @@ namespace TKMK
                 sbSqlQuery.Clear();
 
                 sbSql.AppendFormat(@" 
-                                    SELECT MI001,SUBSTRING(MI002,1,3) AS MI002 FROM [TK].dbo.WSCMI WHERE MI001 LIKE '68%' AND MI001='{0}' ORDER BY MI001 
+                                    SELECT MI001,SUBSTRING(MI002,1,3) AS MI002 FROM [TK].dbo.WSCMI WHERE MI001='{0}' ORDER BY MI001 
                                     ", MI001);
                 sbSql.AppendFormat(@"  ");
 
@@ -614,6 +614,7 @@ namespace TKMK
                         dataGridView1.Columns["預計離開時間"].Width = 80;
                         //dataGridView1.Columns["抽佣比率"].Width = 80;
                         dataGridView1.Columns["領券額"].Width = 80;
+                        dataGridView1.Columns["來車公司"].Width = 80;
                         dataGridView1.Columns["ID"].Width = 100;
                         dataGridView1.Columns["CREATEDATES"].Width = 80;
 
@@ -632,7 +633,8 @@ namespace TKMK
                             dgRow.Cells["總獎金"].Style.Font = new Font("Tahoma", 14);
                             dgRow.Cells["交易筆數"].Style.Font = new Font("Tahoma", 14);
                             dgRow.Cells["優惠券名"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["業務員名"].Style.Font = new Font("Tahoma", 14);                               
+                            dgRow.Cells["業務員名"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["來車公司"].Style.Font = new Font("Tahoma", 14);
 
                             //判断
                             if (dgRow.Cells["狀態"].Value.ToString().Trim().Equals("完成接團"))
@@ -678,7 +680,7 @@ namespace TKMK
                     //comboBox3.Text = row.Cells["優惠券帳號"].Value.ToString() + ' ' + row.Cells["優惠券名"].Value.ToString();
                     comboBox3.Text = row.Cells["業務員帳號"].Value.ToString() + ' ' + row.Cells["業務員名"].Value.ToString();
                     comboBox6.Text = row.Cells["兌換券"].Value.ToString();
-
+                    comboBox5.Text = row.Cells["來車公司"].Value.ToString();
                 }
             }
             catch
@@ -728,7 +730,7 @@ namespace TKMK
                     //comboBox3.Text = row.Cells["優惠券帳號"].Value.ToString() + ' ' + row.Cells["優惠券名"].Value.ToString();
                     comboBox3.Text = row.Cells["業務員帳號"].Value.ToString() + ' ' + row.Cells["業務員名"].Value.ToString();
                     comboBox6.Text = row.Cells["兌換券"].Value.ToString();
-
+                    comboBox5.Text = row.Cells["來車公司"].Value.ToString();
                 }
                 else
                 {
