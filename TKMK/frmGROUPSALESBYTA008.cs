@@ -128,6 +128,15 @@ namespace TKMK
                 this.Enabled = true;
             }
         }
+        private void frmGROUPSALESBYTA008_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            int NUMS = FINDSEARCHGROUPSALESNOTFINISH(dateTimePicker1.Value.ToString("yyyyMMdd"));
+
+            if (NUMS > 0)
+            {
+                MessageBox.Show("仍有團務還未結案!");
+            }
+        }
         /// <summary>
         /// 取系統日期= 今天
         /// </summary>
@@ -1590,9 +1599,9 @@ namespace TKMK
                                     SELECT SUM(NUMS) AS SPECIALMNUMS
                                     FROM (
                                     SELECT [ID],[NAME],[NUM],[MONEYS],[SPLITCAL],[VALID]
-                                    ,(SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}') AS 'NUMS'
-                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM]) AS 'BASENUMS'
-                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM])*[MONEYS] AS 'SPECIALMONEYS'
+                                    ,(SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}' AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES]) ) AS 'NUMS'
+                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}' AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES]) )/[NUM]) AS 'BASENUMS'
+                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}' AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES]) )/[NUM])*[MONEYS] AS 'SPECIALMONEYS'
                                     FROM [TKMK].[dbo].[GROUPPRODUCT]
                                     WHERE [VALID]='Y' 
                                     ) AS TEMP
@@ -1655,9 +1664,9 @@ namespace TKMK
                                     SELECT SUM(SPECIALMONEYS) AS SPECIALMONEYS
                                     FROM (
                                     SELECT [ID],[NAME],[NUM],[MONEYS],[SPLITCAL],[VALID]
-                                    ,(SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}') AS 'NUMS'
-                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM]) AS 'BASENUMS'
-                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM])*[MONEYS] AS 'SPECIALMONEYS'
+                                    ,(SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}' AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES]) ) AS 'NUMS'
+                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}' AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES]) )/[NUM]) AS 'BASENUMS'
+                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}' AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES]) )/[NUM])*[MONEYS] AS 'SPECIALMONEYS'
                                     FROM [TKMK].[dbo].[GROUPPRODUCT]
                                     WHERE [VALID]='Y' 
                                     ) AS TEMP
@@ -1726,6 +1735,7 @@ namespace TKMK
                                     AND TA009='{0}'
                                     AND TA001='{1}'
                                     AND TA005>='{2}'
+                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES])
                                     ", TA009, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -1789,6 +1799,7 @@ namespace TKMK
                                     AND TA009='{0}'
                                     AND TA001='{1}'
                                     AND TA005>='{2}'
+                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES])
                                     ", TA009, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -1843,7 +1854,9 @@ namespace TKMK
                 sbSqlQuery.Clear();
 
                 sbSql.AppendFormat(@"  
-                                    SELECT  CONVERT(INT,[EXCHANGEMONEYS],0) AS EXCHANGEMONEYS   FROM [TKMK].[dbo].[GROUPEXCHANGEMONEYS]
+                                    SELECT  
+                                    CONVERT(INT,[EXCHANGEMONEYS],0) AS EXCHANGEMONEYS   
+                                    FROM [TKMK].[dbo].[GROUPEXCHANGEMONEYS]
                                     ");
 
 
@@ -1900,7 +1913,9 @@ namespace TKMK
                 sbSqlQuery.Clear();
 
                 sbSql.AppendFormat(@"  
-                                    SELECT CONVERT(INT,[BASEMONEYS],0) AS 'BASEMONEYS' FROM [TKMK].[dbo].[GROUPBASE] WHERE [NAME]='{0}'"
+                                    SELECT CONVERT(INT,[BASEMONEYS],0) AS 'BASEMONEYS' 
+                                    FROM [TKMK].[dbo].[GROUPBASE] 
+                                    WHERE [NAME]='{0}'"
                                     , NAME);
         
 
@@ -2021,6 +2036,7 @@ namespace TKMK
                                     WHERE TA009='{0}'
                                     AND TA001='{1}'
                                     AND TA005>='{2}'
+                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES])
                                     ", TA009, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -2192,6 +2208,64 @@ namespace TKMK
             }
         }
 
+        public int FINDSEARCHGROUPSALESNOTFINISH(string CREATEDATES)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  
+                                    SELECT COUNT([CARNO]) AS NUMS 
+                                    FROM [TKMK].[dbo].[GROUPSALESBYTA008]
+                                    WHERE [STATUS]='預約接團' AND CONVERT(nvarchar,[CREATEDATES],112)='{0}' 
+                                    ", CREATEDATES);
+                sbSql.AppendFormat(@"  ");
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return Convert.ToInt32(ds1.Tables["ds1"].Rows[0]["NUMS"].ToString());
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
+            catch
+            {
+                return 0;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
         public void SETTEXT1()
         {
             textBox131.Text = null;
@@ -2654,8 +2728,9 @@ namespace TKMK
         }
 
 
+
         #endregion
 
-     
+      
     }
 }

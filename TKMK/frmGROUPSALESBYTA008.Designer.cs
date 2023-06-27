@@ -991,6 +991,7 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "frmGROUPSALESBYTA008";
             this.Text = "frmGROUPSALESBYTA008";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmGROUPSALESBYTA008_FormClosed);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
