@@ -2174,10 +2174,10 @@ namespace TKMK
 
                 if (ds1.Tables["ds1"].Rows.Count >= 1)
                 {
-                    label11.Text = ds1.Tables["ds1"].Rows[0]["NUMS"].ToString().Trim();
-                    label13.Text = ds1.Tables["ds1"].Rows[0]["GUSETNUMS"].ToString().Trim();
-                    label15.Text = ds1.Tables["ds1"].Rows[0]["SALESMMONEYS"].ToString().Trim();
-                    label17.Text = ds1.Tables["ds1"].Rows[0]["CARNUM1"].ToString().Trim();
+                    label12.Text = ds1.Tables["ds1"].Rows[0]["NUMS"].ToString().Trim();
+                    label14.Text = ds1.Tables["ds1"].Rows[0]["GUSETNUMS"].ToString().Trim();
+                    label16.Text = ds1.Tables["ds1"].Rows[0]["SALESMMONEYS"].ToString().Trim();
+                    label18.Text = ds1.Tables["ds1"].Rows[0]["CARNUM1"].ToString().Trim();
                     label23.Text = ds1.Tables["ds1"].Rows[0]["CARNUM2"].ToString().Trim();
                     label20.Text = ds1.Tables["ds1"].Rows[0]["CARNUM3"].ToString().Trim();
                     label24.Text = ds1.Tables["ds1"].Rows[0]["CARNUM4"].ToString().Trim();
@@ -2186,10 +2186,10 @@ namespace TKMK
                 }
                 else
                 {
-                    label11.Text = "0";
-                    label13.Text = "0";
-                    label15.Text = "0";
-                    label17.Text = "0";
+                    label12.Text = "0";
+                    label14.Text = "0";
+                    label16.Text = "0";
+                    label18.Text = "0";
                     label23.Text = "0";
                     label20.Text = "0";
                     label21.Text = "0";
