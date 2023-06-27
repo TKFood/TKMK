@@ -95,6 +95,101 @@ namespace TKMK
 
         #region FUNCTION
         /// <summary>
+        /// 定時 每1分鐘 更新
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+
+            if (STATUSCONTROLLER.Equals("VIEW"))
+            {
+                dateTimePicker1.Value = GETDBDATES();
+                textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
+                comboBox3load();
+                label29.Text = "";
+                label29.Text = "更新時間" + dateTimePicker1.Value.ToString("yyyy/MM/dd HH:mm:ss");
+
+
+                MESSAGESHOW MSGSHOW = new MESSAGESHOW();
+                //鎖定控制項
+                this.Enabled = false;
+                //顯示跳出視窗
+                MSGSHOW.Show();
+
+                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+                SETMONEYS();
+                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+                SETNUMS(dateTimePicker1.Value.ToString("yyyyMMdd"));
+
+                //關閉跳出視窗
+                MSGSHOW.Close();
+                //解除鎖定
+                this.Enabled = true;
+            }
+        }
+        /// <summary>
+        /// 取系統日期= 今天
+        /// </summary>
+        /// <returns></returns>
+        public DateTime GETDBDATES()
+        {
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
+            DataSet ds = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  
+                                    SELECT GETDATE() AS 'DATES' 
+                                    ");
+
+
+                adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder = new SqlCommandBuilder(adapter);
+                sqlConn.Open();
+                ds.Clear();
+                adapter.Fill(ds, "TEMPds1");
+                sqlConn.Close();
+
+                if (ds.Tables["TEMPds1"].Rows.Count >= 1)
+                {
+                    return Convert.ToDateTime(ds.Tables["TEMPds1"].Rows[0]["DATES"].ToString());
+
+                }
+                else
+                {
+                    return DateTime.Now;
+                }
+
+            }
+            catch
+            {
+                return DateTime.Now;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        /// <summary>
         /// 下拉 車種
         /// </summary>
         public void comboBox1load()
@@ -2558,8 +2653,9 @@ namespace TKMK
             SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
         }
 
+
         #endregion
 
-
+     
     }
 }
