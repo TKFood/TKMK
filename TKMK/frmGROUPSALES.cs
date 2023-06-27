@@ -443,7 +443,7 @@ namespace TKMK
 
                 sbSql.AppendFormat(@" SELECT  
                                     [SERNO] AS '序號',[CARNAME] AS '車名',[CARNO] AS '車號',[CARKIND] AS '車種',[GROUPKIND]  AS '團類',[ISEXCHANGE] AS '兌換券',[EXCHANGETOTALMONEYS] AS '券總額',[EXCHANGESALESMMONEYS] AS '券消費',[SALESMMONEYS] AS '消費總額'
-                                    ,[SPECIALMNUMS] AS '特賣數',[SPECIALMONEYS] AS '特賣獎金',[COMMISSIONBASEMONEYS] AS '茶水費',[COMMISSIONPCTMONEYS] AS '消費獎金',[TOTALCOMMISSIONMONEYS] AS '總獎金',[CARNUM] AS '車數',[GUSETNUM] AS '來客數',[EXCHANNO] AS '優惠券名',[EXCHANACOOUNT] AS '優惠券帳號',CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間',CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間',[STATUS] AS '狀態'
+                                    ,[SPECIALMNUMS] AS '特賣數',[SPECIALMONEYS] AS '特賣獎金',[COMMISSIONBASEMONEYS] AS '茶水費',[COMMISSIONPCTMONEYS] AS '消費獎金',[TOTALCOMMISSIONMONEYS] AS '總獎金',[CARNUM] AS '車數',[GUSETNUM] AS '交易筆數',[EXCHANNO] AS '優惠券名',[EXCHANACOOUNT] AS '優惠券帳號',CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間',CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間',[STATUS] AS '狀態'
                                     ,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間',CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間',[EXCHANGEMONEYS] AS '領券額',[CARCOMPANY] AS '來車公司',[ID],[CREATEDATES]
                                     FROM [TKMK].[dbo].[GROUPSALES]
                                     WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'
@@ -489,7 +489,7 @@ namespace TKMK
                         dataGridView1.Columns["消費獎金"].Width = 60;
                         dataGridView1.Columns["總獎金"].Width = 60;
                         dataGridView1.Columns["車數"].Width = 60;
-                        dataGridView1.Columns["來客數"].Width = 60;
+                        dataGridView1.Columns["交易筆數"].Width = 60;
                         dataGridView1.Columns["優惠券名"].Width = 80;
                         dataGridView1.Columns["優惠券帳號"].Width = 80;
                         dataGridView1.Columns["實際到達時間"].Width = 160;
@@ -516,7 +516,7 @@ namespace TKMK
                             dgRow.Cells["特賣獎金"].Style.Font = new Font("Tahoma", 14);
                             dgRow.Cells["茶水費"].Style.Font = new Font("Tahoma", 14);
                             dgRow.Cells["總獎金"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["來客數"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["交易筆數"].Style.Font = new Font("Tahoma", 14);
                             dgRow.Cells["優惠券名"].Style.Font = new Font("Tahoma", 14);
 
                             //判断
@@ -554,7 +554,7 @@ namespace TKMK
                     textBox131.Text = row.Cells["車號"].Value.ToString();
                     textBox141.Text = row.Cells["車名"].Value.ToString();
                     textBox142.Text = row.Cells["車數"].Value.ToString();
-                    textBox143.Text = row.Cells["來客數"].Value.ToString();
+                    textBox143.Text = row.Cells["交易筆數"].Value.ToString();
                     textBox144.Text = row.Cells["優惠券名"].Value.ToString();
 
                     comboBox1.Text = row.Cells["車種"].Value.ToString();
@@ -600,7 +600,7 @@ namespace TKMK
 
                 sbSql.AppendFormat(@"  SELECT ");
                 sbSql.AppendFormat(@"  [SERNO] AS '序號',[CARNAME] AS '車名',[CARNO] AS '車號',[CARKIND] AS '車種',[GROUPKIND]  AS '團類',[ISEXCHANGE] AS '兌換券',[EXCHANGETOTALMONEYS] AS '券總額',[EXCHANGESALESMMONEYS] AS '券消費',[SALESMMONEYS] AS '消費總額'");
-                sbSql.AppendFormat(@"  ,[SPECIALMNUMS] AS '特賣數',[SPECIALMONEYS] AS '特賣獎金',[COMMISSIONBASEMONEYS] AS '茶水費',[COMMISSIONPCTMONEYS] AS '消費獎金',[TOTALCOMMISSIONMONEYS] AS '總獎金',[CARNUM] AS '車數',[GUSETNUM] AS '來客數',[EXCHANNO] AS '優惠券名',[EXCHANACOOUNT] AS '優惠券帳號',CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間',CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間',[STATUS] AS '狀態'");
+                sbSql.AppendFormat(@"  ,[SPECIALMNUMS] AS '特賣數',[SPECIALMONEYS] AS '特賣獎金',[COMMISSIONBASEMONEYS] AS '茶水費',[COMMISSIONPCTMONEYS] AS '消費獎金',[TOTALCOMMISSIONMONEYS] AS '總獎金',[CARNUM] AS '車數',[GUSETNUM] AS '交易筆數',[EXCHANNO] AS '優惠券名',[EXCHANACOOUNT] AS '優惠券帳號',CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間',CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間',[STATUS] AS '狀態'");
                 sbSql.AppendFormat(@"  ,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間',CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間',[COMMISSIONPCT] AS '抽佣比率',[EXCHANGEMONEYS] AS '領券額',[CARCOMPANY] AS '來車公司',[ID],[CREATEDATES]");
                 sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[GROUPSALES]");
                 sbSql.AppendFormat(@"  WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}' ", CREATEDATES);
@@ -700,7 +700,7 @@ namespace TKMK
                     textBox131.Text = row.Cells["車號"].Value.ToString();
                     textBox141.Text = row.Cells["車名"].Value.ToString();
                     textBox142.Text = row.Cells["車數"].Value.ToString();
-                    textBox143.Text = row.Cells["來客數"].Value.ToString();
+                    textBox143.Text = row.Cells["交易筆數"].Value.ToString();
                     textBox144.Text = row.Cells["優惠券名"].Value.ToString();
 
                     comboBox1.Text = row.Cells["車種"].Value.ToString();
@@ -748,7 +748,7 @@ namespace TKMK
                     textBox131.Text = row.Cells["車號"].Value.ToString();
                     textBox141.Text = row.Cells["車名"].Value.ToString();
                     textBox142.Text = row.Cells["車數"].Value.ToString();
-                    textBox143.Text = row.Cells["來客數"].Value.ToString();
+                    textBox143.Text = row.Cells["交易筆數"].Value.ToString();
                     textBox144.Text = row.Cells["優惠券名"].Value.ToString();
 
                     comboBox1.Text = row.Cells["車種"].Value.ToString();
@@ -2244,7 +2244,7 @@ namespace TKMK
 
         public StringBuilder SETSQL()
         {           
-            StringBuilder SB = new StringBuilder();            
+            StringBuilder SB = new StringBuilder();             
      
             SB.AppendFormat(@" 
                             SELECT 
@@ -2253,7 +2253,7 @@ namespace TKMK
                             ,[CARCOMPANY] AS '來車公司'
                             ,[CARNAME] AS '車名',[CARKIND] AS '車種'
                             ,[CARNO] AS '車號',[CARNUM] AS '車數'
-                            ,[GROUPKIND] AS '團類',[GUSETNUM] AS '來客數'
+                            ,[GROUPKIND] AS '團類',[GUSETNUM] AS '交易筆數'
                             ,[EXCHANNO] AS '優惠券',[EXCHANACOOUNT] AS '優惠號'
                             ,[ISEXCHANGE] AS '領兌'
                             ,[EXCHANGETOTALMONEYS] AS '兌換券金額'
@@ -2284,11 +2284,10 @@ namespace TKMK
         public StringBuilder SETSQL2()
         {
             StringBuilder SB = new StringBuilder();
-
             
             SB.AppendFormat(@"  
                             SELECT SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 ) AS '年月'
-                            ,(SELECT ISNULL(SUM(GS.[GUSETNUM]),0) FROM[TKMK].[dbo].[GROUPSALES] GS WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '來客數'
+                            ,(SELECT ISNULL(SUM(GS.[GUSETNUM]),0) FROM[TKMK].[dbo].[GROUPSALES] GS WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '交易筆數'
                             ,(SELECT ISNULL(SUM(GS.[CARNUM]),0) FROM[TKMK].[dbo].[GROUPSALES] GS WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '來車數'
                             ,(SELECT ISNULL(SUM(GS.[SALESMMONEYS]),0) FROM[TKMK].[dbo].[GROUPSALES] GS  WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '團客總金額'
                             ,(SELECT SUM(ISNULL(TA017,0)) FROM [TK].dbo.POSTA WITH (NOLOCK) WHERE  TA002='106701' AND TA001 LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '消費總金額'
