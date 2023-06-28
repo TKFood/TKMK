@@ -1616,16 +1616,25 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  
-                                    SELECT SUM(NUMS) AS SPECIALMNUMS
-                                    FROM (
-                                    SELECT [ID],[NAME],[NUM],[MONEYS],[SPLITCAL],[VALID]
-                                    ,(SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}' AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES]) ) AS 'NUMS'
-                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}' AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES]) )/[NUM]) AS 'BASENUMS'
-                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}' AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES]) )/[NUM])*[MONEYS] AS 'SPECIALMONEYS'
+                sbSql.AppendFormat(@"                                   
+                                    SELECT ISNULL(SUM(SUMTB019),0) AS SPECIALMNUMS
+                                    FROM 
+                                    (
+                                    SELECT [ID],[NAME],[NUM],[MONEYS],[SPLITCAL],[VALID],[SDATES],[EDATES],TB010,SUMTB019
                                     FROM [TKMK].[dbo].[GROUPPRODUCT]
+                                    LEFT JOIN 
+                                    (
+                                    SELECT TB010,CONVERT(INT,ISNULL(SUM(TB019),0),0) SUMTB019
+                                    FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
+                                    WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006 
+                                    AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}' 
+                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES])
+                                    GROUP BY TB010
+                                    ) AS TEMP ON TB010=ID
                                     WHERE [VALID]='Y' 
-                                    ) AS TEMP
+                                    AND CONVERT(NVARCHAR,SDATES,112)<='{1}'
+                                    AND CONVERT(NVARCHAR,EDATES,112)>='{1}'
+                                    ) AS TEMP2
                                     ", TA009, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -1688,17 +1697,25 @@ namespace TKMK
                 sbSqlQuery.Clear();
 
 
-                sbSql.AppendFormat(@"
-                                    SELECT SUM(SPECIALMONEYS) AS SPECIALMONEYS
-                                    FROM (
-                                    SELECT [ID],[NAME],[NUM],[MONEYS],[SPLITCAL],[VALID]
-                                    ,(SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}' AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES]) ) AS 'NUMS'
-                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}' AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES]) )/[NUM]) AS 'BASENUMS'
-                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}' AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES]) )/[NUM])*[MONEYS] AS 'SPECIALMONEYS'
+                sbSql.AppendFormat(@"                                  
+                                    SELECT ISNULL(SUM(SUMTB019/[NUM]*[MONEYS]),0) AS SPECIALMONEYS
+                                    FROM 
+                                    (
+                                    SELECT [ID],[NAME],[NUM],[MONEYS],[SPLITCAL],[VALID],[SDATES],[EDATES],TB010,SUMTB019
                                     FROM [TKMK].[dbo].[GROUPPRODUCT]
+                                    LEFT JOIN 
+                                    (
+                                    SELECT TB010,CONVERT(INT,ISNULL(SUM(TB019),0),0) SUMTB019
+                                    FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
+                                    WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006 
+                                    AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}' 
+                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES])
+                                    GROUP BY TB010
+                                    ) AS TEMP ON TB010=ID
                                     WHERE [VALID]='Y' 
-                                    ) AS TEMP
-
+                                    AND CONVERT(NVARCHAR,SDATES,112)<='{1}'
+                                    AND CONVERT(NVARCHAR,EDATES,112)>='{1}'
+                                    ) AS TEMP2
                                      ", TA009, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
