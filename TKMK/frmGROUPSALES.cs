@@ -1808,7 +1808,7 @@ namespace TKMK
 
 
                 sbSql.AppendFormat(@" 
-                                    UPDATE [TKMK].[dbo].[GROUPSALESBYTA008]
+                                    UPDATE [TKMK].[dbo].[GROUPSALES]
                                     SET [EXCHANGEMONEYS]={1},[EXCHANGETOTALMONEYS]={2},[EXCHANGESALESMMONEYS]={3},[SALESMMONEYS]={4},[SPECIALMNUMS]={5},[SPECIALMONEYS]={6},[COMMISSIONBASEMONEYS]={7},[COMMISSIONPCT]={8},[COMMISSIONPCTMONEYS]={9},[TOTALCOMMISSIONMONEYS]={10},[GUSETNUM]={11}
                                     WHERE [ID]='{0}'
                                     ", ID, EXCHANGEMONEYS, EXCHANGETOTALMONEYS, EXCHANGESALESMMONEYS, SALESMMONEYS, SPECIALMNUMS, SPECIALMONEYS, COMMISSIONBASEMONEYS, COMMISSIONPCT, COMMISSIONPCTMONEYS, TOTALCOMMISSIONMONEYS, GUSETNUM);
@@ -2307,7 +2307,7 @@ namespace TKMK
                              AND [STATUS]='完成接團'
                              ORDER BY CONVERT(NVARCHAR,[PURGROUPSTARTDATES], 112),[SERNO]
                             ", dateTimePicker4.Value.ToString("yyyyMMdd"), dateTimePicker5.Value.ToString("yyyyMMdd"));
-
+             
             return SB;
 
         }
