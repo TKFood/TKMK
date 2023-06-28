@@ -1527,12 +1527,21 @@ namespace TKMK
 
                         //DateTime dt1 = DateTime.Now;
 
-                        //找出各項金額    
+                        //找出各項金額  
+                        //COMMISSIONBASEMONEYS，  找出車種的茶水費
                         //SPECIALMNUMS，算出特賣品的銷貨數量，只要VALID='Y'，就計算
                         //SPECIALNUMSMONEYS，算出特賣品 組的金額，重復SPECIALMONEYS，先不用
                         //SPECIALMONEYS，算出特賣品，銷售數量/每組*組數獎金 的金額，只要VALID='Y'，就計算
                         //SALESMMONEYS，算出該會員所有銷售金額，扣掉特賣品不合併計算的總金額，AND TB010  NOT IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCT] WHERE [VALID]='Y' AND [SPLITCAL]='Y') 
-                        //SPECIALNUMSMONEYS = FINDSPECIALNUMSMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
+                        //EXCHANGESALESMMONEYS，計算用司機兌換券消費的金額
+                        //EXCHANGEMONEYS，找出車種的兌換券可用金額
+                        //EXCHANGETOTALMONEYS，找出車種的兌換券可用金額*車數
+                        //COMMISSIONPCT，找出車種的消費金額佣金比率
+                        //COMMISSIONPCTMONEYS，消費佣金=車種的消費金額佣金比率*消費金額
+                        //TOTALCOMMISSIONMONEYS，總佣金=SPECIALMONEYS + COMMISSIONBASEMONEYS + (COMMISSIONPCT * (SALESMMONEYS))
+                        //20230628
+                        //以下計算，新增是否計算[VALID]='Y'、日期區間[SDATES],[EDATES]
+                        //COMMISSIONBASEMONEYS、SPECIALMNUMS、SPECIALMONEYS、EXCHANGEMONEYS、COMMISSIONPCT
                         SPECIALMNUMS = FINDSPECIALMNUMS(ACCOUNT, STARTDATES, STARTTIMES);
                         SPECIALMONEYS = FINDSPECIALMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
                         SALESMMONEYS = FINDSALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
