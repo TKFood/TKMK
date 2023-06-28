@@ -1537,7 +1537,7 @@ namespace TKMK
                         SPECIALMONEYS = FINDSPECIALMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
                         SALESMMONEYS = FINDSALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
 
-                        //兌換券金額條件判斷
+                        //兌換券消費金額條件判斷
                         EXCHANGESALESMMONEYS = FINDEXCHANGESALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
 
                         if (ISEXCHANGE.Trim().Equals("是"))
@@ -2055,6 +2055,7 @@ namespace TKMK
                                     ,CONVERT(NVARCHAR,SDATES,112) SDATES,CONVERT(NVARCHAR,EDATES,112) EDATES
                                     FROM [TKMK].[dbo].[GROUPPCT]
                                     WHERE [NAME]='{0}' AND ({1}-[PCTMONEYS])>=0
+                                    AND VALID='Y'
                                     AND CONVERT(NVARCHAR,SDATES,112)<='{2}'
                                     AND CONVERT(NVARCHAR,EDATES,112)>='{2}'
                                     ORDER BY ({1}-[PCTMONEYS])
