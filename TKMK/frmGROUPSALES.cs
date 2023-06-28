@@ -1130,12 +1130,21 @@ namespace TKMK
 
                         //DateTime dt1 = DateTime.Now;
 
-                        //找出各項金額    
+                        //找出各項金額  
+                        //COMMISSIONBASEMONEYS，  找出車種的茶水費
                         //SPECIALMNUMS，算出特賣品的銷貨數量，只要VALID='Y'，就計算
                         //SPECIALNUMSMONEYS，算出特賣品 組的金額，重復SPECIALMONEYS，先不用
                         //SPECIALMONEYS，算出特賣品，銷售數量/每組*組數獎金 的金額，只要VALID='Y'，就計算
                         //SALESMMONEYS，算出該會員所有銷售金額，扣掉特賣品不合併計算的總金額，AND TB010  NOT IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCT] WHERE [VALID]='Y' AND [SPLITCAL]='Y') 
-                        //SPECIALNUMSMONEYS = FINDSPECIALNUMSMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
+                        //EXCHANGESALESMMONEYS，計算用司機兌換券消費的金額
+                        //EXCHANGEMONEYS，找出車種的兌換券可用金額
+                        //EXCHANGETOTALMONEYS，找出車種的兌換券可用金額*車數
+                        //COMMISSIONPCT，找出車種的消費金額佣金比率
+                        //COMMISSIONPCTMONEYS，消費佣金=車種的消費金額佣金比率*消費金額
+                        //TOTALCOMMISSIONMONEYS，總佣金=SPECIALMONEYS + COMMISSIONBASEMONEYS + (COMMISSIONPCT * (SALESMMONEYS))
+                        //20230628
+                        //以下計算，新增是否計算[VALID]='Y'、日期區間[SDATES],[EDATES]
+                        //COMMISSIONBASEMONEYS、SPECIALMNUMS、SPECIALMONEYS、EXCHANGEMONEYS、COMMISSIONPCT
                         SPECIALMNUMS = FINDSPECIALMNUMS(ACCOUNT, STARTDATES, STARTTIMES);
                         SPECIALMONEYS = FINDSPECIALMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
                         SALESMMONEYS = FINDSALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
@@ -1146,7 +1155,7 @@ namespace TKMK
                         if( ISEXCHANGE.Trim().Equals("是"))
                         {
                             int CARNUM = Convert.ToInt32(dr.Cells["車數"].Value.ToString().Trim());
-                            EXCHANGEMONEYS = FINDEXCHANGEMONEYS();
+                            EXCHANGEMONEYS = FINDEXCHANGEMONEYS(STARTDATES);
                             EXCHANGETOTALMONEYS = EXCHANGEMONEYS * CARNUM;
                             //EXCHANGESALESMMONEYS = FINDEXCHANGESALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
                             COMMISSIONBASEMONEYS = 0;
@@ -1168,7 +1177,7 @@ namespace TKMK
                             EXCHANGESALESMMONEYS = 0;
 
                             //COMMISSIONBASEMONEYS，找出車子的基本輔助金額
-                            COMMISSIONBASEMONEYS = FINDBASEMONEYS(CARKIND);
+                            COMMISSIONBASEMONEYS = FINDBASEMONEYS(CARKIND, STARTDATES);
                         }
 
                       
@@ -1189,63 +1198,13 @@ namespace TKMK
             }
 
         }
-
-        public int FINDEXCHANGEMONEYS()
-        {
-            SqlDataAdapter adapter1 = new SqlDataAdapter();
-            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
-            DataSet ds1 = new DataSet();
-
-            try
-            {
-                //20210902密
-                Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
-
-                //資料庫使用者密碼解密
-                sqlsb.Password = TKID.Decryption(sqlsb.Password);
-                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
-
-                String connectionString;
-                sqlConn = new SqlConnection(sqlsb.ConnectionString);
-
-
-                sbSql.Clear();
-                sbSqlQuery.Clear();
-               
-                sbSql.AppendFormat(@"  SELECT  CONVERT(INT,[EXCHANGEMONEYS],0) AS EXCHANGEMONEYS   FROM [TKMK].[dbo].[GROUPEXCHANGEMONEYS]");
-                sbSql.AppendFormat(@"  ");
-                sbSql.AppendFormat(@"  ");
-
-                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
-
-                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
-                sqlConn.Open();
-                ds1.Clear();
-                adapter1.Fill(ds1, "ds1");
-                sqlConn.Close();
-
-                if (ds1.Tables["ds1"].Rows.Count >= 1)
-                {
-                    return Convert.ToInt32(ds1.Tables["ds1"].Rows[0]["EXCHANGEMONEYS"].ToString());
-
-                }
-                else
-                {
-                    return 0;
-                }
-
-            }
-            catch
-            {
-                return 0;
-            }
-            finally
-            {
-                sqlConn.Close();
-            }
-        }
-
+        /// <summary>
+        /// 計算 特賣商品的 數量
+        /// </summary>
+        /// <param name="TA009"></param>
+        /// <param name="TA001"></param>
+        /// <param name="TA005"></param>
+        /// <returns></returns>
         public int FINDSPECIALMNUMS(string TA009, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
@@ -1269,16 +1228,25 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  
-                                    SELECT SUM(NUMS) AS SPECIALMNUMS
-                                    FROM (
-                                    SELECT [ID],[NAME],[NUM],[MONEYS],[SPLITCAL],[VALID]
-                                    ,(SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}') AS 'NUMS'
-                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM]) AS 'BASENUMS'
-                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM])*[MONEYS] AS 'SPECIALMONEYS'
+                sbSql.AppendFormat(@"                                   
+                                    SELECT ISNULL(SUM(SUMTB019),0) AS SPECIALMNUMS
+                                    FROM 
+                                    (
+                                    SELECT [ID],[NAME],[NUM],[MONEYS],[SPLITCAL],[VALID],[SDATES],[EDATES],TB010,SUMTB019
                                     FROM [TKMK].[dbo].[GROUPPRODUCT]
+                                    LEFT JOIN 
+                                    (
+                                    SELECT TB010,CONVERT(INT,ISNULL(SUM(TB019),0),0) SUMTB019
+                                    FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
+                                    WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006 
+                                    AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}' 
+                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES])
+                                    GROUP BY TB010
+                                    ) AS TEMP ON TB010=ID
                                     WHERE [VALID]='Y' 
-                                    ) AS TEMP
+                                    AND CONVERT(NVARCHAR,SDATES,112)<='{1}'
+                                    AND CONVERT(NVARCHAR,EDATES,112)>='{1}'
+                                    ) AS TEMP2
                                     ", TA009, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -1310,6 +1278,13 @@ namespace TKMK
             }
         }
 
+        /// <summary>
+        /// 計算 特賣商品的 金額
+        /// </summary>
+        /// <param name="TA009"></param>
+        /// <param name="TA001"></param>
+        /// <param name="TA005"></param>
+        /// <returns></returns>
         public int FINDSPECIALMONEYS(string TA009, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
@@ -1334,17 +1309,25 @@ namespace TKMK
                 sbSqlQuery.Clear();
 
 
-                sbSql.AppendFormat(@"
-                                    SELECT SUM(SPECIALMONEYS) AS SPECIALMONEYS
-                                    FROM (
-                                    SELECT [ID],[NAME],[NUM],[MONEYS],[SPLITCAL],[VALID]
-                                    ,(SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}') AS 'NUMS'
-                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM]) AS 'BASENUMS'
-                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM])*[MONEYS] AS 'SPECIALMONEYS'
+                sbSql.AppendFormat(@"                                  
+                                    SELECT ISNULL(SUM(SUMTB019/[NUM]*[MONEYS]),0) AS SPECIALMONEYS
+                                    FROM 
+                                    (
+                                    SELECT [ID],[NAME],[NUM],[MONEYS],[SPLITCAL],[VALID],[SDATES],[EDATES],TB010,SUMTB019
                                     FROM [TKMK].[dbo].[GROUPPRODUCT]
+                                    LEFT JOIN 
+                                    (
+                                    SELECT TB010,CONVERT(INT,ISNULL(SUM(TB019),0),0) SUMTB019
+                                    FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
+                                    WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006 
+                                    AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}' 
+                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES])
+                                    GROUP BY TB010
+                                    ) AS TEMP ON TB010=ID
                                     WHERE [VALID]='Y' 
-                                    ) AS TEMP
-
+                                    AND CONVERT(NVARCHAR,SDATES,112)<='{1}'
+                                    AND CONVERT(NVARCHAR,EDATES,112)>='{1}'
+                                    ) AS TEMP2
                                      ", TA009, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -1376,70 +1359,13 @@ namespace TKMK
             }
         }
 
-        public int FINDSPECIALNUMSMONEYS(string TA009, string TA001, string TA005)
-        {
-            SqlDataAdapter adapter1 = new SqlDataAdapter();
-            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
-            DataSet ds1 = new DataSet();
-
-            try
-            {
-                //20210902密
-                Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
-
-                //資料庫使用者密碼解密
-                sqlsb.Password = TKID.Decryption(sqlsb.Password);
-                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
-
-                String connectionString;
-                sqlConn = new SqlConnection(sqlsb.ConnectionString);
-
-
-                sbSql.Clear();
-                sbSqlQuery.Clear();
-
-                sbSql.AppendFormat(@"  
-                                    SELECT CONVERT(INT,ISNULL(SUM(TB019/[GROUPPRODUCT].NUM*[GROUPPRODUCT].MONEYS),0),0) AS 'SPECIALNUMSMONEYS' 
-                                    FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
-                                    LEFT JOIN [TKMK].[dbo].[GROUPPRODUCT] ON [GROUPPRODUCT].ID=TB010
-                                    WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006
-                                    AND TB010 IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCT] WHERE [SPLITCAL]='Y')
-                                    AND TA009='{0}'
-                                    AND TA001='{1}'
-                                    AND TA005>='{2}'
-                                    ", TA009, TA001, TA005);
-               
-
-                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
-
-                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
-                sqlConn.Open();
-                ds1.Clear();
-                adapter1.Fill(ds1, "ds1");
-                sqlConn.Close();
-
-                if (ds1.Tables["ds1"].Rows.Count >= 1)
-                {
-                    return Convert.ToInt32(ds1.Tables["ds1"].Rows[0]["SPECIALNUMSMONEYS"].ToString());
-
-                }
-                else
-                {
-                    return 0;
-                }
-
-            }
-            catch
-            {
-                return 0;
-            }
-            finally
-            {
-                sqlConn.Close();
-            }
-        }
-
+        /// <summary>
+        /// 找出消費金額 業務/會員
+        /// </summary>
+        /// <param name="TA009"></param>
+        /// <param name="TA001"></param>
+        /// <param name="TA005"></param>
+        /// <returns></returns>
         public int FINDSALESMMONEYS(string TA009, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
@@ -1463,13 +1389,6 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                //sbSql.AppendFormat(@"  SELECT CONVERT(INT,ISNULL(SUM(TB033),0),0) AS 'SALESMMONEYS'");
-                //sbSql.AppendFormat(@"  FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)");
-                //sbSql.AppendFormat(@"  WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006");                
-                //sbSql.AppendFormat(@"  AND TA009='{0}'", TA009);
-                //sbSql.AppendFormat(@"  AND TA001='{0}'", TA001);
-                //sbSql.AppendFormat(@"  AND TA005>='{0}'", TA005);
-
                 //將特買組的銷售金額扣掉 TB010  NOT IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCT] WHERE [SPLITCAL]='Y') 
                 sbSql.AppendFormat(@"  
                                     SELECT CONVERT(INT,ISNULL(SUM(TB033),0),0) AS 'SALESMMONEYS'
@@ -1479,6 +1398,7 @@ namespace TKMK
                                     AND TA009='{0}'
                                     AND TA001='{1}'
                                     AND TA005>='{2}'
+                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES])
                                     ", TA009, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -1509,7 +1429,13 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
-
+        /// <summary>
+        /// 計算出 用抵換券 購買的消費金額
+        /// </summary>
+        /// <param name="TA009"></param>
+        /// <param name="TA001"></param>
+        /// <param name="TA005"></param>
+        /// <returns></returns>
         public int FINDEXCHANGESALESMMONEYS(string TA009, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
@@ -1533,14 +1459,17 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  SELECT CONVERT(INT,ISNULL(SUM(TA017),0)) AS EXCHANGESALESMMONEYS");
-                sbSql.AppendFormat(@"  FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTC WITH (NOLOCK)");
-                sbSql.AppendFormat(@"  WHERE TA001=TC001 AND TA002=TC002 AND TA003=TC003  AND TA006=TC006");
-                sbSql.AppendFormat(@"  AND TC008='0009'");
-                sbSql.AppendFormat(@"  AND TA009='{0}'", TA009);
-                sbSql.AppendFormat(@"  AND TA001='{0}'", TA001);
-                sbSql.AppendFormat(@"  AND TA005>='{0}'", TA005);
-                sbSql.AppendFormat(@"  ");
+
+                sbSql.AppendFormat(@"  
+                                    SELECT CONVERT(INT,ISNULL(SUM(TA017),0)) AS EXCHANGESALESMMONEYS
+                                    FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTC WITH (NOLOCK)
+                                    WHERE TA001=TC001 AND TA002=TC002 AND TA003=TC003  AND TA006=TC006
+                                    AND TC008='0009'
+                                    AND TA009='{0}'
+                                    AND TA001='{1}'
+                                    AND TA005>='{2}'
+                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES])
+                                    ", TA009, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -1570,8 +1499,11 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
-
-        public int FINDBASEMONEYS(string NAME)
+        /// <summary>
+        /// 計算 抵換券 的金額
+        /// </summary>
+        /// <returns></returns>
+        public int FINDEXCHANGEMONEYS(string SDATES)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -1594,9 +1526,83 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  SELECT CONVERT(INT,[BASEMONEYS],0) AS 'BASEMONEYS' FROM [TKMK].[dbo].[GROUPBASE] WHERE [NAME]='{0}'", NAME);
-                sbSql.AppendFormat(@"  ");
-                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  
+                                   SELECT  
+                                    CONVERT(INT,[EXCHANGEMONEYS],0) AS EXCHANGEMONEYS   
+                                    FROM [TKMK].[dbo].[GROUPEXCHANGEMONEYS]
+                                    WHERE  1=1
+                                    AND [VALID]='Y'
+                                    AND CONVERT(NVARCHAR,SDATES,112)<='{0}'
+                                    AND CONVERT(NVARCHAR,EDATES,112)>='{0}'
+                                    ", SDATES);
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return Convert.ToInt32(ds1.Tables["ds1"].Rows[0]["EXCHANGEMONEYS"].ToString());
+
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
+            catch
+            {
+                return 0;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+        /// <summary>
+        /// 計算車來 的 基查 保底金額
+        /// </summary>
+        /// <param name="NAME"></param>
+        /// <returns></returns>
+        public int FINDBASEMONEYS(string NAME, string SDATES)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"  
+                                SELECT CONVERT(INT,[BASEMONEYS],0) AS 'BASEMONEYS' 
+                                FROM [TKMK].[dbo].[GROUPBASE] 
+                                WHERE 1=1
+                                AND VALID='Y'
+                                AND CONVERT(NVARCHAR,SDATES,112)<='{1}'
+                                AND CONVERT(NVARCHAR,EDATES,112)>='{1}'
+                                AND [NAME]='{0}'
+                                    ", NAME, SDATES);
+
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -1626,8 +1632,14 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
-
-        public decimal FINDCOMMISSIONPCT(string CARKIND,int MONEYS, string CALDATES)
+        /// <summary>
+        /// 依 車種、消費金額、日期 決定抽佣比率
+        /// </summary>
+        /// <param name="CARKIND"></param>
+        /// <param name="MONEYS"></param>
+        /// <param name="CALDATES"></param>
+        /// <returns></returns>
+        public decimal FINDCOMMISSIONPCT(string CARKIND, int MONEYS, string CALDATES)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -1650,12 +1662,12 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-
                 sbSql.AppendFormat(@"  
                                     SELECT [ID],[PCTMONEYS],[NAME],[PCT]
                                     ,CONVERT(NVARCHAR,SDATES,112) SDATES,CONVERT(NVARCHAR,EDATES,112) EDATES
                                     FROM [TKMK].[dbo].[GROUPPCT]
                                     WHERE [NAME]='{0}' AND ({1}-[PCTMONEYS])>=0
+                                    AND VALID='Y'
                                     AND CONVERT(NVARCHAR,SDATES,112)<='{2}'
                                     AND CONVERT(NVARCHAR,EDATES,112)>='{2}'
                                     ORDER BY ({1}-[PCTMONEYS])
@@ -1689,7 +1701,13 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
-
+        /// <summary>
+        /// 計算 成交筆數 
+        /// </summary>
+        /// <param name="TA009"></param>
+        /// <param name="TA001"></param>
+        /// <param name="TA005"></param>
+        /// <returns></returns>
         public int FINDGUSETNUM(string TA009, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
@@ -1713,14 +1731,14 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  SELECT COUNT(TA009) AS 'GUSETNUM'");
-                sbSql.AppendFormat(@"  FROM [TK].dbo.POSTA WITH (NOLOCK)");
-                sbSql.AppendFormat(@"  WHERE TA009='{0}'", TA009);
-                sbSql.AppendFormat(@"  AND TA001='{0}'", TA001);
-                sbSql.AppendFormat(@"  AND TA005>='{0}'", TA005);
-                sbSql.AppendFormat(@"  ");
-                sbSql.AppendFormat(@"  ");
-                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@"  
+                                    SELECT COUNT(TA009) AS 'GUSETNUM'
+                                    FROM [TK].dbo.POSTA WITH (NOLOCK)
+                                    WHERE TA009='{0}'
+                                    AND TA001='{1}'
+                                    AND TA005>='{2}'
+                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES])
+                                    ", TA009, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -1750,8 +1768,22 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
-
-        public void UPDATEGROUPPRODUCT(string ID, string EXCHANGEMONEYS, string EXCHANGETOTALMONEYS, string EXCHANGESALESMMONEYS, string SALESMMONEYS, string SPECIALMNUMS, string SPECIALMONEYS, string COMMISSIONBASEMONEYS,string COMMISSIONPCT, string COMMISSIONPCTMONEYS, string TOTALCOMMISSIONMONEYS,string GUSETNUM)
+        /// <summary>
+        /// 更新團務的各項金額 
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <param name="EXCHANGEMONEYS"></param>
+        /// <param name="EXCHANGETOTALMONEYS"></param>
+        /// <param name="EXCHANGESALESMMONEYS"></param>
+        /// <param name="SALESMMONEYS"></param>
+        /// <param name="SPECIALMNUMS"></param>
+        /// <param name="SPECIALMONEYS"></param>
+        /// <param name="COMMISSIONBASEMONEYS"></param>
+        /// <param name="COMMISSIONPCT"></param>
+        /// <param name="COMMISSIONPCTMONEYS"></param>
+        /// <param name="TOTALCOMMISSIONMONEYS"></param>
+        /// <param name="GUSETNUM"></param>
+        public void UPDATEGROUPPRODUCT(string ID, string EXCHANGEMONEYS, string EXCHANGETOTALMONEYS, string EXCHANGESALESMMONEYS, string SALESMMONEYS, string SPECIALMNUMS, string SPECIALMONEYS, string COMMISSIONBASEMONEYS, string COMMISSIONPCT, string COMMISSIONPCTMONEYS, string TOTALCOMMISSIONMONEYS, string GUSETNUM)
         {
             try
             {
@@ -1774,12 +1806,12 @@ namespace TKMK
                 tran = sqlConn.BeginTransaction();
 
 
-                sbSql.AppendFormat(" UPDATE [TKMK].[dbo].[GROUPSALES]");
-                sbSql.AppendFormat(" SET [EXCHANGEMONEYS]={0},[EXCHANGETOTALMONEYS]={1},[EXCHANGESALESMMONEYS]={2},[SALESMMONEYS]={3},[SPECIALMNUMS]={4},[SPECIALMONEYS]={5},[COMMISSIONBASEMONEYS]={6},[COMMISSIONPCT]={7},[COMMISSIONPCTMONEYS]={8},[TOTALCOMMISSIONMONEYS]={9},[GUSETNUM]={10}", EXCHANGEMONEYS, EXCHANGETOTALMONEYS, EXCHANGESALESMMONEYS, SALESMMONEYS, SPECIALMNUMS, SPECIALMONEYS, COMMISSIONBASEMONEYS, COMMISSIONPCT, COMMISSIONPCTMONEYS, TOTALCOMMISSIONMONEYS, GUSETNUM);
-                sbSql.AppendFormat(" WHERE [ID]='{0}'", ID);
-                sbSql.AppendFormat(" ");
-                sbSql.AppendFormat(" ");
-                sbSql.AppendFormat(" ");
+
+                sbSql.AppendFormat(@" 
+                                    UPDATE [TKMK].[dbo].[GROUPSALESBYTA008]
+                                    SET [EXCHANGEMONEYS]={1},[EXCHANGETOTALMONEYS]={2},[EXCHANGESALESMMONEYS]={3},[SALESMMONEYS]={4},[SPECIALMNUMS]={5},[SPECIALMONEYS]={6},[COMMISSIONBASEMONEYS]={7},[COMMISSIONPCT]={8},[COMMISSIONPCTMONEYS]={9},[TOTALCOMMISSIONMONEYS]={10},[GUSETNUM]={11}
+                                    WHERE [ID]='{0}'
+                                    ", ID, EXCHANGEMONEYS, EXCHANGETOTALMONEYS, EXCHANGESALESMMONEYS, SALESMMONEYS, SPECIALMNUMS, SPECIALMONEYS, COMMISSIONBASEMONEYS, COMMISSIONPCT, COMMISSIONPCTMONEYS, TOTALCOMMISSIONMONEYS, GUSETNUM);
 
                 cmd.Connection = sqlConn;
                 cmd.CommandTimeout = 60;
@@ -1808,7 +1840,6 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
-
         public void SETTEXT1()
         {
             textBox131.Text = null;
