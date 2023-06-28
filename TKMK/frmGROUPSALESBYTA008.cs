@@ -1543,7 +1543,7 @@ namespace TKMK
                         if (ISEXCHANGE.Trim().Equals("是"))
                         {
                             int CARNUM = Convert.ToInt32(dr.Cells["車數"].Value.ToString().Trim());
-                            EXCHANGEMONEYS = FINDEXCHANGEMONEYS();
+                            EXCHANGEMONEYS = FINDEXCHANGEMONEYS(STARTDATES);
                             EXCHANGETOTALMONEYS = EXCHANGEMONEYS * CARNUM;
                             //EXCHANGESALESMMONEYS = FINDEXCHANGESALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
                             COMMISSIONBASEMONEYS = 0;
@@ -1565,7 +1565,7 @@ namespace TKMK
                             EXCHANGESALESMMONEYS = 0;
 
                             //COMMISSIONBASEMONEYS，找出車子的基本輔助金額
-                            COMMISSIONBASEMONEYS = FINDBASEMONEYS(CARKIND);
+                            COMMISSIONBASEMONEYS = FINDBASEMONEYS(CARKIND, STARTDATES);
                         }
 
 
@@ -1891,7 +1891,7 @@ namespace TKMK
         /// 計算 抵換券 的金額
         /// </summary>
         /// <returns></returns>
-        public int FINDEXCHANGEMONEYS()
+        public int FINDEXCHANGEMONEYS(string SDATES)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -1915,10 +1915,14 @@ namespace TKMK
                 sbSqlQuery.Clear();
 
                 sbSql.AppendFormat(@"  
-                                    SELECT  
+                                   SELECT  
                                     CONVERT(INT,[EXCHANGEMONEYS],0) AS EXCHANGEMONEYS   
                                     FROM [TKMK].[dbo].[GROUPEXCHANGEMONEYS]
-                                    ");
+                                    WHERE  1=1
+                                    AND [VALID]='Y'
+                                    AND CONVERT(NVARCHAR,SDATES,112)<='{0}'
+                                    AND CONVERT(NVARCHAR,EDATES,112)>='{0}'
+                                    ", SDATES);
 
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -1954,7 +1958,7 @@ namespace TKMK
         /// </summary>
         /// <param name="NAME"></param>
         /// <returns></returns>
-        public int FINDBASEMONEYS(string NAME)
+        public int FINDBASEMONEYS(string NAME,string SDATES)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -1978,10 +1982,14 @@ namespace TKMK
                 sbSqlQuery.Clear();
 
                 sbSql.AppendFormat(@"  
-                                    SELECT CONVERT(INT,[BASEMONEYS],0) AS 'BASEMONEYS' 
-                                    FROM [TKMK].[dbo].[GROUPBASE] 
-                                    WHERE [NAME]='{0}'"
-                                    , NAME);
+                                SELECT CONVERT(INT,[BASEMONEYS],0) AS 'BASEMONEYS' 
+                                FROM [TKMK].[dbo].[GROUPBASE] 
+                                WHERE 1=1
+                                AND VALID='Y'
+                                AND CONVERT(NVARCHAR,SDATES,112)<='{1}'
+                                AND CONVERT(NVARCHAR,EDATES,112)>='{1}'
+                                AND [NAME]='{0}'
+                                    ", NAME,SDATES);
         
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
