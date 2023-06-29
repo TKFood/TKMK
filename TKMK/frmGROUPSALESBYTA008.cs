@@ -1548,15 +1548,21 @@ namespace TKMK
 
                         //兌換券消費金額條件判斷
                         EXCHANGESALESMMONEYS = FINDEXCHANGESALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
-
+                       
+                        //是否有用兌換券
+                        //如果有領兌換券，就沒有車子的茶水費 基本輔助金額
                         if (ISEXCHANGE.Trim().Equals("是"))
                         {
+                            //如果團車記錄，車數是2台以上，還可以代領
                             int CARNUM = Convert.ToInt32(dr.Cells["車數"].Value.ToString().Trim());
+                            //兌換券可消費的金額上限
                             EXCHANGEMONEYS = FINDEXCHANGEMONEYS(STARTDATES);
                             EXCHANGETOTALMONEYS = EXCHANGEMONEYS * CARNUM;
                             //EXCHANGESALESMMONEYS = FINDEXCHANGESALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
                             COMMISSIONBASEMONEYS = 0;
 
+                            //兌換券消費金額>0
+                            //兌換券消費金額>消費金額，消費金額=消費金額-兌換券消費金額
                             if (EXCHANGESALESMMONEYS > 0)
                             {
                                 if (SALESMMONEYS > EXCHANGETOTALMONEYS)
@@ -1567,6 +1573,7 @@ namespace TKMK
 
 
                         }
+                        //沒領兌換券，就給車子的茶水費 基本輔助金額
                         else
                         {
                             EXCHANGEMONEYS = 0;
@@ -1580,11 +1587,14 @@ namespace TKMK
 
 
                         //SALESMMONEYS = SALESMMONEYS - SPECIALMONEYS;
+                        //用車種+消費金額+日期，判斷佣金比率
+                        //計算出佣金金額
                         COMMISSIONPCT = FINDCOMMISSIONPCT(CARKIND, SALESMMONEYS, STARTDATES);
                         COMMISSIONPCTMONEYS = Convert.ToInt32(COMMISSIONPCT * SALESMMONEYS);
                         GUSETNUM = FINDGUSETNUM(ACCOUNT, STARTDATES, STARTTIMES);
+                        //加總 總佣金=特賣獎金+茶水費+佣金
                         TOTALCOMMISSIONMONEYS = Convert.ToInt32(SPECIALMONEYS + COMMISSIONBASEMONEYS + (COMMISSIONPCT * (SALESMMONEYS)));
-
+                        //更新團車的各金額
                         UPDATEGROUPPRODUCT(ID, EXCHANGEMONEYS.ToString(), EXCHANGETOTALMONEYS.ToString(), EXCHANGESALESMMONEYS.ToString(), SALESMMONEYS.ToString(), SPECIALMNUMS.ToString(), SPECIALMONEYS.ToString(), COMMISSIONBASEMONEYS.ToString(), COMMISSIONPCT.ToString(), COMMISSIONPCTMONEYS.ToString(), TOTALCOMMISSIONMONEYS.ToString(), GUSETNUM.ToString());
                         //DateTime dt2 = DateTime.Now;
 
