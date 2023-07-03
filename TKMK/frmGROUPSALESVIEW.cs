@@ -150,17 +150,14 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  SELECT ");
-                sbSql.AppendFormat(@"  [SERNO] AS '序號',[CARNAME] AS '車名',[CARNO] AS '車號',[CARKIND] AS '車種',[GROUPKIND]  AS '團類',[ISEXCHANGE] AS '兌換券',[EXCHANGETOTALMONEYS] AS '券總額',[EXCHANGESALESMMONEYS] AS '券消費',[SALESMMONEYS] AS '消費總額'");
-                sbSql.AppendFormat(@"  ,[SPECIALMNUMS] AS '特賣數',[SPECIALMONEYS] AS '特賣獎金',[COMMISSIONBASEMONEYS] AS '茶水費',[COMMISSIONPCTMONEYS] AS '消費獎金',[TOTALCOMMISSIONMONEYS] AS '總獎金',[CARNUM] AS '車數',[GUSETNUM] AS '來客數',[EXCHANNO] AS '優惠券名',[EXCHANACOOUNT] AS '優惠券帳號',CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間',CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間',[STATUS] AS '狀態'");
-                sbSql.AppendFormat(@"  ,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間',CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間',[COMMISSIONPCT] AS '抽佣比率',[EXCHANGEMONEYS] AS '領券額',[ID],[CREATEDATES]");
-                sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[GROUPSALES]");
-                sbSql.AppendFormat(@"  WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}' ", CREATEDATES);
-                sbSql.AppendFormat(@"  AND [STATUS] NOT IN ('取消預約') ");
-                sbSql.AppendFormat(@"  ORDER BY CONVERT(nvarchar,[CREATEDATES],112),CONVERT(int,[SERNO]) DESC");
-                sbSql.AppendFormat(@"  ");
-                sbSql.AppendFormat(@"  ");
-                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@" SELECT  
+                                    [SERNO] AS '序號',[CARNAME] AS '車名',[CARNO] AS '車號',[CARKIND] AS '車種',[GROUPKIND]  AS '團類',[ISEXCHANGE] AS '兌換券',[EXCHANGETOTALMONEYS] AS '券總額',[EXCHANGESALESMMONEYS] AS '券消費',[SALESMMONEYS] AS '消費總額'
+                                    ,[SPECIALMNUMS] AS '特賣數',[SPECIALMONEYS] AS '特賣獎金',[COMMISSIONBASEMONEYS] AS '茶水費',[COMMISSIONPCTMONEYS] AS '消費獎金',[TOTALCOMMISSIONMONEYS] AS '總獎金',[CARNUM] AS '車數',[GUSETNUM] AS '交易筆數',[EXCHANNO] AS '優惠券名',[EXCHANACOOUNT] AS '優惠券帳號',CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間',CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間',[STATUS] AS '狀態'
+                                    ,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間',CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間',[EXCHANGEMONEYS] AS '領券額',[CARCOMPANY] AS '來車公司',[ID],[CREATEDATES]
+                                    FROM [TKMK].[dbo].[GROUPSALES]
+                                    WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'
+                                    AND [STATUS]<>'取消預約'
+                                    ORDER BY CONVERT(nvarchar,[CREATEDATES],112),CONVERT(int,[SERNO]) DESC ", CREATEDATES);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -319,11 +316,31 @@ namespace TKMK
             StringBuilder SB = new StringBuilder();
 
             SB.AppendFormat(@" 
-                             SELECT 
-                             [GROUPSALES].[SERNO] AS '序號',CONVERT(NVARCHAR,[PURGROUPSTARTDATES],111) AS '日期',[CARNAME] AS '車名',[CARKIND] AS '車種',[CARNO] AS '車號',[CARNUM] AS '車數',[GROUPKIND] AS '團類',[GUSETNUM] AS '來客數',[EXCHANNO] AS '優惠券',[EXCHANACOOUNT] AS '優惠號',[ISEXCHANGE] AS '領兌'
-                             ,[EXCHANGETOTALMONEYS] AS '兌換券金額',[EXCHANGESALESMMONEYS] AS '(兌)消費金額',[COMMISSIONBASEMONEYS] AS '茶水費',[SALESMMONEYS] AS '消費總額',[SPECIALMNUMS] AS '特賣組數',[SPECIALMONEYS] AS '特賣獎金',[COMMISSIONPCTMONEYS] AS '消費獎金',[TOTALCOMMISSIONMONEYS] AS '獎金合計',[STATUS] AS '狀態'
-                             ,CONVERT(NVARCHAR,[PURGROUPSTARTDATES],108) AS '到達時間'
-                             FROM [TKMK].[dbo].[GROUPSALES] WITH (NOLOCK) 
+                              SELECT 
+                            [GROUPSALES].[SERNO] AS '序號'
+                            ,CONVERT(NVARCHAR,[PURGROUPSTARTDATES],111) AS '日期'
+                            ,[CARCOMPANY] AS '來車公司'
+                            ,[CARNAME] AS '車名',[CARKIND] AS '車種'
+                            ,[CARNO] AS '車號',[CARNUM] AS '車數'
+                            ,[GROUPKIND] AS '團類',[GUSETNUM] AS '交易筆數'
+                            ,[EXCHANNO] AS '優惠券',[EXCHANACOOUNT] AS '優惠號'
+                            ,[ISEXCHANGE] AS '領兌'
+                            ,[EXCHANGETOTALMONEYS] AS '兌換券金額'
+                            ,[EXCHANGESALESMMONEYS] AS '(兌)消費金額'
+                            ,[COMMISSIONBASEMONEYS] AS '茶水費'
+                            ,[SALESMMONEYS] AS '消費總額'
+                            ,[SPECIALMNUMS] AS '特賣組數'
+                            ,[SPECIALMONEYS] AS '特賣獎金'
+                            ,[COMMISSIONPCTMONEYS] AS '消費獎金'
+                            ,[TOTALCOMMISSIONMONEYS] AS '獎金合計'
+                            ,[STATUS] AS '狀態'
+                            ,CONVERT(NVARCHAR,[GROUPSTARTDATES],108) AS '到達時間'
+                            ,CONVERT(NVARCHAR,[GROUPENDDATES],108) AS '離開時間'
+                            ,[GROUPSTARTDATES]
+                            ,[GROUPENDDATES]
+                            ,DATEDIFF(HOUR, CONVERT(DATETIME,[GROUPSTARTDATES]), CONVERT(DATETIME,[GROUPENDDATES])) AS '停留小時'
+                            ,DATEDIFF(MINUTE, CONVERT(DATETIME,[GROUPSTARTDATES]), CONVERT(DATETIME,[GROUPENDDATES])) AS '停留分鐘'
+                            FROM [TKMK].[dbo].[GROUPSALES] WITH (NOLOCK) 
                              WHERE CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)>='{0}' AND CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)<='{1}'
                              AND [STATUS]='完成接團'
                              ORDER BY CONVERT(NVARCHAR,[PURGROUPSTARTDATES], 112),[SERNO]
