@@ -2965,6 +2965,10 @@ namespace TKMK
                 GROUPSALES_UPDATE_GROUPSTARTDATES(ID, DTIMES);
                 SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
             }
+            else
+            {
+                MessageBox.Show("非 預約接團，不可指定時間");
+            }
             
         }
 
@@ -2976,7 +2980,11 @@ namespace TKMK
                 GROUPSALES_UPDATE_GROUPENDDATES(ID, DTIMES);
                 SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
             }
-               
+            else
+            {
+                MessageBox.Show("非 預約接團，不可指定時間");
+            }
+
         }
 
 
