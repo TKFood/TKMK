@@ -2960,7 +2960,7 @@ namespace TKMK
         private void button13_Click(object sender, EventArgs e)
         {
             string DTIMES = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-            if(!string.IsNullOrEmpty(ID))
+            if(!string.IsNullOrEmpty(ID) && STATUS.Equals("預約接團"))
             {
                 GROUPSALES_UPDATE_GROUPSTARTDATES(ID, DTIMES);
                 SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
@@ -2971,7 +2971,7 @@ namespace TKMK
         private void button14_Click(object sender, EventArgs e)
         {
             string DTIMES = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-            if (!string.IsNullOrEmpty(ID))
+            if (!string.IsNullOrEmpty(ID) && STATUS.Equals("預約接團"))
             {
                 GROUPSALES_UPDATE_GROUPENDDATES(ID, DTIMES);
                 SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
