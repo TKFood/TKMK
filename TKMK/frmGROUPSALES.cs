@@ -80,6 +80,7 @@ namespace TKMK
             comboBox2load();
             comboBox3load();
             comboBox7load();
+            comboBox8load();
 
             dateTimePicker1.Value = DateTime.Now;
             dateTimePicker2.Value = DateTime.Now;
@@ -277,6 +278,42 @@ namespace TKMK
             comboBox7.DataSource = dt.DefaultView;
             comboBox7.ValueMember = "PARASNAMES";
             comboBox7.DisplayMember = "PARASNAMES";
+            sqlConn.Close();
+
+        }
+
+        /// <summary>
+        /// report
+        /// 下拉 來車公司
+        /// </summary>
+        public void comboBox8load()
+        {
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"
+                                  SELECT '全部' PARASNAMES,'全部' DVALUES
+                                UNION ALL
+                                SELECT [PARASNAMES],[DVALUES] FROM [TKMK].[dbo].[TBZPARAS] WHERE [KINDS]='CARCOMPANY' ORDER BY [PARASNAMES]
+                                ");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("PARASNAMES", typeof(string));
+            da.Fill(dt);
+            comboBox8.DataSource = dt.DefaultView;
+            comboBox8.ValueMember = "PARASNAMES";
+            comboBox8.DisplayMember = "PARASNAMES";
             sqlConn.Close();
 
         }
@@ -2240,7 +2277,7 @@ namespace TKMK
             }
         }
 
-        public void SETFASTREPORT()
+        public void SETFASTREPORT(string CARCOMPANY)
         {
             StringBuilder SQL = new StringBuilder();
 
@@ -2251,7 +2288,7 @@ namespace TKMK
             {
                 report1.Load(@"REPORT\遊覽車對帳明細表.frx");
 
-                SQL = SETSQL();
+                SQL = SETSQL(CARCOMPANY);
             }
             else if (comboBox5.Text.Equals("多年期月份團務比較表"))
             {
@@ -2283,10 +2320,25 @@ namespace TKMK
             report1.Show();
         }
 
-        public StringBuilder SETSQL()
+        public StringBuilder SETSQL(string CARCOMPANY)
         {           
-            StringBuilder SB = new StringBuilder();             
-     
+            StringBuilder SB = new StringBuilder();
+            StringBuilder SBQUERY1 = new StringBuilder();
+
+            if(CARCOMPANY.Equals("全部"))
+            {
+                SBQUERY1.AppendFormat(@"
+                                      
+                                        ");
+            }
+            else
+            {
+                SBQUERY1.AppendFormat(@"
+                                        AND [CARCOMPANY]='{0}'
+                                        ", CARCOMPANY);
+            }
+
+
             SB.AppendFormat(@" 
                             SELECT 
                             [GROUPSALES].[SERNO] AS '序號'
@@ -2313,10 +2365,11 @@ namespace TKMK
                             ,DATEDIFF(HOUR, CONVERT(DATETIME,[GROUPSTARTDATES]), CONVERT(DATETIME,[GROUPENDDATES])) AS '停留小時'
                             ,DATEDIFF(MINUTE, CONVERT(DATETIME,[GROUPSTARTDATES]), CONVERT(DATETIME,[GROUPENDDATES])) AS '停留分鐘'
                             FROM [TKMK].[dbo].[GROUPSALES] WITH (NOLOCK) 
-                             WHERE CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)>='{0}' AND CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)<='{1}'
+                             WHERE CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)>='{0}' AND CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)<='{1}'                              
                              AND [STATUS]='完成接團'
+                                {2}
                              ORDER BY CONVERT(NVARCHAR,[PURGROUPSTARTDATES], 112),[SERNO]
-                            ", dateTimePicker4.Value.ToString("yyyyMMdd"), dateTimePicker5.Value.ToString("yyyyMMdd"));
+                            ", dateTimePicker4.Value.ToString("yyyyMMdd"), dateTimePicker5.Value.ToString("yyyyMMdd"), SBQUERY1.ToString());
              
             return SB;
 
@@ -2954,7 +3007,7 @@ namespace TKMK
 
         private void button12_Click(object sender, EventArgs e)
         {
-            SETFASTREPORT();
+            SETFASTREPORT(comboBox8.Text.ToString());
         }
 
         private void button13_Click(object sender, EventArgs e)
