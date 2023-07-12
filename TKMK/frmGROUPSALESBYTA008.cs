@@ -277,17 +277,17 @@ namespace TKMK
             sqlConn = new SqlConnection(sqlsb.ConnectionString);
 
             StringBuilder Sequel = new StringBuilder();
-            Sequel.AppendFormat(@"SELECT LTRIM(RTRIM((MI001)))+' '+SUBSTRING(MI002,1,3) AS 'MI001',MI002 FROM [TK].dbo.WSCMI WHERE ( MI001 LIKE '68%' OR  MI001 LIKE '69%')   AND MI001 NOT IN (SELECT [EXCHANACOOUNT] FROM [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'  AND [STATUS]='預約接團' ) ORDER BY MI001 ", dateTimePicker1.Value.ToString("yyyyMMdd"));
+            Sequel.AppendFormat(@"SELECT LTRIM(RTRIM((MU001)))+' '+SUBSTRING(MU002,1,3) AS 'MU001',MU002 FROM [TK].dbo.POSMU WHERE ( MU001 LIKE '68%' OR  MU001 LIKE '69%')   AND MU001 NOT IN (SELECT [EXCHANACOOUNT] FROM [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'  AND [STATUS]='預約接團' ) ORDER BY MU001 ", dateTimePicker1.Value.ToString("yyyyMMdd"));
             SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
             DataTable dt = new DataTable();
             sqlConn.Open();
 
-            dt.Columns.Add("MI001", typeof(string));
-            dt.Columns.Add("MI002", typeof(string));
+            dt.Columns.Add("MU001", typeof(string));
+            dt.Columns.Add("MU002", typeof(string));
             da.Fill(dt);
             comboBox3.DataSource = dt.DefaultView;
-            comboBox3.ValueMember = "MI001";
-            comboBox3.DisplayMember = "MI001";
+            comboBox3.ValueMember = "MU001";
+            comboBox3.DisplayMember = "MU001";
             sqlConn.Close();
 
         }
@@ -329,7 +329,7 @@ namespace TKMK
         /// <param name="e"></param>
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SEARCHWSCMI(comboBox3.Text.Trim().Substring(0, 7).ToString());
+            SEARCH_POSMU(comboBox3.Text.Trim().Substring(0, 7).ToString());
 
             //if (comboBox3.SelectedValue.ToString().StartsWith("68"))
             //{
@@ -349,7 +349,7 @@ namespace TKMK
         /// 尋找 業務員/會員
         /// </summary>
         /// <param name="MI001"></param>
-        public void SEARCHWSCMI(string MI001)
+        public void SEARCH_POSMU(string MU001)
         {
             SqlDataAdapter adapter = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
@@ -373,8 +373,8 @@ namespace TKMK
                 sbSqlQuery.Clear();
 
                 sbSql.AppendFormat(@" 
-                                    SELECT MI001,SUBSTRING(MI002,1,3) AS MI002 FROM [TK].dbo.WSCMI WHERE MI001='{0}' ORDER BY MI001 
-                                    ", MI001);
+                                    SELECT MU001,SUBSTRING(MU002,1,3) AS MU002 FROM [TK].dbo.POSMU WHERE MU001='{0}' ORDER BY MU001 
+                                    ", MU001);
                 sbSql.AppendFormat(@"  ");
 
                 adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -394,7 +394,7 @@ namespace TKMK
                 {
                     if (ds.Tables["TEMPds1"].Rows.Count >= 1)
                     {
-                        textBox144.Text = ds.Tables["TEMPds1"].Rows[0]["MI002"].ToString();
+                        textBox144.Text = ds.Tables["TEMPds1"].Rows[0]["MU002"].ToString();
 
                     }
 
@@ -1252,7 +1252,7 @@ namespace TKMK
         /// </summary>
         /// <param name="MI001"></param>
         /// <param name="NAME"></param>
-        public void UPDATETKWSCMI(string MI001, string NAME)
+        public void UPDATETK_POSMU(string MU001, string NAME)
         {
             try
             {
@@ -1275,16 +1275,16 @@ namespace TKMK
                 tran = sqlConn.BeginTransaction();
 
 
-                sbSql.AppendFormat(" UPDATE [TK].[dbo].[WSCMI] SET [MI002]='{0}' WHERE MI001='{1}'", NAME, MI001);
+                sbSql.AppendFormat(" UPDATE [TK].[dbo].[POSMU] SET [MU002]='{0}' WHERE MU001='{1}'", NAME, MU001);
                 sbSql.AppendFormat(" ");
-                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_WSCMI] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.138' AND MI001 ='{0}'", MI001);
-                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_WSCMI] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.135' AND MI001 ='{0}'", MI001);
-                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_WSCMI] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.134' AND MI001 ='{0}'", MI001);
-                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_WSCMI] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.133' AND MI001 ='{0}'", MI001);
-                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_WSCMI] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.132' AND MI001 ='{0}'", MI001);
-                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_WSCMI] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.130' AND MI001 ='{0}'", MI001);
-                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_WSCMI] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.137' AND MI001 ='{0}'", MI001);
-                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_WSCMI] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.131' AND MI001 ='{0}'", MI001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.138' AND MI001 ='{0}'", MU001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.135' AND MI001 ='{0}'", MU001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.134' AND MI001 ='{0}'", MU001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.133' AND MI001 ='{0}'", MU001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.132' AND MI001 ='{0}'", MU001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.130' AND MI001 ='{0}'", MU001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.137' AND MI001 ='{0}'", MU001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.131' AND MI001 ='{0}'", MU001);
                 sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" ");
 
@@ -1612,7 +1612,7 @@ namespace TKMK
         /// <param name="TA001"></param>
         /// <param name="TA005"></param>
         /// <returns></returns>
-        public int FINDSPECIALMNUMS(string TA009, string TA001, string TA005)
+        public int FINDSPECIALMNUMS(string TA008, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -1646,7 +1646,7 @@ namespace TKMK
                                     SELECT TB010,CONVERT(INT,ISNULL(SUM(TB019),0),0) SUMTB019
                                     FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
                                     WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006 
-                                    AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}' 
+                                    AND TA008='{0}' AND TA001='{1}' AND TA005>='{2}' 
                                     AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES])
                                     GROUP BY TB010
                                     ) AS TEMP ON TB010=ID
@@ -1654,7 +1654,7 @@ namespace TKMK
                                     AND CONVERT(NVARCHAR,SDATES,112)<='{1}'
                                     AND CONVERT(NVARCHAR,EDATES,112)>='{1}'
                                     ) AS TEMP2
-                                    ", TA009, TA001, TA005);
+                                    ", TA008, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -1692,7 +1692,7 @@ namespace TKMK
         /// <param name="TA001"></param>
         /// <param name="TA005"></param>
         /// <returns></returns>
-        public int FINDSPECIALMONEYS(string TA009, string TA001, string TA005)
+        public int FINDSPECIALMONEYS(string TA008, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -1727,7 +1727,7 @@ namespace TKMK
                                     SELECT TB010,CONVERT(INT,ISNULL(SUM(TB019),0),0) SUMTB019
                                     FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
                                     WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006 
-                                    AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}' 
+                                    AND TA008='{0}' AND TA001='{1}' AND TA005>='{2}' 
                                     AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES])
                                     GROUP BY TB010
                                     ) AS TEMP ON TB010=ID
@@ -1735,7 +1735,7 @@ namespace TKMK
                                     AND CONVERT(NVARCHAR,SDATES,112)<='{1}'
                                     AND CONVERT(NVARCHAR,EDATES,112)>='{1}'
                                     ) AS TEMP2
-                                     ", TA009, TA001, TA005);
+                                     ", TA008, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -1773,7 +1773,7 @@ namespace TKMK
         /// <param name="TA001"></param>
         /// <param name="TA005"></param>
         /// <returns></returns>
-        public int FINDSALESMMONEYS(string TA009, string TA001, string TA005)
+        public int FINDSALESMMONEYS(string TA008, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -1802,11 +1802,11 @@ namespace TKMK
                                     FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
                                     WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006  
                                     AND TB010  NOT IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCT] WHERE [VALID]='Y' AND [SPLITCAL]='Y')              
-                                    AND TA009='{0}'
+                                    AND TA008='{0}'
                                     AND TA001='{1}'
                                     AND TA005>='{2}'
                                     AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES])
-                                    ", TA009, TA001, TA005);
+                                    ", TA008, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -1843,7 +1843,7 @@ namespace TKMK
         /// <param name="TA001"></param>
         /// <param name="TA005"></param>
         /// <returns></returns>
-        public int FINDEXCHANGESALESMMONEYS(string TA009, string TA001, string TA005)
+        public int FINDEXCHANGESALESMMONEYS(string TA008, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -1872,11 +1872,11 @@ namespace TKMK
                                     FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTC WITH (NOLOCK)
                                     WHERE TA001=TC001 AND TA002=TC002 AND TA003=TC003  AND TA006=TC006
                                     AND TC008='0009'
-                                    AND TA009='{0}'
+                                    AND TA008='{0}'
                                     AND TA001='{1}'
                                     AND TA005>='{2}'
                                     AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES])
-                                    ", TA009, TA001, TA005);
+                                    ", TA008, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -2115,7 +2115,7 @@ namespace TKMK
         /// <param name="TA001"></param>
         /// <param name="TA005"></param>
         /// <returns></returns>
-        public int FINDGUSETNUM(string TA009, string TA001, string TA005)
+        public int FINDGUSETNUM(string TA008, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -2139,13 +2139,13 @@ namespace TKMK
                 sbSqlQuery.Clear();
 
                 sbSql.AppendFormat(@"  
-                                    SELECT COUNT(TA009) AS 'GUSETNUM'
+                                    SELECT COUNT(TA008) AS 'GUSETNUM'
                                     FROM [TK].dbo.POSTA WITH (NOLOCK)
-                                    WHERE TA009='{0}'
+                                    WHERE TA008='{0}'
                                     AND TA001='{1}'
                                     AND TA005>='{2}'
                                     AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES])
-                                    ", TA009, TA001, TA005);
+                                    ", TA008, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -2664,7 +2664,7 @@ namespace TKMK
                         }
                     }
 
-                    UPDATETKWSCMI(EXCHANACOOUNT, EXCHANNO + ' ' + CARNAME);
+                    UPDATETK_POSMU(EXCHANACOOUNT, EXCHANNO + ' ' + CARNAME);
                 }
 
 
