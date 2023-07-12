@@ -1277,14 +1277,14 @@ namespace TKMK
 
                 sbSql.AppendFormat(" UPDATE [TK].[dbo].[POSMU] SET [MU002]='{0}' WHERE MU001='{1}'", NAME, MU001);
                 sbSql.AppendFormat(" ");
-                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.138' AND MI001 ='{0}'", MU001);
-                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.135' AND MI001 ='{0}'", MU001);
-                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.134' AND MI001 ='{0}'", MU001);
-                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.133' AND MI001 ='{0}'", MU001);
-                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.132' AND MI001 ='{0}'", MU001);
-                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.130' AND MI001 ='{0}'", MU001);
-                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.137' AND MI001 ='{0}'", MU001);
-                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.131' AND MI001 ='{0}'", MU001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.138' AND MU001 ='{0}'", MU001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.135' AND MU001 ='{0}'", MU001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.134' AND MU001 ='{0}'", MU001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.133' AND MU001 ='{0}'", MU001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.132' AND MU001 ='{0}'", MU001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.130' AND MU001 ='{0}'", MU001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.137' AND MU001 ='{0}'", MU001);
+                sbSql.AppendFormat(" UPDATE  [TK].[dbo].[LOG_POSMU] SET sync_mark = 'N', sync_count=0 WHERE store_ip='192.168.1.131' AND MU001 ='{0}'", MU001);
                 sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" ");
 
@@ -2607,7 +2607,7 @@ namespace TKMK
                     }
                 }
 
-                //UPDATETKWSCMI(EXCHANACOOUNT, EXCHANNO + ' ' + CARNAME);
+                UPDATETK_POSMU(EXCHANACOOUNT, EXCHANNO + ' ' + CARNAME);
             }
             else if (STATUSCONTROLLER.Equals("EDIT"))
             {
