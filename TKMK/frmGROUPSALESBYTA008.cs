@@ -277,7 +277,7 @@ namespace TKMK
             sqlConn = new SqlConnection(sqlsb.ConnectionString);
 
             StringBuilder Sequel = new StringBuilder();
-            Sequel.AppendFormat(@"SELECT LTRIM(RTRIM((MI001)))+' '+SUBSTRING(MI002,1,3) AS 'MI001',MI002 FROM [TK].dbo.WSCMI WHERE ( MI001 LIKE '68%' OR  MI001 LIKE '69%')   AND MI001 NOT IN (SELECT [EXCHANACOOUNT] FROM [TKMK].[dbo].[GROUPSALESBYTA008] WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'  AND [STATUS]='預約接團' ) ORDER BY MI001 ", dateTimePicker1.Value.ToString("yyyyMMdd"));
+            Sequel.AppendFormat(@"SELECT LTRIM(RTRIM((MI001)))+' '+SUBSTRING(MI002,1,3) AS 'MI001',MI002 FROM [TK].dbo.WSCMI WHERE ( MI001 LIKE '68%' OR  MI001 LIKE '69%')   AND MI001 NOT IN (SELECT [EXCHANACOOUNT] FROM [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'  AND [STATUS]='預約接團' ) ORDER BY MI001 ", dateTimePicker1.Value.ToString("yyyyMMdd"));
             SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
             DataTable dt = new DataTable();
             sqlConn.Open();
@@ -442,7 +442,7 @@ namespace TKMK
 
 
                 sbSql.AppendFormat(@"  
-                                    SELECT ISNULL(MAX(SERNO),'0') SERNO FROM  [TKMK].[dbo].[GROUPSALESBYTA008] WHERE CONVERT(NVARCHAR,[CREATEDATES],112)='{0}'"
+                                    SELECT ISNULL(MAX(SERNO),'0') SERNO FROM  [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(NVARCHAR,[CREATEDATES],112)='{0}'"
                                     , CREATEDATES);
                 sbSql.AppendFormat(@"  ");  
 
@@ -556,7 +556,7 @@ namespace TKMK
                                     ,CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間'
                                     ,[EXCHANGEMONEYS] AS '領券額'
                                     ,[ID],[CREATEDATES]
-                                    FROM [TKMK].[dbo].[GROUPSALESBYTA008]
+                                    FROM [TKMK].[dbo].[GROUPSALES]
                                     WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'
                                     AND [STATUS]<>'取消預約'
                                     ORDER BY CONVERT(nvarchar,[CREATEDATES],112),CONVERT(int,[SERNO]) DESC
@@ -891,7 +891,7 @@ namespace TKMK
 
            
                 sbSql.AppendFormat(@" 
-                                    INSERT INTO [TKMK].[dbo].[GROUPSALESBYTA008]
+                                    INSERT INTO [TKMK].[dbo].[GROUPSALES]
                                     (
                                     [CREATEDATES]
                                     ,[SERNO]
@@ -1068,7 +1068,7 @@ namespace TKMK
                 tran = sqlConn.BeginTransaction();
       
                 sbSql.AppendFormat(@" 
-                                    UPDATE [TKMK].[dbo].[GROUPSALESBYTA008]
+                                    UPDATE [TKMK].[dbo].[GROUPSALES]
                                     SET 
                                     CARCOMPANY='{1}'
                                     ,TA008NO='{2}'
@@ -1343,7 +1343,7 @@ namespace TKMK
 
 
                 sbSql.AppendFormat(@" 
-                                    UPDATE [TKMK].[dbo].[GROUPSALESBYTA008]
+                                    UPDATE [TKMK].[dbo].[GROUPSALES]
                                     SET STATUS='{1}'
                                     WHERE [ID]='{0}'
                                     ", ID, STATUS);
@@ -1399,7 +1399,7 @@ namespace TKMK
 
 
                 sbSql.AppendFormat(@" 
-                                    UPDATE  [TKMK].[dbo].[GROUPSALESBYTA008]
+                                    UPDATE  [TKMK].[dbo].[GROUPSALES]
                                     SET GROUPSTARTDATES='{1}'
                                     WHERE ID='{0}'
                                     ", ID, GROUPSTARTDATES);
@@ -1453,7 +1453,7 @@ namespace TKMK
 
 
                 sbSql.AppendFormat(@" 
-                                    UPDATE  [TKMK].[dbo].[GROUPSALESBYTA008]
+                                    UPDATE  [TKMK].[dbo].[GROUPSALES]
                                     SET GROUPENDDATES='{1}'
                                     WHERE ID='{0}'
                                     ", ID, GROUPENDDATES);
@@ -2215,7 +2215,7 @@ namespace TKMK
 
      
                 sbSql.AppendFormat(@" 
-                                    UPDATE [TKMK].[dbo].[GROUPSALESBYTA008]
+                                    UPDATE [TKMK].[dbo].[GROUPSALES]
                                     SET [EXCHANGEMONEYS]={1},[EXCHANGETOTALMONEYS]={2},[EXCHANGESALESMMONEYS]={3},[SALESMMONEYS]={4},[SPECIALMNUMS]={5},[SPECIALMONEYS]={6},[COMMISSIONBASEMONEYS]={7},[COMMISSIONPCT]={8},[COMMISSIONPCTMONEYS]={9},[TOTALCOMMISSIONMONEYS]={10},[GUSETNUM]={11}
                                     WHERE [ID]='{0}'
                                     ", ID, EXCHANGEMONEYS, EXCHANGETOTALMONEYS, EXCHANGESALESMMONEYS, SALESMMONEYS, SPECIALMNUMS, SPECIALMONEYS, COMMISSIONBASEMONEYS, COMMISSIONPCT, COMMISSIONPCTMONEYS, TOTALCOMMISSIONMONEYS, GUSETNUM);
@@ -2276,14 +2276,14 @@ namespace TKMK
 
                 sbSql.AppendFormat(@"  
                                     SELECT COUNT(CARNO) AS NUMS  
-                                    ,(SELECT SUM(GUSETNUM) FROM [TKMK].[dbo].[GROUPSALESBYTA008] GP WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALESBYTA008].GROUPSTARTDATES,112) ) AS GUSETNUMS
-                                    ,(SELECT SUM(SALESMMONEYS) FROM [TKMK].[dbo].[GROUPSALESBYTA008] GP WITH(NOLOCK) WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALESBYTA008].GROUPSTARTDATES,112) ) AS SALESMMONEYS
-                                    ,(SELECT COUNT(CARNO) FROM [TKMK].[dbo].[GROUPSALESBYTA008] GP WITH(NOLOCK) WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALESBYTA008].GROUPSTARTDATES,112) AND STATUS='預約接團') AS CARNUM1
-                                    ,(SELECT COUNT(CARNO) FROM [TKMK].[dbo].[GROUPSALESBYTA008] GP WITH(NOLOCK) WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALESBYTA008].GROUPSTARTDATES,112) AND STATUS='取消預約') AS CARNUM2
-                                    ,(SELECT COUNT(CARNO) FROM [TKMK].[dbo].[GROUPSALESBYTA008] GP WITH(NOLOCK) WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALESBYTA008].GROUPSTARTDATES,112) AND STATUS='異常結案') AS CARNUM3
-                                    ,(SELECT COUNT(CARNO) FROM [TKMK].[dbo].[GROUPSALESBYTA008] GP WITH(NOLOCK) WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALESBYTA008].GROUPSTARTDATES,112) AND STATUS='完成接團') AS CARNUM4
-                                    ,(SELECT COUNT(CARNO) FROM [TKMK].[dbo].[GROUPSALESBYTA008] GP WITH(NOLOCK) WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALESBYTA008].GROUPSTARTDATES,112) AND STATUS='預約接團') AS CARNUM5
-                                    FROM [TKMK].[dbo].[GROUPSALESBYTA008] WITH(NOLOCK)
+                                    ,(SELECT SUM(GUSETNUM) FROM [TKMK].[dbo].[GROUPSALES] GP WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALESBYTA008].GROUPSTARTDATES,112) ) AS GUSETNUMS
+                                    ,(SELECT SUM(SALESMMONEYS) FROM [TKMK].[dbo].[GROUPSALES] GP WITH(NOLOCK) WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALESBYTA008].GROUPSTARTDATES,112) ) AS SALESMMONEYS
+                                    ,(SELECT COUNT(CARNO) FROM [TKMK].[dbo].[GROUPSALES] GP WITH(NOLOCK) WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALESBYTA008].GROUPSTARTDATES,112) AND STATUS='預約接團') AS CARNUM1
+                                    ,(SELECT COUNT(CARNO) FROM [TKMK].[dbo].[GROUPSALES] GP WITH(NOLOCK) WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALESBYTA008].GROUPSTARTDATES,112) AND STATUS='取消預約') AS CARNUM2
+                                    ,(SELECT COUNT(CARNO) FROM [TKMK].[dbo].[GROUPSALES] GP WITH(NOLOCK) WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALESBYTA008].GROUPSTARTDATES,112) AND STATUS='異常結案') AS CARNUM3
+                                    ,(SELECT COUNT(CARNO) FROM [TKMK].[dbo].[GROUPSALES] GP WITH(NOLOCK) WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALESBYTA008].GROUPSTARTDATES,112) AND STATUS='完成接團') AS CARNUM4
+                                    ,(SELECT COUNT(CARNO) FROM [TKMK].[dbo].[GROUPSALES] GP WITH(NOLOCK) WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALESBYTA008].GROUPSTARTDATES,112) AND STATUS='預約接團') AS CARNUM5
+                                    FROM [TKMK].[dbo].[GROUPSALES] WITH(NOLOCK)
                                     WHERE CONVERT(NVARCHAR,GROUPSTARTDATES,112)='{0}'
                                     AND STATUS IN ('預約接團','完成接團')
                                     GROUP BY CONVERT(NVARCHAR,GROUPSTARTDATES,112)
@@ -2362,7 +2362,7 @@ namespace TKMK
 
                 sbSql.AppendFormat(@"  
                                     SELECT COUNT([CARNO]) AS NUMS 
-                                    FROM [TKMK].[dbo].[GROUPSALESBYTA008]
+                                    FROM [TKMK].[dbo].[GROUPSALES]
                                     WHERE [STATUS]='預約接團' AND CONVERT(nvarchar,[CREATEDATES],112)='{0}' 
                                     ", CREATEDATES);
                 sbSql.AppendFormat(@"  ");
