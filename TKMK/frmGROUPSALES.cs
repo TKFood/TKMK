@@ -3184,7 +3184,7 @@ namespace TKMK
             }
             else if (!STATUS.Equals("完成接團"))
             {
-                MessageBox.Show("團車未 完成接團");
+                MessageBox.Show("團車未 完成接團"); 
             }
         }
 
