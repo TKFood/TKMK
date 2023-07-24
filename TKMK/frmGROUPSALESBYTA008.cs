@@ -82,6 +82,7 @@ namespace TKMK
             comboBox3load();
             comboBox5load();
             comboBox8load();
+            comboBox9load();
 
             dateTimePicker1.Value = DateTime.Now;
             dateTimePicker2.Value = DateTime.Now;
@@ -360,6 +361,40 @@ namespace TKMK
             sqlConn.Close();
         }
 
+
+        /// <summary>
+        /// report
+        /// 下拉 報表
+        /// </summary>
+        public void comboBox9load()
+        {
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"                                 
+                                SELECT [PARASNAMES],[DVALUES] FROM [TKMK].[dbo].[TBZPARAS] WHERE [KINDS]='REPOSRT1' ORDER BY [PARASNAMES]
+                                ");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("PARASNAMES", typeof(string));
+            da.Fill(dt);
+            comboBox9.DataSource = dt.DefaultView;
+            comboBox9.ValueMember = "PARASNAMES";
+            comboBox9.DisplayMember = "PARASNAMES";
+            sqlConn.Close();
+
+        }
         /// <summary>
         /// 下拉 業務員/會員，文字框更新
         /// </summary>
@@ -733,6 +768,8 @@ namespace TKMK
 
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
+            textBox2.Text = "";
+
             if (dataGridView1.CurrentRow != null)
             {
                 int rowindex = dataGridView1.CurrentRow.Index;
@@ -754,6 +791,8 @@ namespace TKMK
                     ID = row.Cells["ID"].Value.ToString();
 
                     STATUS = row.Cells["狀態"].Value.ToString().Trim();
+
+                    textBox2.Text = ID;
 
                     textBox121.Text = row.Cells["序號"].Value.ToString();
                     textBox131.Text = row.Cells["車號"].Value.ToString();
@@ -2625,6 +2664,93 @@ namespace TKMK
             return SB;
 
         }
+
+        public void SETFASTREPORT2(string SDATES, string REPORTS, string ID)
+        {
+            StringBuilder SQL = new StringBuilder();
+
+
+
+            Report report1 = new Report();
+            if (REPORTS.Equals("團車簽收單"))
+            {
+                report1.Load(@"REPORT\團車簽收表.frx");
+
+                SQL = SETSQL3(SDATES, ID);
+            }
+
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+
+            TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
+            table.SelectCommand = SQL.ToString();
+
+
+            report1.Preview = previewControl2;
+            report1.Show();
+        }
+
+        public StringBuilder SETSQL3(string SDATES, string ID)
+        {
+            StringBuilder SB = new StringBuilder();
+            StringBuilder SBQUERY1 = new StringBuilder();
+
+
+
+            SB.AppendFormat(@" 
+                            SELECT  
+                            [SERNO] AS '序號'
+                            ,[CARNAME] AS '車名'
+                            ,[CARNO] AS '車號'
+                            ,[CARKIND] AS '車種'
+                            ,[GROUPKIND]  AS '團類'
+                            ,[ISEXCHANGE] AS '兌換券'
+                            ,[EXCHANGETOTALMONEYS] AS '券總額'
+                            ,[EXCHANGESALESMMONEYS] AS '券消費'
+                            ,[SALESMMONEYS] AS '消費總額'
+                            ,[SPECIALMNUMS] AS '特賣數'
+                            ,[SPECIALMONEYS] AS '特賣獎金'
+                            ,[COMMISSIONBASEMONEYS] AS '茶水費'
+                            ,[COMMISSIONPCTMONEYS] AS '消費獎金'
+                            ,[TOTALCOMMISSIONMONEYS] AS '總獎金'
+                            ,[CARNUM] AS '車數'
+                            ,[GUSETNUM] AS '交易筆數'
+                            ,[CARCOMPANY] AS '來車公司'
+                            ,[TA008NO] AS '業務員名'
+                            ,[TA008] AS '業務員帳號'
+                            ,[EXCHANNO] AS '優惠券名'
+                            ,[EXCHANACOOUNT] AS '優惠券帳號'
+                            ,CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間'
+                            ,CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間'
+                            ,[STATUS] AS '狀態'
+                            ,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間'
+                            ,CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間'
+                            ,[EXCHANGEMONEYS] AS '領券額'
+                            ,[ID],[CREATEDATES]
+                            FROM [TKMK].[dbo].[GROUPSALES]
+                            WHERE 1=1
+                            AND [STATUS]='完成接團 '
+                            AND CONVERT(varchar(100), [GROUPSTARTDATES],112)='{0}'
+                            AND ID='{1}'
+
+                            ", SDATES, ID);
+
+            return SB;
+
+        }
+
+
         #endregion
 
         #region BUTTON
@@ -3022,6 +3148,17 @@ namespace TKMK
         }
 
 
+        private void button15_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(textBox2.Text) && STATUS.Equals("完成接團"))
+            {
+                SETFASTREPORT2(dateTimePicker6.Value.ToString("yyyyMMdd"), comboBox9.Text.ToString(), textBox2.Text);
+            }
+            else if (!STATUS.Equals("完成接團"))
+            {
+                MessageBox.Show("團車未 完成接團");
+            }
+        }
 
         #endregion
 
