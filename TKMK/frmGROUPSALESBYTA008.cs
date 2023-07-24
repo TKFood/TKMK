@@ -3159,6 +3159,19 @@ namespace TKMK
                 MessageBox.Show("團車未 完成接團");
             }
         }
+        private void button16_Click(object sender, EventArgs e)
+        {
+
+            if (!string.IsNullOrEmpty(textBox2.Text) && STATUS.Equals("完成接團"))
+            {
+                tabControl1.SelectedTab = tabPage3;
+                SETFASTREPORT2(dateTimePicker6.Value.ToString("yyyyMMdd"), comboBox9.Text.ToString(), textBox2.Text);
+            }
+            else if (!STATUS.Equals("完成接團"))
+            {
+                MessageBox.Show("團車未 完成接團");
+            }
+        }
 
         #endregion
 

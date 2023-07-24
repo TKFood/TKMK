@@ -120,6 +120,7 @@
             this.button15 = new System.Windows.Forms.Button();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.previewControl2 = new FastReport.Preview.PreviewControl();
+            this.button16 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -679,6 +680,7 @@
             this.tableLayoutPanel6.Controls.Add(this.button6, 5, 0);
             this.tableLayoutPanel6.Controls.Add(this.button14, 3, 0);
             this.tableLayoutPanel6.Controls.Add(this.button13, 2, 0);
+            this.tableLayoutPanel6.Controls.Add(this.button16, 1, 0);
             this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel6.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel6.Name = "tableLayoutPanel6";
@@ -1316,6 +1318,18 @@
             this.previewControl2.Size = new System.Drawing.Size(972, 557);
             this.previewControl2.TabIndex = 2;
             // 
+            // button16
+            // 
+            this.button16.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.button16.ForeColor = System.Drawing.Color.Fuchsia;
+            this.button16.Location = new System.Drawing.Point(123, 3);
+            this.button16.Name = "button16";
+            this.button16.Size = new System.Drawing.Size(114, 34);
+            this.button16.TabIndex = 726;
+            this.button16.Text = "列印簽收單";
+            this.button16.UseVisualStyleBackColor = true;
+            this.button16.Click += new System.EventHandler(this.button16_Click);
+            // 
             // frmGROUPSALESBYTA008
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 16F);
@@ -1463,5 +1477,6 @@
         private System.Windows.Forms.Button button15;
         private System.Windows.Forms.TextBox textBox2;
         private FastReport.Preview.PreviewControl previewControl2;
+        private System.Windows.Forms.Button button16;
     }
 }
