@@ -2516,7 +2516,7 @@ namespace TKMK
                             AND [STATUS]='完成接團 '
                             AND CONVERT(varchar(100), [GROUPSTARTDATES],112)='{0}'
                             AND ID='{1}'
-
+ 
                             ", SDATES, ID );
 
             return SB;
