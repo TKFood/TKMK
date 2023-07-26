@@ -2668,13 +2668,27 @@ namespace TKMK
         public void SETFASTREPORT2(string SDATES, string REPORTS, string ID)
         {
             StringBuilder SQL = new StringBuilder();
+            int CHECKCOMPANY = 1;
 
-
+            //是否列印2張
+            DataTable DT_CHECK_COMPANY = CHECK_COMPANY(SDATES, ID);
+            if(DT_CHECK_COMPANY!=null && DT_CHECK_COMPANY.Rows.Count>=1)
+            {
+                CHECKCOMPANY = Convert.ToInt32(DT_CHECK_COMPANY.Rows[0]["PRINTS"].ToString());
+            }
+            
 
             Report report1 = new Report();
             if (REPORTS.Equals("團車簽收單"))
             {
-                report1.Load(@"REPORT\團車簽收表.frx");
+                if(CHECKCOMPANY==1)
+                {
+                    report1.Load(@"REPORT\團車簽收表.frx");
+                }
+                else if(CHECKCOMPANY == 2)
+                {
+                    report1.Load(@"REPORT\團車簽收表_2聯.frx");
+                }                
 
                 SQL = SETSQL3(SDATES, ID);
             }
@@ -2938,6 +2952,75 @@ namespace TKMK
                   
                 }
             }
+        }
+
+
+        public DataTable CHECK_COMPANY(string GROUPSTARTDATES,string ID)
+        {
+            DataTable DT = new DataTable();
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"                                     
+                                    SELECT  
+                                    [GROUPSALES].[CARCOMPANY] AS '來車公司'
+                                    ,[GROUPSALES].[ID]
+                                    ,[GROUPCARCOMPANY].PRINTS
+                                    FROM [TKMK].[dbo].[GROUPSALES],[TKMK].dbo.GROUPCARCOMPANY
+                                    WHERE 1=1
+                                    AND [GROUPSALES].CARCOMPANY=GROUPCARCOMPANY.CARCOMPANY
+                                    AND [STATUS]='完成接團 '
+                                    AND CONVERT(varchar(100), [GROUPSTARTDATES],112)='{0}'
+                                    AND [GROUPSALES].ID='{1}'
+                                    ", GROUPSTARTDATES, ID);
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return ds1.Tables["ds1"];
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+
         }
 
         #endregion
