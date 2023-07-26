@@ -2750,6 +2750,195 @@ namespace TKMK
 
         }
 
+        /// <summary>
+        /// 找出團務資料
+        /// SEARCHGROUPSALES_REFIND
+        /// </summary>
+        /// <param name="CREATEDATES"></param>
+        public void SEARCHGROUPSALES_dataGridView2(string CREATEDATES)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"                                     
+                                    SELECT  
+                                    [SERNO] AS '序號'
+                                    ,[CARNAME] AS '車名'
+                                    ,[CARNO] AS '車號'
+                                    ,[CARKIND] AS '車種'
+                                    ,[GROUPKIND]  AS '團類'
+                                    ,[ISEXCHANGE] AS '兌換券'
+                                    ,[EXCHANGETOTALMONEYS] AS '券總額'
+                                    ,[EXCHANGESALESMMONEYS] AS '券消費'
+                                    ,[SALESMMONEYS] AS '消費總額'
+                                    ,[SPECIALMNUMS] AS '特賣數'
+                                    ,[SPECIALMONEYS] AS '特賣獎金'
+                                    ,[COMMISSIONBASEMONEYS] AS '茶水費'
+                                    ,[COMMISSIONPCTMONEYS] AS '消費獎金'
+                                    ,[TOTALCOMMISSIONMONEYS] AS '總獎金'
+                                    ,[CARNUM] AS '車數'
+                                    ,[GUSETNUM] AS '交易筆數'
+                                    ,[CARCOMPANY] AS '來車公司'
+                                    ,[TA008NO] AS '業務員名'
+                                    ,[TA008] AS '業務員帳號'
+                                    ,[EXCHANNO] AS '優惠券名'
+                                    ,[EXCHANACOOUNT] AS '優惠券帳號'
+                                    ,CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間'
+                                    ,CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間'
+                                    ,[STATUS] AS '狀態'
+                                    ,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間'
+                                    ,CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間'
+                                    ,[EXCHANGEMONEYS] AS '領券額'
+                                    ,[ID],[CREATEDATES]
+                                    FROM [TKMK].[dbo].[GROUPSALES]
+                                    WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'
+                                    AND [STATUS]<>'取消預約'
+                                    ORDER BY CONVERT(nvarchar,[CREATEDATES],112),CONVERT(int,[SERNO]) DESC
+                                    ", CREATEDATES);
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count == 0)
+                {
+                    dataGridView2.DataSource = null;
+                }
+                else
+                {
+                    if (ds1.Tables["ds1"].Rows.Count >= 1)
+                    {
+                        dataGridView2.DataSource = ds1.Tables["ds1"];
+
+                        dataGridView2.AutoResizeColumns();
+                        dataGridView2.ColumnHeadersDefaultCellStyle.Font = new Font("Tahoma", 9);
+                        dataGridView2.DefaultCellStyle.Font = new Font("Tahoma", 10);
+                        dataGridView2.Columns["序號"].Width = 30;
+                        dataGridView2.Columns["車名"].Width = 80;
+                        dataGridView2.Columns["車號"].Width = 100;
+                        dataGridView2.Columns["車種"].Width = 40;
+                        dataGridView2.Columns["團類"].Width = 80;
+                        dataGridView2.Columns["兌換券"].Width = 20;
+
+                        dataGridView2.Columns["券總額"].Width = 60;
+                        dataGridView2.Columns["券消費"].Width = 60;
+                        dataGridView2.Columns["消費總額"].Width = 80;
+                        dataGridView2.Columns["特賣數"].Width = 60;
+                        dataGridView2.Columns["特賣獎金"].Width = 60;
+                        dataGridView2.Columns["茶水費"].Width = 60;
+                        dataGridView2.Columns["消費獎金"].Width = 60;
+                        dataGridView2.Columns["總獎金"].Width = 60;
+                        dataGridView2.Columns["車數"].Width = 60;
+                        dataGridView2.Columns["交易筆數"].Width = 60;
+                        dataGridView2.Columns["業務員名"].Width = 80;
+                        dataGridView2.Columns["業務員帳號"].Width = 80;
+                        dataGridView2.Columns["優惠券名"].Width = 80;
+                        dataGridView2.Columns["優惠券帳號"].Width = 80;
+                        dataGridView2.Columns["實際到達時間"].Width = 160;
+
+                        dataGridView2.Columns["實際離開時間"].Width = 160;
+                        dataGridView2.Columns["狀態"].Width = 160;
+                        dataGridView2.Columns["預計到達時間"].Width = 100;
+                        dataGridView2.Columns["預計離開時間"].Width = 80;
+                        //dataGridView1.Columns["抽佣比率"].Width = 80;
+                        dataGridView2.Columns["領券額"].Width = 80;
+                        dataGridView2.Columns["來車公司"].Width = 80;
+                        dataGridView2.Columns["ID"].Width = 100;
+                        dataGridView2.Columns["CREATEDATES"].Width = 80;
+
+                        //根据列表中数据不同，显示不同颜色背景
+                        foreach (DataGridViewRow dgRow in dataGridView2.Rows)
+                        {
+                            dgRow.Cells["車名"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["車號"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["券總額"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["券消費"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["消費總額"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["消費獎金"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["特賣數"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["特賣獎金"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["茶水費"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["總獎金"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["交易筆數"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["優惠券名"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["業務員名"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["來車公司"].Style.Font = new Font("Tahoma", 14);
+
+                            //判断
+                            if (dgRow.Cells["狀態"].Value.ToString().Trim().Equals("完成接團"))
+                            {
+                                //将这行的背景色设置成Pink
+                                dgRow.DefaultCellStyle.ForeColor = Color.Blue;
+                            }
+                            else if (dgRow.Cells["狀態"].Value.ToString().Trim().Equals("取消預約"))
+                            {
+                                //将这行的背景色设置成Pink
+                                dgRow.DefaultCellStyle.ForeColor = Color.Pink;
+                            }
+                            else if (dgRow.Cells["狀態"].Value.ToString().Trim().Equals("異常結案"))
+                            {
+                                //将这行的背景色设置成Pink
+                                dgRow.DefaultCellStyle.ForeColor = Color.Red;
+                            }
+                        }
+                    }
+
+                }
+
+               
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        private void dataGridView2_SelectionChanged(object sender, EventArgs e)
+        {
+            textBox3.Text = "";
+
+            if (dataGridView2.CurrentRow != null)
+            {
+                int rowindex = dataGridView2.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView2.Rows[rowindex];
+                    textBox3.Text = row.Cells["ID"].Value.ToString();
+                }
+                else
+                {
+                  
+                }
+            }
+        }
 
         #endregion
 
@@ -3174,7 +3363,29 @@ namespace TKMK
             if (!string.IsNullOrEmpty(textBox2.Text) && STATUS.Equals("完成接團"))
             {
                 tabControl1.SelectedTab = tabPage3;
+                tabControl2.SelectedTab = tabPage4;
+
                 SETFASTREPORT2(dateTimePicker6.Value.ToString("yyyyMMdd"), comboBox9.Text.ToString(), textBox2.Text);
+            }
+            else if (!STATUS.Equals("完成接團"))
+            {
+                MessageBox.Show("團車未 完成接團");
+            }
+        }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            //查詢來車資料
+            SEARCHGROUPSALES_dataGridView2(dateTimePicker7.Value.ToString("yyyyMMdd"));
+        }
+
+        private void button17_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(textBox3.Text) && STATUS.Equals("完成接團"))
+            {
+                tabControl1.SelectedTab = tabPage3;
+                tabControl2.SelectedTab = tabPage4;
+
+                SETFASTREPORT2(dateTimePicker7.Value.ToString("yyyyMMdd"), comboBox9.Text.ToString(), textBox3.Text);
             }
             else if (!STATUS.Equals("完成接團"))
             {
@@ -3184,6 +3395,6 @@ namespace TKMK
 
         #endregion
 
-
+      
     }
 }
