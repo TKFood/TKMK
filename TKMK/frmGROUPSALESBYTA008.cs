@@ -310,16 +310,16 @@ namespace TKMK
             sqlConn = new SqlConnection(sqlsb.ConnectionString);
 
             StringBuilder Sequel = new StringBuilder();
-            Sequel.AppendFormat(@"SELECT [PARASNAMES],[DVALUES] FROM [TKMK].[dbo].[TBZPARAS] WHERE [KINDS]='CARCOMPANY' ORDER BY [PARASNAMES]");
+            Sequel.AppendFormat(@"SELECT [ID],[CARCOMPANY],[PRINTS],[CPMMENTS] FROM [TKMK].[dbo].[GROUPCARCOMPANY] ORDER BY [ID]");
             SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
             DataTable dt = new DataTable();
             sqlConn.Open();
 
-            dt.Columns.Add("PARASNAMES", typeof(string));
+            dt.Columns.Add("CARCOMPANY", typeof(string));
             da.Fill(dt);
             comboBox5.DataSource = dt.DefaultView;
-            comboBox5.ValueMember = "PARASNAMES";
-            comboBox5.DisplayMember = "PARASNAMES";
+            comboBox5.ValueMember = "CARCOMPANY";
+            comboBox5.DisplayMember = "CARCOMPANY";
             sqlConn.Close();
 
         }
@@ -345,19 +345,19 @@ namespace TKMK
 
             StringBuilder Sequel = new StringBuilder();
             Sequel.AppendFormat(@"
-                                  SELECT '全部' PARASNAMES,'全部' DVALUES
+                                SELECT 0 ID,'全部' CARCOMPANY
                                 UNION ALL
-                                SELECT [PARASNAMES],[DVALUES] FROM [TKMK].[dbo].[TBZPARAS] WHERE [KINDS]='CARCOMPANY' ORDER BY [PARASNAMES]
+                                SELECT [ID],[CARCOMPANY] FROM [TKMK].[dbo].[GROUPCARCOMPANY] ORDER BY [ID]
                                 ");
             SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
             DataTable dt = new DataTable();
             sqlConn.Open();
 
-            dt.Columns.Add("PARASNAMES", typeof(string));
+            dt.Columns.Add("CARCOMPANY", typeof(string));
             da.Fill(dt);
             comboBox8.DataSource = dt.DefaultView;
-            comboBox8.ValueMember = "PARASNAMES";
-            comboBox8.DisplayMember = "PARASNAMES";
+            comboBox8.ValueMember = "CARCOMPANY";
+            comboBox8.DisplayMember = "CARCOMPANY";
             sqlConn.Close();
         }
 
