@@ -3056,6 +3056,9 @@ namespace TKMK
         {
             STATUSCONTROLLER = "ADD";
 
+            dateTimePicker2.Value = DateTime.Now;
+            dateTimePicker3.Value = DateTime.Now;
+
             SETTEXT1();
             comboBox3load();
         }
