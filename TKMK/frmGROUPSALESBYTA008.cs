@@ -3059,6 +3059,7 @@ namespace TKMK
 
             dateTimePicker2.Value = DateTime.Now;
             dateTimePicker3.Value = DateTime.Now;
+            comboBox6.Text = "否";
 
             SETTEXT1();
             comboBox3load();
