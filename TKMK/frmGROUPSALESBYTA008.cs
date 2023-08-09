@@ -1633,7 +1633,7 @@ namespace TKMK
                             //如果團車記錄，車數是2台以上，還可以代領
                             int CARNUM = Convert.ToInt32(dr.Cells["車數"].Value.ToString().Trim());
                             //兌換券可消費的金額上限
-                            EXCHANGEMONEYS = FINDEXCHANGEMONEYS(STARTDATES);
+                            EXCHANGEMONEYS = FINDEXCHANGEMONEYS(STARTDATES, CARKIND);
                             EXCHANGETOTALMONEYS = EXCHANGEMONEYS * CARNUM;
                             //EXCHANGESALESMMONEYS = FINDEXCHANGESALESMMONEYS(ACCOUNT, STARTDATES, STARTTIMES);
                             COMMISSIONBASEMONEYS = 0;
@@ -1987,7 +1987,7 @@ namespace TKMK
         /// 計算 抵換券 的金額
         /// </summary>
         /// <returns></returns>
-        public int FINDEXCHANGEMONEYS(string SDATES)
+        public int FINDEXCHANGEMONEYS(string SDATES,string CARKIND)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -2016,9 +2016,10 @@ namespace TKMK
                                     FROM [TKMK].[dbo].[GROUPEXCHANGEMONEYS]
                                     WHERE  1=1
                                     AND [VALID]='Y'
-                                    AND CONVERT(NVARCHAR,SDATES,112)<='{0}'
-                                    AND CONVERT(NVARCHAR,EDATES,112)>='{0}'
-                                    ", SDATES);
+                                    AND [CARKIND]='{0}'
+                                    AND CONVERT(NVARCHAR,SDATES,112)<='{1}'
+                                    AND CONVERT(NVARCHAR,EDATES,112)>='{1}'
+                                    ", CARKIND, SDATES);
 
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
