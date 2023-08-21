@@ -791,6 +791,7 @@ namespace TKMK
             string ID, string CREATEDATES, string SERNO, string CARNO, string CARNAME, string CARKIND, string GROUPKIND, string ISEXCHANGE, string EXCHANGEMONEYS, string EXCHANGETOTALMONEYS
             , string EXCHANGESALESMMONEYS, string SALESMMONEYS, string SPECIALMNUMS, string SPECIALMONEYS, string COMMISSIONBASEMONEYS, string COMMISSIONPCTMONEYS, string TOTALCOMMISSIONMONEYS, string CARNUM, string GUSETNUM, string EXCHANNO
             , string EXCHANACOOUNT, string PURGROUPSTARTDATES, string GROUPSTARTDATES, string PURGROUPENDDATES, string GROUPENDDATES, string STATUS
+            , string TA008NO, string TA008
             )
         {
 
@@ -816,17 +817,17 @@ namespace TKMK
 
                 sbSql.AppendFormat(" INSERT INTO [TKMK].[dbo].[GROUPSALES]");
                 sbSql.AppendFormat(" (");
-                sbSql.AppendFormat(" [ID],[CREATEDATES],[SERNO],[CARNO],[CARNAME],[CARKIND],[GROUPKIND],[ISEXCHANGE],[EXCHANGEMONEYS],[EXCHANGETOTALMONEYS]");
+                sbSql.AppendFormat(" [CREATEDATES],[SERNO],[CARNO],[CARNAME],[CARKIND],[GROUPKIND],[ISEXCHANGE],[EXCHANGEMONEYS],[EXCHANGETOTALMONEYS]");
                 sbSql.AppendFormat(" ,[EXCHANGESALESMMONEYS],[SALESMMONEYS],[SPECIALMNUMS],[SPECIALMONEYS],[COMMISSIONBASEMONEYS],[COMMISSIONPCTMONEYS],[TOTALCOMMISSIONMONEYS],[CARNUM],[GUSETNUM],[EXCHANNO]");
                 sbSql.AppendFormat(" ,[EXCHANACOOUNT],[PURGROUPSTARTDATES],[GROUPSTARTDATES],[PURGROUPENDDATES],[GROUPENDDATES],[STATUS]");
-                sbSql.AppendFormat(" )");
+                sbSql.AppendFormat(" ,[TA008NO],[TA008])");
                 sbSql.AppendFormat(" VALUES");
                 sbSql.AppendFormat(" (");
-                sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}',{8},{9},", ID, CREATEDATES, SERNO, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, EXCHANGEMONEYS, EXCHANGETOTALMONEYS);
+                sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}',{8},", CREATEDATES, SERNO, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, EXCHANGEMONEYS, EXCHANGETOTALMONEYS);
                 sbSql.AppendFormat("  {0},{1},{2},{3},{4},{5},{6},{7},{8},'{9}',", EXCHANGESALESMMONEYS, SALESMMONEYS, SPECIALMNUMS, SPECIALMONEYS, COMMISSIONBASEMONEYS, COMMISSIONPCTMONEYS, TOTALCOMMISSIONMONEYS, CARNUM, GUSETNUM, EXCHANNO);
                 sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}'", EXCHANACOOUNT, PURGROUPSTARTDATES, GROUPSTARTDATES, PURGROUPENDDATES, GROUPENDDATES, STATUS);
+                sbSql.AppendFormat(" ,'{0}','{1}'",TA008NO,TA008);
                 sbSql.AppendFormat(" )");
-                sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" ");
 
                 cmd.Connection = sqlConn;
@@ -916,7 +917,7 @@ namespace TKMK
             }
         }
 
-        public void UPDATEGROUPSALES2(string ID, string CARNO, string CARNAME, string CARKIND, string GROUPKIND, string ISEXCHANGE, string CARNUM, string GUSETNUM, string EXCHANNO, string EXCHANACOOUNT, string STATUS, string GROUPSTARTDATES,string CARCOMPANY)
+        public void UPDATEGROUPSALES2(string ID, string CARNO, string CARNAME, string CARKIND, string GROUPKIND, string ISEXCHANGE, string CARNUM, string GUSETNUM, string EXCHANNO, string EXCHANACOOUNT, string STATUS, string GROUPSTARTDATES,string CARCOMPANY,string TA008NO,string TA008)
         {
             try
             {
@@ -941,6 +942,7 @@ namespace TKMK
                 sbSql.AppendFormat(" SET [CARNO]='{0}',[CARNAME]='{1}',[CARKIND]='{2}',[GROUPKIND]='{3}',[ISEXCHANGE]='{4}',[CARNUM]='{5}'", CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM);
                 sbSql.AppendFormat(" ,[GUSETNUM]='{0}',[EXCHANNO]='{1}',[EXCHANACOOUNT]='{2}',STATUS='{3}',[GROUPSTARTDATES]='{4}'", GUSETNUM, EXCHANNO, EXCHANACOOUNT, STATUS, GROUPSTARTDATES);
                 sbSql.AppendFormat(" ,[CARCOMPANY]='{0}'", CARCOMPANY);
+                sbSql.AppendFormat(" ,[TA008NO]='{0}',[TA008]='{1}' ", TA008NO, TA008);
                 sbSql.AppendFormat(" WHERE [ID]='{0}'", ID);
                 sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" ");
@@ -1188,7 +1190,7 @@ namespace TKMK
             }
         }
 
-        public int FINDSPECIALMNUMS(string TA009, string TA001, string TA005)
+        public int FINDSPECIALMNUMS(string TA008, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -1215,13 +1217,13 @@ namespace TKMK
                                     SELECT SUM(NUMS) AS SPECIALMNUMS
                                     FROM (
                                     SELECT [ID],[NAME],[NUM],[MONEYS],[SPLITCAL],[VALID]
-                                    ,(SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}') AS 'NUMS'
-                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM]) AS 'BASENUMS'
-                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM])*[MONEYS] AS 'SPECIALMONEYS'
+                                    ,(SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA008='{0}' AND TA001='{1}' AND TA005>='{2}') AS 'NUMS'
+                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA008='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM]) AS 'BASENUMS'
+                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA008='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM])*[MONEYS] AS 'SPECIALMONEYS'
                                     FROM [TKMK].[dbo].[GROUPPRODUCT]
                                     WHERE [VALID]='Y' 
                                     ) AS TEMP
-                                    ", TA009, TA001, TA005);
+                                    ", TA008, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -1252,7 +1254,7 @@ namespace TKMK
             }
         }
 
-        public int FINDSPECIALMONEYS(string TA009, string TA001, string TA005)
+        public int FINDSPECIALMONEYS(string TA008, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -1279,14 +1281,14 @@ namespace TKMK
                                     SELECT SUM(SPECIALMONEYS) AS SPECIALMONEYS
                                     FROM (
                                     SELECT [ID],[NAME],[NUM],[MONEYS],[SPLITCAL],[VALID]
-                                    ,(SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}') AS 'NUMS'
-                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM]) AS 'BASENUMS'
-                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA009='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM])*[MONEYS] AS 'SPECIALMONEYS'
+                                    ,(SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA008='{0}' AND TA001='{1}' AND TA005>='{2}') AS 'NUMS'
+                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA008='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM]) AS 'BASENUMS'
+                                    ,((SELECT  CONVERT(INT,ISNULL(SUM(TB019),0),0) FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006 AND TB010=ID  AND TA008='{0}' AND TA001='{1}' AND TA005>='{2}')/[NUM])*[MONEYS] AS 'SPECIALMONEYS'
                                     FROM [TKMK].[dbo].[GROUPPRODUCT]
                                     WHERE [VALID]='Y' 
                                     ) AS TEMP
 
-                                   ", TA009, TA001, TA005);
+                                   ", TA008, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -1317,7 +1319,7 @@ namespace TKMK
             }
         }
 
-        public int FINDSPECIALNUMSMONEYS(string TA009, string TA001, string TA005)
+        public int FINDSPECIALNUMSMONEYS(string TA008, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -1346,10 +1348,10 @@ namespace TKMK
                                     LEFT JOIN [TKMK].[dbo].[GROUPPRODUCT] ON [GROUPPRODUCT].ID=TB010
                                     WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006
                                     AND TB010 IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCT] WHERE [SPLITCAL]='Y')
-                                    AND TA009='{0}'
+                                    AND TA008='{0}'
                                     AND TA001='{1}'
                                     AND TA005>='{2}'
-                                    ", TA009, TA001, TA005);
+                                    ", TA008, TA001, TA005);
 
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -1380,7 +1382,7 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
-        public int FINDSALESMMONEYS(string TA009, string TA001, string TA005)
+        public int FINDSALESMMONEYS(string TA008, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -1409,10 +1411,10 @@ namespace TKMK
                                     FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
                                     WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006  
                                     AND TB010  NOT IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCT] WHERE [VALID]='Y' AND [SPLITCAL]='Y')              
-                                    AND TA009='{0}'
+                                    AND TA008='{0}'
                                     AND TA001='{1}'
                                     AND TA005>='{2}'
-                                    ", TA009, TA001, TA005);
+                                    ", TA008, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -1443,7 +1445,7 @@ namespace TKMK
             }
         }
 
-        public int FINDEXCHANGESALESMMONEYS(string TA009, string TA001, string TA005)
+        public int FINDEXCHANGESALESMMONEYS(string TA008, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -1470,7 +1472,7 @@ namespace TKMK
                 sbSql.AppendFormat(@"  FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTC WITH (NOLOCK)");
                 sbSql.AppendFormat(@"  WHERE TA001=TC001 AND TA002=TC002 AND TA003=TC003  AND TA006=TC006");
                 sbSql.AppendFormat(@"  AND TC008='0009'");
-                sbSql.AppendFormat(@"  AND TA009='{0}'", TA009);
+                sbSql.AppendFormat(@"  AND TA008='{0}'", TA008);
                 sbSql.AppendFormat(@"  AND TA001='{0}'", TA001);
                 sbSql.AppendFormat(@"  AND TA005>='{0}'", TA005);
                 sbSql.AppendFormat(@"  ");
@@ -1619,7 +1621,7 @@ namespace TKMK
             }
         }
 
-        public int FINDGUSETNUM(string TA009, string TA001, string TA005)
+        public int FINDGUSETNUM(string TA008, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
@@ -1642,9 +1644,9 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-                sbSql.AppendFormat(@"  SELECT COUNT(TA009) AS 'GUSETNUM'");
+                sbSql.AppendFormat(@"  SELECT COUNT(TA008) AS 'GUSETNUM'");
                 sbSql.AppendFormat(@"  FROM [TK].dbo.POSTA WITH (NOLOCK)");
-                sbSql.AppendFormat(@"  WHERE TA009='{0}'", TA009);
+                sbSql.AppendFormat(@"  WHERE TA008='{0}'", TA008);
                 sbSql.AppendFormat(@"  AND TA001='{0}'", TA001);
                 sbSql.AppendFormat(@"  AND TA005>='{0}'", TA005);
                 sbSql.AppendFormat(@"  ");
@@ -2462,6 +2464,8 @@ namespace TKMK
                 string GUSETNUM = textBox143.Text.Trim();
                 string EXCHANNO = textBox144.Text.Trim();
                 string EXCHANACOOUNT = comboBox3.Text.Trim().Substring(0, 7).ToString();
+                string TA008NO = textBox144.Text.Trim();
+                string TA008 = comboBox3.Text.Trim().Substring(0, 7).ToString();
                 string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                 string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                 string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
@@ -2475,7 +2479,7 @@ namespace TKMK
                     ID, CREATEDATES, SERNO, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, EXCHANGEMONEYS, EXCHANGETOTALMONEYS
                     , EXCHANGESALESMMONEYS, SALESMMONEYS, SPECIALMNUMS, SPECIALMONEYS, COMMISSIONBASEMONEYS, COMMISSIONPCTMONEYS, TOTALCOMMISSIONMONEYS, CARNUM, GUSETNUM, EXCHANNO
                     , EXCHANACOOUNT, PURGROUPSTARTDATES, GROUPSTARTDATES, PURGROUPENDDATES, GROUPENDDATES, STATUS
-
+                    , TA008NO, TA008
                    );
 
                     textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
@@ -2516,6 +2520,9 @@ namespace TKMK
                     string GUSETNUM = textBox143.Text.Trim();
                     string EXCHANNO = textBox144.Text.Trim();
                     string EXCHANACOOUNT = comboBox3.Text.Trim().Substring(0, 7).ToString();
+
+                    string TA008NO = textBox144.Text.Trim();
+                    string TA008 = comboBox3.Text.Trim().Substring(0, 7).ToString();
                     //string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     //string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
@@ -2523,7 +2530,7 @@ namespace TKMK
 
                     if (!string.IsNullOrEmpty(ID) && !string.IsNullOrEmpty(CARNO) && !string.IsNullOrEmpty(EXCHANNO) && !string.IsNullOrEmpty(EXCHANACOOUNT))
                     {
-                        UPDATEGROUPSALES2(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, "預約接團", GROUPSTARTDATES, CARCOMPANY);
+                        UPDATEGROUPSALES2(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, "預約接團", GROUPSTARTDATES, CARCOMPANY, TA008NO, TA008);
                     }
 
                     if (!string.IsNullOrEmpty(CARNO) && !string.IsNullOrEmpty(CARNAME) && !string.IsNullOrEmpty(CARKIND))
