@@ -791,7 +791,7 @@ namespace TKMK
             string ID, string CREATEDATES, string SERNO, string CARNO, string CARNAME, string CARKIND, string GROUPKIND, string ISEXCHANGE, string EXCHANGEMONEYS, string EXCHANGETOTALMONEYS
             , string EXCHANGESALESMMONEYS, string SALESMMONEYS, string SPECIALMNUMS, string SPECIALMONEYS, string COMMISSIONBASEMONEYS, string COMMISSIONPCTMONEYS, string TOTALCOMMISSIONMONEYS, string CARNUM, string GUSETNUM, string EXCHANNO
             , string EXCHANACOOUNT, string PURGROUPSTARTDATES, string GROUPSTARTDATES, string PURGROUPENDDATES, string GROUPENDDATES, string STATUS
-            , string TA008NO, string TA008
+            , string TA008NO, string TA008,string CARCOMPANY
             )
         {
 
@@ -820,13 +820,13 @@ namespace TKMK
                 sbSql.AppendFormat(" [CREATEDATES],[SERNO],[CARNO],[CARNAME],[CARKIND],[GROUPKIND],[ISEXCHANGE],[EXCHANGEMONEYS],[EXCHANGETOTALMONEYS]");
                 sbSql.AppendFormat(" ,[EXCHANGESALESMMONEYS],[SALESMMONEYS],[SPECIALMNUMS],[SPECIALMONEYS],[COMMISSIONBASEMONEYS],[COMMISSIONPCTMONEYS],[TOTALCOMMISSIONMONEYS],[CARNUM],[GUSETNUM],[EXCHANNO]");
                 sbSql.AppendFormat(" ,[EXCHANACOOUNT],[PURGROUPSTARTDATES],[GROUPSTARTDATES],[PURGROUPENDDATES],[GROUPENDDATES],[STATUS]");
-                sbSql.AppendFormat(" ,[TA008NO],[TA008])");
+                sbSql.AppendFormat(" ,[TA008NO],[TA008],[CARCOMPANY])");
                 sbSql.AppendFormat(" VALUES");
                 sbSql.AppendFormat(" (");
                 sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}',{8},", CREATEDATES, SERNO, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, EXCHANGEMONEYS, EXCHANGETOTALMONEYS);
                 sbSql.AppendFormat("  {0},{1},{2},{3},{4},{5},{6},{7},{8},'{9}',", EXCHANGESALESMMONEYS, SALESMMONEYS, SPECIALMNUMS, SPECIALMONEYS, COMMISSIONBASEMONEYS, COMMISSIONPCTMONEYS, TOTALCOMMISSIONMONEYS, CARNUM, GUSETNUM, EXCHANNO);
                 sbSql.AppendFormat(" '{0}','{1}','{2}','{3}','{4}','{5}'", EXCHANACOOUNT, PURGROUPSTARTDATES, GROUPSTARTDATES, PURGROUPENDDATES, GROUPENDDATES, STATUS);
-                sbSql.AppendFormat(" ,'{0}','{1}'",TA008NO,TA008);
+                sbSql.AppendFormat(" ,'{0}','{1}','{2}'", TA008NO,TA008, CARCOMPANY);
                 sbSql.AppendFormat(" )");
                 sbSql.AppendFormat(" ");
 
@@ -2479,7 +2479,7 @@ namespace TKMK
                     ID, CREATEDATES, SERNO, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, EXCHANGEMONEYS, EXCHANGETOTALMONEYS
                     , EXCHANGESALESMMONEYS, SALESMMONEYS, SPECIALMNUMS, SPECIALMONEYS, COMMISSIONBASEMONEYS, COMMISSIONPCTMONEYS, TOTALCOMMISSIONMONEYS, CARNUM, GUSETNUM, EXCHANNO
                     , EXCHANACOOUNT, PURGROUPSTARTDATES, GROUPSTARTDATES, PURGROUPENDDATES, GROUPENDDATES, STATUS
-                    , TA008NO, TA008
+                    , TA008NO, TA008, CARCOMPANY
                    );
 
                     textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
