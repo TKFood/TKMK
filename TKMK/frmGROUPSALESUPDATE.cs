@@ -205,24 +205,24 @@ namespace TKMK
             sqlConn = new SqlConnection(sqlsb.ConnectionString);
 
             StringBuilder Sequel = new StringBuilder();
-            Sequel.AppendFormat(@"SELECT LTRIM(RTRIM((MI001)))+' '+SUBSTRING(MI002,1,3) AS 'MI001',MI002 FROM [TK].dbo.WSCMI WHERE MI001 LIKE '68%'  AND MI001 NOT IN (SELECT [EXCHANACOOUNT] FROM [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'  AND [STATUS]='預約接團' ) ORDER BY MI001 ", dateTimePicker1.Value.ToString("yyyyMMdd"));
+            Sequel.AppendFormat(@"SELECT LTRIM(RTRIM((MU001)))+' '+SUBSTRING(MU002,1,3) AS 'MU001',MU002 FROM [TK].dbo.POSMU WHERE ( MU001 LIKE '68%' OR  MU001 LIKE '69%')   AND MU001 NOT IN (SELECT [EXCHANACOOUNT] FROM [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'  AND [STATUS]='預約接團' ) ORDER BY MU001 ", dateTimePicker1.Value.ToString("yyyyMMdd"));
             SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
             DataTable dt = new DataTable();
             sqlConn.Open();
 
-            dt.Columns.Add("MI001", typeof(string));
-            dt.Columns.Add("MI002", typeof(string));
+            dt.Columns.Add("MU001", typeof(string));
+            dt.Columns.Add("MU002", typeof(string));
             da.Fill(dt);
             comboBox3.DataSource = dt.DefaultView;
-            comboBox3.ValueMember = "MI001";
-            comboBox3.DisplayMember = "MI001";
+            comboBox3.ValueMember = "MU001";
+            comboBox3.DisplayMember = "MU001";
             sqlConn.Close();
 
         }
 
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SEARCHWSCMI(comboBox3.Text.Trim().Substring(0, 7).ToString());
+            SEARCH_POSMU(comboBox3.Text.Trim().Substring(0, 7).ToString());
         }
         /// <summary>
         /// 下拉 來車公司
@@ -2399,6 +2399,71 @@ namespace TKMK
             }
         }
 
+        /// <summary>
+        /// 尋找 業務員/會員
+        /// </summary>
+        /// <param name="MI001"></param>
+        public void SEARCH_POSMU(string MU001)
+        {
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
+            DataSet ds = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@" 
+                                    SELECT MU001,SUBSTRING(MU002,1,3) AS MU002 FROM [TK].dbo.POSMU WHERE MU001='{0}' ORDER BY MU001 
+                                    ", MU001);
+                sbSql.AppendFormat(@"  ");
+
+                adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder = new SqlCommandBuilder(adapter);
+                sqlConn.Open();
+                ds.Clear();
+                adapter.Fill(ds, "TEMPds1");
+                sqlConn.Close();
+
+
+                if (ds.Tables["TEMPds1"].Rows.Count == 0)
+                {
+                    textBox144.Text = null;
+                }
+                else
+                {
+                    if (ds.Tables["TEMPds1"].Rows.Count >= 1)
+                    {
+                        textBox144.Text = ds.Tables["TEMPds1"].Rows[0]["MU002"].ToString();
+
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
         #endregion
 
         #region BUTTON
