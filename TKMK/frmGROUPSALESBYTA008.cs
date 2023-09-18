@@ -217,7 +217,7 @@ namespace TKMK
             sqlConn = new SqlConnection(sqlsb.ConnectionString);
 
             StringBuilder Sequel = new StringBuilder();
-            Sequel.AppendFormat(@"SELECT [ID],[NAME] FROM [TKMK].[dbo].[CARKIND] ORDER BY [ID] ");
+            Sequel.AppendFormat(@"SELECT [ID],[NAME] FROM [TKMK].[dbo].[CARKIND] WHERE [VALID] IN ('Y') ORDER BY [ID] ");
             SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
             DataTable dt = new DataTable();
             sqlConn.Open();
