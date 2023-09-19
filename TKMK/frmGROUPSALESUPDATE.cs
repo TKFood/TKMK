@@ -917,7 +917,7 @@ namespace TKMK
             }
         }
 
-        public void UPDATEGROUPSALES2(string ID, string CARNO, string CARNAME, string CARKIND, string GROUPKIND, string ISEXCHANGE, string CARNUM, string GUSETNUM, string EXCHANNO, string EXCHANACOOUNT, string STATUS, string GROUPSTARTDATES,string CARCOMPANY,string TA008NO,string TA008)
+        public void UPDATEGROUPSALES2(string ID, string CARNO, string CARNAME, string CARKIND, string GROUPKIND, string ISEXCHANGE, string CARNUM, string GUSETNUM, string EXCHANNO, string EXCHANACOOUNT, string STATUS, string GROUPSTARTDATES,string CARCOMPANY,string TA008NO,string TA008,string GROUPENDDATES)
         {
             try
             {
@@ -943,6 +943,7 @@ namespace TKMK
                 sbSql.AppendFormat(" ,[GUSETNUM]='{0}',[EXCHANNO]='{1}',[EXCHANACOOUNT]='{2}',STATUS='{3}',[GROUPSTARTDATES]='{4}'", GUSETNUM, EXCHANNO, EXCHANACOOUNT, STATUS, GROUPSTARTDATES);
                 sbSql.AppendFormat(" ,[CARCOMPANY]='{0}'", CARCOMPANY);
                 sbSql.AppendFormat(" ,[TA008NO]='{0}',[TA008]='{1}' ", TA008NO, TA008);
+                sbSql.AppendFormat(" ,[GROUPENDDATES]='{0}'", GROUPENDDATES);
                 sbSql.AppendFormat(" WHERE [ID]='{0}'", ID);
                 sbSql.AppendFormat(" ");
                 sbSql.AppendFormat(" ");
@@ -2590,12 +2591,12 @@ namespace TKMK
                     string TA008 = comboBox3.Text.Trim().Substring(0, 7).ToString();
                     //string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
-                    //string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                    string GROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     string CARCOMPANY = comboBox7.Text.ToString();
 
                     if (!string.IsNullOrEmpty(ID) && !string.IsNullOrEmpty(CARNO) && !string.IsNullOrEmpty(EXCHANNO) && !string.IsNullOrEmpty(EXCHANACOOUNT))
                     {
-                        UPDATEGROUPSALES2(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, "預約接團", GROUPSTARTDATES, CARCOMPANY, TA008NO, TA008);
+                        UPDATEGROUPSALES2(ID, CARNO, CARNAME, CARKIND, GROUPKIND, ISEXCHANGE, CARNUM, GUSETNUM, EXCHANNO, EXCHANACOOUNT, "預約接團", GROUPSTARTDATES, CARCOMPANY, TA008NO, TA008, GROUPENDDATES);
                     }
 
                     if (!string.IsNullOrEmpty(CARNO) && !string.IsNullOrEmpty(CARNAME) && !string.IsNullOrEmpty(CARKIND))
