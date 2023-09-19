@@ -661,7 +661,7 @@ namespace TKMK
                         dataGridView1.Columns["序號"].Width = 30;
                         dataGridView1.Columns["車名"].Width = 80;
                         dataGridView1.Columns["車號"].Width = 100;
-                        dataGridView1.Columns["車種"].Width = 40;
+                        dataGridView1.Columns["車種"].Width = 160;
                         dataGridView1.Columns["團類"].Width = 80;
                         dataGridView1.Columns["兌換券"].Width = 20;
 

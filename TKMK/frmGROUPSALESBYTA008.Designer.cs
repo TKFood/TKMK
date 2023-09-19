@@ -369,7 +369,7 @@
             this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox1.Enabled = false;
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(363, 75);
+            this.comboBox1.Location = new System.Drawing.Point(363, 77);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(114, 24);
             this.comboBox1.TabIndex = 50;
@@ -455,7 +455,7 @@
             "取消預約",
             "異常結案",
             "完成接團"});
-            this.comboBox4.Location = new System.Drawing.Point(843, 75);
+            this.comboBox4.Location = new System.Drawing.Point(843, 77);
             this.comboBox4.Name = "comboBox4";
             this.comboBox4.Size = new System.Drawing.Size(114, 24);
             this.comboBox4.TabIndex = 710;
@@ -476,7 +476,7 @@
             this.comboBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox5.Enabled = false;
             this.comboBox5.FormattingEnabled = true;
-            this.comboBox5.Location = new System.Drawing.Point(363, 40);
+            this.comboBox5.Location = new System.Drawing.Point(363, 42);
             this.comboBox5.Name = "comboBox5";
             this.comboBox5.Size = new System.Drawing.Size(114, 24);
             this.comboBox5.TabIndex = 727;
@@ -496,7 +496,7 @@
             this.comboBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox3.Enabled = false;
             this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(603, 42);
+            this.comboBox3.Location = new System.Drawing.Point(603, 40);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(114, 24);
             this.comboBox3.TabIndex = 90;
@@ -539,7 +539,7 @@
             this.comboBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox2.Enabled = false;
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(363, 112);
+            this.comboBox2.Location = new System.Drawing.Point(363, 110);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(114, 24);
             this.comboBox2.TabIndex = 80;
@@ -562,7 +562,7 @@
             this.comboBox6.Items.AddRange(new object[] {
             "否",
             "是"});
-            this.comboBox6.Location = new System.Drawing.Point(363, 147);
+            this.comboBox6.Location = new System.Drawing.Point(363, 145);
             this.comboBox6.Name = "comboBox6";
             this.comboBox6.Size = new System.Drawing.Size(114, 24);
             this.comboBox6.TabIndex = 723;
@@ -1045,7 +1045,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 26);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(976, 728);
+            this.tabPage2.Size = new System.Drawing.Size(976, 726);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "對帳表";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -1065,8 +1065,8 @@
             // splitContainer4.Panel2
             // 
             this.splitContainer4.Panel2.Controls.Add(this.previewControl1);
-            this.splitContainer4.Size = new System.Drawing.Size(970, 722);
-            this.splitContainer4.SplitterDistance = 194;
+            this.splitContainer4.Size = new System.Drawing.Size(970, 720);
+            this.splitContainer4.SplitterDistance = 193;
             this.splitContainer4.TabIndex = 0;
             // 
             // tableLayoutPanel5
@@ -1101,7 +1101,7 @@
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(966, 190);
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(966, 189);
             this.tableLayoutPanel5.TabIndex = 1;
             // 
             // label27
@@ -1174,7 +1174,7 @@
             this.comboBox7.Items.AddRange(new object[] {
             "遊覽車對帳明細表",
             "多年期月份團務比較表"});
-            this.comboBox7.Location = new System.Drawing.Point(123, 50);
+            this.comboBox7.Location = new System.Drawing.Point(123, 48);
             this.comboBox7.Name = "comboBox7";
             this.comboBox7.Size = new System.Drawing.Size(234, 24);
             this.comboBox7.TabIndex = 613;
@@ -1184,7 +1184,7 @@
             // 
             this.comboBox8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox8.FormattingEnabled = true;
-            this.comboBox8.Location = new System.Drawing.Point(123, 88);
+            this.comboBox8.Location = new System.Drawing.Point(123, 90);
             this.comboBox8.Name = "comboBox8";
             this.comboBox8.Size = new System.Drawing.Size(114, 24);
             this.comboBox8.TabIndex = 731;
@@ -1208,7 +1208,7 @@
             this.previewControl1.Name = "previewControl1";
             this.previewControl1.PageOffset = new System.Drawing.Point(10, 10);
             this.previewControl1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.previewControl1.Size = new System.Drawing.Size(966, 520);
+            this.previewControl1.Size = new System.Drawing.Size(966, 519);
             this.previewControl1.TabIndex = 1;
             // 
             // tabPage3
@@ -1216,7 +1216,7 @@
             this.tabPage3.Controls.Add(this.splitContainer5);
             this.tabPage3.Location = new System.Drawing.Point(4, 26);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(976, 728);
+            this.tabPage3.Size = new System.Drawing.Size(976, 726);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "簽收單";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -1236,8 +1236,8 @@
             // splitContainer5.Panel2
             // 
             this.splitContainer5.Panel2.Controls.Add(this.tabControl2);
-            this.splitContainer5.Size = new System.Drawing.Size(976, 728);
-            this.splitContainer5.SplitterDistance = 165;
+            this.splitContainer5.Size = new System.Drawing.Size(976, 726);
+            this.splitContainer5.SplitterDistance = 164;
             this.splitContainer5.TabIndex = 0;
             // 
             // tableLayoutPanel7
@@ -1269,7 +1269,7 @@
             this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel7.Size = new System.Drawing.Size(972, 161);
+            this.tableLayoutPanel7.Size = new System.Drawing.Size(972, 160);
             this.tableLayoutPanel7.TabIndex = 2;
             // 
             // label33
@@ -1309,7 +1309,7 @@
             this.comboBox9.FormattingEnabled = true;
             this.comboBox9.Items.AddRange(new object[] {
             "團車簽收單"});
-            this.comboBox9.Location = new System.Drawing.Point(123, 48);
+            this.comboBox9.Location = new System.Drawing.Point(123, 50);
             this.comboBox9.Name = "comboBox9";
             this.comboBox9.Size = new System.Drawing.Size(234, 24);
             this.comboBox9.TabIndex = 613;
@@ -1344,7 +1344,7 @@
             this.tabControl2.Location = new System.Drawing.Point(0, 0);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(972, 555);
+            this.tabControl2.Size = new System.Drawing.Size(972, 554);
             this.tabControl2.TabIndex = 0;
             // 
             // tabPage4
@@ -1353,7 +1353,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 26);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(964, 525);
+            this.tabPage4.Size = new System.Drawing.Size(964, 524);
             this.tabPage4.TabIndex = 0;
             this.tabPage4.Text = "tabPage4";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -1367,7 +1367,7 @@
             this.previewControl2.Name = "previewControl2";
             this.previewControl2.PageOffset = new System.Drawing.Point(10, 10);
             this.previewControl2.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.previewControl2.Size = new System.Drawing.Size(958, 519);
+            this.previewControl2.Size = new System.Drawing.Size(958, 518);
             this.previewControl2.TabIndex = 3;
             // 
             // tabPage5
