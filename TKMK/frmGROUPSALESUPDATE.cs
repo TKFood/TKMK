@@ -431,7 +431,7 @@ namespace TKMK
                         dataGridView1.Columns[0].Width = 30;
                         dataGridView1.Columns[1].Width = 80;
                         dataGridView1.Columns[2].Width = 80;
-                        dataGridView1.Columns[3].Width = 40;
+                        dataGridView1.Columns[3].Width = 160;
                         dataGridView1.Columns[4].Width = 80;
                         dataGridView1.Columns[5].Width = 20;
 
