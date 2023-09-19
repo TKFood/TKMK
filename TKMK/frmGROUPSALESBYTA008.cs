@@ -2544,10 +2544,8 @@ namespace TKMK
 
         public void SETFASTREPORT(string REPORTS,string CARCOMPANY,string SDATES,string EDATES)
         {
-            StringBuilder SQL = new StringBuilder();
-
-
-
+            StringBuilder SQL = new StringBuilder();  
+             
             Report report1 = new Report();
             if (REPORTS.Equals("遊覽車對帳明細表"))
             {
