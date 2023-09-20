@@ -230,6 +230,7 @@ namespace TKMK
             comboBox1.DisplayMember = "NAME";
             sqlConn.Close();
 
+            comboBox1.Font = new Font("Arial", 10); // 使用 "Arial" 字體，字體大小為 12
         }
         /// <summary>
         /// 下拉 團類
