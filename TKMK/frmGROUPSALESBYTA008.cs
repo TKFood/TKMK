@@ -91,7 +91,7 @@ namespace TKMK
             textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
 
             timer1.Enabled = true;
-            timer1.Interval = 1000 * 60;
+            timer1.Interval = 1000 * 60*3;
             timer1.Start();
         }
 
