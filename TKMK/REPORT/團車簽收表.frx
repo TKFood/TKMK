@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="07/21/2023 08:58:11" ReportInfo.Modified="07/26/2023 10:02:42" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="07/21/2023 08:58:11" ReportInfo.Modified="10/17/2023 11:51:19" ReportInfo.CreatorVersion="2016.4.4.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpN+i5gA3VDGcwlcfm6L9ZMsLrZ3U+wEDtHCQtd9vw2XUFWsyjSsOffCXxRAmgRdwQD">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpN+i5gA3VDGcwlcfm6L9ZMsLrZ3U+wEDtHCQtd9vw2XUGFS87mEPTgVCAugPu98E8D">
       <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT  &#13;&#10;[SERNO] AS '序號'&#13;&#10;,[CARNAME] AS '車名'&#13;&#10;,[CARNO] AS '車號'&#13;&#10;,[CARKIND] AS '車種'&#13;&#10;,[GROUPKIND]  AS '團類'&#13;&#10;,[ISEXCHANGE] AS '兌換券'&#13;&#10;,[EXCHANGETOTALMONEYS] AS '券總額'&#13;&#10;,[EXCHANGESALESMMONEYS] AS '券消費'&#13;&#10;,[SALESMMONEYS] AS '消費總額'&#13;&#10;,[SPECIALMNUMS] AS '特賣數'&#13;&#10;,[SPECIALMONEYS] AS '特賣獎金'&#13;&#10;,[COMMISSIONBASEMONEYS] AS '茶水費'&#13;&#10;,[COMMISSIONPCTMONEYS] AS '消費獎金'&#13;&#10;,[TOTALCOMMISSIONMONEYS] AS '總獎金'&#13;&#10;,[CARNUM] AS '車數'&#13;&#10;,[GUSETNUM] AS '交易筆數'&#13;&#10;,[CARCOMPANY] AS '來車公司'&#13;&#10;,[TA008NO] AS '業務員名'&#13;&#10;,[TA008] AS '業務員帳號'&#13;&#10;,[EXCHANNO] AS '優惠券名'&#13;&#10;,[EXCHANACOOUNT] AS '優惠券帳號'&#13;&#10;,CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間'&#13;&#10;,CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間'&#13;&#10;,[STATUS] AS '狀態'&#13;&#10;,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間'&#13;&#10;,CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間'&#13;&#10;,[EXCHANGEMONEYS] AS '領券額'&#13;&#10;,[ID],[CREATEDATES]&#13;&#10;FROM [TKMK].[dbo].[GROUPSALES]&#13;&#10;WHERE 1=1&#13;&#10;AND [STATUS]='完成接團 '&#13;&#10;AND ID='35393'&#13;&#10;">
         <Column Name="序號" DataType="System.Int32"/>
         <Column Name="車名" DataType="System.String"/>
@@ -38,7 +38,7 @@
   <ReportPage Name="Page1" PaperWidth="75" PaperHeight="120">
     <ReportTitleBand Name="ReportTitle1" Width="207.9" Height="37.8">
       <TextObject Name="Text1" Width="207.9" Height="18.9" Text="團車簽收單" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text30" Top="18.9" Width="207.9" Height="18.9" Border.Lines="Bottom" Text="列印時間:[Date]" VertAlign="Center"/>
+      <TextObject Name="Text30" Top="18.9" Width="207.9" Height="18.9" Border.Lines="Bottom" Text="列印時間:[Date]" VertAlign="Center" Font="宋体, 7pt"/>
       <TextObject Name="Text31" Left="160.65" Width="47.25" Height="18.9" Text="第1聯" HorzAlign="Center" VertAlign="Center"/>
     </ReportTitleBand>
     <DataBand Name="Data1" Top="42.4" Width="207.9" Height="264.6" DataSource="Table">
