@@ -1795,7 +1795,7 @@ namespace TKMK
 
 
                 sbSql.AppendFormat(@"                                  
-                                    SELECT ISNULL(SUM(SUMTB019/[NUM]*[MONEYS]),0) AS SPECIALMONEYS
+                                    SELECT ISNULL(SUM(SUMTB019/[NUM]*[MONEYS]),0) AS SPECIALMONEYS 
                                     FROM 
                                     (
                                     SELECT [ID],[NAME],[NUM],[MONEYS],[SPLITCAL],[VALID],[SDATES],[EDATES],TB010,SUMTB019
