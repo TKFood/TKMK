@@ -2604,7 +2604,7 @@ namespace TKMK
 
             SB.AppendFormat(@" 
                             SELECT 
-                            [GROUPSALES].[SERNO] AS '序號'
+                            [GROUPSALESLOCAL].[SERNO] AS '序號'
                             ,CONVERT(NVARCHAR,[PURGROUPSTARTDATES],111) AS '日期'
                             ,[CARCOMPANY] AS '來車公司'
                             ,[CARNAME] AS '車名',[CARKIND] AS '車種'
@@ -2643,7 +2643,7 @@ namespace TKMK
             StringBuilder SB = new StringBuilder();
 
             SB.AppendFormat(@"    
-                            SELECT SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 ) AS '年月'
+                            SELECT SUBSTRING(CONVERT(NVARCHAR,[GROUPSALESLOCAL].[PURGROUPSTARTDATES],112),1,6 ) AS '年月'
                             ,(SELECT ISNULL(SUM(GS.[GUSETNUM]),0) FROM[TKMK].[dbo].[GROUPSALESLOCAL] GS WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '交易筆數'
                             ,(SELECT ISNULL(SUM(GS.[CARNUM]),0) FROM[TKMK].[dbo].[GROUPSALESLOCAL] GS WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '來車數'
                             ,(SELECT ISNULL(SUM(GS.[SALESMMONEYS]),0) FROM[TKMK].[dbo].[GROUPSALESLOCAL] GS  WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '團客總金額'
