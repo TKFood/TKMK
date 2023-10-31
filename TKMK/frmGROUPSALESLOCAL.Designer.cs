@@ -384,6 +384,7 @@
             this.button4.TabIndex = 610;
             this.button4.Text = "立即更新";
             this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // button10
             // 
@@ -395,6 +396,7 @@
             this.button10.TabIndex = 670;
             this.button10.Text = "取消";
             this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
             // dateTimePicker3
             // 
@@ -418,6 +420,7 @@
             this.button9.TabIndex = 120;
             this.button9.Text = "存檔";
             this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
             // dateTimePicker2
             // 
@@ -497,6 +500,7 @@
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(127, 24);
             this.comboBox3.TabIndex = 90;
+            this.comboBox3.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
             // 
             // button3
             // 
@@ -508,6 +512,7 @@
             this.button3.TabIndex = 600;
             this.button3.Text = "修改業務員";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // textBox144
             // 
@@ -573,6 +578,7 @@
             this.button5.TabIndex = 620;
             this.button5.Text = "登錄團資";
             this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // tableLayoutPanel2
             // 
@@ -654,6 +660,7 @@
             this.button1.TabIndex = 580;
             this.button1.Text = "修改來車";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // splitContainer2
             // 
@@ -738,6 +745,7 @@
             this.button8.TabIndex = 650;
             this.button8.Text = "完成接團";
             this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
             // button7
             // 
@@ -749,6 +757,7 @@
             this.button7.TabIndex = 640;
             this.button7.Text = "異常結案";
             this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // button6
             // 
@@ -759,6 +768,7 @@
             this.button6.TabIndex = 630;
             this.button6.Text = "取消預約";
             this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // button14
             // 
@@ -769,6 +779,7 @@
             this.button14.TabIndex = 724;
             this.button14.Text = "指定出場時間";
             this.button14.UseVisualStyleBackColor = true;
+            this.button14.Click += new System.EventHandler(this.button14_Click);
             // 
             // button13
             // 
@@ -779,6 +790,7 @@
             this.button13.TabIndex = 723;
             this.button13.Text = "指定入場時間";
             this.button13.UseVisualStyleBackColor = true;
+            this.button13.Click += new System.EventHandler(this.button13_Click);
             // 
             // button16
             // 
@@ -790,6 +802,7 @@
             this.button16.TabIndex = 726;
             this.button16.Text = "列印簽收單";
             this.button16.UseVisualStyleBackColor = true;
+            this.button16.Click += new System.EventHandler(this.button16_Click);
             // 
             // splitContainer3
             // 
@@ -824,6 +837,7 @@
             this.dataGridView1.RowTemplate.Height = 24;
             this.dataGridView1.Size = new System.Drawing.Size(966, 410);
             this.dataGridView1.TabIndex = 6;
+            this.dataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView1_SelectionChanged);
             // 
             // tableLayoutPanel4
             // 
@@ -1030,7 +1044,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 26);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(976, 726);
+            this.tabPage2.Size = new System.Drawing.Size(976, 731);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "對帳表";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -1050,8 +1064,8 @@
             // splitContainer4.Panel2
             // 
             this.splitContainer4.Panel2.Controls.Add(this.previewControl1);
-            this.splitContainer4.Size = new System.Drawing.Size(970, 720);
-            this.splitContainer4.SplitterDistance = 193;
+            this.splitContainer4.Size = new System.Drawing.Size(970, 725);
+            this.splitContainer4.SplitterDistance = 194;
             this.splitContainer4.TabIndex = 0;
             // 
             // tableLayoutPanel5
@@ -1086,7 +1100,7 @@
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(966, 189);
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(966, 190);
             this.tableLayoutPanel5.TabIndex = 1;
             // 
             // label27
@@ -1139,6 +1153,7 @@
             this.button12.TabIndex = 611;
             this.button12.Text = "查詢";
             this.button12.UseVisualStyleBackColor = true;
+            this.button12.Click += new System.EventHandler(this.button12_Click);
             // 
             // label30
             // 
@@ -1192,7 +1207,7 @@
             this.previewControl1.Name = "previewControl1";
             this.previewControl1.PageOffset = new System.Drawing.Point(10, 10);
             this.previewControl1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.previewControl1.Size = new System.Drawing.Size(966, 519);
+            this.previewControl1.Size = new System.Drawing.Size(966, 523);
             this.previewControl1.TabIndex = 1;
             // 
             // tabPage3
@@ -1200,7 +1215,7 @@
             this.tabPage3.Controls.Add(this.splitContainer5);
             this.tabPage3.Location = new System.Drawing.Point(4, 26);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(976, 726);
+            this.tabPage3.Size = new System.Drawing.Size(976, 731);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "簽收單";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -1220,8 +1235,8 @@
             // splitContainer5.Panel2
             // 
             this.splitContainer5.Panel2.Controls.Add(this.tabControl2);
-            this.splitContainer5.Size = new System.Drawing.Size(976, 726);
-            this.splitContainer5.SplitterDistance = 164;
+            this.splitContainer5.Size = new System.Drawing.Size(976, 731);
+            this.splitContainer5.SplitterDistance = 165;
             this.splitContainer5.TabIndex = 0;
             // 
             // tableLayoutPanel7
@@ -1253,7 +1268,7 @@
             this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel7.Size = new System.Drawing.Size(972, 160);
+            this.tableLayoutPanel7.Size = new System.Drawing.Size(972, 161);
             this.tableLayoutPanel7.TabIndex = 2;
             // 
             // label33
@@ -1309,6 +1324,7 @@
             this.button15.TabIndex = 611;
             this.button15.Text = "查詢";
             this.button15.UseVisualStyleBackColor = true;
+            this.button15.Click += new System.EventHandler(this.button15_Click);
             // 
             // textBox2
             // 
@@ -1327,7 +1343,7 @@
             this.tabControl2.Location = new System.Drawing.Point(0, 0);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(972, 554);
+            this.tabControl2.Size = new System.Drawing.Size(972, 558);
             this.tabControl2.TabIndex = 0;
             // 
             // tabPage4
@@ -1336,7 +1352,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 26);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(964, 524);
+            this.tabPage4.Size = new System.Drawing.Size(964, 528);
             this.tabPage4.TabIndex = 0;
             this.tabPage4.Text = "tabPage4";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -1350,7 +1366,7 @@
             this.previewControl2.Name = "previewControl2";
             this.previewControl2.PageOffset = new System.Drawing.Point(10, 10);
             this.previewControl2.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.previewControl2.Size = new System.Drawing.Size(958, 518);
+            this.previewControl2.Size = new System.Drawing.Size(958, 522);
             this.previewControl2.TabIndex = 3;
             // 
             // tabPage5
@@ -1359,7 +1375,7 @@
             this.tabPage5.Location = new System.Drawing.Point(4, 26);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(964, 524);
+            this.tabPage5.Size = new System.Drawing.Size(964, 528);
             this.tabPage5.TabIndex = 1;
             this.tabPage5.Text = "tabPage5";
             this.tabPage5.UseVisualStyleBackColor = true;
@@ -1378,7 +1394,7 @@
             // splitContainer6.Panel2
             // 
             this.splitContainer6.Panel2.Controls.Add(this.dataGridView2);
-            this.splitContainer6.Size = new System.Drawing.Size(958, 518);
+            this.splitContainer6.Size = new System.Drawing.Size(958, 522);
             this.splitContainer6.SplitterDistance = 156;
             this.splitContainer6.TabIndex = 0;
             // 
@@ -1407,7 +1423,7 @@
             this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel8.Size = new System.Drawing.Size(152, 514);
+            this.tableLayoutPanel8.Size = new System.Drawing.Size(152, 518);
             this.tableLayoutPanel8.TabIndex = 0;
             // 
             // label34
@@ -1440,6 +1456,7 @@
             this.button2.TabIndex = 612;
             this.button2.Text = "查詢";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // textBox3
             // 
@@ -1473,8 +1490,13 @@
             this.dataGridView2.ReadOnly = true;
             this.dataGridView2.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             this.dataGridView2.RowTemplate.Height = 24;
-            this.dataGridView2.Size = new System.Drawing.Size(794, 514);
+            this.dataGridView2.Size = new System.Drawing.Size(794, 518);
             this.dataGridView2.TabIndex = 7;
+            this.dataGridView2.SelectionChanged += new System.EventHandler(this.dataGridView2_SelectionChanged);
+            // 
+            // timer1
+            // 
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // frmGROUPSALESLOCAL
             // 
