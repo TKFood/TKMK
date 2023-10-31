@@ -92,9 +92,25 @@ namespace TKMK
             timer1.Enabled = true;
             timer1.Interval = 1000 * 60 * 3;
             timer1.Start();
+
+            DataTable DT = FIND_TBZPARASLOCAL_COMIP();
+            if (DT != null&& DT.Rows.Count>=1)
+            {
+                textBox4.Text = DT.Rows[0]["PARASNAMES"].ToString();
+            }
+            DataTable DT2 = FIND_TBZPARASLOCAL_LOCALIP1();
+            if (DT2 != null && DT2.Rows.Count >= 1)
+            {
+                textBox5.Text = DT2.Rows[0]["PARASNAMES"].ToString();
+            }
         }
 
         #region FUNCTION
+        private void frmGROUPSALESLOCAL_Load(object sender, EventArgs e)
+        {
+
+        }
+
         /// <summary>
         /// 定時 每1分鐘 更新
         /// </summary>
@@ -3022,6 +3038,132 @@ namespace TKMK
 
         }
 
+        public DataTable FIND_TBZPARASLOCAL_COMIP()
+        {
+            DataTable DT = new DataTable();
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"                                     
+                                    SELECT 
+                                    [KINDS]
+                                    ,[PARASNAMES]
+                                    ,[DVALUES]
+                                    FROM [TKMK].[dbo].[TBZPARASLOCAL]
+                                    WHERE [KINDS]='COMIP'
+                                    ");
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return ds1.Tables["ds1"];
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+        public DataTable FIND_TBZPARASLOCAL_LOCALIP1()
+        {
+            DataTable DT = new DataTable();
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"                                     
+                                    SELECT 
+                                    [KINDS]
+                                    ,[PARASNAMES]
+                                    ,[DVALUES]
+                                    FROM [TKMK].[dbo].[TBZPARASLOCAL]
+                                    WHERE [KINDS]='LOCALIP1'
+                                    ");
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return ds1.Tables["ds1"];
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+
         #endregion
 
         #region BUTTON
@@ -3487,8 +3629,9 @@ namespace TKMK
         {
 
         }
+
         #endregion
 
-
+     
     }
 }

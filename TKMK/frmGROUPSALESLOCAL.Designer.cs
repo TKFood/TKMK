@@ -136,6 +136,10 @@
             this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
             this.button18 = new System.Windows.Forms.Button();
             this.button19 = new System.Windows.Forms.Button();
+            this.label36 = new System.Windows.Forms.Label();
+            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.label37 = new System.Windows.Forms.Label();
+            this.textBox5 = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -1530,8 +1534,12 @@
             this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
             this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
             this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
-            this.tableLayoutPanel9.Controls.Add(this.button18, 1, 1);
-            this.tableLayoutPanel9.Controls.Add(this.button19, 1, 3);
+            this.tableLayoutPanel9.Controls.Add(this.label36, 0, 1);
+            this.tableLayoutPanel9.Controls.Add(this.button18, 1, 2);
+            this.tableLayoutPanel9.Controls.Add(this.button19, 2, 2);
+            this.tableLayoutPanel9.Controls.Add(this.label37, 0, 0);
+            this.tableLayoutPanel9.Controls.Add(this.textBox4, 1, 0);
+            this.tableLayoutPanel9.Controls.Add(this.textBox5, 1, 1);
             this.tableLayoutPanel9.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel9.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel9.Name = "tableLayoutPanel9";
@@ -1555,7 +1563,7 @@
             // 
             this.button18.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.button18.ForeColor = System.Drawing.Color.Black;
-            this.button18.Location = new System.Drawing.Point(123, 43);
+            this.button18.Location = new System.Drawing.Point(123, 83);
             this.button18.Name = "button18";
             this.button18.Size = new System.Drawing.Size(114, 34);
             this.button18.TabIndex = 611;
@@ -1567,13 +1575,51 @@
             // 
             this.button19.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.button19.ForeColor = System.Drawing.Color.Black;
-            this.button19.Location = new System.Drawing.Point(123, 123);
+            this.button19.Location = new System.Drawing.Point(243, 83);
             this.button19.Name = "button19";
             this.button19.Size = new System.Drawing.Size(114, 34);
             this.button19.TabIndex = 612;
             this.button19.Text = "下載團務設定";
             this.button19.UseVisualStyleBackColor = true;
             this.button19.Click += new System.EventHandler(this.button19_Click);
+            // 
+            // label36
+            // 
+            this.label36.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label36.AutoSize = true;
+            this.label36.Location = new System.Drawing.Point(3, 52);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(114, 16);
+            this.label36.TabIndex = 613;
+            this.label36.Text = "公司IP";
+            // 
+            // textBox4
+            // 
+            this.textBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox4.Location = new System.Drawing.Point(123, 6);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.ReadOnly = true;
+            this.textBox4.Size = new System.Drawing.Size(114, 27);
+            this.textBox4.TabIndex = 615;
+            // 
+            // label37
+            // 
+            this.label37.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label37.AutoSize = true;
+            this.label37.Location = new System.Drawing.Point(3, 12);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(114, 16);
+            this.label37.TabIndex = 616;
+            this.label37.Text = "本機IP";
+            // 
+            // textBox5
+            // 
+            this.textBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox5.Location = new System.Drawing.Point(123, 46);
+            this.textBox5.Name = "textBox5";
+            this.textBox5.ReadOnly = true;
+            this.textBox5.Size = new System.Drawing.Size(114, 27);
+            this.textBox5.TabIndex = 617;
             // 
             // frmGROUPSALESLOCAL
             // 
@@ -1585,6 +1631,7 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "frmGROUPSALESLOCAL";
             this.Text = "frmGROUPSALESLOCAL";
+            this.Load += new System.EventHandler(this.frmGROUPSALESLOCAL_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -1636,6 +1683,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.tabPage6.ResumeLayout(false);
             this.tableLayoutPanel9.ResumeLayout(false);
+            this.tableLayoutPanel9.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1749,5 +1797,9 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel9;
         private System.Windows.Forms.Button button18;
         private System.Windows.Forms.Button button19;
+        private System.Windows.Forms.Label label36;
+        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.Label label37;
+        private System.Windows.Forms.TextBox textBox5;
     }
 }
