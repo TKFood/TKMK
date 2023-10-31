@@ -3478,8 +3478,17 @@ namespace TKMK
                 MessageBox.Show("團車未 完成接團");
             }
         }
+        private void button18_Click(object sender, EventArgs e)
+        {
 
+        }
+
+        private void button19_Click(object sender, EventArgs e)
+        {
+
+        }
         #endregion
+
 
     }
 }
