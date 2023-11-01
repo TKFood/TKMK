@@ -131,15 +131,15 @@
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.button17 = new System.Windows.Forms.Button();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
+            this.label36 = new System.Windows.Forms.Label();
             this.button18 = new System.Windows.Forms.Button();
             this.button19 = new System.Windows.Forms.Button();
-            this.label36 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
             this.label37 = new System.Windows.Forms.Label();
+            this.textBox4 = new System.Windows.Forms.TextBox();
             this.textBox5 = new System.Windows.Forms.TextBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -380,7 +380,7 @@
             this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox1.Enabled = false;
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(328, 75);
+            this.comboBox1.Location = new System.Drawing.Point(328, 77);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(178, 24);
             this.comboBox1.TabIndex = 50;
@@ -466,7 +466,7 @@
             "取消預約",
             "異常結案",
             "完成接團"});
-            this.comboBox4.Location = new System.Drawing.Point(862, 75);
+            this.comboBox4.Location = new System.Drawing.Point(862, 77);
             this.comboBox4.Name = "comboBox4";
             this.comboBox4.Size = new System.Drawing.Size(95, 24);
             this.comboBox4.TabIndex = 710;
@@ -487,7 +487,7 @@
             this.comboBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox5.Enabled = false;
             this.comboBox5.FormattingEnabled = true;
-            this.comboBox5.Location = new System.Drawing.Point(328, 40);
+            this.comboBox5.Location = new System.Drawing.Point(328, 42);
             this.comboBox5.Name = "comboBox5";
             this.comboBox5.Size = new System.Drawing.Size(178, 24);
             this.comboBox5.TabIndex = 727;
@@ -507,7 +507,7 @@
             this.comboBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox3.Enabled = false;
             this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(617, 42);
+            this.comboBox3.Location = new System.Drawing.Point(617, 40);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(127, 24);
             this.comboBox3.TabIndex = 90;
@@ -550,7 +550,7 @@
             this.comboBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox2.Enabled = false;
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(328, 112);
+            this.comboBox2.Location = new System.Drawing.Point(328, 110);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(178, 24);
             this.comboBox2.TabIndex = 80;
@@ -573,7 +573,7 @@
             this.comboBox6.Items.AddRange(new object[] {
             "否",
             "是"});
-            this.comboBox6.Location = new System.Drawing.Point(328, 147);
+            this.comboBox6.Location = new System.Drawing.Point(328, 145);
             this.comboBox6.Name = "comboBox6";
             this.comboBox6.Size = new System.Drawing.Size(178, 24);
             this.comboBox6.TabIndex = 723;
@@ -1184,7 +1184,7 @@
             this.comboBox7.Items.AddRange(new object[] {
             "遊覽車對帳明細表",
             "多年期月份團務比較表"});
-            this.comboBox7.Location = new System.Drawing.Point(123, 50);
+            this.comboBox7.Location = new System.Drawing.Point(123, 48);
             this.comboBox7.Name = "comboBox7";
             this.comboBox7.Size = new System.Drawing.Size(234, 24);
             this.comboBox7.TabIndex = 613;
@@ -1194,7 +1194,7 @@
             // 
             this.comboBox8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox8.FormattingEnabled = true;
-            this.comboBox8.Location = new System.Drawing.Point(123, 88);
+            this.comboBox8.Location = new System.Drawing.Point(123, 90);
             this.comboBox8.Name = "comboBox8";
             this.comboBox8.Size = new System.Drawing.Size(114, 24);
             this.comboBox8.TabIndex = 731;
@@ -1319,7 +1319,7 @@
             this.comboBox9.FormattingEnabled = true;
             this.comboBox9.Items.AddRange(new object[] {
             "團車簽收單"});
-            this.comboBox9.Location = new System.Drawing.Point(123, 48);
+            this.comboBox9.Location = new System.Drawing.Point(123, 50);
             this.comboBox9.Name = "comboBox9";
             this.comboBox9.Size = new System.Drawing.Size(234, 24);
             this.comboBox9.TabIndex = 613;
@@ -1505,10 +1505,6 @@
             this.dataGridView2.TabIndex = 7;
             this.dataGridView2.SelectionChanged += new System.EventHandler(this.dataGridView2_SelectionChanged);
             // 
-            // timer1
-            // 
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
             // tabPage6
             // 
             this.tabPage6.Controls.Add(this.tableLayoutPanel9);
@@ -1559,6 +1555,16 @@
             this.tableLayoutPanel9.Size = new System.Drawing.Size(976, 731);
             this.tableLayoutPanel9.TabIndex = 3;
             // 
+            // label36
+            // 
+            this.label36.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label36.AutoSize = true;
+            this.label36.Location = new System.Drawing.Point(3, 52);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(114, 16);
+            this.label36.TabIndex = 613;
+            this.label36.Text = "公司IP";
+            // 
             // button18
             // 
             this.button18.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -1583,25 +1589,6 @@
             this.button19.UseVisualStyleBackColor = true;
             this.button19.Click += new System.EventHandler(this.button19_Click);
             // 
-            // label36
-            // 
-            this.label36.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(3, 52);
-            this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(114, 16);
-            this.label36.TabIndex = 613;
-            this.label36.Text = "公司IP";
-            // 
-            // textBox4
-            // 
-            this.textBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox4.Location = new System.Drawing.Point(123, 6);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.ReadOnly = true;
-            this.textBox4.Size = new System.Drawing.Size(114, 27);
-            this.textBox4.TabIndex = 615;
-            // 
             // label37
             // 
             this.label37.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -1612,6 +1599,15 @@
             this.label37.TabIndex = 616;
             this.label37.Text = "本機IP";
             // 
+            // textBox4
+            // 
+            this.textBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox4.Location = new System.Drawing.Point(123, 6);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.ReadOnly = true;
+            this.textBox4.Size = new System.Drawing.Size(114, 27);
+            this.textBox4.TabIndex = 615;
+            // 
             // textBox5
             // 
             this.textBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -1620,6 +1616,10 @@
             this.textBox5.ReadOnly = true;
             this.textBox5.Size = new System.Drawing.Size(114, 27);
             this.textBox5.TabIndex = 617;
+            // 
+            // timer1
+            // 
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // frmGROUPSALESLOCAL
             // 

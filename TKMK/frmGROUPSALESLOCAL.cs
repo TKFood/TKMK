@@ -168,7 +168,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -222,7 +222,7 @@ namespace TKMK
         {
             //20210902密
             Class1 TKID = new Class1();//用new 建立類別實體
-            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
             //資料庫使用者密碼解密
             sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -254,7 +254,7 @@ namespace TKMK
         {
             //20210902密
             Class1 TKID = new Class1();//用new 建立類別實體
-            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
             //資料庫使用者密碼解密
             sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -285,7 +285,7 @@ namespace TKMK
         {
             //20210902密
             Class1 TKID = new Class1();//用new 建立類別實體
-            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
             //資料庫使用者密碼解密
             sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -295,7 +295,7 @@ namespace TKMK
             sqlConn = new SqlConnection(sqlsb.ConnectionString);
 
             StringBuilder Sequel = new StringBuilder();
-            Sequel.AppendFormat(@"SELECT LTRIM(RTRIM((MU001)))+' '+SUBSTRING(MU002,1,3) AS 'MU001',MU002 FROM [TK].dbo.POSMU WHERE ( MU001 LIKE '68%' OR  MU001 LIKE '69%')   AND MU001 NOT IN (SELECT [EXCHANACOOUNT] FROM [TKMK].[dbo].[GROUPSALESLOCAL] WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'  AND [STATUS]='預約接團' ) ORDER BY MU001 ", dateTimePicker1.Value.ToString("yyyyMMdd"));
+            Sequel.AppendFormat(@"SELECT LTRIM(RTRIM((MU001)))+' '+SUBSTRING(MU002,1,3) AS 'MU001',MU002 FROM [TKMK].[dbo].[POSMULOCAL] WHERE ( MU001 LIKE '68%' OR  MU001 LIKE '69%')   AND MU001 NOT IN (SELECT [EXCHANACOOUNT] FROM [TKMK].[dbo].[GROUPSALESLOCAL] WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'  AND [STATUS]='預約接團' ) ORDER BY MU001 ", dateTimePicker1.Value.ToString("yyyyMMdd"));
             SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
             DataTable dt = new DataTable();
             sqlConn.Open();
@@ -316,7 +316,7 @@ namespace TKMK
         {
             //20210902密
             Class1 TKID = new Class1();//用new 建立類別實體
-            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
             //資料庫使用者密碼解密
             sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -350,7 +350,7 @@ namespace TKMK
         {
             //20210902密
             Class1 TKID = new Class1();//用new 建立類別實體
-            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
             //資料庫使用者密碼解密
             sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -386,7 +386,7 @@ namespace TKMK
         {
             //20210902密
             Class1 TKID = new Class1();//用new 建立類別實體
-            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
             //資料庫使用者密碼解密
             sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -448,7 +448,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -462,7 +462,7 @@ namespace TKMK
                 sbSqlQuery.Clear();
 
                 sbSql.AppendFormat(@" 
-                                    SELECT MU001,SUBSTRING(MU002,1,3) AS MU002 FROM [TK].dbo.POSMU WHERE MU001='{0}' ORDER BY MU001 
+                                    SELECT MU001,SUBSTRING(MU002,1,3) AS MU002 FROM [TKMK].[dbo].[POSMULOCAL] WHERE MU001='{0}' ORDER BY MU001 
                                     ", MU001);
                 sbSql.AppendFormat(@"  ");
 
@@ -514,7 +514,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -602,7 +602,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -848,7 +848,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -967,7 +967,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -1145,7 +1145,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -1235,7 +1235,7 @@ namespace TKMK
 
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -1295,7 +1295,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -1352,7 +1352,7 @@ namespace TKMK
 
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -1419,7 +1419,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -1476,7 +1476,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -1530,7 +1530,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -1715,7 +1715,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -1740,7 +1740,7 @@ namespace TKMK
                                     FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
                                     WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006 
                                     AND TA008='{0}' AND TA001='{1}' AND TA005>='{2}' 
-                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1'))
+                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORESLOCAL] WHERE KINDNAMES IN ('GROUPSTORES'))
                                     GROUP BY TB010
                                     ) AS TEMP ON TB010=ID
                                     WHERE [VALID]='Y' 
@@ -1795,7 +1795,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -1821,7 +1821,7 @@ namespace TKMK
                                     FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
                                     WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006 
                                     AND TA008='{0}' AND TA001='{1}' AND TA005>='{2}' 
-                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1'))
+                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORESLOCAL] WHERE KINDNAMES IN ('GROUPSTORES'))
                                     GROUP BY TB010
                                     ) AS TEMP ON TB010=ID
                                     WHERE [VALID]='Y' 
@@ -1876,7 +1876,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -1898,7 +1898,7 @@ namespace TKMK
                                     AND TA008='{0}'
                                     AND TA001='{1}'
                                     AND TA005>='{2}'
-                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1'))
+                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORESLOCAL] WHERE KINDNAMES IN ('GROUPSTORES'))
                                     ", TA008, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -1946,7 +1946,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -1968,7 +1968,7 @@ namespace TKMK
                                     AND TA008='{0}'
                                     AND TA001='{1}'
                                     AND TA005>='{2}'
-                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1'))
+                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORESLOCAL] WHERE KINDNAMES IN ('GROUPSTORES'))
                                     ", TA008, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -2013,7 +2013,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -2081,7 +2081,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -2150,7 +2150,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -2219,7 +2219,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -2238,7 +2238,7 @@ namespace TKMK
                                     WHERE TA008='{0}'
                                     AND TA001='{1}'
                                     AND TA005>='{2}'
-                                   AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1'))
+                                   AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORESLOCAL] WHERE KINDNAMES IN ('GROUPSTORES'))
                                     ", TA008, TA001, TA005);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -2291,7 +2291,7 @@ namespace TKMK
 
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -2355,7 +2355,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -2441,7 +2441,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -2578,7 +2578,7 @@ namespace TKMK
 
             //20210902密
             Class1 TKID = new Class1();//用new 建立類別實體
-            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
             //資料庫使用者密碼解密
             sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -2663,8 +2663,8 @@ namespace TKMK
                             ,(SELECT ISNULL(SUM(GS.[GUSETNUM]),0) FROM[TKMK].[dbo].[GROUPSALESLOCAL] GS WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '交易筆數'
                             ,(SELECT ISNULL(SUM(GS.[CARNUM]),0) FROM[TKMK].[dbo].[GROUPSALESLOCAL] GS WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '來車數'
                             ,(SELECT ISNULL(SUM(GS.[SALESMMONEYS]),0) FROM[TKMK].[dbo].[GROUPSALESLOCAL] GS  WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '團客總金額'
-                            ,(SELECT SUM(ISNULL(TA017,0)) FROM [TK].dbo.POSTA WITH (NOLOCK) WHERE  TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1')) AND TA001 LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '消費總金額'
-                            ,((SELECT SUM(ISNULL(TA017,0)) FROM [TK].dbo.POSTA WITH (NOLOCK) WHERE AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1')) AND TA001 LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%')-(SELECT ISNULL(SUM(GS.[SALESMMONEYS]),0) FROM[TKMK].[dbo].[GROUPSALESLOCAL] GS WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%')) AS '散客總金額'
+                            ,(SELECT SUM(ISNULL(TA017,0)) FROM [TK].dbo.POSTA WITH (NOLOCK) WHERE  TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORESLOCAL] WHERE KINDNAMES IN ('GROUPSTORES')) AND TA001 LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '消費總金額'
+                            ,((SELECT SUM(ISNULL(TA017,0)) FROM [TK].dbo.POSTA WITH (NOLOCK) WHERE AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORESLOCAL] WHERE KINDNAMES IN ('GROUPSTORES')) AND TA001 LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%')-(SELECT ISNULL(SUM(GS.[SALESMMONEYS]),0) FROM[TKMK].[dbo].[GROUPSALESLOCAL] GS WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%')) AS '散客總金額'
                             FROM [TKMK].[dbo].[GROUPSALESLOCAL] WITH (NOLOCK)
                             WHERE CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)>='{0}' AND CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)<='{1}'
                             AND [STATUS]='完成接團'
@@ -2711,7 +2711,7 @@ namespace TKMK
 
             //20210902密
             Class1 TKID = new Class1();//用new 建立類別實體
-            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
             //資料庫使用者密碼解密
             sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -2794,7 +2794,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -2981,7 +2981,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -3049,7 +3049,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -3111,7 +3111,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -3169,7 +3169,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -3185,7 +3185,175 @@ namespace TKMK
                 tran = sqlConn.BeginTransaction();
 
                 sbSql.AppendFormat(@" 
-                                    
+                                    --20231101 下載團務資料
+
+                                    DELETE [TKMK].[dbo].[GROUPBASELOCAL]
+                                     INSERT INTO [TKMK].[dbo].[GROUPBASELOCAL]
+                                     (
+                                     [ID]
+                                    ,[NAME]
+                                    ,[BASEMONEYS]
+                                    ,[VALID]
+                                    ,[SDATES]
+                                    ,[EDATES]
+                                     )
+                                     SELECT  
+                                    [ID]
+                                    ,[NAME]
+                                    ,[BASEMONEYS]
+                                    ,[VALID]
+                                    ,[SDATES]
+                                    ,[EDATES]
+                                    FROM [192.168.1.105].[TKMK].[dbo].[GROUPBASELOCAL]
+
+                                    --
+                                    DELETE [TKMK].[dbo].[GROUPCARCOMPANYLOCAL]
+                                    INSERT INTO [TKMK].[dbo].[GROUPCARCOMPANYLOCAL]
+                                    ([CARCOMPANY]
+                                    ,[PRINTS]
+                                    ,[CPMMENTS]
+                                    )
+                                    SELECT  
+                                    [CARCOMPANY]
+                                    ,[PRINTS]
+                                    ,[CPMMENTS]
+                                    FROM [192.168.1.105].[TKMK].[dbo].[GROUPCARCOMPANYLOCAL]
+
+                                    --
+                                    DELETE [TKMK].[dbo].[GROUPCARKINDLOCAL]
+                                    INSERT INTO [TKMK].[dbo].[GROUPCARKINDLOCAL]
+                                    (
+                                    [ID]
+                                    ,[NAME]
+                                    ,[VALID]
+                                    )
+                                    SELECT  
+                                    [ID]
+                                    ,[NAME]
+                                    ,[VALID]
+                                    FROM [192.168.1.105].[TKMK].[dbo].[GROUPCARKINDLOCAL]
+
+                                    --
+                                    DELETE [TKMK].[dbo].[GROUPCARLOCAL]
+                                    INSERT INTO [TKMK].[dbo].[GROUPCARLOCAL]
+                                    (
+                                    [CARNO]
+                                    ,[CARNAME]
+                                    ,[CARKIND]
+                                    )
+                                    SELECT  
+                                    [CARNO]
+                                    ,[CARNAME]
+                                    ,[CARKIND]
+                                    FROM [192.168.1.105].[TKMK].[dbo].[GROUPCARLOCAL]
+
+                                    --
+                                    DELETE [TKMK].[dbo].[GROUPEXCHANGEMONEYSLOCAL]
+                                    INSERT INTO [TKMK].[dbo].[GROUPEXCHANGEMONEYSLOCAL]
+                                    (
+                                    [ID]
+                                    ,[CARKIND]
+                                    ,[EXCHANGEMONEYS]
+                                    ,[VALID]
+                                    ,[SDATES]
+                                    ,[EDATES]
+                                    )
+                                    SELECT  
+                                    [ID]
+                                    ,[CARKIND]
+                                    ,[EXCHANGEMONEYS]
+                                    ,[VALID]
+                                    ,[SDATES]
+                                    ,[EDATES]
+                                    FROM [192.168.1.105].[TKMK].[dbo].[GROUPEXCHANGEMONEYSLOCAL]
+
+                                    --
+                                    DELETE [TKMK].[dbo].[GROUPKINDLOCAL]
+                                    INSERT INTO [TKMK].[dbo].[GROUPKINDLOCAL]
+                                    (
+                                    [ID]
+                                    ,[NAME]
+                                    ,[VALID]
+                                    )
+                                    SELECT  
+                                    [ID]
+                                    ,[NAME]
+                                    ,[VALID]
+                                    FROM [192.168.1.105].[TKMK].[dbo].[GROUPKINDLOCAL]
+
+                                    --
+                                    DELETE [TKMK].[dbo].[GROUPPCTLOCAL]
+                                    INSERT INTO [TKMK].[dbo].[GROUPPCTLOCAL]
+                                    (
+                                    [ID]
+                                    ,[PCTMONEYS]
+                                    ,[NAME]
+                                    ,[PCT]
+                                    ,[VALID]
+                                    ,[SDATES]
+                                    ,[EDATES]
+                                    )
+                                    SELECT  
+                                    [ID]
+                                    ,[PCTMONEYS]
+                                    ,[NAME]
+                                    ,[PCT]
+                                    ,[VALID]
+                                    ,[SDATES]
+                                    ,[EDATES]
+                                    FROM [192.168.1.105].[TKMK].[dbo].[GROUPPCTLOCAL]
+
+                                    --
+                                    DELETE [TKMK].[dbo].[GROUPPRODUCTLOCAL]
+                                    INSERT INTO [TKMK].[dbo].[GROUPPRODUCTLOCAL]
+                                    (
+                                    [ID]
+                                    ,[NAME]
+                                    ,[NUM]
+                                    ,[MONEYS]
+                                    ,[SPLITCAL]
+                                    ,[VALID]
+                                    ,[SDATES]
+                                    ,[EDATES]
+                                    )
+                                    SELECT  
+                                    [ID]
+                                    ,[NAME]
+                                    ,[NUM]
+                                    ,[MONEYS]
+                                    ,[SPLITCAL]
+                                    ,[VALID]
+                                    ,[SDATES]
+                                    ,[EDATES]
+                                    FROM [192.168.1.105].[TKMK].[dbo].[GROUPPRODUCTLOCAL]
+
+                                    --
+                                    DELETE [TKMK].[dbo].[GROUPSTORESLOCAL]
+                                    INSERT INTO [TKMK].[dbo].[GROUPSTORESLOCAL]
+                                    (
+                                    [KINDNAMES]
+                                    ,[TA002]
+                                    )
+                                    SELECT  
+                                    [KINDNAMES]
+                                    ,[TA002]
+                                    FROM [192.168.1.105].[TKMK].[dbo].[GROUPSTORESLOCAL]
+
+                                    --
+                                    DELETE [TKMK].[dbo].[TBZPARASLOCAL]
+                                    INSERT INTO [TKMK].[dbo].[TBZPARASLOCAL]
+                                    (
+                                    [KINDS]
+                                    ,[PARASNAMES]
+                                    ,[DVALUES]
+                                    )
+                                    SELECT  
+                                    [KINDS]
+                                    ,[PARASNAMES]
+                                    ,[DVALUES]
+                                    FROM [192.168.1.105].[TKMK].[dbo].[TBZPARASLOCAL]
+                                    --
+
                                     ");
 
                 cmd.Connection = sqlConn;
@@ -3223,7 +3391,7 @@ namespace TKMK
             {
                 //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbTKMK"].ConnectionString);
 
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
@@ -3239,7 +3407,76 @@ namespace TKMK
                 tran = sqlConn.BeginTransaction();
 
                 sbSql.AppendFormat(@" 
-                                    
+                                    --20231101 本機團務上傳
+
+                                    INSERT INTO [192.168.1.105].[TKMK].[dbo].[GROUPSALESLOCAL]
+                                    (
+                                    [ID]
+                                    ,[CREATEDATES]
+                                    ,[SERNO]
+                                    ,[CARCOMPANY]
+                                    ,[TA008NO]
+                                    ,[TA008]
+                                    ,[CARNO]
+                                    ,[CARNAME]
+                                    ,[CARKIND]
+                                    ,[GROUPKIND]
+                                    ,[ISEXCHANGE]
+                                    ,[EXCHANGEMONEYS]
+                                    ,[EXCHANGETOTALMONEYS]
+                                    ,[EXCHANGESALESMMONEYS]
+                                    ,[SPECIALMNUMS]
+                                    ,[SPECIALMONEYS]
+                                    ,[SALESMMONEYS]
+                                    ,[COMMISSIONBASEMONEYS]
+                                    ,[COMMISSIONPCT]
+                                    ,[COMMISSIONPCTMONEYS]
+                                    ,[TOTALCOMMISSIONMONEYS]
+                                    ,[CARNUM]
+                                    ,[GUSETNUM]
+                                    ,[EXCHANNO]
+                                    ,[EXCHANACOOUNT]
+                                    ,[PURGROUPSTARTDATES]
+                                    ,[GROUPSTARTDATES]
+                                    ,[PURGROUPENDDATES]
+                                    ,[GROUPENDDATES]
+                                    ,[STATUS]
+                                    )
+                                    SELECT 
+                                     [ID]
+                                    ,[CREATEDATES]
+                                    ,[SERNO]
+                                    ,[CARCOMPANY]
+                                    ,[TA008NO]
+                                    ,[TA008]
+                                    ,[CARNO]
+                                    ,[CARNAME]
+                                    ,[CARKIND]
+                                    ,[GROUPKIND]
+                                    ,[ISEXCHANGE]
+                                    ,[EXCHANGEMONEYS]
+                                    ,[EXCHANGETOTALMONEYS]
+                                    ,[EXCHANGESALESMMONEYS]
+                                    ,[SPECIALMNUMS]
+                                    ,[SPECIALMONEYS]
+                                    ,[SALESMMONEYS]
+                                    ,[COMMISSIONBASEMONEYS]
+                                    ,[COMMISSIONPCT]
+                                    ,[COMMISSIONPCTMONEYS]
+                                    ,[TOTALCOMMISSIONMONEYS]
+                                    ,[CARNUM]
+                                    ,[GUSETNUM]
+                                    ,[EXCHANNO]
+                                    ,[EXCHANACOOUNT]
+                                    ,[PURGROUPSTARTDATES]
+                                    ,[GROUPSTARTDATES]
+                                    ,[PURGROUPENDDATES]
+                                    ,[GROUPENDDATES]
+                                    ,[STATUS]
+                                    FROM [TKMK].[dbo].[GROUPSALESLOCAL] WHERE [ID] NOT IN (SELECT [ID]  FROM  [192.168.1.105].[TKMK].[dbo].[GROUPSALESLOCAL])
+
+
+
                                     ");
 
                 cmd.Connection = sqlConn;
