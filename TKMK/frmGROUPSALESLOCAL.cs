@@ -90,7 +90,7 @@ namespace TKMK
             textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
 
             timer1.Enabled = true;
-            timer1.Interval = 1000 * 60 * 3;
+            timer1.Interval = 1000 * 60 * 10;
             timer1.Start();
 
             DataTable DT = FIND_TBZPARASLOCAL_COMIP();
@@ -1737,7 +1737,7 @@ namespace TKMK
                                     LEFT JOIN 
                                     (
                                     SELECT TB010,CONVERT(INT,ISNULL(SUM(TB019),0),0) SUMTB019
-                                    FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
+                                    FROM [COSMOS_POS].dbo.POSTA WITH (NOLOCK),[COSMOS_POS].dbo.POSTB WITH (NOLOCK)
                                     WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006 
                                     AND TA008='{0}' AND TA001='{1}' AND TA005>='{2}' 
                                     AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORESLOCAL] WHERE KINDNAMES IN ('GROUPSTORES'))
@@ -1818,7 +1818,7 @@ namespace TKMK
                                     LEFT JOIN 
                                     (
                                     SELECT TB010,CONVERT(INT,ISNULL(SUM(TB019),0),0) SUMTB019
-                                    FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
+                                    FROM [COSMOS_POS].dbo.POSTA WITH (NOLOCK),[COSMOS_POS].dbo.POSTB WITH (NOLOCK)
                                     WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006 
                                     AND TA008='{0}' AND TA001='{1}' AND TA005>='{2}' 
                                     AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORESLOCAL] WHERE KINDNAMES IN ('GROUPSTORES'))
@@ -1892,7 +1892,7 @@ namespace TKMK
                 //將特買組的銷售金額扣掉 TB010  NOT IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCTLOCAL] WHERE [SPLITCAL]='Y') 
                 sbSql.AppendFormat(@"  
                                     SELECT CONVERT(INT,ISNULL(SUM(TB033),0),0) AS 'SALESMMONEYS'
-                                    FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
+                                    FROM [COSMOS_POS].dbo.POSTA WITH (NOLOCK),[COSMOS_POS].dbo.POSTB WITH (NOLOCK)
                                     WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006  
                                     AND TB010  NOT IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCTLOCAL] WHERE [VALID]='Y' AND [SPLITCAL]='Y')              
                                     AND TA008='{0}'
@@ -1962,7 +1962,7 @@ namespace TKMK
 
                 sbSql.AppendFormat(@"  
                                     SELECT CONVERT(INT,ISNULL(SUM(TA017),0)) AS EXCHANGESALESMMONEYS
-                                    FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTC WITH (NOLOCK)
+                                    FROM [COSMOS_POS].dbo.POSTA WITH (NOLOCK),[COSMOS_POS].dbo.POSTC WITH (NOLOCK)
                                     WHERE TA001=TC001 AND TA002=TC002 AND TA003=TC003  AND TA006=TC006
                                     AND TC008='0009'
                                     AND TA008='{0}'
@@ -2234,7 +2234,7 @@ namespace TKMK
 
                 sbSql.AppendFormat(@"  
                                     SELECT COUNT(TA008) AS 'GUSETNUM'
-                                    FROM [TK].dbo.POSTA WITH (NOLOCK)
+                                    FROM [COSMOS_POS].dbo.POSTA WITH (NOLOCK)
                                     WHERE TA008='{0}'
                                     AND TA001='{1}'
                                     AND TA005>='{2}'
@@ -2663,8 +2663,8 @@ namespace TKMK
                             ,(SELECT ISNULL(SUM(GS.[GUSETNUM]),0) FROM[TKMK].[dbo].[GROUPSALESLOCAL] GS WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '交易筆數'
                             ,(SELECT ISNULL(SUM(GS.[CARNUM]),0) FROM[TKMK].[dbo].[GROUPSALESLOCAL] GS WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '來車數'
                             ,(SELECT ISNULL(SUM(GS.[SALESMMONEYS]),0) FROM[TKMK].[dbo].[GROUPSALESLOCAL] GS  WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '團客總金額'
-                            ,(SELECT SUM(ISNULL(TA017,0)) FROM [TK].dbo.POSTA WITH (NOLOCK) WHERE  TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORESLOCAL] WHERE KINDNAMES IN ('GROUPSTORES')) AND TA001 LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '消費總金額'
-                            ,((SELECT SUM(ISNULL(TA017,0)) FROM [TK].dbo.POSTA WITH (NOLOCK) WHERE AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORESLOCAL] WHERE KINDNAMES IN ('GROUPSTORES')) AND TA001 LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%')-(SELECT ISNULL(SUM(GS.[SALESMMONEYS]),0) FROM[TKMK].[dbo].[GROUPSALESLOCAL] GS WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%')) AS '散客總金額'
+                            ,(SELECT SUM(ISNULL(TA017,0)) FROM [COSMOS_POS].dbo.POSTA WITH (NOLOCK) WHERE  TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORESLOCAL] WHERE KINDNAMES IN ('GROUPSTORES')) AND TA001 LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '消費總金額'
+                            ,((SELECT SUM(ISNULL(TA017,0)) FROM [COSMOS_POS].dbo.POSTA WITH (NOLOCK) WHERE AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORESLOCAL] WHERE KINDNAMES IN ('GROUPSTORES')) AND TA001 LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%')-(SELECT ISNULL(SUM(GS.[SALESMMONEYS]),0) FROM[TKMK].[dbo].[GROUPSALESLOCAL] GS WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%')) AS '散客總金額'
                             FROM [TKMK].[dbo].[GROUPSALESLOCAL] WITH (NOLOCK)
                             WHERE CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)>='{0}' AND CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)<='{1}'
                             AND [STATUS]='完成接團'
