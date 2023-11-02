@@ -19,6 +19,7 @@ using FastReport;
 using FastReport.Data;
 using TKITDLL;
 using System.Runtime.InteropServices;
+using System.Net.NetworkInformation;
 
 namespace TKMK
 {
@@ -3630,6 +3631,24 @@ namespace TKMK
             }
         }
 
+        public bool IsNetworkAvailable()
+        {
+            string IP = textBox5.Text;
+           
+            try
+            {
+                using (Ping ping = new Ping())
+                {
+                    PingReply reply = ping.Send(IP);
+                    return (reply.Status == IPStatus.Success);
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         #endregion
 
         #region BUTTON
@@ -4088,8 +4107,15 @@ namespace TKMK
         }
         private void button18_Click(object sender, EventArgs e)
         {
-            UPDATE_TO_COMPANY();
-            MessageBox.Show("完成");
+            if (IsNetworkAvailable())
+            {
+                UPDATE_TO_COMPANY();
+                MessageBox.Show("完成");
+            }
+            else
+            {              
+                MessageBox.Show("網路無法使用，請檢查網路連接。");
+            }
         }
 
         private void button19_Click(object sender, EventArgs e)
