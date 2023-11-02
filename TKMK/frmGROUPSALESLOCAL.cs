@@ -1939,7 +1939,7 @@ namespace TKMK
         public int FINDEXCHANGESALESMMONEYS(string TA008, string TA001, string TA005)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
-            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder(); 
             DataSet ds1 = new DataSet();
 
             try
