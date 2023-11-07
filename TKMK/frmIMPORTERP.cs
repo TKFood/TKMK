@@ -275,13 +275,14 @@ namespace TKMK
             IMPORTEXCEL();
             //ImportCSV();
 
-
+            CLEAR_TBJabezPOS();
 
             //檢查暫存中的新資料
             DataTable NEWTDATATABLE = SEARCHNEWDATA();
             //匯入到TBJabezPOS中
             if (NEWTDATATABLE != null && NEWTDATATABLE.Rows.Count > 0)
             {
+
                 ADD_TO_TBJabezPOS(NEWTDATATABLE);
             }
 
@@ -842,6 +843,62 @@ namespace TKMK
                                     WHERE [商品名稱]='小計後加減價'
                                     
                                         ");
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易                      
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+        /// <summary>
+        /// 清空暫存的 TBJabezPOS
+        /// </summary>
+        public void CLEAR_TBJabezPOS()
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(@" 
+                                    DELETE  [TKMK].[dbo].[TBJabezPOS]
+                                        ");
+
+
                 cmd.Connection = sqlConn;
                 cmd.CommandTimeout = 60;
                 cmd.CommandText = sbSql.ToString();
