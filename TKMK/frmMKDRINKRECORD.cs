@@ -1598,8 +1598,9 @@ namespace TKMK
         {
             BOMTDDATA BOMTD = new BOMTDDATA();
             BOMTD = SETBOMTD();
+           
 
-            if(!string.IsNullOrEmpty(TD001)&& !string.IsNullOrEmpty(TD002) && !string.IsNullOrEmpty(TD003) && !string.IsNullOrEmpty(TD004) && !string.IsNullOrEmpty(TD005) && !string.IsNullOrEmpty(TD007) )
+            if (!string.IsNullOrEmpty(TD001)&& !string.IsNullOrEmpty(TD002) && !string.IsNullOrEmpty(TD003) && !string.IsNullOrEmpty(TD004) && !string.IsNullOrEmpty(TD005) && !string.IsNullOrEmpty(TD007) )
             {
                 try
                 {
@@ -1707,13 +1708,15 @@ namespace TKMK
 
         public BOMTDDATA SETBOMTD()
         {
+            DataTable dt = SEARCH_DRINKCREATOR();
+
             BOMTDDATA BOMTD = new BOMTDDATA();
             BOMTD.COMPANY = "TK";
-            BOMTD.CREATOR = "160116";
-            BOMTD.USR_GROUP = "116000";
+            BOMTD.CREATOR = dt.Rows[0]["CREATOR"].ToString();
+            BOMTD.USR_GROUP = dt.Rows[0]["USR_GROUP"].ToString();
             //MOCTA.CREATE_DATE = dt1.ToString("yyyyMMdd");
             BOMTD.CREATE_DATE = DateTime.Now.ToString("yyyyMMdd");
-            BOMTD.MODIFIER = "160116";
+            BOMTD.MODIFIER = dt.Rows[0]["CREATOR"].ToString();
             BOMTD.MODI_DATE = DateTime.Now.ToString("yyyyMMdd");
             BOMTD.FLAG = "0";
             BOMTD.CREATE_TIME = DateTime.Now.ToString("HH:mm:dd");
@@ -1725,7 +1728,7 @@ namespace TKMK
             BOMTD.sync_mark = "";
             BOMTD.sync_count = "0";
             BOMTD.DataUser = "";
-            BOMTD.DataGroup = "116000";
+            BOMTD.DataGroup = dt.Rows[0]["USR_GROUP"].ToString();
             BOMTD.TD001 = TD001;
             BOMTD.TD002 = TD002;
             BOMTD.TD003 = TD003;
@@ -2040,11 +2043,11 @@ namespace TKMK
         {
             INVTADATA INVTA = new INVTADATA();
             INVTA.COMPANY = "TK";
-            INVTA.CREATOR = "160116";
-            INVTA.USR_GROUP = "116000";
+            INVTA.CREATOR = dt.Rows[0]["CREATOR"].ToString();
+            INVTA.USR_GROUP = dt.Rows[0]["USR_GROUP"].ToString();
             //MOCTA.CREATE_DATE = dt1.ToString("yyyyMMdd");
             INVTA.CREATE_DATE = DateTime.Now.ToString("yyyyMMdd");
-            INVTA.MODIFIER = "160116";
+            INVTA.MODIFIER = dt.Rows[0]["CREATOR"].ToString();
             INVTA.MODI_DATE = DateTime.Now.ToString("yyyyMMdd");
             INVTA.FLAG = "0";
             INVTA.CREATE_TIME = DateTime.Now.ToString("HH:mm:dd");
@@ -2056,7 +2059,7 @@ namespace TKMK
             INVTA.sync_mark = "";
             INVTA.sync_count = "0";
             INVTA.DataUser = "";
-            INVTA.DataGroup = "116000";
+            INVTA.DataGroup = dt.Rows[0]["USR_GROUP"].ToString();
             INVTA.TA001=TA001;
             INVTA.TA002=TA002;
             INVTA.TA003=TA003;
@@ -2484,6 +2487,70 @@ namespace TKMK
                     textBox23.Text = null;
                     textBox31.Text = null;
                 }
+            }
+        }
+
+        public DataTable SEARCH_DRINKCREATOR()
+        {
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
+            DataSet ds = new DataSet();
+
+            StringBuilder SQLQUERY1 = new StringBuilder();
+            StringBuilder SQLQUERY2 = new StringBuilder();
+
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(@" 
+                                   SELECT
+                                    [CREATOR]
+                                    ,[CREATORNAMES]
+                                    ,[USR_GROUP]
+                                    ,[USR_GROUPNAMES]
+                                    FROM [TKMK].[dbo].[DRINKCREATOR]
+                                    ");
+
+                adapter = new SqlDataAdapter(sbSql.ToString(), sqlConn);
+                sqlCmdBuilder = new SqlCommandBuilder(adapter);
+
+                sqlConn.Open();
+                ds.Clear();
+                adapter.Fill(ds, "ds");
+                sqlConn.Close();
+
+
+                if (ds.Tables["ds"].Rows.Count == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    return ds.Tables["ds"];
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+
             }
         }
         #endregion
