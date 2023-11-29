@@ -194,7 +194,10 @@ namespace TKMK
                     {
                         dataGridView1.DataSource = ds.Tables["TEMPds1"];
                         dataGridView1.AutoResizeColumns();
-
+                        // 將 "未稅金額" 欄位格式化為金錢
+                        dataGridView1.Columns["未稅金額"].DefaultCellStyle.Format = "N0";
+                        dataGridView1.Columns["團客"].DefaultCellStyle.Format = "N0";
+                        dataGridView1.Columns["散客"].DefaultCellStyle.Format = "N0";
 
                     }
 
