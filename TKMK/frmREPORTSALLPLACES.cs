@@ -126,6 +126,90 @@ namespace TKMK
 
         }
 
+        public void Search(string SDAYS, string EDAYS)
+        {
+            StringBuilder sbSql = new StringBuilder();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
+            DataSet ds = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+                              
+                sbSql.AppendFormat(@"  
+                                    SELECT TB001,'麵包類' AS  '麵包類' ,'全部' AS '分類',CONVERT(INT,SUM(TB031)) AS '未稅金額'
+                                    ,(SELECT ISNULL(CONVERT(INT,SUM(TB031)),0)
+                                    FROM [TK].dbo.POSTA TA,[TK].dbo.POSTB TB
+                                    WHERE TA.TA001=TB.TB001 AND TA.TA002=TB.TB002 AND TA.TA003=TB.TB003 AND TA.TA006=TB.TB006
+                                    AND TB.TB002 IN ('106701')
+                                    AND (TB.TB010 LIKE '408%' OR TB.TB010 LIKE '409%')
+                                    AND ( TA.TA008 LIKE '68%' OR TA.TA008 LIKE '69%')
+                                    AND TB.TB001=POSTB.TB001) AS '團客'
+                                    ,(SELECT ISNULL(CONVERT(INT,SUM(TB031)),0)
+                                    FROM [TK].dbo.POSTA TA,[TK].dbo.POSTB TB
+                                    WHERE TA.TA001=TB.TB001 AND TA.TA002=TB.TB002 AND TA.TA003=TB.TB003 AND TA.TA006=TB.TB006
+                                    AND TB.TB002 IN ('106701')
+                                    AND (TB.TB010 LIKE '408%' OR TB.TB010 LIKE '409%')
+                                    AND  TA.TA008 NOT LIKE '68%' 
+                                    AND  TA.TA008 NOT LIKE '69%'
+                                    AND  TB.TB001=POSTB.TB001) AS '散客'
+                                    FROM [TK].dbo.POSTA,[TK].dbo.POSTB
+                                    WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006
+                                    AND TB001>='{0}' AND TB001<='{1}'
+                                    AND TB002 IN ('106701')
+                                    AND (TB010 LIKE '408%' OR TB010 LIKE '409%')
+                                    GROUP BY TB001
+                                    ORDER BY TB001
+                                    ", SDAYS,EDAYS);
+
+                adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder = new SqlCommandBuilder(adapter);
+                sqlConn.Open();
+                ds.Clear();
+                adapter.Fill(ds, "TEMPds1");
+                sqlConn.Close();
+
+
+                if (ds.Tables["TEMPds1"].Rows.Count == 0)
+                {
+                    dataGridView1.DataSource = null;
+                }
+                else
+                {
+                    if (ds.Tables["TEMPds1"].Rows.Count >= 1)
+                    {
+                        dataGridView1.DataSource = ds.Tables["TEMPds1"];
+                        dataGridView1.AutoResizeColumns();
+
+
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -134,6 +218,12 @@ namespace TKMK
         {
             SETFASTREPORT(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
         }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Search(dateTimePicker3.Value.ToString("yyyyMMdd"), dateTimePicker4.Value.ToString("yyyyMMdd"));
+        }
         #endregion
+
+
     }
 }
