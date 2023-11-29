@@ -161,6 +161,12 @@
     <Compile Include="frmREPORTSTORES.Designer.cs">
       <DependentUpon>frmREPORTSTORES.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmREPORTSTORESQUESTIONAIRES.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmREPORTSTORESQUESTIONAIRES.Designer.cs">
+      <DependentUpon>frmREPORTSTORESQUESTIONAIRES.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmREPORTTBSTOREDAILY.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -222,6 +228,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmREPORTSTORES.resx">
       <DependentUpon>frmREPORTSTORES.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmREPORTSTORESQUESTIONAIRES.resx">
+      <DependentUpon>frmREPORTSTORESQUESTIONAIRES.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmREPORTTBSTOREDAILY.resx">
       <DependentUpon>frmREPORTTBSTOREDAILY.cs</DependentUpon>
