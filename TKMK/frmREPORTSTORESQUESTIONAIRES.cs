@@ -27,7 +27,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
-
+using Google.Apis.Util.Store;
 
 namespace TKMK
 {
@@ -48,7 +48,7 @@ namespace TKMK
         int rownum = 0;
         SqlTransaction tran;
         int result;
-
+        static readonly string[] Scopes = { SheetsService.Scope.Spreadsheets };
 
         public frmREPORTSTORESQUESTIONAIRES()
         {
@@ -127,20 +127,31 @@ namespace TKMK
         public void GET_GOOGLESHEETS()
         {
             string spreadsheetId = "1pORwOtwkaeife1lYFI7yuiT2jYMr1UCXr6FtwzU4WQE";
-            string range = "Sheet1!A1:C10"; // 修改为您的表格和范围
-            string credentialsPath ="C:/A1_Github/TKMK/TKMK/client_secret_126586316141-62di5sr2lu7s6lfc96d3ul4k61al0s0c.apps.googleusercontent.com.json" ;
+            string range = "表單回應 1!A1:C10"; // 修改为您的表格和范围
+            string credentialsPath ="C:/A1_Github/TKMK/TKMK/tkfood-2023-19cb97a08348.json" ;
 
             if (!File.Exists(credentialsPath))
             {
                 MessageBox.Show("credentialsPath not exists");
                 return;
             }
+            else
+            {
+                //GoogleCredential credential;
+                //using (var stream = new FileStream(credentialsPath, FileMode.Open, FileAccess.Read))
+                //{
+                //    credential = GoogleCredential.FromStream(stream).CreateScoped(Scopes);
+                //}
 
-            // Google Sheets API
-            var service = GetSheetsService(credentialsPath);         
-          
-            // 从Google Sheets获取数据
-            var data = GetGoogleSheetsData(service, spreadsheetId, range);
+                var credential = GoogleCredential.FromFile(credentialsPath).CreateScoped(SheetsService.Scope.Spreadsheets);
+
+                // Google Sheets API
+                var service = GetSheetsService(credentialsPath);
+
+                // 从Google Sheets获取数据
+                var data = GetGoogleSheetsData(service, spreadsheetId, range);
+            }
+            
 
         }
 
@@ -160,8 +171,7 @@ namespace TKMK
 
         static List<List<string>> GetGoogleSheetsData(SheetsService sheetsService, string spreadsheetId, string range)
         {
-            SpreadsheetsResource.ValuesResource.GetRequest request =
-                sheetsService.Spreadsheets.Values.Get(spreadsheetId, range);
+            SpreadsheetsResource.ValuesResource.GetRequest request =  sheetsService.Spreadsheets.Values.Get(spreadsheetId, range);
 
             ValueRange response = request.Execute();
             IList<IList<object>> values = response.Values;
