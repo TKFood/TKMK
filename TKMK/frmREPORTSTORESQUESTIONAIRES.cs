@@ -23,6 +23,11 @@ using NPOI.XSSF.UserModel;
 using FastReport;
 using FastReport.Data;
 using TKITDLL;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using Google.Apis.Sheets.v4;
+using Google.Apis.Sheets.v4.Data;
+
 
 namespace TKMK
 {
@@ -119,6 +124,61 @@ namespace TKMK
 
         }
 
+        public void GET_GOOGLESHEETS()
+        {
+            string spreadsheetId = "1pORwOtwkaeife1lYFI7yuiT2jYMr1UCXr6FtwzU4WQE";
+            string range = "Sheet1!A1:C10"; // 修改为您的表格和范围
+            string credentialsPath = "C:/A1_Github/TKMK/TKMK/LICENSES/client_secret_126586316141-62di5sr2lu7s6lfc96d3ul4k61al0s0c.apps.googleusercontent.com.json";
+
+            if (!File.Exists(credentialsPath))
+            {
+                MessageBox.Show("credentialsPath not exists");
+                return;
+            }
+
+            // Google Sheets API
+            var service = GetSheetsService(credentialsPath);         
+          
+            // 从Google Sheets获取数据
+            var data = GetGoogleSheetsData(service, spreadsheetId, range);
+
+        }
+
+        static SheetsService GetSheetsService(string credentialsPath)
+        {
+            var credential = GoogleCredential.FromFile(credentialsPath)
+                .CreateScoped(SheetsService.Scope.Spreadsheets);
+
+            var sheetsService = new SheetsService(new BaseClientService.Initializer()
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Sheets to Database"
+            });
+
+            return sheetsService;
+        }
+
+        static List<List<string>> GetGoogleSheetsData(SheetsService sheetsService, string spreadsheetId, string range)
+        {
+            SpreadsheetsResource.ValuesResource.GetRequest request =
+                sheetsService.Spreadsheets.Values.Get(spreadsheetId, range);
+
+            ValueRange response = request.Execute();
+            IList<IList<object>> values = response.Values;
+
+            var data = new List<List<string>>();
+
+            if (values != null && values.Count > 0)
+            {
+                foreach (var row in values)
+                {
+                    data.Add(row.Select(cell => cell.ToString()).ToList());
+                }
+            }
+
+            return data;
+        }
+
         #endregion
 
         #region BUTTON
@@ -126,6 +186,13 @@ namespace TKMK
         {
             SETFASTREPORT(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            GET_GOOGLESHEETS();
+        }
         #endregion
+
+
     }
 }
