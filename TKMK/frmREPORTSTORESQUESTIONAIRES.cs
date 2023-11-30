@@ -128,7 +128,7 @@ namespace TKMK
         {
             string spreadsheetId = "1pORwOtwkaeife1lYFI7yuiT2jYMr1UCXr6FtwzU4WQE";
             string range = "Sheet1!A1:C10"; // 修改为您的表格和范围
-            string credentialsPath = "C:/A1_Github/TKMK/TKMK/LICENSES/client_secret_126586316141-62di5sr2lu7s6lfc96d3ul4k61al0s0c.apps.googleusercontent.com.json";
+            string credentialsPath ="C:/A1_Github/TKMK/TKMK/client_secret_126586316141-62di5sr2lu7s6lfc96d3ul4k61al0s0c.apps.googleusercontent.com.json" ;
 
             if (!File.Exists(credentialsPath))
             {
