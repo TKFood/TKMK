@@ -128,7 +128,7 @@ namespace TKMK
         {
             string spreadsheetId = "1pORwOtwkaeife1lYFI7yuiT2jYMr1UCXr6FtwzU4WQE";
             string range = "表單回應 1!A1:C10"; // 修改为您的表格和范围
-            string credentialsPath ="C:/A1_Github/TKMK/TKMK/tkfood-2023-19cb97a08348.json" ;
+            string credentialsPath ="C:/A1_Github/TKMK/TKMK/LICENSES/tkfood-2023-19cb97a08348.json" ;
 
             if (!File.Exists(credentialsPath))
             {
