@@ -95,6 +95,12 @@ namespace TKMK
             StringBuilder SQLB4 = new StringBuilder();
             StringBuilder SQLB5 = new StringBuilder();
             StringBuilder SQLB6 = new StringBuilder();
+            StringBuilder SQLBC1 = new StringBuilder();
+            StringBuilder SQLBC2 = new StringBuilder();
+            StringBuilder SQLBC3 = new StringBuilder();
+            StringBuilder SQLBC4 = new StringBuilder();
+            StringBuilder SQLBC5 = new StringBuilder();
+            StringBuilder SQLBC6 = new StringBuilder();
 
 
             Report report1 = new Report();         
@@ -142,6 +148,29 @@ namespace TKMK
                 TableDataSource table5 = report1.GetDataSource("Table5") as TableDataSource;
                 SQLB6 = SETSQLB6(SDATES, EDATES);
                 table5.SelectCommand = SQLB6.ToString();
+            }
+            else if (KINDS.Equals("各門市客群購買商品"))
+            {
+                report1.Load(@"REPORT\各門市客群購買商品.frx");
+                report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+                TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
+                SQLBC1 = SETSQLC1(SDATES, EDATES);
+                table.SelectCommand = SQLBC1.ToString();
+                TableDataSource table1 = report1.GetDataSource("Table1") as TableDataSource;
+                SQLBC2 = SETSQLC2(SDATES, EDATES);
+                table1.SelectCommand = SQLBC2.ToString();
+                TableDataSource table2 = report1.GetDataSource("Table2") as TableDataSource;
+                SQLBC3 = SETSQLC3(SDATES, EDATES);
+                table2.SelectCommand = SQLBC3.ToString();
+                TableDataSource table3 = report1.GetDataSource("Table3") as TableDataSource;
+                SQLBC4 = SETSQLC4(SDATES, EDATES);
+                table3.SelectCommand = SQLBC4.ToString();
+                TableDataSource table4 = report1.GetDataSource("Table4") as TableDataSource;
+                SQLBC5 = SETSQLC5(SDATES, EDATES);
+                table4.SelectCommand = SQLBC5.ToString();
+                TableDataSource table5 = report1.GetDataSource("Table5") as TableDataSource;
+                SQLBC6 = SETSQLC6(SDATES, EDATES);
+                table5.SelectCommand = SQLBC6.ToString();
             }
 
 
@@ -345,6 +374,174 @@ namespace TKMK
                             AND (TB010 LIKE '4%' OR TB010 LIKE '5%')
                             AND CONVERT(NVARCHAR,[時間戳記],112)>='{0}' AND CONVERT(NVARCHAR,[時間戳記],112)<='{1}' 
                             GROUP BY [顧客外觀性別],[顧客年齡區間],POSTB.TB010,INVMB.MB002
+                            HAVING SUM(POSTB.TB031)>0
+
+                            ", SDATES, EDATES);
+
+            return SB;
+
+        }
+
+        public StringBuilder SETSQLC1(string SDATES, string EDATES)
+        {
+            StringBuilder SB = new StringBuilder();
+
+
+            SB.AppendFormat(@" 
+                            SELECT
+                            [門市]
+                            ,[顧客外觀性別]
+                            ,POSTB.TB010 品號
+                            ,INVMB.MB002 品名
+                            ,SUM(POSTB.TB019) 銷售數量
+                            ,SUM(POSTB.TB031) 未稅金額
+                            FROM [TKMK].[dbo].[TBSTORESQUESTIONAIRES] WITH(NOLOCK)
+                            LEFT JOIN [TK].dbo.POSTB WITH(NOLOCK) ON TB008=[發票號碼]
+                            LEFT JOIN [TK].dbo.INVMB ON MB001=TB010
+                            WHERE 1=1
+                            AND ISNULL([發票號碼],'')<>''
+                            AND (TB010 LIKE '4%' OR TB010 LIKE '5%')
+                            AND CONVERT(NVARCHAR,[時間戳記],112)>='{0}' AND CONVERT(NVARCHAR,[時間戳記],112)<='{1}' 
+                            GROUP BY  [門市],[顧客外觀性別],POSTB.TB010,INVMB.MB002
+                            HAVING SUM(POSTB.TB031)>0
+                            ", SDATES, EDATES);
+
+            return SB;
+
+        }
+
+        public StringBuilder SETSQLC2(string SDATES, string EDATES)
+        {
+            StringBuilder SB = new StringBuilder();
+
+
+            SB.AppendFormat(@"                             
+                            SELECT
+                            [門市]
+                            ,[顧客年齡區間]
+                            ,POSTB.TB010 品號
+                            ,INVMB.MB002 品名
+                            ,SUM(POSTB.TB019) 銷售數量
+                            ,SUM(POSTB.TB031) 未稅金額
+                            FROM [TKMK].[dbo].[TBSTORESQUESTIONAIRES] WITH(NOLOCK)
+                            LEFT JOIN [TK].dbo.POSTB WITH(NOLOCK) ON TB008=[發票號碼]
+                            LEFT JOIN [TK].dbo.INVMB ON MB001=TB010
+                            WHERE 1=1
+                            AND ISNULL([發票號碼],'')<>''
+                            AND (TB010 LIKE '4%' OR TB010 LIKE '5%')
+                            AND CONVERT(NVARCHAR,[時間戳記],112)>='{0}' AND CONVERT(NVARCHAR,[時間戳記],112)<='{1}' 
+                            GROUP BY  [門市],[顧客年齡區間],POSTB.TB010,INVMB.MB002
+                            HAVING SUM(POSTB.TB031)>0
+
+                            ", SDATES, EDATES);
+
+            return SB;
+
+        }
+        public StringBuilder SETSQLC3(string SDATES, string EDATES)
+        {
+            StringBuilder SB = new StringBuilder();
+
+
+            SB.AppendFormat(@"                             
+                            SELECT
+                            [門市]
+                            ,[要送禮還是自己吃]
+                            ,POSTB.TB010 品號
+                            ,INVMB.MB002 品名
+                            ,SUM(POSTB.TB019) 銷售數量
+                            ,SUM(POSTB.TB031) 未稅金額
+                            FROM [TKMK].[dbo].[TBSTORESQUESTIONAIRES] WITH(NOLOCK)
+                            LEFT JOIN [TK].dbo.POSTB WITH(NOLOCK) ON TB008=[發票號碼]
+                            LEFT JOIN [TK].dbo.INVMB ON MB001=TB010
+                            WHERE 1=1
+                            AND ISNULL([發票號碼],'')<>''
+                            AND (TB010 LIKE '4%' OR TB010 LIKE '5%')
+                            AND CONVERT(NVARCHAR,[時間戳記],112)>='{0}' AND CONVERT(NVARCHAR,[時間戳記],112)<='{1}' 
+                            GROUP BY  [門市],[要送禮還是自己吃],POSTB.TB010,INVMB.MB002
+                            HAVING SUM(POSTB.TB031)>0
+                            ", SDATES, EDATES);
+
+            return SB;
+
+        }
+        public StringBuilder SETSQLC4(string SDATES, string EDATES)
+        {
+            StringBuilder SB = new StringBuilder();
+
+
+            SB.AppendFormat(@"                           
+                            SELECT
+                            [門市]
+                            ,[居住地]
+                            ,POSTB.TB010 品號
+                            ,INVMB.MB002 品名
+                            ,SUM(POSTB.TB019) 銷售數量
+                            ,SUM(POSTB.TB031) 未稅金額
+                            FROM [TKMK].[dbo].[TBSTORESQUESTIONAIRES] WITH(NOLOCK)
+                            LEFT JOIN [TK].dbo.POSTB WITH(NOLOCK) ON TB008=[發票號碼]
+                            LEFT JOIN [TK].dbo.INVMB ON MB001=TB010
+                            WHERE 1=1
+                            AND ISNULL([發票號碼],'')<>''
+                            AND (TB010 LIKE '4%' OR TB010 LIKE '5%')
+                            AND CONVERT(NVARCHAR,[時間戳記],112)>='{0}' AND CONVERT(NVARCHAR,[時間戳記],112)<='{1}' 
+                            GROUP BY  [門市],[居住地],POSTB.TB010,INVMB.MB002
+                            HAVING SUM(POSTB.TB031)>0
+
+                            ", SDATES, EDATES);
+
+            return SB;
+
+        }
+        public StringBuilder SETSQLC5(string SDATES, string EDATES)
+        {
+            StringBuilder SB = new StringBuilder();
+
+
+            SB.AppendFormat(@"                           
+                            SELECT
+                            [門市]
+                            ,[本地居住觀光工作]
+                            ,POSTB.TB010 品號
+                            ,INVMB.MB002 品名
+                            ,SUM(POSTB.TB019) 銷售數量
+                            ,SUM(POSTB.TB031) 未稅金額
+                            FROM [TKMK].[dbo].[TBSTORESQUESTIONAIRES] WITH(NOLOCK)
+                            LEFT JOIN [TK].dbo.POSTB WITH(NOLOCK) ON TB008=[發票號碼]
+                            LEFT JOIN [TK].dbo.INVMB ON MB001=TB010
+                            WHERE 1=1
+                            AND ISNULL([發票號碼],'')<>''
+                            AND (TB010 LIKE '4%' OR TB010 LIKE '5%')
+                            AND CONVERT(NVARCHAR,[時間戳記],112)>='{0}' AND CONVERT(NVARCHAR,[時間戳記],112)<='{1}' 
+                            GROUP BY  [門市],[本地居住觀光工作],POSTB.TB010,INVMB.MB002
+                            HAVING SUM(POSTB.TB031)>0
+                            ", SDATES, EDATES);
+
+            return SB;
+
+        }
+        public StringBuilder SETSQLC6(string SDATES, string EDATES)
+        {
+            StringBuilder SB = new StringBuilder();
+
+
+            SB.AppendFormat(@" 
+                            SELECT
+                            [門市]
+                            ,[顧客外觀性別]
+                            ,[顧客年齡區間]
+                            ,POSTB.TB010 品號
+                            ,INVMB.MB002 品名
+                            ,SUM(POSTB.TB019) 銷售數量
+                            ,SUM(POSTB.TB031) 未稅金額
+                            FROM [TKMK].[dbo].[TBSTORESQUESTIONAIRES] WITH(NOLOCK)
+                            LEFT JOIN [TK].dbo.POSTB WITH(NOLOCK) ON TB008=[發票號碼]
+                            LEFT JOIN [TK].dbo.INVMB ON MB001=TB010
+                            WHERE 1=1
+                            AND ISNULL([發票號碼],'')<>''
+                            AND (TB010 LIKE '4%' OR TB010 LIKE '5%')
+                            AND CONVERT(NVARCHAR,[時間戳記],112)>='{0}' AND CONVERT(NVARCHAR,[時間戳記],112)<='{1}' 
+                            GROUP BY  [門市],[顧客外觀性別],[顧客年齡區間],POSTB.TB010,INVMB.MB002
                             HAVING SUM(POSTB.TB031)>0
 
                             ", SDATES, EDATES);
