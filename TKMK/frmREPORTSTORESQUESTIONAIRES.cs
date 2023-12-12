@@ -86,13 +86,12 @@ namespace TKMK
 
             //comboBox1.Font = new Font("Arial", 10); // 使用 "Arial" 字體，字體大小為 12
         }
-        public void SETFASTREPORT(string SDATES, string EDATES)
+        public void SETFASTREPORT(string KINDS,string SDATES, string EDATES)
         {
             StringBuilder SQL1 = new StringBuilder();
 
             SQL1 = SETSQL(SDATES, EDATES);
-            Report report1 = new Report();
-            report1.Load(@"REPORT\門市客群.frx");
+            Report report1 = new Report();         
 
             //20210902密
             Class1 TKID = new Class1();//用new 建立類別實體
@@ -105,12 +104,24 @@ namespace TKMK
             String connectionString;
             sqlConn = new SqlConnection(sqlsb.ConnectionString);
 
-            report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+          
+
+            if(KINDS.Equals("門市客群"))
+            {
+                report1.Load(@"REPORT\門市客群.frx");
+                report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+                TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
+                table.SelectCommand = SQL1.ToString();
+            }
+            else if (KINDS.Equals("門市客群購買商品"))
+            {
+                report1.Load(@"REPORT\門市客群.frx");
+                report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+                TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
+                table.SelectCommand = SQL1.ToString();
+            }
 
 
-
-            TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
-            table.SelectCommand = SQL1.ToString();
 
             //report1.SetParameterValue("P1", dateTimePicker1.Value.ToString("yyyyMMdd"));
             //report1.SetParameterValue("P2", dateTimePicker2.Value.ToString("yyyyMMdd"));
@@ -223,7 +234,7 @@ namespace TKMK
         #region BUTTON
         private void button1_Click(object sender, EventArgs e)
         {
-            SETFASTREPORT(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+            SETFASTREPORT(comboBox1.Text,dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
         }
 
         private void button2_Click(object sender, EventArgs e)
