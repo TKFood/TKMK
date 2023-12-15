@@ -298,7 +298,7 @@ namespace TKMK
 
         public StringBuilder SETSQL3(string YEARS,string LASTYEARS,string WEEKS1, string WEEKS2, string WEEKS3, string WEEKS4)
         {
-            StringBuilder SB = new StringBuilder();
+            StringBuilder SB = new StringBuilder(); 
 
 
             SB.AppendFormat(@" 
