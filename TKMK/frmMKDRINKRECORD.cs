@@ -2041,6 +2041,8 @@ namespace TKMK
 
         public INVTADATA SETINVTA()
         {
+            DataTable dt = SEARCH_DRINKCREATOR();
+
             INVTADATA INVTA = new INVTADATA();
             INVTA.COMPANY = "TK";
             INVTA.CREATOR = dt.Rows[0]["CREATOR"].ToString();
