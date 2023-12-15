@@ -296,6 +296,7 @@ namespace TKMK
 
         }
 
+        
         public StringBuilder SETSQL3(string YEARS,string LASTYEARS,string WEEKS1, string WEEKS2, string WEEKS3, string WEEKS4)
         {
             StringBuilder SB = new StringBuilder(); 
@@ -450,7 +451,56 @@ namespace TKMK
             report1.Show();
         }
 
-       
+
+        public void SETFASTREPORT5(string SDATE, string EDATES)
+        {
+            StringBuilder SQL4 = new StringBuilder();
+
+            SQL4.Clear();
+            SQL4.AppendFormat(@"                                
+                            SELECT
+                            MONTH([CREATEDATES]) AS '月份'
+                            ,[CARCOMPANY] AS  '來車'
+                            ,COUNT([CARCOMPANY])  AS  '車數'
+                            ,SUM([SALESMMONEYS])  AS  '總銷售金額'
+                            ,SUM([COMMISSIONBASEMONEYS])  AS  '總茶水費'
+                            ,SUM([COMMISSIONPCTMONEYS])      AS  '總佣金' 
+                            ,SUM([TOTALCOMMISSIONMONEYS])  AS  '總佣金+總茶水費'
+                            FROM [TKMK].[dbo].[GROUPSALES]
+                            WHERE CONVERT(NVARCHAR,[CREATEDATES],112)>='{0}' AND CONVERT(NVARCHAR,[CREATEDATES],112)<='{1}' 
+                            GROUP BY MONTH([CREATEDATES]),[CARCOMPANY]
+                            ORDER BY MONTH([CREATEDATES]),[CARCOMPANY]
+
+                                ", SDATE, EDATES);
+
+
+            Report report1 = new Report();
+            report1.Load(@"REPORT\團車各月.frx");
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+
+
+            TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
+            table.SelectCommand = SQL4.ToString();
+
+
+            //report1.SetParameterValue("P1", dateTimePicker1.Value.ToString("yyyyMMdd"));
+            //report1.SetParameterValue("P2", dateTimePicker2.Value.ToString("yyyyMMdd"));
+            report1.Preview = previewControl1;
+            report1.Show();
+        }
+
 
         #endregion
 
@@ -474,6 +524,10 @@ namespace TKMK
         private void button5_Click(object sender, EventArgs e)
         {
             SETFASTREPORT4(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+        }
+        private void button6_Click(object sender, EventArgs e)
+        {
+            SETFASTREPORT5(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
         }
 
         #endregion
