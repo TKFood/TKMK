@@ -667,12 +667,26 @@ namespace TKMK
 
                         dataGridView1.Columns["券總額"].Width = 60;
                         dataGridView1.Columns["券消費"].Width = 60;
+                        dataGridView1.Columns["券消費"].DefaultCellStyle.Format = "#,##0";
+                        dataGridView1.Columns["券消費"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                         dataGridView1.Columns["消費總額"].Width = 80;
+                        dataGridView1.Columns["消費總額"].DefaultCellStyle.Format = "#,##0";
+                        dataGridView1.Columns["消費總額"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                         dataGridView1.Columns["特賣數"].Width = 60;
+                        dataGridView1.Columns["特賣數"].DefaultCellStyle.Format = "#,##0";
+                        dataGridView1.Columns["特賣數"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                         dataGridView1.Columns["特賣獎金"].Width = 60;
+                        dataGridView1.Columns["特賣獎金"].DefaultCellStyle.Format = "#,##0";
+                        dataGridView1.Columns["特賣獎金"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                         dataGridView1.Columns["茶水費"].Width = 60;
+                        dataGridView1.Columns["茶水費"].DefaultCellStyle.Format = "#,##0";
+                        dataGridView1.Columns["茶水費"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                         dataGridView1.Columns["消費獎金"].Width = 60;
+                        dataGridView1.Columns["消費獎金"].DefaultCellStyle.Format = "#,##0";
+                        dataGridView1.Columns["消費獎金"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                         dataGridView1.Columns["總獎金"].Width = 60;
+                        dataGridView1.Columns["總獎金"].DefaultCellStyle.Format = "#,##0";
+                        dataGridView1.Columns["總獎金"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                         dataGridView1.Columns["車數"].Width = 60;
                         dataGridView1.Columns["交易筆數"].Width = 60;
                         dataGridView1.Columns["業務員名"].Width = 80;

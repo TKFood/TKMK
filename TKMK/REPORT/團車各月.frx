@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="12/15/2023 15:29:43" ReportInfo.Modified="12/15/2023 15:35:35" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="12/15/2023 15:29:43" ReportInfo.Modified="12/15/2023 17:04:50" ReportInfo.CreatorVersion="2016.4.4.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpN+i5gA3VDGcwlcfm6L9ZMsLrZ3U+wEDtHCQtd9vw2XUGyUzty7Tup18yjJwFaKI7A">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpN+i5gA3VDGcwlcfm6L9ZMsLrZ3U+wEDtHCQtd9vw2XUHxPtn3gR6bPP8vVmBj8vSi">
       <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="&#13;&#10;SELECT&#13;&#10;MONTH([CREATEDATES]) AS '月份'&#13;&#10;,[CARCOMPANY] AS  '來車'&#13;&#10;,COUNT([CARCOMPANY])  AS  '車數'&#13;&#10;,SUM([SALESMMONEYS])  AS  '總銷售金額'&#13;&#10;,SUM([COMMISSIONBASEMONEYS])  AS  '總茶水費'&#13;&#10;,SUM([COMMISSIONPCTMONEYS])      AS  '總佣金' &#13;&#10;,SUM([TOTALCOMMISSIONMONEYS])  AS  '總佣金+總茶水費'&#13;&#10;FROM [TKMK].[dbo].[GROUPSALES]&#13;&#10;WHERE CONVERT(NVARCHAR,[CREATEDATES],112)&gt;='20230701' AND CONVERT(NVARCHAR,[CREATEDATES],112)&lt;='20231231' &#13;&#10;GROUP BY MONTH([CREATEDATES]),[CARCOMPANY]&#13;&#10;ORDER BY MONTH([CREATEDATES]),[CARCOMPANY]">
         <Column Name="月份" DataType="System.Int32"/>
         <Column Name="來車" DataType="System.String"/>
