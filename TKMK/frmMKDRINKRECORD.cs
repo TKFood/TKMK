@@ -308,7 +308,7 @@ namespace TKMK
             comboBox2load();
             comboBox3load();
             comboBox4load();
-
+            comboBox5load();
         }
 
         #region FUNCTION
@@ -434,6 +434,44 @@ namespace TKMK
             comboBox4.DataSource = dt.DefaultView;
             comboBox4.ValueMember = "ID";
             comboBox4.DisplayMember = "DRINKNAME";
+            sqlConn.Close();
+
+            textBox23.Text = comboBox4.SelectedValue.ToString();
+
+
+        }
+
+        public void comboBox5load()
+        {
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"
+                                SELECT 
+                                 [KINDS]
+                                ,[PARASNAMES]
+                                ,[DVALUES]
+                                FROM [TKMK].[dbo].[TBZPARAS]
+                                WHERE  [KINDS]='frmMKDRINKRECORD'
+                                ORDER BY [DVALUES] ");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("PARASNAMES", typeof(string));
+
+            da.Fill(dt);
+            comboBox5.DataSource = dt.DefaultView;
+            comboBox5.ValueMember = "PARASNAMES";
+            comboBox5.DisplayMember = "PARASNAMES";
             sqlConn.Close();
 
             ID.Text = comboBox2.SelectedValue.ToString();
@@ -2791,6 +2829,14 @@ namespace TKMK
         {
             label46.Text = comboBox4.SelectedValue.ToString();
         }
+        private void comboBox5_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(!string.IsNullOrEmpty(textBox27.Text))
+            {
+                textBox32.Text = comboBox5.SelectedValue.ToString() + "-" + textBox27.Text;
+            }
+            
+        }
         #endregion
 
         #region BUTTON
@@ -2971,8 +3017,9 @@ namespace TKMK
 
 
 
+
         #endregion
 
-      
+        
     }
 }
