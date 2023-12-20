@@ -378,23 +378,32 @@ namespace TKMK
 
         public void comboBox3load()
         {
-            //connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
-            //sqlConn = new SqlConnection(connectionString);
-            //StringBuilder Sequel = new StringBuilder();
-            //Sequel.AppendFormat(@"SELECT ME001,ME002 FROM [TK].dbo.CMSME WHERE ME002 NOT LIKE '%停用%' ORDER BY ME001 ");
-            //SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
-            //DataTable dt = new DataTable();
-            //sqlConn.Open();
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
 
-            //dt.Columns.Add("ME001", typeof(string));
-            //dt.Columns.Add("ME002", typeof(string));
-            //da.Fill(dt);
-            //comboBox3.DataSource = dt.DefaultView;
-            //comboBox3.ValueMember = "ME001";
-            //comboBox3.DisplayMember = "ME002";
-            //sqlConn.Close();
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
 
-            //textBox1.Text = comboBox1.SelectedValue.ToString();
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"SELECT ME001,ME002 FROM [TK].dbo.CMSME WHERE (ME002 NOT LIKE '%停用%' AND  ME001 NOT LIKE '118%') ORDER BY ME001 ");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("ME001", typeof(string));
+            dt.Columns.Add("ME002", typeof(string));
+            da.Fill(dt);
+            comboBox3.DataSource = dt.DefaultView;
+            comboBox3.ValueMember = "ME001";
+            comboBox3.DisplayMember = "ME002";
+            sqlConn.Close();
+
+            textBox1.Text = comboBox1.SelectedValue.ToString();
 
 
         }
@@ -2624,6 +2633,125 @@ namespace TKMK
 
             }
         }
+
+        private void textBox26_TextChanged(object sender, EventArgs e)
+        {
+            if(textBox26.Text.Length>=6)
+            {
+                DataTable DT = DIND_VIEW_CardNo_MV004(textBox26.Text);
+
+                if (DT != null && DT.Rows.Count >= 1)
+                {                    
+                    textBox27.Text = DT.Rows[0]["Name"].ToString();
+                    textBox28.Text = DT.Rows[0]["CardNo"].ToString();
+                    textBox24.Text = DT.Rows[0]["MV004"].ToString();
+                    comboBox3.SelectedValue = DT.Rows[0]["MV004"].ToString();
+                }
+                else
+                {
+                    //MessageBox.Show("此人員不存在");
+                   
+                    textBox27.Text = "";
+                    textBox28.Text = "";
+                }
+            }
+          
+        }
+        private void textBox26_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (textBox26.Text.Length >= 6)
+            {
+                DataTable DT = DIND_VIEW_CardNo_MV004(textBox26.Text);
+
+                if (DT != null && DT.Rows.Count >= 1)
+                {                   
+                    textBox27.Text = DT.Rows[0]["Name"].ToString();
+                    textBox28.Text = DT.Rows[0]["CardNo"].ToString();
+                    textBox24.Text = DT.Rows[0]["MV004"].ToString();
+                    comboBox3.SelectedValue = DT.Rows[0]["MV004"].ToString();
+                }
+                else
+                {
+                    //MessageBox.Show("此人員不存在");
+                  
+                    textBox27.Text = "";
+                    textBox28.Text = "";
+                }
+            }
+        }
+
+        public DataTable DIND_VIEW_CardNo_MV004(string MV001)
+        {
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
+            DataSet ds = new DataSet();
+
+            StringBuilder SQLQUERY1 = new StringBuilder();
+            StringBuilder SQLQUERY2 = new StringBuilder();
+
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(@" 
+                                    SELECT
+                                    [EmployeeID]
+                                    ,[CardNo]
+                                    ,[Name]
+                                    ,[MV004]
+                                    FROM [TKMK].[dbo].[VIEW_CardNo_MV004]
+                                    WHERE ([EmployeeID] LIKE '%{0}%' OR [CardNo]  LIKE '%{0}%')
+                                    ", MV001);
+
+                adapter = new SqlDataAdapter(sbSql.ToString(), sqlConn);
+                sqlCmdBuilder = new SqlCommandBuilder(adapter);
+
+                sqlConn.Open();
+                ds.Clear();
+                adapter.Fill(ds, "ds");
+                sqlConn.Close();
+
+
+                if (ds.Tables["ds"].Rows.Count == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    return ds.Tables["ds"];
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+
+            }
+        }
+        private void comboBox3_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            textBox24.Text = null;
+            if (!string.IsNullOrEmpty(comboBox3.SelectedValue.ToString()) && !comboBox3.SelectedValue.ToString().Equals("System.Data.DataRowView"))
+            {
+                textBox24.Text = comboBox3.SelectedValue.ToString();
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -2795,8 +2923,15 @@ namespace TKMK
             Search7(dateTimePicker13.Value.ToString("yyyyMMdd"));
         }
 
+        private void button16_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
+
         #endregion
 
-
+       
     }
 }
