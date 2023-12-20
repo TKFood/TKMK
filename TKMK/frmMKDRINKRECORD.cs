@@ -81,7 +81,7 @@ namespace TKMK
         int result;
         Thread TD;
 
-        string STATUS = null;
+        string STATUS = "EDIT";
         string BUYNO;
         string OLDBUYNO;
         string CHECKDELBOMMD = "N";
@@ -1036,7 +1036,20 @@ namespace TKMK
             textBox3.ReadOnly = true;
             textBox4.ReadOnly = true;
         }
-        public void UPDATE()
+        public void UPDATE(
+                            string DATES
+                            , string MV001
+                            , string CARDNO
+                            , string NAMES
+                            , string DEP
+                            , string DEPNAME
+                            , string DRINK
+                            , string OTHERS
+                            , string CUP
+                            , string REASON
+                            , string DRINKID
+                            , string ID
+            )
         {
             try
             {
@@ -1055,14 +1068,37 @@ namespace TKMK
 
                 sqlConn.Close();
                 sqlConn.Open();
-                tran = sqlConn.BeginTransaction();
-
+                tran = sqlConn.BeginTransaction();             
               
-                sbSql.AppendFormat(" UPDATE [TKMK].[dbo].[MKDRINKRECORD]");
-                sbSql.AppendFormat(" SET [DATES]='{0}',[DEP]='{1}',[DEPNAME]='{2}',[DRINK]='{3}',[OTHERS]='{4}',[CUP]='{5}',[REASON]='{6}',[SIGN]='{7}',[DRINKID]='{8}'", dateTimePicker3.Value.ToString("yyyyMMdd"), textBox1.Text, comboBox1.Text, comboBox2.Text, textBox2.Text, textBox3.Text, textBox4.Text,null,comboBox2.SelectedValue.ToString());
-                sbSql.AppendFormat(" WHERE [ID]='{0}'", textBoxID.Text);
-                sbSql.AppendFormat(" ");
-                sbSql.AppendFormat(" ");
+                sbSql.AppendFormat(@" 
+                                    UPDATE [TKMK].[dbo].[MKDRINKRECORD]
+                                    SET [DATES]='{1}'
+                                    ,[MV001]='{2}'
+                                    ,[CARDNO]='{3}'
+                                    ,[NAMES]='{4}'
+                                    ,[DEP]='{5}'
+                                    ,[DEPNAME]='{6}'
+                                    ,[DRINK]='{7}'
+                                    ,[OTHERS]='{8}'
+                                    ,[CUP]='{9}'
+                                    ,[REASON]='{10}'
+                                    ,[DRINKID]='{11}'
+                                    WHERE [ID]='{0}'
+
+                                    "
+                                    , ID
+                                    , DATES
+                                    , MV001
+                                    , CARDNO
+                                    , NAMES
+                                    , DEP
+                                    , DEPNAME
+                                    , DRINK
+                                    , OTHERS
+                                    , CUP
+                                    , REASON
+                                    , DRINKID
+                                    );
 
                 cmd.Connection = sqlConn;
                 cmd.CommandTimeout = 60;
@@ -2958,7 +2994,28 @@ namespace TKMK
             }
 
         }
+        private void textBox34_TextChanged(object sender, EventArgs e)
+        {
+            if (textBox34.Text.Length >= 6)
+            {
+                DataTable DT = DIND_VIEW_CardNo_MV004(textBox34.Text);
 
+                if (DT != null && DT.Rows.Count >= 1)
+                {
+                    textBox35.Text = DT.Rows[0]["Name"].ToString();
+                    textBox36.Text = DT.Rows[0]["CardNo"].ToString();
+                    textBox1.Text = DT.Rows[0]["MV004"].ToString();                    
+                    comboBox1.SelectedValue = DT.Rows[0]["MV004"].ToString();
+                }
+                else
+                {
+                    //MessageBox.Show("此人員不存在");
+                    textBox35.Text = "";
+                    textBox36.Text = "";
+                    textBox1.Text = "";
+                }
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -2977,25 +3034,58 @@ namespace TKMK
             STATUS = "EDIT";
            
             SETSTATUS2();
-        }
 
-        private void button5_Click(object sender, EventArgs e)
-        {
-            if (STATUS.Equals("EDIT"))
-            {
-                UPDATE();
-            }
-            else if (STATUS.Equals("ADD"))
-            {
-                ADD();
-            }
-
-            STATUS = null;
+            UPDATE(
+                        dateTimePicker3.Value.ToString("yyyMMdd")
+                        , textBox34.Text
+                        , textBox36.Text
+                        , textBox35.Text
+                        , textBox1.Text
+                        , comboBox1.Text.ToString()
+                        , comboBox2.Text.ToString()
+                        , textBox2.Text
+                        , textBox3.Text
+                        , textBox4.Text
+                        , DRINKID.Text
+                        , textBoxID.Text
+                        );
 
             SETSTAUSFIANL();
 
             Search(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
             MessageBox.Show("完成");
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            //if (STATUS.Equals("EDIT"))
+            //{
+            //    UPDATE(
+            //            dateTimePicker3.Value.ToString("yyyMMdd")
+            //            , textBox34.Text
+            //            , textBox36.Text
+            //            , textBox35.Text
+            //            , textBox1.Text
+            //            , comboBox1.Text.ToString()
+            //            , comboBox2.Text.ToString()
+            //            , textBox2.Text
+            //            , textBox3.Text
+            //            , textBox4.Text
+            //            , DRINKID.Text
+            //            , textBoxID.Text
+            //            );
+            //}
+            //else if (STATUS.Equals("ADD"))
+            //{
+            //    ADD();
+            //}
+
+            //STATUS = null;
+
+            //SETSTAUSFIANL();
+
+            //Search(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+            //MessageBox.Show("完成");
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -3154,8 +3244,9 @@ namespace TKMK
 
 
 
+
         #endregion
 
-        
+    
     }
 }
