@@ -372,7 +372,7 @@ namespace TKMK
             comboBox2.DisplayMember = "DRINKNAME";
             sqlConn.Close();
 
-            ID.Text = comboBox2.SelectedValue.ToString();
+            DRINKID.Text = comboBox2.SelectedValue.ToString();
 
 
         }
@@ -474,7 +474,7 @@ namespace TKMK
             comboBox5.DisplayMember = "PARASNAMES";
             sqlConn.Close();
 
-            ID.Text = comboBox2.SelectedValue.ToString();
+            DRINKID.Text = comboBox2.SelectedValue.ToString();
 
 
         }
@@ -488,7 +488,7 @@ namespace TKMK
             }
             
         }
-        public void Search()
+        public void Search(string SDAYS,string EDAYS)
         {
             ds.Clear();
 
@@ -509,12 +509,26 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
-               
-                sbSql.AppendFormat(@"  SELECT CONVERT(NVARCHAR,[DATES],111) AS '日期' ,[DEP] AS '部門' ,[DEPNAME] AS '部門名' ,[DRINK] AS '飲品' ,[OTHERS] AS '其他' ,[CUP] AS '數量' ,[REASON] AS '原因' ,[DRINKID] AS '品號' ,[SIGN] AS '簽名' ,[ID]");
-                sbSql.AppendFormat(@"  FROM [TKMK].[dbo].[MKDRINKRECORD]");
-                sbSql.AppendFormat(@"  WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}' AND CONVERT(NVARCHAR,[DATES],112)<='{1}' ",dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
-                sbSql.AppendFormat(@"  ORDER BY CONVERT(NVARCHAR,[DATES],111)");
-                sbSql.AppendFormat(@"  ");
+
+                sbSql.AppendFormat(@"  
+                                   SELECT 
+                                    CONVERT(NVARCHAR,[DATES],111) AS '日期' 
+                                    ,[MV001] AS '工號' 
+                                    ,[CARDNO] AS '卡號' 
+                                    ,[NAMES] AS '姓名' 
+                                    ,[DEP] AS '部門' 
+                                    ,[DEPNAME] AS '部門名' 
+                                    ,[DRINK] AS '飲品' 
+                                    ,[OTHERS] AS '其他'
+                                    ,[CUP] AS '數量' 
+                                    ,[REASON] AS '原因' 
+                                    ,[DRINKID] AS '品號' 
+                                    ,[SIGN] AS '簽名' 
+                                    ,[ID]
+                                    FROM [TKMK].[dbo].[MKDRINKRECORD]
+                                    WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}'  AND CONVERT(NVARCHAR,[DATES],112)>='{1}'  
+                                    ORDER BY CONVERT(NVARCHAR,[DATES],111)
+                                    ", SDAYS, EDAYS);
 
                 adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -904,7 +918,20 @@ namespace TKMK
 
        
                 sbSql.AppendFormat(@"  
-                                    SELECT CONVERT(NVARCHAR,[DATES],111) AS '日期' ,[DEP] AS '部門' ,[DEPNAME] AS '部門名' ,[DRINK] AS '飲品' ,[OTHERS] AS '其他' ,[CUP] AS '數量' ,[REASON] AS '原因' ,[DRINKID] AS '品號' ,[SIGN] AS '簽名' ,[ID]
+                                   SELECT 
+                                    CONVERT(NVARCHAR,[DATES],111) AS '日期' 
+                                    ,[MV001] AS '工號' 
+                                    ,[CARDNO] AS '卡號' 
+                                    ,[NAMES] AS '姓名' 
+                                    ,[DEP] AS '部門' 
+                                    ,[DEPNAME] AS '部門名' 
+                                    ,[DRINK] AS '飲品' 
+                                    ,[OTHERS] AS '其他'
+                                    ,[CUP] AS '數量' 
+                                    ,[REASON] AS '原因' 
+                                    ,[DRINKID] AS '品號' 
+                                    ,[SIGN] AS '簽名' 
+                                    ,[ID]
                                     FROM [TKMK].[dbo].[MKDRINKRECORD]
                                     WHERE CONVERT(NVARCHAR,[DATES],112)='{0}'  
                                     ORDER BY CONVERT(NVARCHAR,[DATES],111)
@@ -962,6 +989,9 @@ namespace TKMK
                     textBox3.Text = row.Cells["數量"].Value.ToString();
                     textBox4.Text = row.Cells["原因"].Value.ToString();
                     textBoxID.Text = row.Cells["ID"].Value.ToString();
+                    textBox34.Text = row.Cells["工號"].Value.ToString();
+                    textBox35.Text = row.Cells["姓名"].Value.ToString();
+                    textBox36.Text = row.Cells["卡號"].Value.ToString();
 
                 }
                 else
@@ -971,6 +1001,9 @@ namespace TKMK
                     textBox3.Text = null;
                     textBox4.Text = null;
                     textBoxID.Text = null;
+                    textBox34.Text = null;
+                    textBox35.Text = null;
+                    textBox36.Text = null;
 
                 }
             }
@@ -1268,7 +1301,7 @@ namespace TKMK
         }
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ID.Text = comboBox2.SelectedValue.ToString();
+            DRINKID.Text = comboBox2.SelectedValue.ToString();
         }
 
         private void dataGridView2_SelectionChanged(object sender, EventArgs e)
@@ -2931,7 +2964,7 @@ namespace TKMK
         #region BUTTON
         private void button1_Click(object sender, EventArgs e)
         {
-            Search();
+            Search(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -2961,7 +2994,7 @@ namespace TKMK
 
             SETSTAUSFIANL();
 
-            Search();
+            Search(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
             MessageBox.Show("完成");
         }
 
@@ -2981,7 +3014,7 @@ namespace TKMK
                 //do something else
             }
 
-            Search();
+            Search(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
             MessageBox.Show("完成");
         }
 

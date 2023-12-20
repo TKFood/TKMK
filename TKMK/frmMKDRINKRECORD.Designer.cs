@@ -80,7 +80,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.textBoxID = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -89,7 +88,6 @@
             this.label3 = new System.Windows.Forms.Label();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.ID = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
@@ -193,6 +191,14 @@
             this.dataGridView8 = new System.Windows.Forms.DataGridView();
             this.comboBox5 = new System.Windows.Forms.ComboBox();
             this.textBox33 = new System.Windows.Forms.TextBox();
+            this.label49 = new System.Windows.Forms.Label();
+            this.label50 = new System.Windows.Forms.Label();
+            this.label51 = new System.Windows.Forms.Label();
+            this.textBox34 = new System.Windows.Forms.TextBox();
+            this.textBox35 = new System.Windows.Forms.TextBox();
+            this.textBox36 = new System.Windows.Forms.TextBox();
+            this.DRINKID = new System.Windows.Forms.TextBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer15)).BeginInit();
@@ -798,7 +804,7 @@
             // 
             this.splitContainer2.Panel2.Controls.Add(this.tableLayoutPanel2);
             this.splitContainer2.Size = new System.Drawing.Size(970, 512);
-            this.splitContainer2.SplitterDistance = 209;
+            this.splitContainer2.SplitterDistance = 171;
             this.splitContainer2.TabIndex = 0;
             // 
             // dataGridView1
@@ -809,7 +815,7 @@
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(966, 205);
+            this.dataGridView1.Size = new System.Drawing.Size(966, 167);
             this.dataGridView1.TabIndex = 1;
             this.dataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView1_SelectionChanged);
             // 
@@ -833,20 +839,26 @@
             this.tableLayoutPanel2.Controls.Add(this.button5, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.label11, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.dateTimePicker3, 1, 1);
-            this.tableLayoutPanel2.Controls.Add(this.label5, 0, 2);
-            this.tableLayoutPanel2.Controls.Add(this.label4, 0, 3);
-            this.tableLayoutPanel2.Controls.Add(this.comboBox1, 1, 2);
-            this.tableLayoutPanel2.Controls.Add(this.comboBox2, 1, 3);
-            this.tableLayoutPanel2.Controls.Add(this.textBox1, 2, 2);
-            this.tableLayoutPanel2.Controls.Add(this.textBoxID, 1, 7);
             this.tableLayoutPanel2.Controls.Add(this.label7, 0, 7);
             this.tableLayoutPanel2.Controls.Add(this.label2, 0, 6);
             this.tableLayoutPanel2.Controls.Add(this.textBox4, 1, 6);
             this.tableLayoutPanel2.Controls.Add(this.textBox3, 1, 5);
             this.tableLayoutPanel2.Controls.Add(this.label3, 0, 5);
-            this.tableLayoutPanel2.Controls.Add(this.textBox2, 1, 4);
-            this.tableLayoutPanel2.Controls.Add(this.label6, 0, 4);
-            this.tableLayoutPanel2.Controls.Add(this.ID, 3, 3);
+            this.tableLayoutPanel2.Controls.Add(this.label51, 4, 2);
+            this.tableLayoutPanel2.Controls.Add(this.label49, 0, 2);
+            this.tableLayoutPanel2.Controls.Add(this.textBox34, 1, 2);
+            this.tableLayoutPanel2.Controls.Add(this.label50, 2, 2);
+            this.tableLayoutPanel2.Controls.Add(this.textBox35, 3, 2);
+            this.tableLayoutPanel2.Controls.Add(this.textBox36, 5, 2);
+            this.tableLayoutPanel2.Controls.Add(this.label4, 0, 4);
+            this.tableLayoutPanel2.Controls.Add(this.comboBox2, 1, 4);
+            this.tableLayoutPanel2.Controls.Add(this.comboBox1, 1, 3);
+            this.tableLayoutPanel2.Controls.Add(this.label5, 0, 3);
+            this.tableLayoutPanel2.Controls.Add(this.textBoxID, 1, 7);
+            this.tableLayoutPanel2.Controls.Add(this.textBox2, 5, 4);
+            this.tableLayoutPanel2.Controls.Add(this.label6, 4, 4);
+            this.tableLayoutPanel2.Controls.Add(this.DRINKID, 3, 4);
+            this.tableLayoutPanel2.Controls.Add(this.textBox1, 2, 3);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -859,7 +871,7 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(966, 295);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(966, 333);
             this.tableLayoutPanel2.TabIndex = 2;
             // 
             // button2
@@ -871,6 +883,7 @@
             this.button2.TabIndex = 15;
             this.button2.Text = "新增";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Visible = false;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button3
@@ -930,7 +943,7 @@
             // 
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(3, 92);
+            this.label5.Location = new System.Drawing.Point(3, 132);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(114, 16);
             this.label5.TabIndex = 38;
@@ -940,7 +953,7 @@
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 132);
+            this.label4.Location = new System.Drawing.Point(3, 172);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(114, 16);
             this.label4.TabIndex = 37;
@@ -950,7 +963,7 @@
             // 
             this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(123, 88);
+            this.comboBox1.Location = new System.Drawing.Point(123, 128);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(114, 24);
             this.comboBox1.TabIndex = 41;
@@ -961,25 +974,16 @@
             this.comboBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel2.SetColumnSpan(this.comboBox2, 2);
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(123, 130);
+            this.comboBox2.Location = new System.Drawing.Point(123, 170);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(234, 24);
             this.comboBox2.TabIndex = 42;
             this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
             // 
-            // textBox1
-            // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(243, 86);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(114, 27);
-            this.textBox1.TabIndex = 43;
-            // 
             // textBoxID
             // 
             this.textBoxID.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxID.Location = new System.Drawing.Point(123, 286);
+            this.textBoxID.Location = new System.Drawing.Point(123, 293);
             this.textBoxID.Name = "textBoxID";
             this.textBoxID.ReadOnly = true;
             this.textBoxID.Size = new System.Drawing.Size(114, 27);
@@ -989,7 +993,7 @@
             // 
             this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(3, 292);
+            this.label7.Location = new System.Drawing.Point(3, 298);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(114, 16);
             this.label7.TabIndex = 40;
@@ -1036,7 +1040,7 @@
             // 
             this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel2.SetColumnSpan(this.textBox2, 2);
-            this.textBox2.Location = new System.Drawing.Point(123, 166);
+            this.textBox2.Location = new System.Drawing.Point(603, 166);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(234, 27);
             this.textBox2.TabIndex = 44;
@@ -1045,22 +1049,11 @@
             // 
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(3, 172);
+            this.label6.Location = new System.Drawing.Point(483, 172);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(114, 16);
             this.label6.TabIndex = 39;
             this.label6.Text = "其他";
-            // 
-            // ID
-            // 
-            this.ID.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.ID.AutoSize = true;
-            this.tableLayoutPanel2.SetColumnSpan(this.ID, 2);
-            this.ID.Location = new System.Drawing.Point(363, 132);
-            this.ID.Name = "ID";
-            this.ID.Size = new System.Drawing.Size(234, 16);
-            this.ID.TabIndex = 48;
-            this.ID.Text = "ID";
             // 
             // tabPage2
             // 
@@ -2384,6 +2377,78 @@
             this.textBox33.Size = new System.Drawing.Size(85, 27);
             this.textBox33.TabIndex = 70;
             // 
+            // label49
+            // 
+            this.label49.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label49.AutoSize = true;
+            this.label49.Location = new System.Drawing.Point(3, 92);
+            this.label49.Name = "label49";
+            this.label49.Size = new System.Drawing.Size(114, 16);
+            this.label49.TabIndex = 66;
+            this.label49.Text = "工號";
+            // 
+            // label50
+            // 
+            this.label50.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label50.AutoSize = true;
+            this.label50.Location = new System.Drawing.Point(243, 92);
+            this.label50.Name = "label50";
+            this.label50.Size = new System.Drawing.Size(114, 16);
+            this.label50.TabIndex = 69;
+            this.label50.Text = "姓名";
+            // 
+            // label51
+            // 
+            this.label51.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label51.AutoSize = true;
+            this.label51.Location = new System.Drawing.Point(483, 92);
+            this.label51.Name = "label51";
+            this.label51.Size = new System.Drawing.Size(114, 16);
+            this.label51.TabIndex = 70;
+            this.label51.Text = "卡號";
+            // 
+            // textBox34
+            // 
+            this.textBox34.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox34.Location = new System.Drawing.Point(123, 86);
+            this.textBox34.Name = "textBox34";
+            this.textBox34.Size = new System.Drawing.Size(114, 27);
+            this.textBox34.TabIndex = 67;
+            // 
+            // textBox35
+            // 
+            this.textBox35.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox35.Location = new System.Drawing.Point(363, 86);
+            this.textBox35.Name = "textBox35";
+            this.textBox35.Size = new System.Drawing.Size(114, 27);
+            this.textBox35.TabIndex = 71;
+            // 
+            // textBox36
+            // 
+            this.textBox36.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox36.Location = new System.Drawing.Point(603, 86);
+            this.textBox36.Name = "textBox36";
+            this.textBox36.Size = new System.Drawing.Size(114, 27);
+            this.textBox36.TabIndex = 68;
+            // 
+            // DRINKID
+            // 
+            this.DRINKID.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.DRINKID.Location = new System.Drawing.Point(363, 166);
+            this.DRINKID.Name = "DRINKID";
+            this.DRINKID.ReadOnly = true;
+            this.DRINKID.Size = new System.Drawing.Size(114, 27);
+            this.DRINKID.TabIndex = 72;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox1.Location = new System.Drawing.Point(243, 126);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(114, 27);
+            this.textBox1.TabIndex = 43;
+            // 
             // frmMKDRINKRECORD
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -2527,7 +2592,6 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.ComboBox comboBox2;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.TextBox textBox4;
@@ -2542,7 +2606,6 @@
         private System.Windows.Forms.SplitContainer splitContainer4;
         private FastReport.Preview.PreviewControl previewControl1;
         private FastReport.Preview.PreviewControl previewControl2;
-        private System.Windows.Forms.Label ID;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.SplitContainer splitContainer5;
         private System.Windows.Forms.SplitContainer splitContainer6;
@@ -2665,5 +2728,13 @@
         private System.Windows.Forms.TextBox textBox32;
         private System.Windows.Forms.ComboBox comboBox5;
         private System.Windows.Forms.TextBox textBox33;
+        private System.Windows.Forms.Label label51;
+        private System.Windows.Forms.Label label49;
+        private System.Windows.Forms.TextBox textBox34;
+        private System.Windows.Forms.Label label50;
+        private System.Windows.Forms.TextBox textBox35;
+        private System.Windows.Forms.TextBox textBox36;
+        private System.Windows.Forms.TextBox DRINKID;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
