@@ -2842,6 +2842,90 @@ namespace TKMK
             }
             
         }
+        public void ADD_MKDRINKRECORD(
+            string DATES
+            , string MV001
+            , string CARDNO
+            , string NAMES
+            , string DEP
+            , string DEPNAME
+            , string DRINKID
+            , string DRINK
+            , string OTHERS
+            , string CUP
+            , string REASON
+            )
+        {
+            if (!string.IsNullOrEmpty(NAMES))
+            {
+                try
+                {
+
+                    //add ZWAREWHOUSEPURTH
+                    //20210902密
+                    Class1 TKID = new Class1();//用new 建立類別實體
+                    SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                    //資料庫使用者密碼解密
+                    sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                    sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                    String connectionString;
+                    sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+
+                    sbSql.AppendFormat(@"  
+                                        INSERT INTO [TKMK].[dbo].[MKDRINKRECORD]
+                                        ([DATES],[MV001],[CARDNO],[NAMES],[DEP],[DEPNAME],[DRINKID],[DRINK],[OTHERS],[CUP],[REASON])                                       
+                                        VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}')
+                                        ", DATES
+                                        , MV001
+                                        , CARDNO
+                                        , NAMES
+                                        , DEP
+                                        , DEPNAME
+                                        , DRINKID
+                                        , DRINK
+                                        , OTHERS
+                                        , CUP
+                                        , REASON);
+
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+
+
+                    }
+                }
+                catch
+                {
+
+                }
+
+                finally
+                {
+                    sqlConn.Close();
+                }
+            }
+
+        }
+
         #endregion
 
         #region BUTTON
@@ -3015,7 +3099,21 @@ namespace TKMK
 
         private void button16_Click(object sender, EventArgs e)
         {
+            ADD_MKDRINKRECORD(
+             dateTimePicker14.Value.ToString("yyyy/MM/dd")
+            , textBox26.Text
+            , textBox28.Text
+            , textBox27.Text
+            , textBox24.Text
+            , comboBox3.Text.ToString()
+            , label46.Text
+            , comboBox4.Text.ToString()
+            , textBox29.Text
+            , textBox30.Text
+            , textBox32.Text
+            );
 
+             Search7(dateTimePicker13.Value.ToString("yyyyMMdd"));
         }
 
 
