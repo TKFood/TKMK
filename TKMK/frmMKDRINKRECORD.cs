@@ -2717,6 +2717,7 @@ namespace TKMK
                     textBox27.Text = DT.Rows[0]["Name"].ToString();
                     textBox28.Text = DT.Rows[0]["CardNo"].ToString();
                     textBox24.Text = DT.Rows[0]["MV004"].ToString();
+                    textBox33.Text = DT.Rows[0]["TITLE_NAME"].ToString();
                     comboBox3.SelectedValue = DT.Rows[0]["MV004"].ToString();
                 }
                 else
@@ -2725,6 +2726,7 @@ namespace TKMK
                    
                     textBox27.Text = "";
                     textBox28.Text = "";
+                    textBox33.Text = "";
                 }
             }
           
@@ -2740,6 +2742,7 @@ namespace TKMK
                     textBox27.Text = DT.Rows[0]["Name"].ToString();
                     textBox28.Text = DT.Rows[0]["CardNo"].ToString();
                     textBox24.Text = DT.Rows[0]["MV004"].ToString();
+                    textBox33.Text = DT.Rows[0]["TITLE_NAME"].ToString();
                     comboBox3.SelectedValue = DT.Rows[0]["MV004"].ToString();
                 }
                 else
@@ -2748,6 +2751,7 @@ namespace TKMK
                   
                     textBox27.Text = "";
                     textBox28.Text = "";
+                    textBox33.Text = "";
                 }
             }
         }
@@ -2784,6 +2788,7 @@ namespace TKMK
                                     ,[CardNo]
                                     ,[Name]
                                     ,[MV004]
+                                    ,[TITLE_NAME]
                                     FROM [TKMK].[dbo].[VIEW_CardNo_MV004]
                                     WHERE ([EmployeeID] LIKE '%{0}%' OR [CardNo]  LIKE '%{0}%')
                                     ", MV001);
@@ -2833,7 +2838,7 @@ namespace TKMK
         {
             if(!string.IsNullOrEmpty(textBox27.Text))
             {
-                textBox32.Text = comboBox5.SelectedValue.ToString() + "-" + textBox27.Text;
+                textBox32.Text = comboBox5.SelectedValue.ToString() + "-" + textBox27.Text+ textBox33.Text;
             }
             
         }
