@@ -1226,7 +1226,7 @@ namespace TKMK
         /// <param name="CARNO"></param>
         /// <param name="CARNAME"></param>
         /// <param name="CARKIND"></param>
-        public void ADDGROUPCAR(string CARNO, string CARNAME, string CARKIND)
+        public void ADDGROUPCAR(string CARNO, string CARNAME, string CARKIND,string CARCOMPANY)
         {
             try
             {
@@ -1250,10 +1250,10 @@ namespace TKMK
 
                 sbSql.AppendFormat(@" 
                                     INSERT INTO [TKMK].[dbo].[GROUPCAR]
-                                    ([CARNO],[CARNAME],[CARKIND])
+                                    ([CARNO],[CARNAME],[CARKIND],[CARCOMPANY])
                                     VALUES
-                                    ('{0}','{1}','{2}')
-                                    ", CARNO, CARNAME, CARKIND);
+                                    ('{0}','{1}','{2}','{3}')
+                                    ", CARNO, CARNAME, CARKIND, CARCOMPANY);
 
 
                 cmd.Connection = sqlConn;
@@ -1287,7 +1287,7 @@ namespace TKMK
         /// <param name="CARNO"></param>
         /// <param name="CARNAME"></param>
         /// <param name="CARKIND"></param>
-        public void UPDATEGROUPCAR(string CARNO, string CARNAME, string CARKIND)
+        public void UPDATEGROUPCAR(string CARNO, string CARNAME, string CARKIND,string CARCOMPANY)
         {
             try
             {
@@ -1310,8 +1310,8 @@ namespace TKMK
 
                 sbSql.AppendFormat(@" 
                                     UPDATE [TKMK].[dbo].[GROUPCAR]
-                                    SET [CARNAME]='{1}',[CARKIND]='{2}'
-                                    WHERE [CARNO]='{0}'", CARNO, CARNAME, CARKIND);
+                                    SET [CARNAME]='{1}',[CARKIND]='{2}',[CARCOMPANY]='{3}'
+                                    WHERE [CARNO]='{0}'", CARNO, CARNAME, CARKIND, CARCOMPANY);
        
 
                 cmd.Connection = sqlConn;
@@ -3175,11 +3175,11 @@ namespace TKMK
 
                     if (ISCAR == 0)
                     {
-                        ADDGROUPCAR(CARNO, CARNAME, CARKIND);
+                        ADDGROUPCAR(CARNO, CARNAME, CARKIND, CARCOMPANY);
                     }
                     else if (ISCAR == 1)
                     {
-                        UPDATEGROUPCAR(CARNO, CARNAME, CARKIND);
+                        UPDATEGROUPCAR(CARNO, CARNAME, CARKIND, CARCOMPANY);
                     }
                 }
 
@@ -3232,11 +3232,11 @@ namespace TKMK
 
                         if (ISCAR == 0)
                         {
-                            ADDGROUPCAR(CARNO, CARNAME, CARKIND);
+                            ADDGROUPCAR(CARNO, CARNAME, CARKIND, CARCOMPANY);
                         }
                         else if (ISCAR == 1)
                         {
-                            UPDATEGROUPCAR(CARNO, CARNAME, CARKIND);
+                            UPDATEGROUPCAR(CARNO, CARNAME, CARKIND, CARCOMPANY);
                         }
                     }
 
