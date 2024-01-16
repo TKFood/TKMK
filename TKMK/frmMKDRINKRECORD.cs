@@ -526,7 +526,7 @@ namespace TKMK
                                     ,[SIGN] AS '簽名' 
                                     ,[ID]
                                     FROM [TKMK].[dbo].[MKDRINKRECORD]
-                                    WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}'  AND CONVERT(NVARCHAR,[DATES],112)>='{1}'  
+                                    WHERE CONVERT(NVARCHAR,[DATES],112)>='{0}'  AND CONVERT(NVARCHAR,[DATES],112)<='{1}'  
                                     ORDER BY CONVERT(NVARCHAR,[DATES],111)
                                     ", SDAYS, EDAYS);
 

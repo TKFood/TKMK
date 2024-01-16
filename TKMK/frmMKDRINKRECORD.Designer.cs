@@ -403,7 +403,6 @@
             // 
             this.dateTimePicker14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.dateTimePicker14.CustomFormat = "yyyy/MM/dd";
-            this.dateTimePicker14.Enabled = false;
             this.dateTimePicker14.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dateTimePicker14.Location = new System.Drawing.Point(96, 6);
             this.dateTimePicker14.Name = "dateTimePicker14";
