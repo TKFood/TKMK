@@ -1033,7 +1033,7 @@ namespace TKMK
         {
             textBox1.ReadOnly = true;
             textBox2.ReadOnly = true;
-            textBox3.ReadOnly = true;
+            textBox3.ReadOnly = false;
             textBox4.ReadOnly = true;
         }
         public void UPDATE(
