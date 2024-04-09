@@ -71,7 +71,7 @@ namespace TKMK
 
             SQL1 = SETSQL(SDATES, EDATES);
             Report report1 = new Report();
-            report1.Load(@"REPORT\觀光賣場的團客散客車數.frx");
+            report1.Load(@"REPORT\觀光賣場業績及團客散客車數.frx");
 
             //20210902密
             Class1 TKID = new Class1();//用new 建立類別實體
@@ -105,11 +105,21 @@ namespace TKMK
             SB.AppendFormat(@" 
                             SELECT TA001 AS '日期',TA002 AS '賣場',TMONEYS AS '銷售金額',GROUPMONEYS AS '團客',VISITORMONEYS AS '散客',CARNUM AS '來車數'
                             ,(CASE WHEN GROUPMONEYS>0 AND CARNUM>0 THEN CONVERT(decimal(16,0),GROUPMONEYS/CARNUM) ELSE  0 END ) AS '平均每車金額'
+                            ,(SELECT ISNULL(SUM(TB031) ,0)
+                            FROM [TK].dbo.POSTB
+                            WHERE TB010 LIKE '406%'
+                            AND TB002=TA002
+                            AND TB001=TA001) AS '霜淇淋金額'
+                            ,(TMONEYS-(SELECT ISNULL(SUM(TB031) ,0)
+                            FROM [TK].dbo.POSTB
+                            WHERE TB010 LIKE '406%'
+                            AND TB002=TA002
+                            AND TB001=TA001)) AS '銷售金額扣霜淇淋'
                             FROM 
                             (
                             SELECT 
                             TA001,TA002 ,SUM(TA026) AS 'TMONEYS'
-                           ,(SELECT ISNULL(SUM(TA026),0) FROM  [TK].dbo.POSTA TA WHERE TA.TA001=POSTA.TA001 AND TA.TA002=POSTA.TA002 AND (TA008 LIKE '68%' OR TA008 LIKE '69%' OR TA009 LIKE '68%' OR TA009 LIKE '69%' )) AS 'GROUPMONEYS'
+                            ,(SELECT ISNULL(SUM(TA026),0) FROM  [TK].dbo.POSTA TA WHERE TA.TA001=POSTA.TA001 AND TA.TA002=POSTA.TA002 AND (TA008 LIKE '68%' OR TA008 LIKE '69%' OR TA009 LIKE '68%' OR TA009 LIKE '69%' )) AS 'GROUPMONEYS'
                             ,(SUM(TA026)-(SELECT ISNULL(SUM(TA026),0) FROM  [TK].dbo.POSTA TA WHERE TA.TA001=POSTA.TA001 AND TA.TA002=POSTA.TA002 AND (TA008 LIKE '68%' OR TA008 LIKE '69%' OR TA009 LIKE '68%' OR TA009 LIKE '69%' ) ) ) AS 'VISITORMONEYS'
                             ,CASE WHEN TA002 IN ('106701') THEN (SELECT ISNULL(SUM(CARNUM),0) FROM [TKMK].[dbo].[GROUPSALES] WHERE  [STATUS]='完成接團' AND CONVERT(nvarchar,[CREATEDATES],112)=TA001) ELSE 0 END  AS 'CARNUM'
                             FROM [TK].dbo.POSTA
