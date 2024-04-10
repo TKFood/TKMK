@@ -223,6 +223,157 @@ namespace TKMK
 
             }
         }
+
+        public void SETFASTREPORT_DAILY(string SDATES)
+        {
+            StringBuilder SQL1 = new StringBuilder();
+            StringBuilder SQL2 = new StringBuilder();
+            StringBuilder SQL3 = new StringBuilder();
+            StringBuilder SQL4 = new StringBuilder();
+
+            SQL1 = SETSQL_DAILY1(SDATES);
+            SQL2 = SETSQL_DAILY2(SDATES);
+            SQL3 = SETSQL_DAILY3(SDATES);
+            SQL4 = SETSQL_DAILY4(SDATES);
+
+            Report report1 = new Report();
+            report1.Load(@"REPORT\觀光日報表.frx");
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+
+
+
+            TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
+            table.SelectCommand = SQL1.ToString();
+            TableDataSource table1 = report1.GetDataSource("Table1") as TableDataSource;
+            table1.SelectCommand = SQL2.ToString();
+            TableDataSource table2 = report1.GetDataSource("Table2") as TableDataSource;
+            table2.SelectCommand = SQL3.ToString();
+            TableDataSource table3 = report1.GetDataSource("Table3") as TableDataSource;
+            table3.SelectCommand = SQL4.ToString();
+
+            //report1.SetParameterValue("P1", dateTimePicker1.Value.ToString("yyyyMMdd"));
+            //report1.SetParameterValue("P2", dateTimePicker2.Value.ToString("yyyyMMdd"));
+            report1.Preview = previewControl2;
+            report1.Show();
+        }
+
+        public StringBuilder SETSQL_DAILY1(string SDATES)
+        {
+            StringBuilder SB = new StringBuilder();
+
+
+            SB.AppendFormat(@"                             
+                            SELECT 
+                            TA001 AS '日期'
+                            ,TA002 AS '門市'
+                            , SUM(TA026) AS '方城市合計'
+                            ,(SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002=TB002 AND TB010 LIKE '406%') AS '霜淇淋業績'
+                            ,(SUM(TA026)-(SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002=TB002 AND TB010 LIKE '406%')) AS '方塊酥業績'
+                            ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001=POSTA.TA001 AND TA1.TA002=POSTA.TA002 AND (TA008 LIKE '68%' OR TA008 LIKE '69%' )),0) AS '團客業績'
+                            ,(SUM(TA026)-(ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001=POSTA.TA001 AND TA1.TA002=POSTA.TA002 AND (TA008 LIKE '68%' OR TA008 LIKE '69%' )),0))) AS '散客業績'
+                            ,(SELECT COUNT([ID]) FROM  [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)=TA001 AND STATUS='完成接團') AS '車數'
+                            ,CASE WHEN SUM(TA026)>0 AND (SELECT COUNT([ID]) FROM  [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)=TA001 AND STATUS='完成接團')>0 THEN CONVERT(INT,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001=POSTA.TA001 AND TA1.TA002=POSTA.TA002 AND (TA008 LIKE '68%' OR TA008 LIKE '69%' )),0)/(SELECT COUNT([ID]) FROM  [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)=TA001 AND STATUS='完成接團')) ELSE 0 END '平均每車金額'
+                            ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001>=CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112) AND TA1.TA001<=POSTA.TA001 AND TA1.TA002=POSTA.TA002 ),0) AS '目前累計'
+                            FROM [TK].dbo.POSTA
+                            WHERE 1=1
+                            AND TA002 IN ('106701')
+                            AND TA001='{0}'
+                            GROUP BY TA001,TA002
+                            ORDER BY TA001,TA002
+ 
+
+                            ", SDATES);
+
+            return SB;
+
+        }
+        public StringBuilder SETSQL_DAILY2(string SDATES)
+        {
+            StringBuilder SB = new StringBuilder();
+
+
+            SB.AppendFormat(@"  
+                            SELECT
+                            TA001 AS '日期'
+                            ,TA002 AS '門市'
+                            , ISNULL(SUM(TA026),0) AS '硯微墨烘焙組合計'
+                            ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001>=CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112) AND TA1.TA001<=POSTA.TA001 AND TA1.TA002=POSTA.TA002 ),0) AS '目前累計'
+                            FROM [TK].dbo.POSTA
+                            WHERE 1=1
+                            AND TA002 IN ('106702')
+                            AND TA001='{0}'
+                            GROUP BY TA001,TA002
+                            ORDER BY TA001,TA002
+ 
+
+                            ", SDATES);
+
+            return SB;
+
+        }
+        public StringBuilder SETSQL_DAILY3(string SDATES)
+        {
+            StringBuilder SB = new StringBuilder();
+
+
+            SB.AppendFormat(@"                             
+                            
+                            SELECT
+                            TA001 AS '日期'
+                            ,TA002 AS '門市'
+                            , ISNULL(SUM(TA026),0) AS '硯微墨餐飲組合計'
+                            ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001>=CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112) AND TA1.TA001<=POSTA.TA001 AND TA1.TA002=POSTA.TA002 ),0) AS '目前累計'
+                            FROM [TK].dbo.POSTA
+                            WHERE 1=1
+                            AND TA002 IN ('106705')
+                            AND TA001='{0}'
+                            GROUP BY TA001,TA002
+                            ORDER BY TA001,TA002
+
+                            ", SDATES);
+
+            return SB;
+
+        }
+        public StringBuilder SETSQL_DAILY4(string SDATES)
+        {
+            StringBuilder SB = new StringBuilder();
+
+
+            SB.AppendFormat(@"  
+                            SELECT 
+                            TA001 AS '日期'
+                            ,TA002 AS '門市'
+                            , ISNULL(SUM(TA026),0) AS '星球樂園合計'
+                            ,(SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002=TB002 AND TB010 LIKE '598%') AS '星球業績'
+                            ,(SUM(TA026)-(SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002=TB002 AND TB010 LIKE '598%')) AS '其他業績'
+                            ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001>=CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112) AND TA1.TA001<=POSTA.TA001 AND TA1.TA002=POSTA.TA002 ),0) AS '目前累計'
+                            FROM [TK].dbo.POSTA
+                            WHERE 1=1
+                            AND TA002 IN ('106703')
+                            AND TA001='{0}'
+                            GROUP BY TA001,TA002
+                            ORDER BY TA001,TA002
+
+                            ", SDATES);
+
+            return SB;
+
+        }
+
+
         #endregion
 
         #region BUTTON
@@ -235,8 +386,12 @@ namespace TKMK
         {
             Search(dateTimePicker3.Value.ToString("yyyyMMdd"), dateTimePicker4.Value.ToString("yyyyMMdd"));
         }
-        #endregion
 
+        private void button3_Click(object sender, EventArgs e)
+        {
+            SETFASTREPORT_DAILY(dateTimePicker5.Value.ToString("yyyyMMdd"));
+        }
+        #endregion
 
     }
 }
