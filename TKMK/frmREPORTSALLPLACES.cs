@@ -274,7 +274,7 @@ namespace TKMK
             StringBuilder SB = new StringBuilder();
 
              
-            SB.AppendFormat(@"                             
+            SB.AppendFormat(@"                              
                             SELECT 
                             TA001 AS '日期'
                             ,TA002 AS '門市'
@@ -290,7 +290,7 @@ namespace TKMK
 
                             ,ISNULL((SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002  IN ('106703') ),0) AS '星球合計'
                             ,ISNULL((SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002  IN ('106703') AND TB010 LIKE '598%'),0) AS '星球業績'
-                            ,ISNULL((SUM(TA026)-(SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002  IN ('106703') AND TB010 LIKE '598%')),0) AS '其他業績'
+                            ,ISNULL(((SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002  IN ('106703') )-(SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002  IN ('106703') AND TB010 LIKE '598%')),0) AS '其他業績'
                             ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001>=CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112) AND TA1.TA001<=POSTA.TA001 AND TA1.TA002 IN ('106703') ),0) AS '星球樂園目前累計'
 
 
