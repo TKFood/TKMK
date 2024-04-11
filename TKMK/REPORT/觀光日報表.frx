@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="04/10/2024 10:38:03" ReportInfo.Modified="04/10/2024 15:29:45" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="04/10/2024 10:38:03" ReportInfo.Modified="04/11/2024 08:52:16" ReportInfo.CreatorVersion="2016.4.4.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpN+i5gA3VDGcwlcfm6L9ZMsLrZ3U+wEDtHCQtd9vw2XUFUOiasVSh4N1MamEo4VEsV">
-      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="&#13;&#10;SELECT &#13;&#10;TA001 AS '日期'&#13;&#10;,TA002 AS '門市'&#13;&#10;, SUM(TA026) AS '方城市合計'&#13;&#10;,(SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002=TB002 AND TB010 LIKE '406%') AS '霜淇淋業績'&#13;&#10;,(SUM(TA026)-(SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002=TB002 AND TB010 LIKE '406%')) AS '方塊酥業績'&#13;&#10;,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001=POSTA.TA001 AND TA1.TA002=POSTA.TA002 AND (TA008 LIKE '68%' OR TA008 LIKE '69%' )),0) AS '團客業績'&#13;&#10;,(SUM(TA026)-(ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001=POSTA.TA001 AND TA1.TA002=POSTA.TA002 AND (TA008 LIKE '68%' OR TA008 LIKE '69%' )),0))) AS '散客業績'&#13;&#10;,(SELECT COUNT([ID]) FROM  [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)=TA001 AND STATUS='完成接團') AS '車數'&#13;&#10;,CASE WHEN SUM(TA026)&gt;0 AND (SELECT COUNT([ID]) FROM  [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)=TA001 AND STATUS='完成接團')&gt;0 THEN CONVERT(INT,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001=POSTA.TA001 AND TA1.TA002=POSTA.TA002 AND (TA008 LIKE '68%' OR TA008 LIKE '69%' )),0)/(SELECT COUNT([ID]) FROM  [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)=TA001 AND STATUS='完成接團')) ELSE 0 END '平均每車金額'&#13;&#10;,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001&gt;=CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112) AND TA1.TA001&lt;=POSTA.TA001 AND TA1.TA002=POSTA.TA002 ),0) AS '目前累計'&#13;&#10;FROM [TK].dbo.POSTA&#13;&#10;WHERE 1=1&#13;&#10;AND TA002 IN ('106701')&#13;&#10;AND TA001='20240407'&#13;&#10;GROUP BY TA001,TA002&#13;&#10;ORDER BY TA001,TA002">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpN+i5gA3VDGcwlcfm6L9ZMsLrZ3U+wEDtHCQtd9vw2XUFXHsEpq7aKoy1a28j7nYxn">
+      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="&#13;&#10;SELECT &#13;&#10;TA001 AS '日期'&#13;&#10;,TA002 AS '門市'&#13;&#10;, SUM(TA026) AS '方城市合計'&#13;&#10;,(SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002=TB002 AND TB010 LIKE '406%') AS '霜淇淋業績'&#13;&#10;,(SUM(TA026)-(SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002=TB002 AND TB010 LIKE '406%')) AS '方塊酥業績'&#13;&#10;,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001=POSTA.TA001 AND TA1.TA002=POSTA.TA002 AND (TA008 LIKE '68%' OR TA008 LIKE '69%' )),0) AS '團客業績'&#13;&#10;,(SUM(TA026)-(ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001=POSTA.TA001 AND TA1.TA002=POSTA.TA002 AND (TA008 LIKE '68%' OR TA008 LIKE '69%' )),0))) AS '散客業績'&#13;&#10;,(SELECT COUNT([ID]) FROM  [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)=TA001 AND STATUS='完成接團') AS '車數'&#13;&#10;,CASE WHEN SUM(TA026)&gt;0 AND (SELECT COUNT([ID]) FROM  [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)=TA001 AND STATUS='完成接團')&gt;0 THEN CONVERT(INT,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001=POSTA.TA001 AND TA1.TA002=POSTA.TA002 AND (TA008 LIKE '68%' OR TA008 LIKE '69%' )),0)/(SELECT COUNT([ID]) FROM  [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)=TA001 AND STATUS='完成接團')) ELSE 0 END '平均每車金額'&#13;&#10;,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001&gt;=CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112) AND TA1.TA001&lt;=POSTA.TA001 AND TA1.TA002=POSTA.TA002 ),0) AS '目前累計'&#13;&#10;&#13;&#10;,ISNULL((SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002  IN ('106703') ),0) AS '星球合計'&#13;&#10;,ISNULL((SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002  IN ('106703') AND TB010 LIKE '598%'),0) AS '星球業績'&#13;&#10;,ISNULL((SUM(TA026)-(SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002  IN ('106703') AND TB010 LIKE '598%')),0) AS '其他業績'&#13;&#10;,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001&gt;=CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112) AND TA1.TA001&lt;=POSTA.TA001 AND TA1.TA002 IN ('106703') ),0) AS '星球樂園目前累計'&#13;&#10;&#13;&#10;FROM [TK].dbo.POSTA&#13;&#10;WHERE 1=1&#13;&#10;AND TA002 IN ('106701')&#13;&#10;AND TA001='20240410'&#13;&#10;GROUP BY TA001,TA002&#13;&#10;ORDER BY TA001,TA002&#13;&#10;">
         <Column Name="日期" DataType="System.String"/>
         <Column Name="門市" DataType="System.String"/>
         <Column Name="方城市合計" DataType="System.Decimal"/>
@@ -13,6 +13,10 @@
         <Column Name="車數" DataType="System.Int32"/>
         <Column Name="平均每車金額" DataType="System.Int32"/>
         <Column Name="目前累計" DataType="System.Decimal"/>
+        <Column Name="星球合計" DataType="System.Decimal"/>
+        <Column Name="星球業績" DataType="System.Decimal"/>
+        <Column Name="其他業績" DataType="System.Decimal"/>
+        <Column Name="星球樂園目前累計" DataType="System.Decimal"/>
       </TableDataSource>
       <TableDataSource Name="Table1" DataType="System.Int32" Enabled="true" SelectCommand="&#13;&#10;SELECT&#13;&#10;TA001 AS '日期'&#13;&#10;,TA002 AS '門市'&#13;&#10;, ISNULL(SUM(TA026),0) AS '硯微墨烘焙組合計'&#13;&#10;,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001&gt;=CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112) AND TA1.TA001&lt;=POSTA.TA001 AND TA1.TA002=POSTA.TA002 ),0) AS '目前累計'&#13;&#10;FROM [TK].dbo.POSTA&#13;&#10;WHERE 1=1&#13;&#10;AND TA002 IN ('106702')&#13;&#10;AND TA001='20240407'&#13;&#10;GROUP BY TA001,TA002&#13;&#10;ORDER BY TA001,TA002&#13;&#10;">
         <Column Name="日期" DataType="System.String"/>
@@ -41,7 +45,7 @@
       <TextObject Name="Text1" Width="94.5" Height="18.9" Text="日報表"/>
     </ReportTitleBand>
     <PageHeaderBand Name="PageHeader1" Top="23.5" Width="718.2" Height="18.9"/>
-    <DataBand Name="Data1" Top="47" Width="718.2" Height="217.35" DataSource="Table">
+    <DataBand Name="Data1" Top="47" Width="718.2" Height="292.95" DataSource="Table">
       <TextObject Name="Text2" Left="113.4" Width="113.4" Height="18.9" Border.Lines="All" Text="[Table.日期]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text4" Left="113.4" Top="18.9" Width="113.4" Height="18.9" Border.Lines="All" Text="[Table.門市]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text6" Left="113.4" Top="37.8" Width="113.4" Height="18.9" Border.Lines="All" Text="[Table.方城市合計]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
@@ -61,9 +65,17 @@
       <TextObject Name="Text20" Left="113.4" Top="170.1" Width="113.4" Height="18.9" Border.Lines="All" Text="[Table.目前累計]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
       <TextObject Name="Text17" Top="132.3" Width="113.4" Height="18.9" Border.Lines="All" Text="方塊酥業績" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text19" Top="151.2" Width="113.4" Height="18.9" Border.Lines="All" Text="霜淇淋業績" HorzAlign="Center" VertAlign="Center"/>
-      <TextObject Name="Text21" Top="170.1" Width="113.4" Height="18.9" Border.Lines="All" Text="目前累計" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text21" Top="170.1" Width="113.4" Height="18.9" Border.Lines="All" Text="方城市目前累計" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text50" Left="113.4" Top="198.45" Width="113.4" Height="18.9" Border.Lines="All" Text="[Table.星球合計]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text52" Left="113.4" Top="217.35" Width="113.4" Height="18.9" Border.Lines="All" Text="[Table.星球業績]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text54" Left="113.4" Top="236.25" Width="113.4" Height="18.9" Border.Lines="All" Text="[Table.其他業績]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text56" Left="113.4" Top="255.15" Width="113.4" Height="18.9" Border.Lines="All" Text="[Table.星球樂園目前累計]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text51" Top="198.45" Width="113.4" Height="18.9" Border.Lines="All" Text="星球合計" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text53" Top="217.35" Width="113.4" Height="18.9" Border.Lines="All" Text="星球業績" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text55" Top="236.25" Width="113.4" Height="18.9" Border.Lines="All" Text="其他業績" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text57" Top="255.15" Width="113.4" Height="18.9" Border.Lines="All" Text="星球樂園目前累計" HorzAlign="Center" VertAlign="Center"/>
     </DataBand>
-    <DataBand Name="Data2" Top="268.94" Width="718.2" Height="94.5" DataSource="Table1">
+    <DataBand Name="Data2" Top="344.54" Width="718.2" Height="94.5" DataSource="Table1">
       <TextObject Name="Text22" Left="113.4" Width="113.4" Height="18.9" Border.Lines="All" Text="[Table1.日期]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text24" Left="113.4" Top="18.9" Width="113.4" Height="18.9" Border.Lines="All" Text="[Table1.門市]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text26" Left="113.4" Top="37.8" Width="113.4" Height="18.9" Border.Lines="All" Text="[Table1.硯微墨烘焙組合計]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
@@ -73,7 +85,7 @@
       <TextObject Name="Text27" Top="37.8" Width="113.4" Height="18.9" Border.Lines="All" Text="硯微墨烘焙組合計" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text29" Top="56.7" Width="113.4" Height="18.9" Border.Lines="All" Text="目前累計" HorzAlign="Center" VertAlign="Center"/>
     </DataBand>
-    <DataBand Name="Data3" Top="368.04" Width="718.2" Height="103.95" DataSource="Table2">
+    <DataBand Name="Data3" Top="443.64" Width="718.2" Height="103.95" DataSource="Table2">
       <TextObject Name="Text30" Left="113.4" Width="113.4" Height="18.9" Border.Lines="All" Text="[Table2.日期]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text32" Left="113.4" Top="18.9" Width="113.4" Height="18.9" Border.Lines="All" Text="[Table2.門市]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text34" Left="113.4" Top="37.8" Width="113.4" Height="18.9" Border.Lines="All" Text="[Table2.硯微墨餐飲組合計]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
@@ -83,7 +95,7 @@
       <TextObject Name="Text35" Top="37.8" Width="113.4" Height="18.9" Border.Lines="All" Text="硯微墨餐飲組合計" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text37" Top="56.7" Width="113.4" Height="18.9" Border.Lines="All" Text="目前累計" HorzAlign="Center" VertAlign="Center"/>
     </DataBand>
-    <DataBand Name="Data4" Top="476.59" Width="718.2" Height="132.3" DataSource="Table3">
+    <DataBand Name="Data4" Top="552.19" Width="718.2" Height="132.3" DataSource="Table3">
       <TextObject Name="Text38" Left="113.4" Width="113.4" Height="18.9" Border.Lines="All" Text="[Table3.日期]" HorzAlign="Right" VertAlign="Center"/>
       <TextObject Name="Text40" Left="113.4" Top="18.9" Width="113.4" Height="18.9" Border.Lines="All" Text="[Table3.門市]" HorzAlign="Right" VertAlign="Center"/>
       <TextObject Name="Text42" Left="113.4" Top="37.8" Width="113.4" Height="18.9" Border.Lines="All" Text="[Table3.星球樂園合計]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
@@ -97,6 +109,6 @@
       <TextObject Name="Text49" Top="94.5" Width="113.4" Height="18.9" Border.Lines="All" Text="目前累計" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text48" Left="113.4" Top="94.5" Width="113.4" Height="18.9" Border.Lines="All" Text="[Table3.目前累計]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
     </DataBand>
-    <PageFooterBand Name="PageFooter1" Top="613.49" Width="718.2" Height="18.9"/>
+    <PageFooterBand Name="PageFooter1" Top="689.09" Width="718.2" Height="18.9"/>
   </ReportPage>
 </Report>
