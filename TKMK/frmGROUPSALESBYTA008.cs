@@ -37,7 +37,7 @@ namespace TKMK
         DataSet ds = new DataSet();
         int result;
 
-
+       
         string STATUSCONTROLLER = "VIEW";
         string ID = null;
         string ACCOUNT = null;
@@ -3434,7 +3434,10 @@ namespace TKMK
 
         private void button8_Click(object sender, EventArgs e)
         {
-            //批次完成接團
+            //檢查是否勾選批次
+            bool batchCompleted = false;
+
+            // 批次完成接團
             // 遍历DataGridView的行
             foreach (DataGridViewRow row in dataGridView1.Rows)
             {
@@ -3442,30 +3445,23 @@ namespace TKMK
                 DataGridViewCheckBoxCell checkBoxCell = row.Cells[0] as DataGridViewCheckBoxCell;
                 if (checkBoxCell != null && Convert.ToBoolean(checkBoxCell.Value) == true)
                 {
-                    // 获取ID列的值
+                    // 获取ID列的值和状态列的值
                     string idValue = row.Cells["ID"].Value.ToString();
-                    string StatusValue = row.Cells["狀態"].Value.ToString();
-                    //MessageBox.Show($"CheckBox is checked for row with ID: {idValue}");
-                    if (StatusValue.Equals("預約接團"))
+                    string statusValue = row.Cells["狀態"].Value.ToString();
+                    if (statusValue.Equals("預約接團"))
                     {
                         UPDATEGROUPSALESCOMPELETE_STATUS(idValue, "完成接團");
                     }
 
-                }
-                else
-                {
-
+                    batchCompleted = true;
                 }
             }
 
-            //單次完成接團
-            if (!string.IsNullOrEmpty(ID))
+            // 单次完成接團
+            if (!string.IsNullOrEmpty(ID)&&!batchCompleted)
             {
                 if (STATUS.Equals("預約接團"))
                 {
-                    //string GROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
-                    //UPDATEGROUPSALESCOMPELETE(ID, GROUPENDDATES, "完成接團");
-
                     UPDATEGROUPSALESCOMPELETE_STATUS(ID, "完成接團");
                 }
                 else
@@ -3474,7 +3470,8 @@ namespace TKMK
                 }
             }
 
-           
+            //查詢本日來車資料
+            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
         }
 
         private void button11_Click(object sender, EventArgs e)
