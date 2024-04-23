@@ -3477,13 +3477,7 @@ namespace TKMK
             MSGSHOW.Show();
             //查詢本日來車資料
             SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
-            //計算佣金
-            SETMONEYS();
-            //查詢本日來車資料
-            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
-            //查詢本日的合計
-            SETNUMS(dateTimePicker1.Value.ToString("yyyyMMdd"));
-
+           
             label29.Text = "";
             label29.Text = "更新時間" + dateTimePicker1.Value.ToString("yyyy/MM/dd HH:mm:ss");
 
