@@ -1170,7 +1170,7 @@ namespace TKMK
                 foreach (DataGridViewRow dr in this.dataGridView1.Rows)
                 {
                     //判断
-                    if (dr.Cells[20].Value.ToString().Trim().Equals("預約接團"))
+                    if (dr.Cells["狀態"].Value.ToString().Trim().Equals("預約接團"))
                     {
                         //清空值
                         ID = null;
