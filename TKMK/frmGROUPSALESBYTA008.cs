@@ -90,7 +90,7 @@ namespace TKMK
             textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
 
             timer1.Enabled = true;
-            timer1.Interval = 1000 * 60*3;
+            timer1.Interval = 1000 * 60*10;
             timer1.Start();
 
             // 添加一个复选框列到DataGridView的第一个位置
@@ -3470,8 +3470,29 @@ namespace TKMK
                 }
             }
 
+            MESSAGESHOW MSGSHOW = new MESSAGESHOW();
+            //鎖定控制項
+            this.Enabled = false;
+            //顯示跳出視窗
+            MSGSHOW.Show();
             //查詢本日來車資料
             SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            //計算佣金
+            SETMONEYS();
+            //查詢本日來車資料
+            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            //查詢本日的合計
+            SETNUMS(dateTimePicker1.Value.ToString("yyyyMMdd"));
+
+            label29.Text = "";
+            label29.Text = "更新時間" + dateTimePicker1.Value.ToString("yyyy/MM/dd HH:mm:ss");
+
+
+
+            //關閉跳出視窗
+            MSGSHOW.Close();
+            //解除鎖定
+            this.Enabled = true;
         }
 
         private void button11_Click(object sender, EventArgs e)
