@@ -92,9 +92,25 @@ namespace TKMK
             timer1.Enabled = true;
             timer1.Interval = 1000 * 60*3;
             timer1.Start();
+
+            // 添加一个复选框列到DataGridView的第一个位置
+            AddCheckBoxColumn();
         }
 
         #region FUNCTION
+        /// <summary>
+        /// 添加一个复选框列到DataGridView的第一个位置
+        /// </summary>
+        private void AddCheckBoxColumn()
+        {
+            // 创建一个新的DataGridViewCheckBox列
+            DataGridViewCheckBoxColumn checkBoxColumn = new DataGridViewCheckBoxColumn();
+            checkBoxColumn.HeaderText = "勾選"; // 设置列标题
+            checkBoxColumn.Width = 50; // 设置列宽度
+
+            // 将列插入到第一个位置
+            dataGridView1.Columns.Insert(0, checkBoxColumn);
+        }
         /// <summary>
         /// 定時 每1分鐘 更新
         /// </summary>
