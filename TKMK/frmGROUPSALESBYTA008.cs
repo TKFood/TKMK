@@ -3434,22 +3434,47 @@ namespace TKMK
 
         private void button8_Click(object sender, EventArgs e)
         {
-            if (STATUS.Equals("預約接團"))
+            //批次完成接團
+            // 遍历DataGridView的行
+            foreach (DataGridViewRow row in dataGridView1.Rows)
             {
-                if (!string.IsNullOrEmpty(ID))
+                // 检查复选框列是否被选中
+                DataGridViewCheckBoxCell checkBoxCell = row.Cells[0] as DataGridViewCheckBoxCell;
+                if (checkBoxCell != null && Convert.ToBoolean(checkBoxCell.Value) == true)
+                {
+                    // 获取ID列的值
+                    string idValue = row.Cells["ID"].Value.ToString();
+                    string StatusValue = row.Cells["狀態"].Value.ToString();
+                    //MessageBox.Show($"CheckBox is checked for row with ID: {idValue}");
+                    if (StatusValue.Equals("預約接團"))
+                    {
+                        UPDATEGROUPSALESCOMPELETE_STATUS(idValue, "完成接團");
+                    }
+
+                }
+                else
+                {
+
+                }
+            }
+
+            //單次完成接團
+            if (!string.IsNullOrEmpty(ID))
+            {
+                if (STATUS.Equals("預約接團"))
                 {
                     //string GROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     //UPDATEGROUPSALESCOMPELETE(ID, GROUPENDDATES, "完成接團");
 
                     UPDATEGROUPSALESCOMPELETE_STATUS(ID, "完成接團");
                 }
+                else
+                {
+                    MessageBox.Show("不是預約接團，不能修改");
+                }
+            }
 
-                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
-            }
-            else
-            {
-                MessageBox.Show("不是預約接團，不能修改");
-            }
+           
         }
 
         private void button11_Click(object sender, EventArgs e)
