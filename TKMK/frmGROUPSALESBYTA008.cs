@@ -79,6 +79,7 @@ namespace TKMK
             comboBox1load();
             comboBox2load();
             comboBox3load();
+            comboBox4load();
             comboBox5load();
             comboBox8load();
             comboBox9load();
@@ -306,6 +307,35 @@ namespace TKMK
             comboBox3.DataSource = dt.DefaultView;
             comboBox3.ValueMember = "MU001";
             comboBox3.DisplayMember = "MU001";
+            sqlConn.Close();
+
+        }
+
+        public void comboBox4load()
+        {
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"SELECT KINDS, PARASNAMES, DVALUES FROM  [TKMK].dbo.TBZPARAS WHERE  (KINDS = 'STATUS') ORDER BY   DVALUES ");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("DVALUES", typeof(string));
+            dt.Columns.Add("PARASNAMES", typeof(string));
+            da.Fill(dt);
+            comboBox4.DataSource = dt.DefaultView;
+            comboBox4.ValueMember = "PARASNAMES";
+            comboBox4.DisplayMember = "PARASNAMES";
             sqlConn.Close();
 
         }
