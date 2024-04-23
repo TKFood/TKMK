@@ -3446,8 +3446,8 @@ namespace TKMK
                 if (checkBoxCell != null && Convert.ToBoolean(checkBoxCell.Value) == true)
                 {
                     // 获取ID列的值和状态列的值
-                    string idValue = row.Cells["ID"].Value.ToString();
-                    string statusValue = row.Cells["狀態"].Value.ToString();
+                    string idValue = row.Cells["ID"].Value.ToString().Trim();
+                    string statusValue = row.Cells["狀態"].Value.ToString().Trim();
                     if (statusValue.Equals("預約接團"))
                     {
                         UPDATEGROUPSALESCOMPELETE_STATUS(idValue, "完成接團");
