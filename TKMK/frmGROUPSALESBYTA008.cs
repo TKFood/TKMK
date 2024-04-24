@@ -3156,6 +3156,7 @@ namespace TKMK
             this.Enabled = false;
             //顯示跳出視窗
             MSGSHOW.Show();
+
             //查詢本日來車資料
             SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
             //計算佣金
