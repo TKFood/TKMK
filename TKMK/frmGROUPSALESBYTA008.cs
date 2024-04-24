@@ -1702,9 +1702,9 @@ namespace TKMK
                             //兌換券消費金額>消費金額，消費金額=消費金額-兌換券消費金額
                             if (EXCHANGESALESMMONEYS > 0)
                             {
-                                if (SALESMMONEYS > EXCHANGETOTALMONEYS)
+                                if (SALESMMONEYS > EXCHANGESALESMMONEYS)
                                 {
-                                    SALESMMONEYS = SALESMMONEYS - EXCHANGETOTALMONEYS;
+                                    SALESMMONEYS = SALESMMONEYS - EXCHANGESALESMMONEYS;
                                 }
                             }
 
