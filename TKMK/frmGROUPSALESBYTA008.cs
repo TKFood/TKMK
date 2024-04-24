@@ -1917,6 +1917,65 @@ namespace TKMK
         /// <returns></returns>
         public int FINDSALESMMONEYS(string TA008, string TA001, string TA005)
         {
+
+            //try
+            //{
+            //    //20210902密
+            //    Class1 TKID = new Class1();//用new 建立類別實體
+            //    SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //    //資料庫使用者密碼解密
+            //    sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            //    sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            //    string connectionString = sqlsb.ConnectionString;
+            //    string query = @"
+            //                    SELECT CONVERT(INT, ISNULL(SUM(TB033), 0)) AS 'SALESMMONEYS'
+            //                    FROM [TK].dbo.POSTA WITH (NOLOCK), [TK].dbo.POSTB WITH (NOLOCK)
+            //                    WHERE TA001 = TB001 AND TA002 = TB002 AND TA003 = TB003 AND TA006 = TB006  
+            //                        AND TB010 NOT IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCT] WHERE [VALID] = @Valid AND [SPLITCAL] = @SplitCal)              
+            //                        AND TA008 = @TA008
+            //                        AND TA001 = @TA001
+            //                        AND TA005 >= @TA005
+            //                        AND TA002 IN (SELECT [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN (@KindNames))";
+
+            //    using (SqlConnection connection = new SqlConnection(connectionString))
+            //    {
+            //        using (SqlCommand command = new SqlCommand(query, connection))
+            //        {
+            //            // 设置参数
+            //            command.Parameters.AddWithValue("@Valid", "Y");
+            //            command.Parameters.AddWithValue("@SplitCal", "Y");
+            //            command.Parameters.AddWithValue("@TA008", TA008);
+            //            command.Parameters.AddWithValue("@TA001", TA001);
+            //            command.Parameters.AddWithValue("@TA005", TA005);
+            //            command.Parameters.AddWithValue("@KindNames", "GROUPSTORES1");
+
+            //            connection.Open();
+            //            object result = command.ExecuteScalar();
+
+            //            if (result != null)
+            //            {
+            //                int salesAmount = 0;
+            //                salesAmount=Convert.ToInt32(result);
+            //                return salesAmount;
+            //                // 处理查询结果
+            //            }
+            //            else
+            //            {
+            //                return 0;
+            //            }
+            //        }
+            //    }
+            //}
+            //catch
+            //{
+            //    return 0;
+            //}
+            //finally
+            //{
+
+            //}
             SqlDataAdapter adapter1 = new SqlDataAdapter();
             SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
             DataSet ds1 = new DataSet();
@@ -1936,7 +1995,7 @@ namespace TKMK
 
 
                 sbSql.Clear();
-                sbSqlQuery.Clear();             
+                sbSqlQuery.Clear();
 
                 //將特買組的銷售金額扣掉 TB010  NOT IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCT] WHERE [SPLITCAL]='Y') 
                 sbSql.AppendFormat(@"  
