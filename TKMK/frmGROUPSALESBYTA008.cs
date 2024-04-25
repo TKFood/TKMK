@@ -3145,7 +3145,257 @@ namespace TKMK
             }
 
         }
+        public void SETMONEYS_NEW(string SDATES)
+        {
+            try
+            {
 
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+
+
+                sbSql.AppendFormat(@" 
+                                    --20240424 查團務
+
+                                    SET STATISTICS TIME ON;
+
+                                    IF OBJECT_ID('tempdb..#TempTable') IS NOT NULL
+                                    DROP TABLE #TempTable;
+
+                                    SELECT *
+                                    ,(CASE WHEN 兌換券='是' THEN EXCHANGEMONEYS ELSE 0 END ) AS 'FINALEXCHANGEMONEYS'
+                                    ,(CASE WHEN 兌換券='否' THEN FINALBASEMONEYS ELSE 0 END ) AS 'FINALCOMMISSIONBASEMONEYS'
+                                    ,CONVERT(INT,ROUND(FINNALSALESMMONEYS*FINALCOMMISSIONPCT,0)) AS 'FINNALCOMMISSIONPCTMONEYS'
+                                    ,(CONVERT(INT,ROUND(FINNALSALESMMONEYS*FINALCOMMISSIONPCT,0)) +(CASE WHEN 兌換券='否' THEN FINALBASEMONEYS ELSE 0 END )) AS 'FINALTOTALCOMMISSIONMONEYS'
+                                    INTO #TempTable
+                                    FROM 
+                                    (
+	                                    SELECT *
+	                                    FROM 
+	                                    (
+		                                    SELECT *
+		                                    ,(CASE WHEN FINALEXCHANGESALESMMONEYS>0 AND SALESMMONEYS>0 AND (SALESMMONEYS-FINALEXCHANGESALESMMONEYS)>0 THEN (SALESMMONEYS-FINALEXCHANGESALESMMONEYS) ELSE SALESMMONEYS  END )  AS 'FINNALSALESMMONEYS'
+		                                    FROM
+		                                    (
+		                                    SELECT  
+		                                    [ID]
+		                                    ,[SERNO] AS '序號'
+		                                    ,[CARNAME] AS '車名'
+		                                    ,[CARNO] AS '車號'
+		                                    ,[CARKIND] AS '車種'
+		                                    ,[GROUPKIND]  AS '團類'
+		                                    ,[ISEXCHANGE] AS '兌換券'
+		                                    ,[EXCHANGETOTALMONEYS] AS '券總額'
+		                                    ,[EXCHANGESALESMMONEYS] AS '券消費'
+		                                    ,[SALESMMONEYS] AS '消費總額'
+		                                    ,[SPECIALMNUMS] AS '特賣數'
+		                                    ,[SPECIALMONEYS] AS '特賣獎金'
+		                                    ,[COMMISSIONBASEMONEYS] AS '茶水費'
+		                                    ,[COMMISSIONPCTMONEYS] AS '消費獎金'
+		                                    ,[TOTALCOMMISSIONMONEYS] AS '總獎金'
+		                                    ,[CARNUM] AS '車數'
+		                                    ,[GUSETNUM] AS '交易筆數'
+		                                    ,[CARCOMPANY] AS '來車公司'
+		                                    ,[TA008NO] AS '業務員名'
+		                                    ,[TA008] AS '業務員帳號'
+		                                    ,[EXCHANNO] AS '優惠券名'
+		                                    ,[EXCHANACOOUNT] AS '優惠券帳號'
+		                                    ,CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間'
+		                                    ,CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間'
+		                                    ,[STATUS] AS '狀態'
+		                                    ,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間'
+		                                    ,CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間'
+		                                    ,[EXCHANGEMONEYS] AS '領券額'
+		                                    ,[CREATEDATES]
+		                                    ,CONVERT(varchar, [CREATEDATES], 112) AS 'YMD'
+		                                    ,CONVERT(varchar,[CREATEDATES], 108) AS 'STARTHM'
+		                                    ,(
+		                                    SELECT CONVERT(INT,ISNULL(SUM(TB033),0),0)
+		                                    FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
+		                                    WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006  
+		                                    AND TB010  NOT IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCT] WHERE [VALID]='Y' AND [SPLITCAL]='Y')              
+		                                    AND TA008=[GROUPSALES].[TA008] 
+		                                    AND TA001=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112) 
+		                                    AND TA005>=CONVERT(varchar, [GROUPSALES].[CREATEDATES],108 )
+
+		                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1'))
+		                                    )  AS 'SALESMMONEYS'
+		                                    ,
+		                                    (
+		                                    SELECT ISNULL(SUM(SUMTB019),0) 
+		                                    FROM 
+		                                    (
+		                                    SELECT [ID],[NAME],[NUM],[MONEYS],[SPLITCAL],[VALID],[SDATES],[EDATES],TB010,SUMTB019
+		                                    FROM [TKMK].[dbo].[GROUPPRODUCT]
+		                                    LEFT JOIN 
+		                                    (
+		                                    SELECT TB010,CONVERT(INT,ISNULL(SUM(TB019),0),0) SUMTB019
+		                                    FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
+		                                    WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006 
+		                                    AND TA008=[GROUPSALES].[TA008]  
+		                                    AND TA001=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112)  
+		                                    AND TA005>=CONVERT(varchar, [GROUPSALES].[CREATEDATES],108 )
+
+		                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1'))
+		                                    GROUP BY TB010
+		                                    ) AS TEMP ON TB010=ID
+		                                    WHERE [VALID]='Y' 
+		                                    AND CONVERT(NVARCHAR,SDATES,112)<=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112) 
+		                                    AND CONVERT(NVARCHAR,EDATES,112)>=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112) 
+		                                    ) AS TEMP2
+		                                    ) AS 'FINALSPECIALMNUMS'
+		                                    ,
+		                                    (
+		                                    SELECT ISNULL(SUM(SUMTB019/[NUM]*[MONEYS]),0)
+		                                    FROM 
+		                                    (
+		                                    SELECT [ID],[NAME],[NUM],[MONEYS],[SPLITCAL],[VALID],[SDATES],[EDATES],TB010,SUMTB019
+		                                    FROM [TKMK].[dbo].[GROUPPRODUCT]
+		                                    LEFT JOIN 
+		                                    (
+		                                    SELECT TB010,CONVERT(INT,ISNULL(SUM(TB019),0),0) SUMTB019
+		                                    FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
+		                                    WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006 
+		                                    AND TA008=[GROUPSALES].[TA008]  
+		                                    AND TA001=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112)  
+		                                    AND TA005>=CONVERT(varchar, [GROUPSALES].[CREATEDATES],108 )
+
+		                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1'))
+		                                    GROUP BY TB010
+		                                    ) AS TEMP ON TB010=ID
+		                                    WHERE [VALID]='Y' 
+		                                    AND CONVERT(NVARCHAR,SDATES,112)<=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112) 
+		                                    AND CONVERT(NVARCHAR,EDATES,112)>=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112) 
+		                                    ) AS TEMP2
+		                                    ) AS 'FINALSPECIALMONEYS' 
+		                                    ,
+		                                    (
+		                                    SELECT CONVERT(INT,ISNULL(SUM(TA017),0))
+		                                    FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTC WITH (NOLOCK)
+		                                    WHERE TA001=TC001 AND TA002=TC002 AND TA003=TC003  AND TA006=TC006
+		                                    AND TC008='0009'
+		                                    AND TA008=[GROUPSALES].[TA008] 
+		                                    AND TA001=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112)
+		                                    AND TA005>=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 108)
+
+		                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1'))
+		                                    ) AS 'FINALEXCHANGESALESMMONEYS'
+		                                    ,
+		                                    ISNULL((
+		                                    SELECT  
+		                                    CONVERT(INT,[EXCHANGEMONEYS],0)
+		                                    FROM [TKMK].[dbo].[GROUPEXCHANGEMONEYS]
+		                                    WHERE  1=1
+		                                    AND [VALID]='Y'
+		                                    AND [CARKIND]=[GROUPSALES].[CARKIND] 
+		                                    AND CONVERT(NVARCHAR,SDATES,112)<=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112)
+		                                    AND CONVERT(NVARCHAR,EDATES,112)>=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112)
+		                                    ),0)  AS 'EXCHANGEMONEYS'  
+		                                    ,
+		                                    (
+		                                    SELECT CONVERT(INT,[BASEMONEYS],0)
+		                                    FROM [TKMK].[dbo].[GROUPBASE] 
+		                                    WHERE 1=1
+		                                    AND VALID='Y'
+		                                    AND CONVERT(NVARCHAR,SDATES,112)<=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112)
+		                                    AND CONVERT(NVARCHAR,EDATES,112)>=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112)
+		                                    AND [NAME]=[GROUPSALES].[CARKIND] 
+		                                    )  AS 'FINALBASEMONEYS' 
+		                                    ,
+		                                    (
+		                                    SELECT COUNT(TA008) 
+		                                    FROM [TK].dbo.POSTA WITH (NOLOCK)
+		                                    WHERE TA008=[GROUPSALES].[TA008] 
+		                                    AND TA001=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112)
+		                                    AND TA005>=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 108)
+		
+		                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1'))
+		                                    ) AS 'GUSETNUM'
+		                                    FROM [TKMK].[dbo].[GROUPSALES]
+		                                    WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'
+		                                    AND [STATUS] IN ('預約接團')
+
+		                                    ) AS TEMP
+	                                    ) AS TEMP2
+	                                    OUTER  APPLY (
+	                                    SELECT TOP 1 [PCT]  AS 'FINALCOMMISSIONPCT'              
+	                                    FROM [TKMK].[dbo].[GROUPPCT]
+	                                    WHERE [NAME] = TEMP2.車種
+	                                    AND (FINNALSALESMMONEYS - [PCTMONEYS]) >= 0
+	                                    AND VALID = 'Y'
+	                                    AND CONVERT(NVARCHAR, SDATES, 112) <= CONVERT(VARCHAR, TEMP2.[CREATEDATES], 112)
+	                                    AND CONVERT(NVARCHAR, EDATES, 112) >= CONVERT(VARCHAR, TEMP2.[CREATEDATES], 112)
+	                                    ORDER BY (FINNALSALESMMONEYS - [PCTMONEYS]) 
+	                                    ) AS OUTERPCT
+                                    ) AS TEMP3
+
+                                    SELECT *
+                                    FROM  #TempTable
+
+
+                                    UPDATE [TKMK].[dbo].[GROUPSALES]
+                                    SET 
+                                    [EXCHANGEMONEYS]=#TempTable.FINALEXCHANGEMONEYS
+                                    ,[EXCHANGETOTALMONEYS]=#TempTable.FINALEXCHANGEMONEYS*#TempTable.車數
+                                    ,[EXCHANGESALESMMONEYS]=#TempTable.FINALEXCHANGESALESMMONEYS
+                                    ,[SPECIALMNUMS]=#TempTable.FINALSPECIALMNUMS
+                                    ,[SPECIALMONEYS]=#TempTable.FINALSPECIALMONEYS
+                                    ,[SALESMMONEYS]=#TempTable.FINNALSALESMMONEYS
+                                    ,[COMMISSIONBASEMONEYS]=#TempTable.FINALBASEMONEYS
+                                    ,[COMMISSIONPCT]=#TempTable.FINALCOMMISSIONPCT
+                                    ,[COMMISSIONPCTMONEYS]=#TempTable.FINNALCOMMISSIONPCTMONEYS
+                                    ,[TOTALCOMMISSIONMONEYS]=#TempTable.FINALTOTALCOMMISSIONMONEYS
+                                    ,[GUSETNUM]=#TempTable.GUSETNUM
+                                    FROM #TempTable
+                                    WHERE  CONVERT(nvarchar,[GROUPSALES].[CREATEDATES],112)='{0}'
+                                    AND [GROUPSALES].[STATUS] IN ('預約接團')
+                                    AND [GROUPSALES].ID=#TempTable.ID
+
+
+                                   ", SDATES);
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -3640,9 +3890,36 @@ namespace TKMK
                 MessageBox.Show("團車未 完成接團");
             }
         }
+        private void button18_Click(object sender, EventArgs e)
+        {
+            MESSAGESHOW MSGSHOW = new MESSAGESHOW();
+            //鎖定控制項
+            this.Enabled = false;
+            //顯示跳出視窗
+            MSGSHOW.Show();
+
+            //查詢本日來車資料
+            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            //計算佣金
+            SETMONEYS_NEW(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            //查詢本日來車資料
+            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            //查詢本日的合計
+            SETNUMS(dateTimePicker1.Value.ToString("yyyyMMdd"));
+
+            label29.Text = "";
+            label29.Text = "更新時間" + dateTimePicker1.Value.ToString("yyyy/MM/dd HH:mm:ss");
+
+
+
+            //關閉跳出視窗
+            MSGSHOW.Close();
+            //解除鎖定
+            this.Enabled = true;
+        }
 
         #endregion
 
-      
+
     }
 }
