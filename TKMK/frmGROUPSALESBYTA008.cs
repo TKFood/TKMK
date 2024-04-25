@@ -3356,7 +3356,7 @@ namespace TKMK
                                     ,[SPECIALMNUMS]=#TempTable.FINALSPECIALMNUMS
                                     ,[SPECIALMONEYS]=#TempTable.FINALSPECIALMONEYS
                                     ,[SALESMMONEYS]=#TempTable.FINNALSALESMMONEYS
-                                    ,[COMMISSIONBASEMONEYS]=#TempTable.FINALBASEMONEYS
+                                    ,[COMMISSIONBASEMONEYS]=#TempTable.FINALCOMMISSIONBASEMONEYS
                                     ,[COMMISSIONPCT]=#TempTable.FINALCOMMISSIONPCT
                                     ,[COMMISSIONPCTMONEYS]=#TempTable.FINNALCOMMISSIONPCTMONEYS
                                     ,[TOTALCOMMISSIONMONEYS]=#TempTable.FINALTOTALCOMMISSIONMONEYS
