@@ -3417,7 +3417,8 @@ namespace TKMK
             SETNUMS(dateTimePicker1.Value.ToString("yyyyMMdd"));
 
             label29.Text = "";
-            label29.Text = "更新時間" + dateTimePicker1.Value.ToString("yyyy/MM/dd HH:mm:ss");
+            //label29.Text = "更新時間" + dateTimePicker1.Value.ToString("yyyy/MM/dd HH:mm:ss");
+            label29.Text = "更新時間" +DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
 
 
 
@@ -3908,7 +3909,8 @@ namespace TKMK
             SETNUMS(dateTimePicker1.Value.ToString("yyyyMMdd"));
 
             label29.Text = "";
-            label29.Text = "更新時間" + dateTimePicker1.Value.ToString("yyyy/MM/dd HH:mm:ss");
+            //label29.Text = "更新時間" + dateTimePicker1.Value.ToString("yyyy/MM/dd HH:mm:ss");
+            label29.Text = "更新時間" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
 
 
 
