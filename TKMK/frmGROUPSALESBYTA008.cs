@@ -24,6 +24,9 @@ namespace TKMK
 {
     public partial class frmGROUPSALESBYTA008 : Form
     {
+        private ProgressBar progressBar;
+        private CancellationTokenSource cancellationTokenSource;
+
         SqlConnection sqlConn = new SqlConnection();
         SqlCommand sqlComm = new SqlCommand();
         string connectionString;
@@ -95,10 +98,11 @@ namespace TKMK
             timer1.Start();
 
             // 添加一个复选框列到DataGridView的第一个位置
-            AddCheckBoxColumn();
+            AddCheckBoxColumn();           
+           
         }
 
-        #region FUNCTION
+        #region FUNCTION       
         /// <summary>
         /// 添加一个复选框列到DataGridView的第一个位置
         /// </summary>
@@ -3894,30 +3898,59 @@ namespace TKMK
         private void button18_Click(object sender, EventArgs e)
         {
             MESSAGESHOW MSGSHOW = new MESSAGESHOW();
-            //鎖定控制項
+            // 鎖定控制項
             this.Enabled = false;
-            //顯示跳出視窗
+            // 顯示跳出視窗
             MSGSHOW.Show();
 
-            //查詢本日來車資料
-            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
-            //計算佣金
-            SETMONEYS_NEW(dateTimePicker1.Value.ToString("yyyyMMdd"));
-            //查詢本日來車資料
-            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
-            //查詢本日的合計
-            SETNUMS(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            // 使用非同步操作執行長時間運行的操作
+            Task.Run(() =>
+            {                
+                // 計算佣金
+                SETMONEYS_NEW(dateTimePicker1.Value.ToString("yyyyMMdd"));
 
-            label29.Text = "";
-            //label29.Text = "更新時間" + dateTimePicker1.Value.ToString("yyyy/MM/dd HH:mm:ss");
-            label29.Text = "更新時間" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+                // 更新 UI，確保在主 UI 線程上執行
+                Invoke(new Action(() =>
+                {
+                    // 查詢本日來車資料
+                    SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+
+                    // 查詢本日的合計
+                    SETNUMS(dateTimePicker1.Value.ToString("yyyyMMdd"));
+
+                    label29.Text = "更新時間" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+                    // 關閉跳出視窗
+                    MSGSHOW.Close();
+                    // 解除鎖定
+                    this.Enabled = true;
+                }));
+            });
+
+            //MESSAGESHOW MSGSHOW = new MESSAGESHOW();
+            ////鎖定控制項
+            //this.Enabled = false;
+            ////顯示跳出視窗
+            //MSGSHOW.Show();
+
+            //////查詢本日來車資料
+            ////SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            ////計算佣金
+            //SETMONEYS_NEW(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            ////查詢本日來車資料
+            //SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            ////查詢本日的合計
+            //SETNUMS(dateTimePicker1.Value.ToString("yyyyMMdd"));
+
+            //label29.Text = "";
+            ////label29.Text = "更新時間" + dateTimePicker1.Value.ToString("yyyy/MM/dd HH:mm:ss");
+            //label29.Text = "更新時間" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
 
 
 
-            //關閉跳出視窗
-            MSGSHOW.Close();
-            //解除鎖定
-            this.Enabled = true;
+            ////關閉跳出視窗
+            //MSGSHOW.Close();
+            ////解除鎖定
+            //this.Enabled = true;
         }
 
         #endregion
