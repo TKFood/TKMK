@@ -1509,7 +1509,7 @@
             this.button18.Name = "button18";
             this.button18.Size = new System.Drawing.Size(127, 29);
             this.button18.TabIndex = 731;
-            this.button18.Text = "立即更新";
+            this.button18.Text = "立即更新(V2)";
             this.button18.UseVisualStyleBackColor = true;
             this.button18.Click += new System.EventHandler(this.button18_Click);
             // 
