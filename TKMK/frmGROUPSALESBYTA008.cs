@@ -3178,14 +3178,15 @@ namespace TKMK
 
                                     SET STATISTICS TIME ON;
 
+                                    
                                     IF OBJECT_ID('tempdb..#TempTable') IS NOT NULL
                                     DROP TABLE #TempTable;
 
                                     SELECT *
                                     ,(CASE WHEN 兌換券='是' THEN EXCHANGEMONEYS ELSE 0 END ) AS 'FINALEXCHANGEMONEYS'
                                     ,(CASE WHEN 兌換券='否' THEN FINALBASEMONEYS ELSE 0 END ) AS 'FINALCOMMISSIONBASEMONEYS'
-                                    ,CONVERT(INT,ROUND(FINNALSALESMMONEYS*FINALCOMMISSIONPCT,0)) AS 'FINNALCOMMISSIONPCTMONEYS'
-                                    ,(CONVERT(INT,ROUND(FINNALSALESMMONEYS*FINALCOMMISSIONPCT,0)) +(CASE WHEN 兌換券='否' THEN FINALBASEMONEYS ELSE 0 END )) AS 'FINALTOTALCOMMISSIONMONEYS'
+                                    ,CONVERT(INT,FINNALSALESMMONEYS*FINALCOMMISSIONPCT,0) AS 'FINNALCOMMISSIONPCTMONEYS'
+                                    ,(CONVERT(INT,FINNALSALESMMONEYS*FINALCOMMISSIONPCT,0) +(CASE WHEN 兌換券='否' THEN FINALBASEMONEYS ELSE 0 END )) AS 'FINALTOTALCOMMISSIONMONEYS'
                                     INTO #TempTable
                                     FROM 
                                     (
@@ -3193,7 +3194,8 @@ namespace TKMK
 	                                    FROM 
 	                                    (
 		                                    SELECT *
-		                                    ,(CASE WHEN FINALEXCHANGESALESMMONEYS>0 AND SALESMMONEYS>0 AND (SALESMMONEYS-FINALEXCHANGESALESMMONEYS)>0 THEN (SALESMMONEYS-FINALEXCHANGESALESMMONEYS) ELSE SALESMMONEYS  END )  AS 'FINNALSALESMMONEYS'
+		                                    --如果司機有兌換券，而且有消費金額，可當佣金的消費金額=原消費總額-券總額(保留超過的部份金額還是可以抽佣)
+		                                    ,(CASE WHEN FINALEXCHANGESALESMMONEYS>0 AND SALESMMONEYS>0 AND (SALESMMONEYS-FINALEXCHANGESALESMMONEYS)>=0 THEN (SALESMMONEYS-EXCHANGEMONEYS) ELSE SALESMMONEYS  END )  AS 'FINNALSALESMMONEYS'
 		                                    FROM
 		                                    (
 		                                    SELECT  
@@ -3226,16 +3228,16 @@ namespace TKMK
 		                                    ,CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間'
 		                                    ,[EXCHANGEMONEYS] AS '領券額'
 		                                    ,[CREATEDATES]
-		                                    ,CONVERT(varchar, [CREATEDATES], 112) AS 'YMD'
-		                                    ,CONVERT(varchar,[CREATEDATES], 108) AS 'STARTHM'
+		                                    ,CONVERT(varchar, [GROUPSTARTDATES], 112) AS 'YMD'
+		                                    ,CONVERT(varchar,[GROUPSTARTDATES], 108) AS 'STARTHM'
 		                                    ,(
 		                                    SELECT CONVERT(INT,ISNULL(SUM(TB033),0),0)
 		                                    FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
 		                                    WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006  
 		                                    AND TB010  NOT IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCT] WHERE [VALID]='Y' AND [SPLITCAL]='Y')              
 		                                    AND TA008=[GROUPSALES].[TA008] 
-		                                    AND TA001=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112) 
-		                                    AND TA005>=CONVERT(varchar, [GROUPSALES].[CREATEDATES],108 )
+		                                    AND TA001=CONVERT(varchar,[GROUPSALES].[GROUPSTARTDATES], 112) 
+		                                    AND TA005>=CONVERT(varchar, [GROUPSALES].[GROUPSTARTDATES],108 )
 
 		                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1'))
 		                                    )  AS 'SALESMMONEYS'
@@ -3252,15 +3254,15 @@ namespace TKMK
 		                                    FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
 		                                    WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006 
 		                                    AND TA008=[GROUPSALES].[TA008]  
-		                                    AND TA001=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112)  
-		                                    AND TA005>=CONVERT(varchar, [GROUPSALES].[CREATEDATES],108 )
+		                                    AND TA001=CONVERT(varchar,[GROUPSALES].[GROUPSTARTDATES], 112)  
+		                                    AND TA005>=CONVERT(varchar, [GROUPSALES].[GROUPSTARTDATES],108 )
 
 		                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1'))
 		                                    GROUP BY TB010
 		                                    ) AS TEMP ON TB010=ID
 		                                    WHERE [VALID]='Y' 
-		                                    AND CONVERT(NVARCHAR,SDATES,112)<=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112) 
-		                                    AND CONVERT(NVARCHAR,EDATES,112)>=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112) 
+		                                    AND CONVERT(NVARCHAR,SDATES,112)<=CONVERT(varchar,[GROUPSALES].[GROUPSTARTDATES], 112) 
+		                                    AND CONVERT(NVARCHAR,EDATES,112)>=CONVERT(varchar,[GROUPSALES].[GROUPSTARTDATES], 112) 
 		                                    ) AS TEMP2
 		                                    ) AS 'FINALSPECIALMNUMS'
 		                                    ,
@@ -3283,8 +3285,8 @@ namespace TKMK
 		                                    GROUP BY TB010
 		                                    ) AS TEMP ON TB010=ID
 		                                    WHERE [VALID]='Y' 
-		                                    AND CONVERT(NVARCHAR,SDATES,112)<=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112) 
-		                                    AND CONVERT(NVARCHAR,EDATES,112)>=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112) 
+		                                    AND CONVERT(NVARCHAR,SDATES,112)<=CONVERT(varchar,[GROUPSALES].[GROUPSTARTDATES], 112) 
+		                                    AND CONVERT(NVARCHAR,EDATES,112)>=CONVERT(varchar,[GROUPSALES].[GROUPSTARTDATES], 112) 
 		                                    ) AS TEMP2
 		                                    ) AS 'FINALSPECIALMONEYS' 
 		                                    ,
@@ -3307,8 +3309,8 @@ namespace TKMK
 		                                    WHERE  1=1
 		                                    AND [VALID]='Y'
 		                                    AND [CARKIND]=[GROUPSALES].[CARKIND] 
-		                                    AND CONVERT(NVARCHAR,SDATES,112)<=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112)
-		                                    AND CONVERT(NVARCHAR,EDATES,112)>=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112)
+		                                    AND CONVERT(NVARCHAR,SDATES,112)<=CONVERT(varchar,[GROUPSALES].[GROUPSTARTDATES], 112)
+		                                    AND CONVERT(NVARCHAR,EDATES,112)>=CONVERT(varchar,[GROUPSALES].[GROUPSTARTDATES], 112)
 		                                    ),0)  AS 'EXCHANGEMONEYS'  
 		                                    ,
 		                                    (
@@ -3316,8 +3318,8 @@ namespace TKMK
 		                                    FROM [TKMK].[dbo].[GROUPBASE] 
 		                                    WHERE 1=1
 		                                    AND VALID='Y'
-		                                    AND CONVERT(NVARCHAR,SDATES,112)<=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112)
-		                                    AND CONVERT(NVARCHAR,EDATES,112)>=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112)
+		                                    AND CONVERT(NVARCHAR,SDATES,112)<=CONVERT(varchar,[GROUPSALES].[GROUPSTARTDATES], 112)
+		                                    AND CONVERT(NVARCHAR,EDATES,112)>=CONVERT(varchar,[GROUPSALES].[GROUPSTARTDATES], 112)
 		                                    AND [NAME]=[GROUPSALES].[CARKIND] 
 		                                    )  AS 'FINALBASEMONEYS' 
 		                                    ,
@@ -3331,8 +3333,8 @@ namespace TKMK
 		                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1'))
 		                                    ) AS 'GUSETNUM'
 		                                    FROM [TKMK].[dbo].[GROUPSALES]
-		                                    WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'
-		                                    AND [STATUS] IN ('預約接團')
+		                                    WHERE CONVERT(nvarchar,[CREATEDATES],112)='20240428'
+		                                    --AND [STATUS] IN ('預約接團')
 
 		                                    ) AS TEMP
 	                                    ) AS TEMP2
@@ -3342,14 +3344,15 @@ namespace TKMK
 	                                    WHERE [NAME] = TEMP2.車種
 	                                    AND (FINNALSALESMMONEYS - [PCTMONEYS]) >= 0
 	                                    AND VALID = 'Y'
-	                                    AND CONVERT(NVARCHAR, SDATES, 112) <= CONVERT(VARCHAR, TEMP2.[CREATEDATES], 112)
-	                                    AND CONVERT(NVARCHAR, EDATES, 112) >= CONVERT(VARCHAR, TEMP2.[CREATEDATES], 112)
+	                                    AND CONVERT(NVARCHAR, SDATES, 112) <= CONVERT(VARCHAR, TEMP2.YMD, 112)
+	                                    AND CONVERT(NVARCHAR, EDATES, 112) >= CONVERT(VARCHAR, TEMP2.YMD, 112)
 	                                    ORDER BY (FINNALSALESMMONEYS - [PCTMONEYS]) 
 	                                    ) AS OUTERPCT
                                     ) AS TEMP3
 
                                     SELECT *
                                     FROM  #TempTable
+
 
 
                                     UPDATE [TKMK].[dbo].[GROUPSALES]
