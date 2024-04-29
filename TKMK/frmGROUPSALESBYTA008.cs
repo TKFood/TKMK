@@ -3333,7 +3333,7 @@ namespace TKMK
 		                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1'))
 		                                    ) AS 'GUSETNUM'
 		                                    FROM [TKMK].[dbo].[GROUPSALES]
-		                                    WHERE CONVERT(nvarchar,[CREATEDATES],112)='20240428'
+		                                    WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'
 		                                    --AND [STATUS] IN ('預約接團')
 
 		                                    ) AS TEMP
