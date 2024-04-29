@@ -3195,7 +3195,7 @@ namespace TKMK
 	                                    (
 		                                    SELECT *
 		                                    --如果司機有兌換券，而且有消費金額，可當佣金的消費金額=原消費總額-券總額(保留超過的部份金額還是可以抽佣)
-		                                    ,(CASE WHEN FINALEXCHANGESALESMMONEYS>0 AND SALESMMONEYS>0 AND (SALESMMONEYS-FINALEXCHANGESALESMMONEYS)>=0 THEN (SALESMMONEYS-EXCHANGEMONEYS) ELSE SALESMMONEYS  END )  AS 'FINNALSALESMMONEYS'
+		                                    ,(CASE WHEN FINALEXCHANGESALESMMONEYS>0 AND SALESMMONEYS>0 AND (SALESMMONEYS-FINALEXCHANGESALESMMONEYS)>=0 THEN (SALESMMONEYS-EXCHANGEMONEYS) ELSE 0  END )  AS 'FINNALSALESMMONEYS'
 		                                    FROM
 		                                    (
 		                                    SELECT  
