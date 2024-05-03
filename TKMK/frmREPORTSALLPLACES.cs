@@ -286,7 +286,7 @@ namespace TKMK
                             ,(SELECT COUNT([ID]) FROM  [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)=TA001 AND STATUS='完成接團') AS '車數'
                             ,CASE WHEN SUM(TA026)>0 AND (SELECT COUNT([ID]) FROM  [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)=TA001 AND STATUS='完成接團')>0 THEN CONVERT(INT,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001=POSTA.TA001 AND TA1.TA002=POSTA.TA002 AND (TA008 LIKE '68%' OR TA008 LIKE '69%' )),0)/(SELECT COUNT([ID]) FROM  [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)=TA001 AND STATUS='完成接團')) ELSE 0 END '平均每車金額'
                             ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001>=CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112) AND TA1.TA001<=POSTA.TA001 AND TA1.TA002=POSTA.TA002 ),0) AS '目前累計'
-
+                            ,ISNULL((SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002=TA002 AND ( TB010 LIKE '408%' OR  TB010 LIKE '409%' OR  TB010 LIKE '40400610020011%')),0) AS '硯微墨的寄賣'
 
                             ,ISNULL((SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002  IN ('106703') ),0) AS '星球合計'
                             ,ISNULL((SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002  IN ('106703') AND TB010 LIKE '598%'),0) AS '星球業績'
@@ -298,7 +298,7 @@ namespace TKMK
                             WHERE 1=1
                             AND TA002 IN ('106701')
                             AND TA001='{0}'
-                            GROUP BY TA001,TA002
+                            GROUP BY TA001,TA002 
                             ORDER BY TA001,TA002
  
 
