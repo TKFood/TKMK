@@ -3186,7 +3186,10 @@ namespace TKMK
                                     ,(CASE WHEN 兌換券='是' THEN EXCHANGEMONEYS ELSE 0 END ) AS 'FINALEXCHANGEMONEYS'
                                     ,(CASE WHEN 兌換券='否' THEN FINALBASEMONEYS ELSE 0 END ) AS 'FINALCOMMISSIONBASEMONEYS'
                                     ,CONVERT(INT,FINNALSALESMMONEYS*FINALCOMMISSIONPCT,0) AS 'FINNALCOMMISSIONPCTMONEYS'
-                                    ,(CONVERT(INT,FINNALSALESMMONEYS*FINALCOMMISSIONPCT,0) +(CASE WHEN 兌換券='否' THEN FINALBASEMONEYS ELSE 0 END )+FINALSPECIALMONEYS) AS 'FINALTOTALCOMMISSIONMONEYS'
+                                    
+                                    --總將金=抽佣+茶水費+特賣獎金
+                                    ,(CONVERT(INT,FINNALSALESMMONEYS*FINALCOMMISSIONPCT,0)+(CASE WHEN 兌換券='否' THEN FINALBASEMONEYS ELSE 0 END )+FINALSPECIALMONEYS) AS 'FINALTOTALCOMMISSIONMONEYS'
+
                                     INTO #TempTable
                                     FROM 
                                     (
