@@ -3406,6 +3406,77 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
+        private void textBox131_TextChanged(object sender, EventArgs e)
+        {
+            if(!string.IsNullOrEmpty(textBox131.Text)&& textBox131.Text.Length>4)
+            {
+                comboBox5.SelectedValue= FIND_COMPANY_EARLIEST(textBox131.Text.Trim());
+            }
+        }
+
+        public string FIND_COMPANY_EARLIEST(string CARNO)
+        {
+            DataTable DT = new DataTable();
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"                                     
+                                   SELECT 
+                                    TOP 1 [CARCOMPANY]
+     
+                                    FROM [TKMK].[dbo].[GROUPSALES]
+                                    WHERE [CREATEDATES]<='2023/7/1'
+                                    AND [CARNO]  LIKE '%{0}%'
+                                    ORDER  BY [CREATEDATES]
+                                    ", CARNO);
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return ds1.Tables["ds1"].Rows[0]["CARCOMPANY"].ToString();
+                }
+                else
+                {
+                    return "老楊";
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -3970,8 +4041,9 @@ namespace TKMK
             //this.Enabled = true;
         }
 
+
         #endregion
 
-
+       
     }
 }
