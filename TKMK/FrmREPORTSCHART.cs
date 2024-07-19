@@ -111,12 +111,10 @@ namespace TKMK
                             ,SUM([COMMISSIONPCTMONEYS])      AS  '總佣金' 
                             ,SUM([TOTALCOMMISSIONMONEYS])  AS  '總佣金+總茶水費'
                             ,(
-                            SELECT 
-                            SUM(LA017-LA020-LA022-LA023) 
-                            FROM [TK].dbo.SASLA
-                            WHERE 1=1
-                            AND LA007 LIKE '1067%' 
-                            AND   YEAR(LA015)=YEAR([CREATEDATES]) AND MONTH(LA015)=MONTH([CREATEDATES])
+                            SELECT SUM(TA026) 
+                            FROM [TK].dbo.POSTA
+                            WHERE TA002 LIKE '1067%'
+                            AND YEAR(TA001)=YEAR([CREATEDATES]) AND MONTH(TA001)=MONTH([CREATEDATES])
                             ) AS  '觀光+硯微墨的總銷售金額'
 
                             FROM [TKMK].[dbo].[GROUPSALES]
@@ -134,13 +132,11 @@ namespace TKMK
                             ,SUM([COMMISSIONBASEMONEYS])  AS  '總茶水費'
                             ,SUM([COMMISSIONPCTMONEYS])      AS  '總佣金' 
                             ,SUM([TOTALCOMMISSIONMONEYS])  AS  '總佣金+總茶水費'
-                            ,(
-                            SELECT 
-                            SUM(LA017-LA020-LA022-LA023) 
-                            FROM [TK].dbo.SASLA
-                            WHERE 1=1
-                            AND LA007 LIKE '1067%' 
-                            AND   YEAR(LA015)=YEAR([CREATEDATES]) AND MONTH(LA015)=MONTH([CREATEDATES])
+                           ,(
+                            SELECT SUM(TA026) 
+                            FROM [TK].dbo.POSTA
+                            WHERE TA002 LIKE '1067%'
+                            AND YEAR(TA001)=YEAR([CREATEDATES]) AND MONTH(TA001)=MONTH([CREATEDATES])
                             ) AS  '觀光+硯微墨的總銷售金額'
 
                             FROM [TKMK].[dbo].[GROUPSALES]
