@@ -183,6 +183,12 @@
     <Compile Include="frmREPORTSALLPLACES.Designer.cs">
       <DependentUpon>frmREPORTSALLPLACES.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmREPORTSCHART.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmREPORTSCHART.Designer.cs">
+      <DependentUpon>FrmREPORTSCHART.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmREPORTSTORES.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -253,6 +259,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmREPORTSALLPLACES.resx">
       <DependentUpon>frmREPORTSALLPLACES.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmREPORTSCHART.resx">
+      <DependentUpon>FrmREPORTSCHART.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmREPORTSTORES.resx">
       <DependentUpon>frmREPORTSTORES.cs</DependentUpon>

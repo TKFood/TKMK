@@ -467,7 +467,8 @@ namespace TKMK
                             ,SUM([COMMISSIONPCTMONEYS])      AS  '總佣金' 
                             ,SUM([TOTALCOMMISSIONMONEYS])  AS  '總佣金+總茶水費'
                             FROM [TKMK].[dbo].[GROUPSALES]
-                            WHERE CONVERT(NVARCHAR,[CREATEDATES],112)>='{0}' AND CONVERT(NVARCHAR,[CREATEDATES],112)<='{1}' 
+                            WHERE [STATUS]='完成接團'
+                            AND CONVERT(NVARCHAR,[CREATEDATES],112)>='{0}' AND CONVERT(NVARCHAR,[CREATEDATES],112)<='{1}' 
                             GROUP BY MONTH([CREATEDATES]),[CARCOMPANY]
                             ORDER BY MONTH([CREATEDATES]),[CARCOMPANY]
 
