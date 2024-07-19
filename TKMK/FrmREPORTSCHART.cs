@@ -79,12 +79,12 @@ namespace TKMK
 
             String connectionString;
             sqlConn = new SqlConnection(sqlsb.ConnectionString);
-
+       
             report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+            report1.Dictionary.Connections[0].CommandTimeout = 180;
 
 
-
-            TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
+           TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
             table.SelectCommand = SQL1.ToString();
 
             //report1.SetParameterValue("P1", dateTimePicker1.Value.ToString("yyyyMMdd"));
@@ -112,7 +112,7 @@ namespace TKMK
                             ,SUM([TOTALCOMMISSIONMONEYS])  AS  '總佣金+總茶水費'
                             ,(
                             SELECT SUM(TA026) 
-                            FROM [TK].dbo.POSTA
+                            FROM [TK].dbo.POSTA WITH(NOLOCK)
                             WHERE TA002 LIKE '1067%'
                             AND YEAR(TA001)=YEAR([CREATEDATES]) AND MONTH(TA001)=MONTH([CREATEDATES])
                             ) AS  '觀光+硯微墨的總銷售金額'
@@ -134,7 +134,7 @@ namespace TKMK
                             ,SUM([TOTALCOMMISSIONMONEYS])  AS  '總佣金+總茶水費'
                            ,(
                             SELECT SUM(TA026) 
-                            FROM [TK].dbo.POSTA
+                            FROM [TK].dbo.POSTA WITH(NOLOCK)
                             WHERE TA002 LIKE '1067%'
                             AND YEAR(TA001)=YEAR([CREATEDATES]) AND MONTH(TA001)=MONTH([CREATEDATES])
                             ) AS  '觀光+硯微墨的總銷售金額'
