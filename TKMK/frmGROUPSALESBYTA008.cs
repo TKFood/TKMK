@@ -3408,10 +3408,10 @@ namespace TKMK
         }
         private void textBox131_TextChanged(object sender, EventArgs e)
         {
-            if(!string.IsNullOrEmpty(textBox131.Text)&& textBox131.Text.Length>4)
-            {
-                comboBox5.SelectedValue= FIND_COMPANY_EARLIEST(textBox131.Text.Trim());
-            }
+            //if(!string.IsNullOrEmpty(textBox131.Text)&& textBox131.Text.Length>4)
+            //{
+            //    comboBox5.SelectedValue= FIND_COMPANY_EARLIEST(textBox131.Text.Trim());
+            //}
         }
 
         public string FIND_COMPANY_EARLIEST(string CARNO)
