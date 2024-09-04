@@ -230,11 +230,15 @@ namespace TKMK
             StringBuilder SQL2 = new StringBuilder();
             StringBuilder SQL3 = new StringBuilder();
             StringBuilder SQL4 = new StringBuilder();
+            StringBuilder SQL5 = new StringBuilder();
+            StringBuilder SQL6 = new StringBuilder();
 
             SQL1 = SETSQL_DAILY1(SDATES);
             SQL2 = SETSQL_DAILY2(SDATES);
             SQL3 = SETSQL_DAILY3(SDATES);
             SQL4 = SETSQL_DAILY4(SDATES);
+            SQL5 = SETSQL_DAILY5(SDATES);
+            SQL6 = SETSQL_DAILY6(SDATES);
 
             Report report1 = new Report();
             report1.Load(@"REPORT\觀光日報表.frx");
@@ -262,6 +266,10 @@ namespace TKMK
             table2.SelectCommand = SQL3.ToString();
             TableDataSource table3 = report1.GetDataSource("Table3") as TableDataSource;
             table3.SelectCommand = SQL4.ToString();
+            TableDataSource table4 = report1.GetDataSource("Table4") as TableDataSource;
+            table4.SelectCommand = SQL5.ToString();
+            TableDataSource table5 = report1.GetDataSource("Table5") as TableDataSource;
+            table5.SelectCommand = SQL6.ToString();
 
             //report1.SetParameterValue("P1", dateTimePicker1.Value.ToString("yyyyMMdd"));
             //report1.SetParameterValue("P2", dateTimePicker2.Value.ToString("yyyyMMdd"));
@@ -360,6 +368,7 @@ namespace TKMK
             return SB;
 
         }
+
         public StringBuilder SETSQL_DAILY4(string SDATES)
         {
             StringBuilder SB = new StringBuilder();
@@ -381,6 +390,82 @@ namespace TKMK
                             ORDER BY TA001,TA002
 
                             ", SDATES);
+
+            return SB;
+
+        }
+        //67000016 VIP優惠
+        //（9折）
+        public StringBuilder SETSQL_DAILY5(string SDATES)
+        {
+            string TA009 = "67000016";
+            StringBuilder SB = new StringBuilder();
+
+
+            SB.AppendFormat(@"  
+                               WITH 累計值 AS (
+                            SELECT 
+                                ISNULL(SUM(TA026), 0) AS '目前累計'
+                            FROM [TK].dbo.POSTA TA1
+                            WHERE TA1.TA001 >= CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112)
+                            AND TA1.TA001 <= '{0}'
+                            AND TA1.TA009 = '{1}'
+                            )
+
+                            SELECT 
+                                '20240904' AS '日期',
+                                ISNULL(本日優惠.TA026, 0) AS '67000016(9折)VIP優惠',
+                                累計值.目前累計 AS '目前累計'
+                            FROM 累計值
+                            LEFT JOIN (
+                                SELECT SUM(TA026) AS TA026
+                                FROM [TK].dbo.POSTA
+                                WHERE TA002 LIKE '1067%'
+                                AND TA009 = '{1}'
+                                AND TA001 = '{0}'
+                            ) AS 本日優惠 ON 1 = 1
+                                           
+
+                            ", SDATES, TA009);
+
+            return SB;
+
+        }
+        //67000017VVIP優惠
+        //（85折)
+        public StringBuilder SETSQL_DAILY6(string SDATES)
+        {
+            string TA009 = "67000017";
+            StringBuilder SB = new StringBuilder();
+
+
+            SB.AppendFormat(@"  
+
+                            WITH 累計值 AS (
+                            SELECT 
+                                ISNULL(SUM(TA026), 0) AS '目前累計'
+                            FROM [TK].dbo.POSTA TA1
+                            WHERE TA1.TA001 >= CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112)
+                            AND TA1.TA001 <= '{0}'
+                            AND TA1.TA009 = '{1}'
+                            )
+
+                            SELECT 
+                                '20240904' AS '日期',
+                                ISNULL(本日優惠.TA026, 0) AS '67000017(85折)VVIP優惠',
+                                累計值.目前累計 AS '目前累計'
+                            FROM 累計值
+                            LEFT JOIN (
+                                SELECT SUM(TA026) AS TA026
+                                FROM [TK].dbo.POSTA
+                                WHERE TA002 LIKE '1067%'
+                                AND TA009 = '{1}'
+                                AND TA001 = '{0}'
+                            ) AS 本日優惠 ON 1 = 1
+
+                  
+
+                            ", SDATES ,TA009);
 
             return SB;
 
