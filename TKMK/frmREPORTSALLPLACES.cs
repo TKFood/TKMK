@@ -346,22 +346,41 @@ namespace TKMK
 
             SB.AppendFormat(@"                             
                             
-                            SELECT
-                            TA001 AS '日期'
-                            ,TA002 AS '門市'
-                            , ISNULL(SUM(TA026),0) AS '硯微墨餐飲組合計'
-                            ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001>=CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112) AND TA1.TA001<=POSTA.TA001 AND TA1.TA002=POSTA.TA002 ),0) AS '目前累計'
+                            WITH 累計值 AS (
+                                SELECT 
+                                    TA002,
+                                    ISNULL(SUM(TA026), 0) AS '目前累計'
+                                FROM [TK].dbo.POSTA TA1
+                                WHERE TA1.TA001 >= CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112)
+                                AND TA1.TA001 <= '{0}'
+                                AND TA1.TA002 IN ('106705')
+                                GROUP BY TA002
+                            )
+                            SELECT 
+                                '{0}' AS '日期',
+                                '106705' AS '門市',
+                                ISNULL(本日資料.硯微墨餐飲組合計, 0) AS '硯微墨餐飲組合計',
+                                累計值.目前累計 AS '目前累計',
+                                ISNULL(本日資料.霜淇淋業績, 0) AS '霜淇淋業績',
+                                ISNULL(本日資料.飲品業績, 0) AS '飲品業績',
+                                ISNULL(本日資料.其他, 0) AS '其他'
+                            FROM 累計值
+                            LEFT JOIN (
+                                SELECT 
+                                    TA001,
+                                    TA002,
+                                    ISNULL(SUM(TA026), 0) AS '硯微墨餐飲組合計',
+                                    ISNULL((SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001 = TA001 AND TB002 = TA002 AND TB010 LIKE '406%'), 0) AS '霜淇淋業績',
+                                    ISNULL((SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001 = TA001 AND TB002 = TA002 AND TB010 LIKE '407%'), 0) AS '飲品業績',
+                                    (ISNULL(SUM(TA026), 0) 
+                                        - ISNULL((SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001 = TA001 AND TB002 = TA002 AND TB010 LIKE '406%'), 0) 
+                                        - ISNULL((SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001 = TA001 AND TB002 = TA002 AND TB010 LIKE '407%'), 0)) AS '其他'
+                                FROM [TK].dbo.POSTA
+                                WHERE TA002 = '106705'
+                                AND TA001 = '{0}'
+                                GROUP BY TA001, TA002
+                            ) AS 本日資料 ON 本日資料.TA002 = 累計值.TA002
 
-                            ,ISNULL((SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002  IN ('106705') AND TB010 LIKE '406%'),0) AS '霜淇淋業績'
-                            ,ISNULL((SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002  IN ('106705') AND TB010 LIKE '407%'),0) AS '飲品業績'
-                            ,(ISNULL(SUM(TA026),0)-ISNULL((SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002  IN ('106705') AND TB010 LIKE '406%'),0)-ISNULL((SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002  IN ('106705') AND TB010 LIKE '407%'),0)) AS '其他'
-
-                            FROM [TK].dbo.POSTA
-                            WHERE 1=1
-                            AND TA002 IN ('106705')
-                            AND TA001='{0}'
-                            GROUP BY TA001,TA002
-                            ORDER BY TA001,TA002
 
                             ", SDATES);
 
