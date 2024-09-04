@@ -52,6 +52,10 @@ namespace TKMK
             SETDATES();
         }
 
+
+
+
+        #region FUNCTION
         public void SETDATES()
         {
             DateTime FirstDay = new DateTime(DateTime.Now.Year, 1, 1);
@@ -79,12 +83,12 @@ namespace TKMK
 
             String connectionString;
             sqlConn = new SqlConnection(sqlsb.ConnectionString);
-       
+
             report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
             report1.Dictionary.Connections[0].CommandTimeout = 180;
 
 
-           TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
+            TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
             table.SelectCommand = SQL1.ToString();
 
             //report1.SetParameterValue("P1", dateTimePicker1.Value.ToString("yyyyMMdd"));
@@ -154,10 +158,6 @@ namespace TKMK
             return SB;
 
         }
-
-
-        #region FUNCTION
-
         #endregion
 
         #region BUTTON
