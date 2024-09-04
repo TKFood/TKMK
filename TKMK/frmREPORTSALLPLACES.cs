@@ -375,19 +375,37 @@ namespace TKMK
 
 
             SB.AppendFormat(@"  
+                           WITH 累計值 AS (
+                                SELECT 
+                                    TA002,
+                                    ISNULL(SUM(TA026), 0) AS '目前累計'
+                                FROM [TK].dbo.POSTA TA1
+                                WHERE TA1.TA001 >= CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112)
+                                AND TA1.TA001 <= '{0}'
+                                AND TA1.TA002 IN ('106703')
+                                GROUP BY TA002
+                            )
                             SELECT 
-                            TA001 AS '日期'
-                            ,TA002 AS '門市'
-                            , ISNULL(SUM(TA026),0) AS '星球樂園合計'
-                            ,(SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002=TB002 AND TB010 LIKE '598%') AS '星球業績'
-                            ,(SUM(TA026)-(SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002=TB002 AND TB010 LIKE '598%')) AS '其他業績'
-                            ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001>=CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112) AND TA1.TA001<=POSTA.TA001 AND TA1.TA002=POSTA.TA002 ),0) AS '目前累計'
-                            FROM [TK].dbo.POSTA
-                            WHERE 1=1
-                            AND TA002 IN ('106703')
-                            AND TA001='{0}'
-                            GROUP BY TA001,TA002
-                            ORDER BY TA001,TA002
+                                '{0}' AS '日期',
+                                '106703' AS '門市',
+                                ISNULL(本日資料.星球樂園合計, 0) AS '星球樂園合計',
+                                ISNULL(本日資料.星球業績, 0) AS '星球業績',
+                                ISNULL(本日資料.其他業績, 0) AS '其他業績',
+                                累計值.目前累計 AS '目前累計'
+                            FROM 累計值
+                            LEFT JOIN (
+                                SELECT 
+                                    TA001,
+                                    TA002,
+                                    ISNULL(SUM(TA026), 0) AS '星球樂園合計',
+                                    (SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002=TA002 AND TB010 LIKE '598%') AS '星球業績',
+                                    (SUM(TA026) - (SELECT SUM(TB031) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002=TA002 AND TB010 LIKE '598%')) AS '其他業績'
+                                FROM [TK].dbo.POSTA
+                                WHERE TA002 = '106703'
+                                AND TA001 = '{0}'
+                                GROUP BY TA001, TA002
+                            ) AS 本日資料 ON 本日資料.TA002 = 累計值.TA002
+
 
                             ", SDATES);
 
