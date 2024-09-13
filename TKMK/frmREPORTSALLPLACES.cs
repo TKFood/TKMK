@@ -316,7 +316,7 @@ namespace TKMK
 
         }
         public StringBuilder SETSQL_DAILY2(string SDATES)
-        {
+        { 
             StringBuilder SB = new StringBuilder();
 
 
@@ -326,6 +326,9 @@ namespace TKMK
                             ,TA002 AS '門市'
                             , ISNULL(SUM(TA026),0) AS '硯微墨烘焙組合計'
                             ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001>=CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112) AND TA1.TA001<=POSTA.TA001 AND TA1.TA002=POSTA.TA002 ),0) AS '目前累計'
+                            ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001=POSTA.TA001 AND TA1.TA002=POSTA.TA002 AND (TA008 LIKE '68%' OR TA008 LIKE '69%' )),0) AS '團客業績'
+                            ,ISNULL((SUM(TA026)-(ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001=POSTA.TA001 AND TA1.TA002=POSTA.TA002 AND (TA008 LIKE '68%' OR TA008 LIKE '69%' )),0)))-(SELECT ISNULL(SUM(TB031),0) FROM [TK].dbo.POSTB WHERE TB001=TA001 AND TB002=TA002 AND TB010 LIKE '406%'),0) AS '散客業績'
+
                             FROM [TK].dbo.POSTA
                             WHERE 1=1
                             AND TA002 IN ('106702')
