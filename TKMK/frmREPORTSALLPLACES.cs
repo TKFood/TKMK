@@ -114,7 +114,9 @@ namespace TKMK
                             FROM [TK].dbo.POSTB
                             WHERE TB010 LIKE '406%'
                             AND TB002=TA002
-                            AND TB001=TA001)) AS '銷售金額扣霜淇淋'
+                            AND TB001=TA001)) AS '銷售金額扣霜淇淋',
+                   
+                            
                             FROM 
                             (
                             SELECT 
@@ -302,6 +304,11 @@ namespace TKMK
                             ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA TA1 WHERE TA1.TA001>=CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112) AND TA1.TA001<=POSTA.TA001 AND TA1.TA002 IN ('106703') ),0) AS '星球樂園目前累計'
 
                             ,ISNULL((SELECT SUM(TB031) FROM [TK].dbo.POSTB TB2,[TK].dbo.POSTA TA2 WHERE TA2.TA001=TB2.TB001 AND  TA2.TA002=TB2.TB002 AND TA2.TA003=TB2.TB003 AND TA2.TA006=TB2.TB006  AND TA2.TA038='4' AND TB2.TB001=POSTA.TA001 AND TB2.TB002=POSTA.TA002 ),0) AS '預購業績'
+                            
+                            ,(SELECT ISNULL(SUM(TB031) ,0) FROM [TK].dbo.POSTB WHERE  TB002=TA002 AND TB001=TA001 AND TB003 IN ('007')) AS '大廳總金額' 
+                            ,(SELECT ISNULL(SUM(TB031) ,0) FROM [TK].dbo.POSTB WHERE  TB002=TA002 AND TB001=TA001 AND TB003 IN ('007') AND TB010 LIKE '4%') AS '大廳商品金額'
+                            ,(SELECT ISNULL(SUM(TB031) ,0) FROM [TK].dbo.POSTB WHERE  TB002=TA002 AND TB001=TA001 AND TB003 IN ('007') AND TB010 NOT LIKE '4%') AS '大廳票券金額'
+
                             FROM [TK].dbo.POSTA
                             WHERE 1=1
                             AND TA002 IN ('106701')
