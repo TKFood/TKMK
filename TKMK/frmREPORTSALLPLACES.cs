@@ -460,7 +460,7 @@ namespace TKMK
                             )
 
                             SELECT 
-                                '20240904' AS '日期',
+                                '{0}' AS '日期',
                                 ISNULL(本日優惠.TA026, 0) AS '67000016(9折)VIP優惠',
                                 累計值.目前累計 AS '目前累計'
                             FROM 累計值
@@ -498,7 +498,7 @@ namespace TKMK
                             )
 
                             SELECT 
-                                '20240904' AS '日期',
+                                '{0}' AS '日期',
                                 ISNULL(本日優惠.TA026, 0) AS '67000017(85折)VVIP優惠',
                                 累計值.目前累計 AS '目前累計'
                             FROM 累計值
