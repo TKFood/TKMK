@@ -67,6 +67,8 @@ namespace TKMK
         int ROWSINDEX = 0;
         int COLUMNSINDEX = 0;
 
+        bool isChecked = false;
+
         [DllImport("user32.dll", EntryPoint = "FindWindow", CharSet = CharSet.Auto)]
         private extern static IntPtr FindWindow(string lpClassName, string lpWindowName);
 
@@ -108,13 +110,14 @@ namespace TKMK
         /// </summary>
         private void AddCheckBoxColumn()
         {
-            // 创建一个新的DataGridViewCheckBox列
+            // 創建一個 DataGridViewCheckBoxColumn
             DataGridViewCheckBoxColumn checkBoxColumn = new DataGridViewCheckBoxColumn();
-            checkBoxColumn.HeaderText = "勾選"; // 设置列标题
-            checkBoxColumn.Width = 50; // 设置列宽度
+            checkBoxColumn.HeaderText = "選擇";
+            checkBoxColumn.Name = "checkBoxColumn";
+            checkBoxColumn.Width = 50;  // 可調整欄寬
 
-            // 将列插入到第一个位置
-            dataGridView1.Columns.Insert(0, checkBoxColumn);
+            // 將欄位新增到 DataGridView
+            dataGridView1.Columns.Add(checkBoxColumn);
         }
         /// <summary>
         /// 定時 每1分鐘 更新
@@ -3477,6 +3480,36 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
+
+        private bool  CheckSelectedRows()
+        {
+            isChecked = false;
+
+            // 遍歷 DataGridView 的每一行
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                // 確保不是空行（如果允許使用者新增行的話）
+                if (row.Cells["checkBoxColumn"].Value != null && (bool)row.Cells["checkBoxColumn"].Value == true)
+                {
+                    isChecked = true;
+                    break; // 如果找到一個被勾選的，則可以跳出循環
+                }
+            }
+
+            //// 顯示結果
+            //if (isChecked)
+            //{
+            //    MessageBox.Show("至少有一個 CheckBox 被勾選！");
+            //}
+            //else
+            //{
+            //    MessageBox.Show("沒有任何 CheckBox 被勾選！");
+            //}
+
+            return isChecked;
+        }
+
+
         #endregion
 
         #region BUTTON
@@ -3738,32 +3771,86 @@ namespace TKMK
         }
 
         private void button13_Click(object sender, EventArgs e)
-        {  
+        {
+            //檢查CHEKBOX有沒有被勾選
+            CheckSelectedRows();
+
             string DTIMES = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-            if (!string.IsNullOrEmpty(ID) && STATUS.Equals("預約接團"))
+
+            if(isChecked == true)
             {
-                GROUPSALES_UPDATE_GROUPSTARTDATES(ID, DTIMES);
-                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+                // 遍歷 DataGridView 的每一行
+                foreach (DataGridViewRow row in dataGridView1.Rows)
+                {
+                    // 檢查 CheckBox 是否被勾選
+                    if (row.Cells["checkBoxColumn"].Value != null && (bool)row.Cells["checkBoxColumn"].Value == true && (string)row.Cells["狀態"].Value.ToString().Trim() == "預約接團")
+                    {
+                        // 獲取該行的 ID 欄位的值
+                        string idValue = row.Cells["ID"].Value.ToString();
+                        //MessageBox.Show(idValue);
+                        GROUPSALES_UPDATE_GROUPSTARTDATES(idValue, DTIMES);
+                    }
+                }
+
             }
             else
             {
-                MessageBox.Show("非 預約接團，不可指定時間");
+                if (!string.IsNullOrEmpty(ID) && STATUS.Equals("預約接團"))
+                {
+                    GROUPSALES_UPDATE_GROUPSTARTDATES(ID, DTIMES);
+
+                }
+                else
+                {
+                    MessageBox.Show("非 預約接團，不可指定時間");
+                }
             }
+          
+            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            MessageBox.Show("完成");
+
 
         }
 
         private void button14_Click(object sender, EventArgs e)
-        {
+        {         
+            //檢查CHEKBOX有沒有被勾選
+            CheckSelectedRows();
+
             string DTIMES = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-            if (!string.IsNullOrEmpty(ID) && STATUS.Equals("預約接團"))
+
+            if (isChecked == true)
             {
-                GROUPSALES_UPDATE_GROUPENDDATES(ID, DTIMES);
-                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+                // 遍歷 DataGridView 的每一行
+                foreach (DataGridViewRow row in dataGridView1.Rows)
+                {
+                    // 檢查 CheckBox 是否被勾選
+                    if (row.Cells["checkBoxColumn"].Value != null && (bool)row.Cells["checkBoxColumn"].Value == true && (string)row.Cells["狀態"].Value.ToString().Trim() == "預約接團")
+                    {
+                        // 獲取該行的 ID 欄位的值
+                        string idValue = row.Cells["ID"].Value.ToString();
+                        //MessageBox.Show(idValue);
+                        GROUPSALES_UPDATE_GROUPENDDATES(idValue, DTIMES);
+                    }
+                }
+
             }
             else
             {
-                MessageBox.Show("非 預約接團，不可指定時間");
+                if (!string.IsNullOrEmpty(ID) && STATUS.Equals("預約接團"))
+                {
+                    GROUPSALES_UPDATE_GROUPENDDATES(ID, DTIMES);
+
+                }
+                else
+                {
+                    MessageBox.Show("非 預約接團，不可指定時間");
+                }
             }
+
+            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            MessageBox.Show("完成");
+
         }
 
         private void button6_Click(object sender, EventArgs e)
