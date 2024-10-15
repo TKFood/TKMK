@@ -3807,7 +3807,7 @@ namespace TKMK
             }
           
             SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
-            MessageBox.Show("完成");
+            //MessageBox.Show("完成");
 
 
         }
@@ -3849,7 +3849,7 @@ namespace TKMK
             }
 
             SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
-            MessageBox.Show("完成");
+            //MessageBox.Show("完成");
 
         }
 
