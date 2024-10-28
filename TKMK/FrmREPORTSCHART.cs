@@ -60,10 +60,11 @@ namespace TKMK
         {
             DateTime FirstDay = new DateTime(DateTime.Now.Year, 1, 1);
             DateTime LastDay = new DateTime(DateTime.Now.AddMonths(1).Year, DateTime.Now.AddMonths(1).Month, 1).AddDays(-1);
+            DateTime MONTHFirstDay = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
 
             dateTimePicker1.Value = FirstDay;
             dateTimePicker2.Value = LastDay;
-            dateTimePicker3.Value = FirstDay;
+            dateTimePicker3.Value = MONTHFirstDay;
             dateTimePicker4.Value = LastDay;
         }
 
