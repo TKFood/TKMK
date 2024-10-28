@@ -63,6 +63,8 @@ namespace TKMK
 
             dateTimePicker1.Value = FirstDay;
             dateTimePicker2.Value = LastDay;
+            dateTimePicker3.Value = FirstDay;
+            dateTimePicker4.Value = LastDay;
         }
 
         public void SETFASTREPORT(string SDATES, string EDATES)
@@ -158,6 +160,68 @@ namespace TKMK
             return SB;
 
         }
+
+        public void SETFASTREPORT2(string SDATES, string EDATES)
+        {
+            StringBuilder SQL1 = new StringBuilder();
+
+            SQL1 = SETSQL2(SDATES, EDATES);
+            Report report1 = new Report();
+            report1.Load(@"REPORT\團車類型圖表.frx");
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+            report1.Dictionary.Connections[0].CommandTimeout = 180;
+
+
+            TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
+            table.SelectCommand = SQL1.ToString();
+
+            //report1.SetParameterValue("P1", dateTimePicker1.Value.ToString("yyyyMMdd"));
+            //report1.SetParameterValue("P2", dateTimePicker2.Value.ToString("yyyyMMdd"));
+            report1.Preview = previewControl2;
+            report1.Show();
+        }
+
+        public StringBuilder SETSQL2(string SDATES, string EDATES)
+        {
+            StringBuilder SB = new StringBuilder();
+
+
+            SB.AppendFormat(@"                              
+                           SELECT 
+                                [GROUPKIND] + ' ' + CONVERT(NVARCHAR, CAST(COUNT([GROUPKIND]) * 100.0 / SUM(COUNT([GROUPKIND])) OVER () AS DECIMAL(5, 2))) + '%' AS GROUPKIND,
+                                COUNT([GROUPKIND]) AS NUM
+                            FROM 
+                                [TKMK].[dbo].[GROUPSALES]
+                            WHERE 
+                                CONVERT(NVARCHAR,[CREATEDATES],112) >= '{0}'
+	                            AND  CONVERT(NVARCHAR,[CREATEDATES],112) <= '{1}'
+                            GROUP BY 
+                                [GROUPKIND]
+                            ORDER BY 
+                                COUNT([GROUPKIND]) DESC
+
+
+   
+
+                            ", SDATES, EDATES);
+
+            return SB;
+
+        }
+
+
         #endregion
 
         #region BUTTON
@@ -165,6 +229,14 @@ namespace TKMK
         {
             SETFASTREPORT(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            SETFASTREPORT2(dateTimePicker3.Value.ToString("yyyyMMdd"), dateTimePicker4.Value.ToString("yyyyMMdd"));
+
+        }
         #endregion
+
+
     }
 }
