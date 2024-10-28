@@ -190,8 +190,9 @@ namespace TKMK
             TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
             table.SelectCommand = SQL1.ToString();
 
-            //report1.SetParameterValue("P1", dateTimePicker1.Value.ToString("yyyyMMdd"));
-            //report1.SetParameterValue("P2", dateTimePicker2.Value.ToString("yyyyMMdd"));
+            report1.SetParameterValue("P1", SDATES);
+            report1.SetParameterValue("P2", EDATES);
+
             report1.Preview = previewControl2;
             report1.Show();
         }
@@ -250,8 +251,9 @@ namespace TKMK
             TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
             table.SelectCommand = SQL1.ToString();
 
-            //report1.SetParameterValue("P1", dateTimePicker1.Value.ToString("yyyyMMdd"));
-            //report1.SetParameterValue("P2", dateTimePicker2.Value.ToString("yyyyMMdd"));
+            report1.SetParameterValue("P1", SDATES);
+            report1.SetParameterValue("P2", EDATES);
+
             report1.Preview = previewControl3;
             report1.Show();
         }
