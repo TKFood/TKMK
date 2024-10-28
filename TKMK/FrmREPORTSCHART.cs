@@ -68,6 +68,8 @@ namespace TKMK
             dateTimePicker4.Value = LastDay;
             dateTimePicker5.Value = MONTHFirstDay;
             dateTimePicker6.Value = LastDay;
+            dateTimePicker7.Value = MONTHFirstDay;
+            dateTimePicker8.Value = LastDay;
         }
 
         public void SETFASTREPORT(string SDATES, string EDATES)
@@ -293,6 +295,92 @@ namespace TKMK
 
         }
 
+        public void SETFASTREPORT4(string SDATES, string EDATES)
+        {
+            StringBuilder SQL1 = new StringBuilder();
+
+            SQL1 = SETSQL4(SDATES, EDATES);
+            Report report1 = new Report();
+            report1.Load(@"REPORT\團車商品明細.frx");
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+            report1.Dictionary.Connections[0].CommandTimeout = 180;
+
+
+            TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
+            table.SelectCommand = SQL1.ToString();
+
+            report1.SetParameterValue("P1", SDATES);
+            report1.SetParameterValue("P2", EDATES);
+
+            report1.Preview = previewControl4;
+            report1.Show();
+        }
+
+        public StringBuilder SETSQL4(string SDATES, string EDATES)
+        {
+            StringBuilder SB = new StringBuilder();
+
+
+            SB.AppendFormat(@"                              
+                            SELECT 
+                            團類,
+                            品號,
+                            品名,
+                            單位,
+                            SUM(銷售數量) 銷售數量,
+                            SUM(銷售未稅金額) 銷售未稅金額
+
+                            FROM 
+                            (
+	                            SELECT 
+	                            [GROUPKIND] AS '團類',
+	                            POSTA.[TA008],
+	                            TA001,TA002,TA003,TA006,
+	                            TB001,TB002,TB003,TB006,
+	                            TB010 AS '品號',
+	                            MB002 AS '品名',
+	                            MB004 AS '單位',
+	                            TB019 AS '銷售數量',
+	                            TB031 AS '銷售未稅金額'
+
+	                            FROM 
+		                            [TKMK].[dbo].[GROUPSALES]
+		                            LEFT JOIN [TK].dbo.POSTA ON POSTA.TA008=[GROUPSALES].TA008 AND  POSTA.TA001=CONVERT(NVARCHAR,[GROUPSALES].[CREATEDATES],112)
+		                            LEFT JOIN [TK].dbo.POSTB ON TB001=TA001 AND TB002=TA002 AND TB003=TA003 AND TB006=TA006
+		                            LEFT JOIN [TK].dbo.INVMB ON MB001=TB010
+	                            WHERE 
+		                            CONVERT(NVARCHAR,[CREATEDATES],112) >= '{0}'
+		                            AND  CONVERT(NVARCHAR,[CREATEDATES],112) <= '{1}'
+                            ) AS TEMP
+                            GROUP BY 
+                            團類,
+                            品號,
+                            品名,
+                            單位
+                            HAVING (SUM(銷售未稅金額))>0
+                            ORDER BY 團類,SUM(銷售未稅金額) DESC             
+
+
+   
+
+                            ", SDATES, EDATES);
+
+            return SB;
+
+        }
+
 
         #endregion
 
@@ -310,6 +398,10 @@ namespace TKMK
         private void button3_Click(object sender, EventArgs e)
         {
             SETFASTREPORT3(dateTimePicker5.Value.ToString("yyyyMMdd"), dateTimePicker6.Value.ToString("yyyyMMdd"));
+        }
+        private void button4_Click(object sender, EventArgs e)
+        {
+            SETFASTREPORT4(dateTimePicker7.Value.ToString("yyyyMMdd"), dateTimePicker8.Value.ToString("yyyyMMdd"));
         }
 
         #endregion
