@@ -528,34 +528,45 @@ namespace TKMK
             StringBuilder SB = new StringBuilder();
 
 
-            SB.AppendFormat(@"  
+            SB.AppendFormat(@"                            
                             SELECT 
                             來車公司,
                             COUNT(來車公司) AS '來車數',
-                            CASE 
-                                WHEN SUM(MONEYS) > 0 AND COUNT(來車公司) > 0 
-                                THEN SUM(MONEYS) / COUNT(來車公司) 
-                                ELSE 0 
-                            END AS '平均每車金額'
-                        FROM 
-                        (
+                            SUM(MONEYS) AS 'MONEYS',
+                            (CASE WHEN SUM(MONEYS)>0 AND COUNT(來車公司)>0 THEN SUM(MONEYS)/COUNT(來車公司) ELSE 0 END ) AS '平均每車金額'
+                            FROM 
+                            (
                             SELECT 
-                                CARCOMPANY AS '來車公司',
-                                TA008,
-                                (SELECT SUM(TA026) 
-                                 FROM [TK].dbo.POSTA 
-                                 WHERE 1=1
-		                           AND  TA002 IN (SELECT [TA002]   FROM [TKMK].[dbo].[REPORTSTORES]   WHERE [KINDS] IN ('方城市'))
-		                           AND [GROUPSALES].TA008 = POSTA.TA008 
-		                           AND TA005>=CONVERT(varchar(8), GROUPSTARTDATES, 108) AND TA005<=CONVERT(varchar(8), GROUPENDDATES, 108)
-                                   AND CONVERT(nvarchar, [CREATEDATES], 112) = TA001) AS 'MONEYS'
+                            CARCOMPANY AS '來車公司',
+                            TA008,
+                            GROUPSTARTDATES,
+                            GROUPENDDATES,
+                            (SELECT 
+	                            SUM(TA026) 
+	                            FROM  [TK].dbo.POSTA
+	                            WHERE 1=1
+	                            AND (TA008 LIKE '68%' OR TA008 LIKE '69%')
+	                            AND TA002 IN (SELECT [TA002]  FROM [TKMK].[dbo].[REPORTSTORES]  WHERE [KINDS] IN ('方城市'))
+	                            AND POSTA.TA008=GROUPSALES.TA008
+	                            AND TA005>=CONVERT(nvarchar(8),GROUPSTARTDATES,108) AND TA005<=CONVERT(nvarchar(8),GROUPENDDATES,108)
+	                            AND TA001='{0}'
+
+                            ) AS 'MONEYS'
+
                             FROM [TKMK].[dbo].[GROUPSALES]
                             WHERE 1 = 1
-                              AND STATUS = '完成接團 '
+                            AND STATUS = '完成接團'
+                            AND CONVERT(nvarchar, [CREATEDATES], 112) = '{0}'
+                            GROUP BY CARCOMPANY,TA008,GROUPSTARTDATES,GROUPENDDATES
+                            ) AS TEMP
+                            WHERE 1=1
+                            GROUP BY 來車公司
 
-                              AND CONVERT(nvarchar, [CREATEDATES], 112) = '{0}'
-                        ) AS TEMP
-                        GROUP BY 來車公司
+
+
+
+
+
 
                             ", SDATES);
 
