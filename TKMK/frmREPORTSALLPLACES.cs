@@ -530,42 +530,51 @@ namespace TKMK
 
             SB.AppendFormat(@"                            
                             SELECT 
-                            來車公司,
-                            COUNT(來車公司) AS '來車數',
-                            SUM(MONEYS) AS 'MONEYS',
-                            (CASE WHEN SUM(MONEYS)>0 AND COUNT(來車公司)>0 THEN SUM(MONEYS)/COUNT(來車公司) ELSE 0 END ) AS '平均每車金額'
+                                來車公司,
+                                COUNT(來車公司) AS '來車數',
+                                CASE 
+                                    WHEN SUM(MONEYS) > 0 AND COUNT(來車公司) > 0 
+                                    THEN SUM(MONEYS) / COUNT(來車公司) 
+                                    ELSE 0 
+                                END AS '平均每車金額'
                             FROM 
                             (
-                            SELECT 
-                            CARCOMPANY AS '來車公司',
-                            TA008,
-                            GROUPSTARTDATES,
-                            GROUPENDDATES,
-                            (SELECT 
-	                            SUM(TA026) 
-	                            FROM  [TK].dbo.POSTA
-	                            WHERE 1=1
-	                            AND (TA008 LIKE '68%' OR TA008 LIKE '69%')
-	                            AND TA002 IN (SELECT [TA002]  FROM [TKMK].[dbo].[REPORTSTORES]  WHERE [KINDS] IN ('方城市'))
-	                            AND POSTA.TA008=GROUPSALES.TA008
-	                            AND TA005>=CONVERT(nvarchar(8),GROUPSTARTDATES,108) AND TA005<=CONVERT(nvarchar(8),GROUPENDDATES,108)
-	                            AND TA001='{0}'
-
-                            ) AS 'MONEYS'
-
-                            FROM [TKMK].[dbo].[GROUPSALES]
-                            WHERE 1 = 1
-                            AND STATUS = '完成接團'
-                            AND CONVERT(nvarchar, [CREATEDATES], 112) = '{0}'
-                            GROUP BY CARCOMPANY,TA008,GROUPSTARTDATES,GROUPENDDATES
-                            ) AS TEMP
-                            WHERE 1=1
+                                SELECT 
+                                    CARCOMPANY AS 來車公司,
+                                    TA008,
+                                    CASE 
+                                        WHEN MONEYS1 > 0 THEN MONEYS1 
+                                        ELSE MONEYS2 
+                                    END AS MONEYS
+                                FROM 
+                                (
+                                    SELECT 
+                                        CARCOMPANY,
+                                        TA008,
+                                        GROUPSTARTDATES,
+                                        GROUPENDDATES,
+                                        (SELECT ISNULL(SUM(TA026), 0)
+                                         FROM [TK].dbo.POSTA
+                                         WHERE (TA008 LIKE '68%' OR TA008 LIKE '69%')
+                                           AND TA002 IN (SELECT TA002 FROM [TKMK].[dbo].[REPORTSTORES] WHERE KINDS = '方城市')
+                                           AND POSTA.TA008 = GROUPSALES.TA008
+                                           AND TA005 BETWEEN CONVERT(nvarchar(8), GROUPSTARTDATES, 108) AND CONVERT(nvarchar(8), GROUPENDDATES, 108)
+                                           AND TA001 = '{0}') AS MONEYS1,
+                                        (SELECT ISNULL(SUM(TA026), 0)
+                                         FROM [TK].dbo.POSTA
+                                         WHERE (TA008 LIKE '68%' OR TA008 LIKE '69%')
+                                           AND TA002 IN (SELECT TA002 FROM [TKMK].[dbo].[REPORTSTORES] WHERE KINDS = '方城市')
+                                           AND POSTA.TA008 = GROUPSALES.TA008
+                                           AND TA005 >= CONVERT(nvarchar(8), GROUPSTARTDATES, 108)
+                                           AND TA001 = '{0}') AS MONEYS2
+                                    FROM [TKMK].[dbo].[GROUPSALES]
+                                    WHERE STATUS = '完成接團'
+                                      AND CONVERT(nvarchar, CREATEDATES, 112) = '{0}'
+                                    GROUP BY CARCOMPANY, TA008, GROUPSTARTDATES, GROUPENDDATES
+                                ) AS SUBQUERY
+                            ) AS MAIN_QUERY
                             GROUP BY 來車公司
-
-
-
-
-
+                            ORDER BY 來車公司
 
 
                             ", SDATES);
