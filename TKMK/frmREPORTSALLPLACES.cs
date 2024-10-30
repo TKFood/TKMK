@@ -114,7 +114,7 @@ namespace TKMK
                             FROM [TK].dbo.POSTB
                             WHERE TB010 LIKE '406%'
                             AND TB002=TA002
-                            AND TB001=TA001)) AS '銷售金額扣霜淇淋',
+                            AND TB001=TA001)) AS '銷售金額扣霜淇淋'
                    
                             
                             FROM 
@@ -234,6 +234,7 @@ namespace TKMK
             StringBuilder SQL4 = new StringBuilder();
             StringBuilder SQL5 = new StringBuilder();
             StringBuilder SQL6 = new StringBuilder();
+            StringBuilder SQL7 = new StringBuilder();
 
             SQL1 = SETSQL_DAILY1(SDATES);
             SQL2 = SETSQL_DAILY2(SDATES);
@@ -241,6 +242,7 @@ namespace TKMK
             SQL4 = SETSQL_DAILY4(SDATES);
             SQL5 = SETSQL_DAILY5(SDATES);
             SQL6 = SETSQL_DAILY6(SDATES);
+            SQL7 = SETSQL_DAILY7(SDATES);
 
             Report report1 = new Report();
             report1.Load(@"REPORT\觀光日報表.frx");
@@ -272,6 +274,8 @@ namespace TKMK
             table4.SelectCommand = SQL5.ToString();
             TableDataSource table5 = report1.GetDataSource("Table5") as TableDataSource;
             table5.SelectCommand = SQL6.ToString();
+            TableDataSource table6 = report1.GetDataSource("Table6") as TableDataSource;
+            table6.SelectCommand = SQL7.ToString();
 
             //report1.SetParameterValue("P1", dateTimePicker1.Value.ToString("yyyyMMdd"));
             //report1.SetParameterValue("P2", dateTimePicker2.Value.ToString("yyyyMMdd"));
@@ -518,6 +522,72 @@ namespace TKMK
 
         }
 
+        public StringBuilder SETSQL_DAILY7(string SDATES)
+        {
+           
+            StringBuilder SB = new StringBuilder();
+
+
+            SB.AppendFormat(@"  
+                            SELECT 
+                                來車公司,
+                                COUNT(來車公司) AS '來車數',
+                                CASE 
+                                    WHEN SUM(MONEYS) > 0 AND COUNT(來車公司) > 0 
+                                    THEN SUM(MONEYS) / COUNT(來車公司) 
+                                    ELSE 0 
+                                END AS '平均每車金額'
+                            FROM 
+                            (
+                                SELECT 
+                                    CARCOMPANY AS '來車公司',
+                                    TA008,
+                                    (SELECT SUM(TA026) 
+                                     FROM [TK].dbo.POSTA 
+                                     WHERE [GROUPSALES].TA008 = POSTA.TA008 
+                                       AND CONVERT(nvarchar, [CREATEDATES], 112) = TA001) AS 'MONEYS'
+                                FROM [TKMK].[dbo].[GROUPSALES]
+                                WHERE 1 = 1
+                                  AND STATUS = '完成接團 '
+                                  AND CONVERT(nvarchar, [CREATEDATES], 112) = '{0}'
+                            ) AS TEMP
+                            GROUP BY 來車公司
+
+                            UNION ALL
+
+                            SELECT 
+                                '總計' AS 來車公司,
+                                COUNT(來車公司),
+                                CASE 
+                                    WHEN SUM(MONEYS) > 0 AND COUNT(來車公司) > 0 
+                                    THEN SUM(MONEYS) / COUNT(來車公司) 
+                                    ELSE 0 
+                                END
+                            FROM 
+                            (
+                                SELECT 
+                                    CARCOMPANY AS '來車公司',
+                                    TA008,
+                                    (SELECT SUM(TA026) 
+                                     FROM [TK].dbo.POSTA 
+                                     WHERE [GROUPSALES].TA008 = POSTA.TA008 
+                                       AND CONVERT(nvarchar, [CREATEDATES], 112) = TA001) AS 'MONEYS'
+                                FROM [TKMK].[dbo].[GROUPSALES]
+                                WHERE 1 = 1
+                                  AND STATUS = '完成接團 '
+                                  AND CONVERT(nvarchar, [CREATEDATES], 112) = '{0}'
+                            ) AS TEMP
+
+
+
+
+                  
+
+                            ", SDATES);
+
+            return SB;
+
+        }
 
         #endregion
 
