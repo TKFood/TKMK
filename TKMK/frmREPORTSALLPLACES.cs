@@ -242,7 +242,7 @@ namespace TKMK
             SQL4 = SETSQL_DAILY4(SDATES);
             SQL5 = SETSQL_DAILY5(SDATES);
             SQL6 = SETSQL_DAILY6(SDATES);
-            SQL7 = SETSQL_DAILY7(SDATES);
+            SQL7 = SETSQL_DAILY7(SDATES); 
 
             Report report1 = new Report();
             report1.Load(@"REPORT\觀光日報表.frx");
@@ -530,58 +530,32 @@ namespace TKMK
 
             SB.AppendFormat(@"  
                             SELECT 
-                                來車公司,
-                                COUNT(來車公司) AS '來車數',
-                                CASE 
-                                    WHEN SUM(MONEYS) > 0 AND COUNT(來車公司) > 0 
-                                    THEN SUM(MONEYS) / COUNT(來車公司) 
-                                    ELSE 0 
-                                END AS '平均每車金額'
-                            FROM 
-                            (
-                                SELECT 
-                                    CARCOMPANY AS '來車公司',
-                                    TA008,
-                                    (SELECT SUM(TA026) 
-                                     FROM [TK].dbo.POSTA 
-                                     WHERE [GROUPSALES].TA008 = POSTA.TA008 
-                                       AND CONVERT(nvarchar, [CREATEDATES], 112) = TA001) AS 'MONEYS'
-                                FROM [TKMK].[dbo].[GROUPSALES]
-                                WHERE 1 = 1
-                                  AND STATUS = '完成接團 '
-                                  AND CONVERT(nvarchar, [CREATEDATES], 112) = '{0}'
-                            ) AS TEMP
-                            GROUP BY 來車公司
-
-                            UNION ALL
-
+                            來車公司,
+                            COUNT(來車公司) AS '來車數',
+                            CASE 
+                                WHEN SUM(MONEYS) > 0 AND COUNT(來車公司) > 0 
+                                THEN SUM(MONEYS) / COUNT(來車公司) 
+                                ELSE 0 
+                            END AS '平均每車金額'
+                        FROM 
+                        (
                             SELECT 
-                                '總計' AS 來車公司,
-                                COUNT(來車公司),
-                                CASE 
-                                    WHEN SUM(MONEYS) > 0 AND COUNT(來車公司) > 0 
-                                    THEN SUM(MONEYS) / COUNT(來車公司) 
-                                    ELSE 0 
-                                END
-                            FROM 
-                            (
-                                SELECT 
-                                    CARCOMPANY AS '來車公司',
-                                    TA008,
-                                    (SELECT SUM(TA026) 
-                                     FROM [TK].dbo.POSTA 
-                                     WHERE [GROUPSALES].TA008 = POSTA.TA008 
-                                       AND CONVERT(nvarchar, [CREATEDATES], 112) = TA001) AS 'MONEYS'
-                                FROM [TKMK].[dbo].[GROUPSALES]
-                                WHERE 1 = 1
-                                  AND STATUS = '完成接團 '
-                                  AND CONVERT(nvarchar, [CREATEDATES], 112) = '{0}'
-                            ) AS TEMP
+                                CARCOMPANY AS '來車公司',
+                                TA008,
+                                (SELECT SUM(TA026) 
+                                 FROM [TK].dbo.POSTA 
+                                 WHERE 1=1
+		                           AND  TA002 IN (SELECT [TA002]   FROM [TKMK].[dbo].[REPORTSTORES]   WHERE [KINDS] IN ('方城市'))
+		                           AND [GROUPSALES].TA008 = POSTA.TA008 
+		                           AND TA005>=CONVERT(varchar(8), GROUPSTARTDATES, 108) AND TA005<=CONVERT(varchar(8), GROUPENDDATES, 108)
+                                   AND CONVERT(nvarchar, [CREATEDATES], 112) = TA001) AS 'MONEYS'
+                            FROM [TKMK].[dbo].[GROUPSALES]
+                            WHERE 1 = 1
+                              AND STATUS = '完成接團 '
 
-
-
-
-                  
+                              AND CONVERT(nvarchar, [CREATEDATES], 112) = '{0}'
+                        ) AS TEMP
+                        GROUP BY 來車公司
 
                             ", SDATES);
 
