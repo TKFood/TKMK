@@ -471,6 +471,117 @@ namespace TKMK
             }
         }
 
+        public void GROUPSALES_UPDATE_GROUPSTARTDATES(string ID, string GROUPSTARTDATES)
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+
+                sbSql.AppendFormat(@" 
+                                    UPDATE  [TKMK].[dbo].[GROUPSALES]
+                                    SET GROUPSTARTDATES='{1}'
+                                    WHERE ID='{0}'
+                                    ", ID, GROUPSTARTDATES);
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("更新失敗 " + ex.ToString());
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public void GROUPSALES_UPDATE_GROUPENDDATES(string ID, string GROUPENDDATES)
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+
+                sbSql.AppendFormat(@" 
+                                    UPDATE  [TKMK].[dbo].[GROUPSALES]
+                                    SET GROUPENDDATES='{1}'
+                                    WHERE ID='{0}'
+                                    ", ID, GROUPENDDATES);
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("更新失敗 " + ex.ToString());
+            }
+
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
         public void SETNULL()
         {
 
@@ -575,6 +686,34 @@ namespace TKMK
                 ID = textBox1.Text.Trim();
                 STATUS = "取消預約";
                 UPDATE_GROUPSALES_STATUS(ID, STATUS);
+
+                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            }
+        }
+        private void button6_Click(object sender, EventArgs e)
+        {
+            string ID = "";           
+            string DTIMES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
+            ID = textBox1.Text.Trim();
+
+            if (!string.IsNullOrEmpty(ID))
+            {
+                GROUPSALES_UPDATE_GROUPSTARTDATES(ID, DTIMES);
+                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+
+            }
+            
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            string ID = "";
+            string DTIMES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
+            ID = textBox1.Text.Trim();
+
+            if (!string.IsNullOrEmpty(ID))
+            {
+                GROUPSALES_UPDATE_GROUPENDDATES(ID, DTIMES);
 
                 SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
             }

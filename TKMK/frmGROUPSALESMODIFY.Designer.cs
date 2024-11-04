@@ -374,6 +374,7 @@
             this.button7.TabIndex = 749;
             this.button7.Text = "指定出場時間";
             this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // button2
             // 
@@ -431,6 +432,7 @@
             this.button6.TabIndex = 748;
             this.button6.Text = "指定入場時間";
             this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // dataGridView1
             // 
