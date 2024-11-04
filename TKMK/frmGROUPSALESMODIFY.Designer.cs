@@ -133,8 +133,6 @@
             this.tableLayoutPanel1.Controls.Add(this.label3, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.label4, 0, 4);
             this.tableLayoutPanel1.Controls.Add(this.textBox121, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.textBox141, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.textBox131, 1, 4);
             this.tableLayoutPanel1.Controls.Add(this.comboBox4, 3, 5);
             this.tableLayoutPanel1.Controls.Add(this.label7, 2, 4);
             this.tableLayoutPanel1.Controls.Add(this.label31, 2, 5);
@@ -155,6 +153,8 @@
             this.tableLayoutPanel1.Controls.Add(this.comboBox2, 3, 3);
             this.tableLayoutPanel1.Controls.Add(this.label5, 2, 3);
             this.tableLayoutPanel1.Controls.Add(this.label10, 2, 2);
+            this.tableLayoutPanel1.Controls.Add(this.textBox141, 1, 4);
+            this.tableLayoutPanel1.Controls.Add(this.textBox131, 1, 3);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -259,7 +259,7 @@
             // textBox141
             // 
             this.textBox141.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox141.Location = new System.Drawing.Point(123, 126);
+            this.textBox141.Location = new System.Drawing.Point(123, 166);
             this.textBox141.Name = "textBox141";
             this.textBox141.Size = new System.Drawing.Size(114, 27);
             this.textBox141.TabIndex = 740;
@@ -267,10 +267,11 @@
             // textBox131
             // 
             this.textBox131.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox131.Location = new System.Drawing.Point(123, 166);
+            this.textBox131.Location = new System.Drawing.Point(123, 126);
             this.textBox131.Name = "textBox131";
             this.textBox131.Size = new System.Drawing.Size(114, 27);
             this.textBox131.TabIndex = 739;
+            this.textBox131.Text = "s";
             // 
             // label5
             // 
@@ -384,6 +385,7 @@
             this.button2.TabIndex = 753;
             this.button2.Text = "存檔";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button4
             // 

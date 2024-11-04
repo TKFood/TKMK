@@ -324,6 +324,91 @@ namespace TKMK
             }
         }
 
+        public void UPDATE_GROUPSALES(
+            string ID,
+            string TA008,
+            string CARNAME,
+            string CARNO,
+            string CARKIND,
+            string GROUPKIND,
+            string ISEXCHANGE,
+            string CARCOMPANY
+            )
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+
+                sbSql.AppendFormat(@" 
+                                    UPDATE [TKMK].[dbo].[GROUPSALES]
+                                    SET 
+                                        TA008='{1}',
+                                        CARNAME='{2}',
+                                        CARNO='{3}',
+                                        CARKIND='{4}',
+                                        GROUPKIND='{5}',
+                                        ISEXCHANGE='{6}',
+                                        CARCOMPANY='{7}'
+                                    WHERE 
+                                    ID='{0}'
+                                    ",
+                                    ID,
+                                    TA008,
+                                    CARNAME,
+                                    CARNO,
+                                    CARKIND,
+                                    GROUPKIND,
+                                    ISEXCHANGE,
+                                    CARCOMPANY
+                                    );
+
+                sbSql.AppendFormat(@" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("更新失敗 "+ ex.ToString());
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+
         public void SETNULL()
         {
 
@@ -346,9 +431,47 @@ namespace TKMK
 
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            string ID = "";
+            string TA008 = "";
+            string CARNAME = "";
+            string CARNO = "";
+            string CARKIND = "";
+            string GROUPKIND = "";
+            string ISEXCHANGE = "";
+            string CARCOMPANY = "";
+            
+            if(!string.IsNullOrEmpty(textBox1.Text.Trim()))
+            {
+                ID = textBox1.Text.Trim();
+                TA008 = textBox151.Text.Trim();
+                CARNO  = textBox131.Text.Trim();
+                CARNAME = textBox141.Text.Trim();
+                CARKIND = comboBox2.Text.ToString().Trim();
+                GROUPKIND = comboBox3.Text.ToString().Trim();
+                ISEXCHANGE = comboBox4.Text.ToString().Trim();
+                CARCOMPANY = comboBox1.Text.ToString().Trim();
+
+                UPDATE_GROUPSALES(
+                            ID,
+                            TA008,
+                            CARNAME,
+                            CARNO,
+                            CARKIND,
+                            GROUPKIND,
+                            ISEXCHANGE,
+                            CARCOMPANY
+                            );
+
+                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+                //MessageBox.Show("ID "+ID+ " TA008 " + TA008 + " CARNAME " + CARNAME + " CARNO " + CARNO + " CARKIND  " + CARKIND + " GROUPKIND " + GROUPKIND + " ISEXCHANGE  " + ISEXCHANGE + " CARCOMPANY " + CARCOMPANY);
+            }
+
+        }
 
         #endregion
 
-     
+
     }
 }
