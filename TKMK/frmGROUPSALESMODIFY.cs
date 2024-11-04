@@ -40,6 +40,8 @@ namespace TKMK
         DataSet ds = new DataSet();
         int result;
 
+        string ID;
+        string STATUS;
 
         public frmGROUPSALESMODIFY()
         {
@@ -152,6 +154,56 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
+
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            SETNULL();
+
+            if (dataGridView1.CurrentRow != null)
+            {
+                int rowindex = dataGridView1.CurrentRow.Index;
+
+
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView1.Rows[rowindex];
+                    ID = row.Cells["ID"].Value.ToString();
+
+                    STATUS = row.Cells["狀態"].Value.ToString().Trim();
+
+                    textBox1.Text = ID;
+
+                    textBox121.Text = row.Cells["序號"].Value.ToString();
+                    textBox131.Text = row.Cells["車號"].Value.ToString();
+                    textBox141.Text = row.Cells["車名"].Value.ToString();
+                    textBox151.Text = row.Cells["業務員帳號"].Value.ToString();
+
+
+                    comboBox1.Text = row.Cells["來車公司"].Value.ToString();
+                    comboBox2.Text = row.Cells["車種"].Value.ToString();   
+                    comboBox3.Text = row.Cells["團類"].Value.ToString();
+                    comboBox4.Text = row.Cells["兌換券"].Value.ToString();
+                }
+                else
+                {
+                    ID = null;
+                    STATUS = null;
+                }
+            }
+        }
+
+        public void SETNULL()
+        {
+
+            textBox1.Text ="";
+
+            textBox121.Text = ""; 
+            textBox131.Text = "";
+            textBox141.Text = "";
+            textBox151.Text = "";
+        }
+
+
         #endregion
 
         #region BUTTON
@@ -161,8 +213,9 @@ namespace TKMK
             SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
 
         }
+
         #endregion
 
-
+      
     }
 }
