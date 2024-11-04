@@ -129,6 +129,12 @@
     <Compile Include="frmGROUPSALESLOCAL.Designer.cs">
       <DependentUpon>frmGROUPSALESLOCAL.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmGROUPSALESMODIFY.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmGROUPSALESMODIFY.Designer.cs">
+      <DependentUpon>frmGROUPSALESMODIFY.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmGROUPSALESUPDATE.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -232,6 +238,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmGROUPSALESLOCAL.resx">
       <DependentUpon>frmGROUPSALESLOCAL.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmGROUPSALESMODIFY.resx">
+      <DependentUpon>frmGROUPSALESMODIFY.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmGROUPSALESUPDATE.resx">
       <DependentUpon>frmGROUPSALESUPDATE.cs</DependentUpon>
