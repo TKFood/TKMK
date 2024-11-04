@@ -47,9 +47,141 @@ namespace TKMK
         {
             InitializeComponent();
         }
+        private void frmGROUPSALESMODIFY_Load(object sender, EventArgs e)
+        {
+            comboBox1load();
+            comboBox2load();
+            comboBox3load();
+            comboBox4load();
+        }
 
+        #region FUNCTION    
 
-        #region FUNCTION       
+        public void comboBox1load()
+        {
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"
+                                SELECT [ID],[CARCOMPANY],[PRINTS],[CPMMENTS] FROM [TKMK].[dbo].[GROUPCARCOMPANY] ORDER BY [ID]
+                                ");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("CARCOMPANY", typeof(string));
+          
+            da.Fill(dt);
+            comboBox1.DataSource = dt.DefaultView;
+            comboBox1.ValueMember = "CARCOMPANY";
+            comboBox1.DisplayMember = "CARCOMPANY";
+            sqlConn.Close();
+
+            comboBox1.Font = new Font("Arial", 10); // 使用 "Arial" 字體，字體大小為 12
+        }
+        public void comboBox2load()
+        {
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"
+                                SELECT [ID],[NAME] FROM [TKMK].[dbo].[CARKIND] WHERE [VALID] IN ('Y') ORDER BY [ID]
+                                ");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("ID", typeof(string));
+            dt.Columns.Add("NAME", typeof(string));
+            da.Fill(dt);
+            comboBox2.DataSource = dt.DefaultView;
+            comboBox2.ValueMember = "NAME";
+            comboBox2.DisplayMember = "NAME";
+            sqlConn.Close();
+
+            comboBox2.Font = new Font("Arial", 10); // 使用 "Arial" 字體，字體大小為 12
+        }
+        public void comboBox3load()
+        {
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"
+                                SELECT [ID],[NAME] FROM [TKMK].[dbo].[GROUPKIND] WHERE VALID IN ('Y') ORDER BY [ID]
+                                ");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("ID", typeof(string));
+            dt.Columns.Add("NAME", typeof(string));
+            da.Fill(dt);
+            comboBox3.DataSource = dt.DefaultView;
+            comboBox3.ValueMember = "NAME";
+            comboBox3.DisplayMember = "NAME";
+            sqlConn.Close();
+
+            comboBox3.Font = new Font("Arial", 10); // 使用 "Arial" 字體，字體大小為 12
+        }
+        public void comboBox4load()
+        {
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"
+                                SELECT  [KINDS],[PARASNAMES],[DVALUES] FROM [TKMK].[dbo].[TBZPARAS] WHERE [KINDS]='ISEXCHANGE'
+                                ");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("PARASNAMES", typeof(string));
+         
+            da.Fill(dt);
+            comboBox4.DataSource = dt.DefaultView;
+            comboBox4.ValueMember = "PARASNAMES";
+            comboBox4.DisplayMember = "PARASNAMES";
+            sqlConn.Close();
+
+            comboBox4.Font = new Font("Arial", 10); // 使用 "Arial" 字體，字體大小為 12
+        }
+
         public void SEARCHGROUPSALES(string CREATEDATES)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
@@ -214,8 +346,9 @@ namespace TKMK
 
         }
 
+
         #endregion
 
-      
+     
     }
 }
