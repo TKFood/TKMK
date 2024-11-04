@@ -271,7 +271,6 @@
             this.textBox131.Name = "textBox131";
             this.textBox131.Size = new System.Drawing.Size(114, 27);
             this.textBox131.TabIndex = 739;
-            this.textBox131.Text = "s";
             // 
             // label5
             // 
