@@ -125,7 +125,7 @@ namespace TKMK
                             ,(SUM(TA026)-(SELECT ISNULL(SUM(TA026),0) FROM  [TK].dbo.POSTA TA WHERE TA.TA001=POSTA.TA001 AND TA.TA002=POSTA.TA002 AND (TA008 LIKE '68%' OR TA008 LIKE '69%' OR TA009 LIKE '68%' OR TA009 LIKE '69%' ) ) ) AS 'VISITORMONEYS'
                             ,CASE WHEN TA002 IN ('106701') THEN (SELECT ISNULL(SUM(CARNUM),0) FROM [TKMK].[dbo].[GROUPSALES] WHERE  [STATUS]='完成接團' AND CONVERT(nvarchar,[CREATEDATES],112)=TA001) ELSE 0 END  AS 'CARNUM'
                             FROM [TK].dbo.POSTA
-                            WHERE TA002 IN ('106701')
+                            WHERE TA002 IN (SELECT [TA002]  FROM [TKMK].[dbo].[GROUPSTORES] WHERE [KINDNAMES]='GROUPSTORES1')
                             AND TA001>='{0}' AND TA001<='{1}'
                             GROUP BY TA002,TA001
                             ) AS TEMP
