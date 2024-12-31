@@ -363,7 +363,7 @@ namespace TKMK
             sqlConn = new SqlConnection(sqlsb.ConnectionString);
 
             StringBuilder Sequel = new StringBuilder();
-            Sequel.AppendFormat(@"SELECT [ID],[CARCOMPANY],[PRINTS],[CPMMENTS] FROM [TKMK].[dbo].[GROUPCARCOMPANY] ORDER BY [ID]");
+            Sequel.AppendFormat(@"SELECT [ID],[CARCOMPANY],[PRINTS],[CPMMENTS] FROM [TKMK].[dbo].[GROUPCARCOMPANY]  WHERE VALID IN ('Y') ORDER BY [ID]");
             SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
             DataTable dt = new DataTable();
             sqlConn.Open();
