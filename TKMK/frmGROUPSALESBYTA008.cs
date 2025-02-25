@@ -303,7 +303,15 @@ namespace TKMK
             sqlConn = new SqlConnection(sqlsb.ConnectionString);
 
             StringBuilder Sequel = new StringBuilder();
-            Sequel.AppendFormat(@"SELECT LTRIM(RTRIM((MU001)))+' '+SUBSTRING(MU002,1,3) AS 'MU001',MU002 FROM [TK].dbo.POSMU WHERE ( MU001 LIKE '68%' OR  MU001 LIKE '69%')   AND MU001 NOT IN (SELECT [EXCHANACOOUNT] FROM [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'  AND [STATUS]='預約接團' ) ORDER BY MU001 ", dateTimePicker1.Value.ToString("yyyyMMdd"));
+            Sequel.AppendFormat(@"
+                                SELECT 
+                                LTRIM(RTRIM((MU001)))+' '+SUBSTRING(MU002,1,3) AS 'MU001',MU002 
+                                FROM [TK].dbo.POSMU WHERE (MU001 LIKE '69%')   
+                                AND MU001 NOT IN (
+	                                SELECT [EXCHANACOOUNT] FROM [TKMK].[dbo].[GROUPSALES] 
+	                                WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'  AND [STATUS]='預約接團' 
+                                ) ORDER BY MU001
+                                ", dateTimePicker1.Value.ToString("yyyyMMdd"));
             SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
             DataTable dt = new DataTable();
             sqlConn.Open();
