@@ -82,7 +82,7 @@ namespace TKMK
                                     ,[ID]
                                     ,[CREATEDATES]
                                     FROM [TKMK].[dbo].[TBDAILYPOSTB]
-                                    WHERE [SDATES]='20250326'
+                                    WHERE [SDATES]='{0}'
                                     ORDER BY [MB001]
                                                                         
                                     ", SDATES);
