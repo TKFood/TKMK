@@ -257,6 +257,7 @@
             this.button2.TabIndex = 611;
             this.button2.Text = "填寫備註";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // textBox1
             // 

@@ -122,6 +122,7 @@ namespace TKMK
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
             textBox1.Text = "";
+            textBox2.Text = "";
 
             if (dataGridView1.CurrentRow != null)
             {
@@ -131,10 +132,78 @@ namespace TKMK
                 {
                     DataGridViewRow row = dataGridView1.Rows[rowindex];
                     textBox1.Text = row.Cells["ID"].Value.ToString();
+                    textBox2.Text = row.Cells["備註"].Value.ToString();
                 }
             }
 
         }
+
+        public void UPDATE_TBDAILYPOSTB_COMMENTS(string ID,string COMMENTS)
+        {
+            StringBuilder sbSql = new StringBuilder();
+            SqlTransaction tran;
+            SqlCommand cmd = new SqlCommand();
+            int result;
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+
+                sbSql.AppendFormat(@" 
+                                    UPDATE [TKMK].[dbo].[TBDAILYPOSTB]
+                                    SET [COMMENTS]='{1}'
+                                    WHERE [ID]='{0}'
+                                    "
+                                    , ID
+                                    , COMMENTS
+                                    );
+
+                sbSql.AppendFormat(@" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+
+        }
+
         #endregion
 
         #region BUTTON
@@ -143,10 +212,22 @@ namespace TKMK
             SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if(!string.IsNullOrEmpty(textBox1.Text) )
+            {
+                UPDATE_TBDAILYPOSTB_COMMENTS(textBox1.Text, textBox2.Text.Trim());
+
+                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+                textBox2.Text = null;
+                MessageBox.Show("完成", "完成");
+            }
+           
+        }
 
 
         #endregion
 
-      
+
     }
 }
