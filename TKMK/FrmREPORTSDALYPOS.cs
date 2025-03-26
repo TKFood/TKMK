@@ -248,6 +248,7 @@ namespace TKMK
                                         INNER JOIN [TK].dbo.INVMB ON LA001 = MB001
                                         WHERE (LA001 LIKE '4%' OR LA001 LIKE '5%')
                                         AND LA009  IN ( '21002')
+                                        AND LA004<='{0}'
                                         GROUP BY LA001, MB002
                                         HAVING SUM(LA005 * LA011) > 0
 
@@ -288,6 +289,7 @@ namespace TKMK
 	                                    WHERE LA001=MB001
 	                                    AND (LA001 LIKE '4%' OR LA005 LIKE '5%')
 	                                    AND LA009 IN ('21002')
+                                        AND LA004<='{0}'
 	                                    GROUP BY  LA001,MB002
                                     HAVING SUM(LA005*LA011)>0
                                     ) AS TEMP
