@@ -207,9 +207,21 @@ namespace TKMK
         public void ADD_TBDAILYPOSTB(string SDATES)
         {
             StringBuilder sbSql = new StringBuilder();
+            StringBuilder sbSql99 = new StringBuilder();
             SqlTransaction tran;
             SqlCommand cmd = new SqlCommand();
             int result;
+
+            DataTable DT_NOTIN = FIND_TBDAILYPOSTBNOTIN();
+            if(DT_NOTIN!=null && DT_NOTIN.Rows.Count>=1)
+            {
+                foreach(DataRow DR in DT_NOTIN.Rows)
+                {
+                    sbSql99.AppendFormat(@" AND MB001 NOT LIKE '{0}%'", DR["MB001"].ToString().Trim());
+                }
+               
+            }
+
             try
             {
                 //20210902密
@@ -276,7 +288,8 @@ namespace TKMK
                                         HAVING SUM(LA005 * LA011) > 0
 
                                     ) AS TEMP
-                                    WHERE MB001 NOT LIKE '501%'
+                                    WHERE 1=1
+                                    {1}
                                     ORDER BY MB001, MB002
 
                                     --更新庫存量
@@ -331,7 +344,7 @@ namespace TKMK
                                     WHERE TEMP.LA001=[TBDAILYPOSTB].MB001
                                     AND [TBDAILYPOSTB].[SDATES]='{0}'
                                     "
-                                    , SDATES
+                                    , SDATES, sbSql99.ToString()
                                     );
 
                 sbSql.AppendFormat(@" ");
@@ -364,14 +377,106 @@ namespace TKMK
             }
 
         }
+
+        public DataTable FIND_TBDAILYPOSTBNOTIN()
+        {
+            DataTable DT = new DataTable();
+
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+            StringBuilder sbSql = new StringBuilder();
+            StringBuilder sbSqlQuery = new StringBuilder();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder = new SqlCommandBuilder();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"                                     
+                                    SELECT 
+                                    [MB001]
+                                    FROM [TKMK].[dbo].[TBDAILYPOSTBNOTIN]
+                                                                        
+                                    ");
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return ds1.Tables["ds1"];
+
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+
+
+
+        }
+
         #endregion
 
         #region BUTTON
         private void button1_Click(object sender, EventArgs e)
         {
             string SDATES = dateTimePicker1.Value.ToString("yyyyMMdd");
-            ADD_TBDAILYPOSTB(SDATES);
-            SEARCHGROUPSALES(SDATES);
+
+            MESSAGESHOW MSGSHOW = new MESSAGESHOW();
+            // 鎖定控制項
+            this.Enabled = false;
+            // 顯示跳出視窗
+            MSGSHOW.Show();
+
+            // 使用非同步操作執行長時間運行的操作
+            Task.Run(() =>
+            {
+                // ADD_TBDAILYPOSTB
+                ADD_TBDAILYPOSTB(SDATES);
+
+                // 更新 UI，確保在主 UI 線程上執行
+                Invoke(new Action(() =>
+                {
+                    SEARCHGROUPSALES(SDATES);
+                    MSGSHOW.Close();
+                    // 解除鎖定
+                    this.Enabled = true;
+                }));
+            });
+            
+          
         }
 
         private void button2_Click(object sender, EventArgs e)
