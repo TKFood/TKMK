@@ -119,7 +119,22 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            textBox1.Text = "";
 
+            if (dataGridView1.CurrentRow != null)
+            {
+                int rowindex = dataGridView1.CurrentRow.Index;
+
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView1.Rows[rowindex];
+                    textBox1.Text = row.Cells["ID"].Value.ToString();
+                }
+            }
+
+        }
         #endregion
 
         #region BUTTON
@@ -129,8 +144,9 @@ namespace TKMK
         }
 
 
+
         #endregion
 
-       
+      
     }
 }
