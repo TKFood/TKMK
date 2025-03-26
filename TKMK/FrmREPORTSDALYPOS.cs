@@ -447,6 +447,62 @@ namespace TKMK
 
         }
 
+        public void SETFASTREPORT(string SDATES)
+        {
+            StringBuilder SQL = new StringBuilder();
+
+            Report report1 = new Report();
+            report1.Load(@"REPORT\硯微墨每日商品統計表.frx");
+
+            SQL = SETSQL(SDATES);
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+
+
+            TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
+            table.SelectCommand = SQL.ToString();
+            report1.SetParameterValue("P1", SDATES);
+
+
+            report1.Preview = previewControl1;
+            report1.Show();
+        }
+
+        public StringBuilder SETSQL(string SDATES)
+        {
+            StringBuilder SB = new StringBuilder();
+
+            SB.AppendFormat(@"    
+                            SELECT 
+                            [SDATES] AS '日期'
+                            ,[MB001] AS '品號'
+                            ,[MB002] AS '品名'
+                            ,[SALENUMS] AS '銷售數量'
+                            ,[INNUMS] AS '入庫數量'
+                            ,[NOWNUMS] AS '庫存數量'
+                            ,[COMMENTS] AS '備註'
+                            ,[ID]
+                            ,[CREATEDATES]
+                            FROM [TKMK].[dbo].[TBDAILYPOSTB]
+                            WHERE [SDATES]='{0}'
+                            ORDER BY [MB001]
+                            ", SDATES);
+            SB.AppendFormat(@" ");
+
+            return SB;
+
+        }
+
         #endregion
 
         #region BUTTON
@@ -490,6 +546,11 @@ namespace TKMK
                 MessageBox.Show("完成", "完成");
             }
            
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            string SDATES = dateTimePicker2.Value.ToString("yyyyMMdd");
+            SETFASTREPORT(SDATES);
         }
 
 

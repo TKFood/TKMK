@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="03/26/2025 14:09:58" ReportInfo.Modified="03/26/2025 14:13:43" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="03/26/2025 14:09:58" ReportInfo.Modified="03/26/2025 14:40:33" ReportInfo.CreatorVersion="2016.4.4.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpN+i5gA3VDGcwlcfm6L9ZMsLrZ3U+wEDtHCQtd9vw2XUEijH5eGC4YQydfC0IOqI1J">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpN+i5gA3VDGcwlcfm6L9ZMsLrZ3U+wEDtHCQtd9vw2XUF0+pe43nd1+zjKxLKNJFLW">
       <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT &#13;&#10;[SDATES] AS '日期'&#13;&#10;,[MB001] AS '品號'&#13;&#10;,[MB002] AS '品名'&#13;&#10;,[SALENUMS] AS '銷售數量'&#13;&#10;,[INNUMS] AS '入庫數量'&#13;&#10;,[NOWNUMS] AS '庫存數量'&#13;&#10;,[COMMENTS] AS '備註'&#13;&#10;,[ID]&#13;&#10;,[CREATEDATES]&#13;&#10;FROM [TKMK].[dbo].[TBDAILYPOSTB]&#13;&#10;WHERE [SDATES]='20250326'&#13;&#10;ORDER BY [MB001]&#13;&#10;">
         <Column Name="日期" DataType="System.String"/>
         <Column Name="品號" DataType="System.String"/>
@@ -14,11 +14,12 @@
         <Column Name="CREATEDATES" DataType="System.DateTime"/>
       </TableDataSource>
     </MsSqlDataConnection>
+    <Parameter Name="P1" DataType="System.String"/>
   </Dictionary>
   <ReportPage Name="Page1">
     <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="37.8">
       <TextObject Name="Text1" Width="255.15" Height="18.9" Text="硯微墨每日商品統計表"/>
-      <TextObject Name="Text2" Top="18.9" Width="255.15" Height="18.9" Text="日期:[Table.日期]"/>
+      <TextObject Name="Text2" Top="18.9" Width="255.15" Height="18.9" Text="日期:[P1]"/>
     </ReportTitleBand>
     <PageHeaderBand Name="PageHeader1" Top="42.4" Width="718.2" Height="18.9">
       <TextObject Name="Text4" Width="122.85" Height="18.9" Border.Lines="All" Text="品號" HorzAlign="Center" VertAlign="Center"/>
