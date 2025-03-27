@@ -314,7 +314,7 @@ namespace TKMK
 	                                    SELECT LA001,MB002,SUM(LA005*LA011) AS NUMS
 	                                    FROM [TK].dbo.INVLA,[TK].dbo.INVMB
 	                                    WHERE LA001=MB001
-	                                    AND (LA001 LIKE '4%' OR LA005 LIKE '5%')
+	                                    AND (LA001 LIKE '4%' OR LA001 LIKE '5%')
 	                                    AND LA009 IN ('21002')
                                         AND LA004<='{0}'
 	                                    GROUP BY  LA001,MB002
