@@ -77,6 +77,7 @@ namespace TKMK
                                     ,[MB002] AS '品名'
                                     ,[SALENUMS] AS '銷售數量'
                                     ,[INNUMS] AS '入庫數量'
+                                    ,[PUBNUMS] AS '試吃+公關數量'
                                     ,[NOWNUMS] AS '庫存數量'
                                     ,[COMMENTS] AS '備註'
                                     ,[ID]
@@ -287,6 +288,19 @@ namespace TKMK
                                         GROUP BY LA001, MB002
                                         HAVING SUM(LA005 * LA011) > 0
 
+                                        UNION ALL
+
+	                                    SELECT LA001 AS MB001, MB002 AS MB00
+                                        FROM [TK].dbo.INVLA
+                                        INNER JOIN [TK].dbo.INVMB ON LA001 = MB001
+                                        WHERE (LA001 LIKE '4%' OR LA001 LIKE '5%')
+                                        AND LA009  IN ( '21002')
+	                                    AND LA005 IN (-1)
+	                                    AND LA006 IN ('A111')
+                                        AND LA004='{0}'
+                                        GROUP BY LA001, MB002
+	                                    HAVING SUM(LA005 * LA011*-1)>0
+
                                     ) AS TEMP
                                     WHERE 1=1
                                     {1}
@@ -342,6 +356,26 @@ namespace TKMK
                                         HAVING SUM(LA005 * LA011) > 0
                                     ) AS TEMP
                                     WHERE TEMP.LA001=[TBDAILYPOSTB].MB001
+                                    AND [TBDAILYPOSTB].[SDATES]='{0}'
+
+                                    --更新 試吃+公關
+                                    UPDATE [TKMK].[dbo].[TBDAILYPOSTB]
+                                    SET PUBNUMS=TEMP.NUMS
+                                    FROM 
+                                    (
+	                                    SELECT LA001 AS MB001, MB002 AS MB002,SUM(LA005 * LA011*-1)  AS NUMS
+                                        FROM [TK].dbo.INVLA
+                                        INNER JOIN [TK].dbo.INVMB ON LA001 = MB001
+                                        WHERE (LA001 LIKE '4%' OR LA001 LIKE '5%')
+                                        AND LA009  IN ( '21002')
+	                                    AND LA005 IN (-1)
+	                                    AND LA006 IN ('A111')
+                                        AND LA004='{0}'
+                                        GROUP BY LA001, MB002
+	                                    HAVING SUM(LA005 * LA011*-1)>0
+ 
+                                    ) AS TEMP
+                                    WHERE TEMP.MB001=[TBDAILYPOSTB].MB001
                                     AND [TBDAILYPOSTB].[SDATES]='{0}'
                                     "
                                     , SDATES, sbSql99.ToString()
@@ -489,6 +523,7 @@ namespace TKMK
                             ,[MB002] AS '品名'
                             ,[SALENUMS] AS '銷售數量'
                             ,[INNUMS] AS '入庫數量'
+                            ,[PUBNUMS] AS '試吃+公關數量'
                             ,[NOWNUMS] AS '庫存數量'
                             ,[COMMENTS] AS '備註'
                             ,[ID]
