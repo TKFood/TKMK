@@ -3858,6 +3858,7 @@ namespace TKMK
             }
 
             //連動指定接團
+            //但不重新計算佣金
             //檢查是否勾選批次
             bool batchCompleted = false;
 
@@ -3903,8 +3904,8 @@ namespace TKMK
             // 使用非同步操作執行長時間運行的操作
             Task.Run(() =>
             {
-                // 計算佣金
-                SETMONEYS_NEW(dateTimePicker1.Value.ToString("yyyyMMdd"));
+                //計算佣金
+                //SETMONEYS_NEW(dateTimePicker1.Value.ToString("yyyyMMdd"));
 
                 // 更新 UI，確保在主 UI 線程上執行
                 Invoke(new Action(() =>
