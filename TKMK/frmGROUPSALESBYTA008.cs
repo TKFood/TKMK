@@ -3821,7 +3821,8 @@ namespace TKMK
         }
 
         private void button14_Click(object sender, EventArgs e)
-        {         
+        {      
+            //指定出場時間   
             //檢查CHEKBOX有沒有被勾選
             CheckSelectedRows();
 
@@ -3855,6 +3856,72 @@ namespace TKMK
                     MessageBox.Show("非 預約接團，不可指定時間");
                 }
             }
+
+            //連動指定接團
+            //檢查是否勾選批次
+            bool batchCompleted = false;
+
+            // 批次完成接團
+            // 遍历DataGridView的行
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                // 检查复选框列是否被选中
+                DataGridViewCheckBoxCell checkBoxCell = row.Cells[0] as DataGridViewCheckBoxCell;
+                if (checkBoxCell != null && Convert.ToBoolean(checkBoxCell.Value) == true)
+                {
+                    // 获取ID列的值和状态列的值
+                    string idValue = row.Cells["ID"].Value.ToString().Trim();
+                    string statusValue = row.Cells["狀態"].Value.ToString().Trim();
+                    if (statusValue.Equals("預約接團"))
+                    {
+                        UPDATEGROUPSALESCOMPELETE_STATUS(idValue, "完成接團");
+                    }
+
+                    batchCompleted = true;
+                }
+            }
+
+            // 单次完成接團
+            if (!string.IsNullOrEmpty(ID) && !batchCompleted)
+            {
+                if (STATUS.Equals("預約接團"))
+                {
+                    UPDATEGROUPSALESCOMPELETE_STATUS(ID, "完成接團");
+                }
+                else
+                {
+                    MessageBox.Show("不是預約接團，不能修改");
+                }
+            }
+
+            MESSAGESHOW MSGSHOW = new MESSAGESHOW();
+            // 鎖定控制項
+            this.Enabled = false;
+            // 顯示跳出視窗
+            MSGSHOW.Show();
+
+            // 使用非同步操作執行長時間運行的操作
+            Task.Run(() =>
+            {
+                // 計算佣金
+                SETMONEYS_NEW(dateTimePicker1.Value.ToString("yyyyMMdd"));
+
+                // 更新 UI，確保在主 UI 線程上執行
+                Invoke(new Action(() =>
+                {
+                    // 查詢本日來車資料
+                    SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+
+                    // 查詢本日的合計
+                    SETNUMS(dateTimePicker1.Value.ToString("yyyyMMdd"));
+
+                    label29.Text = "更新時間" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+                    // 關閉跳出視窗
+                    MSGSHOW.Close();
+                    // 解除鎖定
+                    this.Enabled = true;
+                }));
+            });
 
             SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
             //MessageBox.Show("完成");
