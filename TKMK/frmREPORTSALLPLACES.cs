@@ -711,7 +711,7 @@ namespace TKMK
 
         }
         public StringBuilder SETSQL_DAILY2_V2(string SDATES)
-        {
+        { 
             StringBuilder SB = new StringBuilder();
             SB.AppendFormat(@"                              
                             SELECT SUM(TA026) AS '10670103-SUMTA026'
@@ -721,7 +721,7 @@ namespace TKMK
                             AND TA1.TA001<='{0}'
                           
 
-                            ", SDATES);
+                            ", SDATES); 
 
             return SB;
 
