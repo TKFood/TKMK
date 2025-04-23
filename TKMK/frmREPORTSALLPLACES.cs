@@ -714,10 +714,10 @@ namespace TKMK
         {
             StringBuilder SB = new StringBuilder();
             SB.AppendFormat(@"                              
-                            SELECT SUM(TA026)  AS '106701-SUMTA026'
+                            SELECT SUM(TA026) AS '10670103-SUMTA026'
                             FROM [TK].dbo.POSTA TA1 
                             WHERE TA1.TA001 >= CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112) 
-                            AND TA1.TA002 IN ('106701')
+                            AND TA1.TA002 IN ('106701','106703')
                             AND TA1.TA001<='{0}'
                           
 
@@ -730,11 +730,13 @@ namespace TKMK
         {
             StringBuilder SB = new StringBuilder();
             SB.AppendFormat(@"                              
-                            SELECT SUM(TA026)  AS '1067020305-SUMTA026'
+                           
+                            SELECT SUM(TA026)  AS '10670205-SUMTA026'
                             FROM [TK].dbo.POSTA TA1 
                             WHERE TA1.TA001 >= CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112) 
-                            AND TA1.TA002 IN ('106702','106703','106705')
-                            AND TA1.TA001<='{0}'                          
+                            AND TA1.TA002 IN ('106702','106705')
+                            AND TA1.TA001<='{0}'
+                       
 
                             ", SDATES);
 
