@@ -585,14 +585,10 @@ namespace TKMK
         public void SETFASTREPORT_DAILY_V2(string SDATES)
         {
             StringBuilder SQL1 = new StringBuilder();
-            StringBuilder SQL2 = new StringBuilder();
-            StringBuilder SQL3 = new StringBuilder();
-            StringBuilder SQL4 = new StringBuilder();
+        
 
             SQL1 = SETSQL_DAILY1_V2(SDATES);
-            SQL2 = SETSQL_DAILY2_V2(SDATES);
-            SQL3 = SETSQL_DAILY3_V2(SDATES);
-            SQL4 = SETSQL_DAILY4_V2(SDATES);
+           
 
 
             Report report1 = new Report();
@@ -615,12 +611,7 @@ namespace TKMK
 
             TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
             table.SelectCommand = SQL1.ToString();
-            TableDataSource table1 = report1.GetDataSource("Table1") as TableDataSource;
-            table1.SelectCommand = SQL2.ToString();
-            TableDataSource table2 = report1.GetDataSource("Table2") as TableDataSource;
-            table2.SelectCommand = SQL3.ToString();
-            TableDataSource table3 = report1.GetDataSource("Table3") as TableDataSource;
-            table3.SelectCommand = SQL4.ToString();
+           
           
 
             //report1.SetParameterValue("P1", dateTimePicker1.Value.ToString("yyyyMMdd"));
@@ -635,129 +626,68 @@ namespace TKMK
 
 
             SB.AppendFormat(@"                              
+                               --20250424 新觀光日報
+                                -- 建立一個指定日期與門市的交叉集合
                                 WITH DateStoreList AS (
-                                SELECT '{0}' AS TA001, TA002 
-                                FROM (VALUES ('106701'), ('106702'), ('106703'), ('106705')) AS Stores(TA002)
-                            )
+                                    SELECT '{0}' AS TA001
+                                )
+                                SELECT *
+                                ,ISNULL((
+                                        SELECT COUNT(ID) 
+                                        FROM [TKMK].[dbo].[GROUPSALES] 
+                                        WHERE CONVERT(nvarchar, CREATEDATES, 112) = TEMP.TA001 
+                                        AND STATUS = '完成接團'
+                                    ), 0) AS '車數'
+                                ,CASE 
+                                        WHEN ISNULL((方城市TODAY團客業績+硯微墨TODAY團客業績+星球樂園TODAY團客業績+餐飲組TODAY團客業績), 0) > 0 AND 
+                                             (SELECT COUNT(ID) 
+                                              FROM [TKMK].[dbo].[GROUPSALES] 
+                                              WHERE CONVERT(nvarchar, CREATEDATES, 112) = TEMP.TA001 
+                                              AND STATUS = '完成接團') > 0
+                                        THEN 
+                                            CONVERT(INT,
+                                                ISNULL((
+                                                    (方城市TODAY團客業績+硯微墨TODAY團客業績+星球樂園TODAY團客業績+餐飲組TODAY團客業績)
+                                                ), 0) / 
+                                                (SELECT COUNT(ID) 
+                                                 FROM [TKMK].[dbo].[GROUPSALES] 
+                                                 WHERE CONVERT(nvarchar, CREATEDATES, 112) = TEMP.TA001 
+                                                 AND STATUS = '完成接團')
+                                            )
+                                        ELSE 0 
+                                    END AS '平均每車金額'
+                                FROM 
+                                (
+                                SELECT *
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106701')),0) AS '方城市-TODAY'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106703')),0) AS '星球樂園-TODAY'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106701','106703')),0) AS '方城市-星球樂園-TODAY'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106702')),0) AS '硯微墨-TODAY'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106705')),0) AS '餐飲組-TODAY'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106702','106705')),0) AS '硯微墨-餐飲組-TODAY'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106701','106703','106702','106705')),0) AS 'ALL-TODAY'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE  POSTA.TA001 >= CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112)  AND POSTA.TA001<=D.TA001 AND TA002 IN ('106701','106703')),0) AS '方城市-星球樂園-TOTALS'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE  POSTA.TA001 >= CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112)  AND POSTA.TA001<=D.TA001 AND TA002 IN ('106702','106705')),0) AS '硯微墨-餐飲組-TOTALS'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE  POSTA.TA001 >= CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112)  AND POSTA.TA001<=D.TA001 AND TA002 IN ('106701','106703','106702','106705')),0) AS 'ALL-TOTALS'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106701') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0) AS '方城市TODAY團客業績'
+                                ,(ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106701')),0)-ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106701') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0))  AS '方城市-TODAY-散客業績'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106702') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0) AS '硯微墨TODAY團客業績'
+                                ,(ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106702')),0)-ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106702') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0))  AS '硯微墨-TODAY-散客業績'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106703') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0) AS '星球樂園TODAY團客業績'
+                                ,(ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106703')),0)-ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106703') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0))  AS '星球樂園-TODAY-散客業績'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106705') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0) AS '餐飲組TODAY團客業績'
+                                ,(ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106705')),0)-ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106705') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0))  AS '餐飲組-TODAY-散客業績'
 
-                            SELECT 
-                                D.TA001 AS '日期',
-                                D.TA002 AS '門市ID',
-	                            ME002 AS '門市',
-                                ISNULL(SUM(P.TA026), 0) AS '本日合計',
-                                ISNULL((
-                                    SELECT SUM(TA026) 
-                                    FROM [TK].dbo.POSTA TA1 
-                                    WHERE TA1.TA001 = D.TA001 
-                                    AND TA1.TA002 = D.TA002 
-                                    AND (TA008 LIKE '68%' OR TA008 LIKE '69%')
-                                ), 0) AS '團客業績',
-                                ISNULL(
-                                    ISNULL(SUM(P.TA026), 0) - 
-                                    ISNULL((
-                                        SELECT SUM(TA026) 
-                                        FROM [TK].dbo.POSTA TA1 
-                                        WHERE TA1.TA001 = D.TA001 
-                                        AND TA1.TA002 = D.TA002 
-                                        AND (TA008 LIKE '68%' OR TA008 LIKE '69%')
-                                    ), 0), 
-                                0) AS '散客業績',
-                                ISNULL((
-                                    SELECT COUNT(ID) 
-                                    FROM [TKMK].[dbo].[GROUPSALES] 
-                                    WHERE CONVERT(nvarchar, CREATEDATES, 112) = D.TA001 
-                                    AND STATUS = '完成接團'
-                                ), 0) AS '車數',
-                                CASE 
-                                    WHEN ISNULL(SUM(P.TA026), 0) > 0 AND 
-                                         (SELECT COUNT(ID) 
-                                          FROM [TKMK].[dbo].[GROUPSALES] 
-                                          WHERE CONVERT(nvarchar, CREATEDATES, 112) = D.TA001 
-                                          AND STATUS = '完成接團') > 0
-                                    THEN 
-                                        CONVERT(INT,
-                                            ISNULL((
-                                                SELECT SUM(TA026) 
-                                                FROM [TK].dbo.POSTA TA1 
-                                                WHERE TA1.TA001 = D.TA001 
-                                                AND TA1.TA002 = D.TA002 
-                                                AND (TA008 LIKE '68%' OR TA008 LIKE '69%')
-                                            ), 0) / 
-                                            (SELECT COUNT(ID) 
-                                             FROM [TKMK].[dbo].[GROUPSALES] 
-                                             WHERE CONVERT(nvarchar, CREATEDATES, 112) = D.TA001 
-                                             AND STATUS = '完成接團')
-                                        )
-                                    ELSE 0 
-                                END AS '平均每車金額',
-                                ISNULL((
-                                    SELECT SUM(TA026) 
-                                    FROM [TK].dbo.POSTA TA1 
-                                    WHERE TA1.TA001 >= CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112) 
-                                    AND TA1.TA001 <= D.TA001 
-                                    AND TA1.TA002 = D.TA002
-                                ), 0) AS '目前累計'
+                                FROM DateStoreList D
+                                )  AS TEMP
 
-                            FROM DateStoreList D
-                            LEFT JOIN [TK].dbo.POSTA P ON P.TA001 = D.TA001 AND P.TA002 = D.TA002
-                            LEFT JOIN [TK].dbo.CMSME ON ME001=D.TA002
-                            GROUP BY D.TA001, D.TA002,ME002
-                            ORDER BY D.TA001, D.TA002,ME002
-                      
 
                             ", SDATES);
 
             return SB;
 
         }
-        public StringBuilder SETSQL_DAILY2_V2(string SDATES)
-        { 
-            StringBuilder SB = new StringBuilder();
-            SB.AppendFormat(@"                              
-                            SELECT SUM(TA026) AS '10670103-SUMTA026'
-                            FROM [TK].dbo.POSTA TA1 
-                            WHERE TA1.TA001 >= CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112) 
-                            AND TA1.TA002 IN ('106701','106703')
-                            AND TA1.TA001<='{0}'
-                          
-
-                            ", SDATES); 
-
-            return SB;
-
-        }
-        public StringBuilder SETSQL_DAILY3_V2(string SDATES)
-        {
-            StringBuilder SB = new StringBuilder();
-            SB.AppendFormat(@"                              
-                           
-                            SELECT SUM(TA026)  AS '10670205-SUMTA026'
-                            FROM [TK].dbo.POSTA TA1 
-                            WHERE TA1.TA001 >= CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112) 
-                            AND TA1.TA002 IN ('106702','106705')
-                            AND TA1.TA001<='{0}'
-                       
-
-                            ", SDATES);
-
-            return SB;
-
-        }
-        public StringBuilder SETSQL_DAILY4_V2(string SDATES)
-        {
-            StringBuilder SB = new StringBuilder();
-            SB.AppendFormat(@"                              
-                            SELECT SUM(TA026)  AS '107601020305-SUMTA026'
-                            FROM [TK].dbo.POSTA TA1 
-                            WHERE TA1.TA001 >= CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112) 
-                            AND TA1.TA002 IN ('106701','106702','106703','106705')
-                            AND TA1.TA001<='{0}'                          
-
-                            ", SDATES);
-
-            return SB;
-
-        }
+       
         #endregion
 
         #region BUTTON
