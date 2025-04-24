@@ -634,14 +634,14 @@ namespace TKMK
                                 SELECT *
                                 ,ISNULL((
                                         SELECT COUNT(ID) 
-                                        FROM [TKMK].[dbo].[GROUPSALES] 
+                                        FROM [TKMK].[dbo].[GROUPSALES] WITH(NOLOCK)
                                         WHERE CONVERT(nvarchar, CREATEDATES, 112) = TEMP.TA001 
                                         AND STATUS = '完成接團'
                                     ), 0) AS '車數'
                                 ,CASE 
                                         WHEN ISNULL((方城市TODAY團客業績+硯微墨TODAY團客業績+星球樂園TODAY團客業績+餐飲組TODAY團客業績), 0) > 0 AND 
                                              (SELECT COUNT(ID) 
-                                              FROM [TKMK].[dbo].[GROUPSALES] 
+                                              FROM [TKMK].[dbo].[GROUPSALES] WITH(NOLOCK)
                                               WHERE CONVERT(nvarchar, CREATEDATES, 112) = TEMP.TA001 
                                               AND STATUS = '完成接團') > 0
                                         THEN 
@@ -650,7 +650,7 @@ namespace TKMK
                                                     (方城市TODAY團客業績+硯微墨TODAY團客業績+星球樂園TODAY團客業績+餐飲組TODAY團客業績)
                                                 ), 0) / 
                                                 (SELECT COUNT(ID) 
-                                                 FROM [TKMK].[dbo].[GROUPSALES] 
+                                                 FROM [TKMK].[dbo].[GROUPSALES] WITH(NOLOCK)
                                                  WHERE CONVERT(nvarchar, CREATEDATES, 112) = TEMP.TA001 
                                                  AND STATUS = '完成接團')
                                             )
@@ -659,27 +659,28 @@ namespace TKMK
                                 FROM 
                                 (
                                 SELECT *
-                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106701')),0) AS '方城市-TODAY'
-                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106703')),0) AS '星球樂園-TODAY'
-                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106701','106703')),0) AS '方城市-星球樂園-TODAY'
-                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106702')),0) AS '硯微墨-TODAY'
-                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106705')),0) AS '餐飲組-TODAY'
-                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106702','106705')),0) AS '硯微墨-餐飲組-TODAY'
-                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106701','106703','106702','106705')),0) AS 'ALL-TODAY'
-                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE  POSTA.TA001 >= CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112)  AND POSTA.TA001<=D.TA001 AND TA002 IN ('106701','106703')),0) AS '方城市-星球樂園-TOTALS'
-                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE  POSTA.TA001 >= CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112)  AND POSTA.TA001<=D.TA001 AND TA002 IN ('106702','106705')),0) AS '硯微墨-餐飲組-TOTALS'
-                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE  POSTA.TA001 >= CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112)  AND POSTA.TA001<=D.TA001 AND TA002 IN ('106701','106703','106702','106705')),0) AS 'ALL-TOTALS'
-                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106701') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0) AS '方城市TODAY團客業績'
-                                ,(ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106701')),0)-ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106701') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0))  AS '方城市-TODAY-散客業績'
-                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106702') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0) AS '硯微墨TODAY團客業績'
-                                ,(ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106702')),0)-ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106702') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0))  AS '硯微墨-TODAY-散客業績'
-                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106703') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0) AS '星球樂園TODAY團客業績'
-                                ,(ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106703')),0)-ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106703') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0))  AS '星球樂園-TODAY-散客業績'
-                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106705') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0) AS '餐飲組TODAY團客業績'
-                                ,(ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106705')),0)-ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106705') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0))  AS '餐飲組-TODAY-散客業績'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WITH(NOLOCK) WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106701')),0) AS '方城市-TODAY'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WITH(NOLOCK) WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106703')),0) AS '星球樂園-TODAY'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WITH(NOLOCK) WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106701','106703')),0) AS '方城市-星球樂園-TODAY'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WITH(NOLOCK) WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106702')),0) AS '硯微墨-TODAY'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WITH(NOLOCK) WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106705')),0) AS '餐飲組-TODAY'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WITH(NOLOCK) WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106702','106705')),0) AS '硯微墨-餐飲組-TODAY'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WITH(NOLOCK) WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106701','106703','106702','106705')),0) AS 'ALL-TODAY'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WITH(NOLOCK) WHERE  POSTA.TA001 >= CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112)  AND POSTA.TA001<=D.TA001 AND TA002 IN ('106701','106703')),0) AS '方城市-星球樂園-TOTALS'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WITH(NOLOCK) WHERE  POSTA.TA001 >= CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112)  AND POSTA.TA001<=D.TA001 AND TA002 IN ('106702','106705')),0) AS '硯微墨-餐飲組-TOTALS'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WITH(NOLOCK) WHERE  POSTA.TA001 >= CONVERT(varchar(8), DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0), 112)  AND POSTA.TA001<=D.TA001 AND TA002 IN ('106701','106703','106702','106705')),0) AS 'ALL-TOTALS'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WITH(NOLOCK) WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106701') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0) AS '方城市TODAY團客業績'
+                                ,(ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WITH(NOLOCK) WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106701')),0)-ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106701') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0))  AS '方城市-TODAY-散客業績'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WITH(NOLOCK) WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106702') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0) AS '硯微墨TODAY團客業績'
+                                ,(ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WITH(NOLOCK) WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106702')),0)-ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106702') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0))  AS '硯微墨-TODAY-散客業績'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WITH(NOLOCK) WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106703') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0) AS '星球樂園TODAY團客業績'
+                                ,(ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WITH(NOLOCK) WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106703')),0)-ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106703') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0))  AS '星球樂園-TODAY-散客業績'
+                                ,ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WITH(NOLOCK) WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106705') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0) AS '餐飲組TODAY團客業績'
+                                ,(ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WITH(NOLOCK) WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106705')),0)-ISNULL((SELECT SUM(TA026) FROM [TK].dbo.POSTA WHERE POSTA.TA001=D.TA001 AND TA002 IN ('106705') AND (TA008 LIKE '68%' OR TA008 LIKE '69%')) ,0))  AS '餐飲組-TODAY-散客業績'
 
                                 FROM DateStoreList D
                                 )  AS TEMP
+
 
 
                             ", SDATES);
