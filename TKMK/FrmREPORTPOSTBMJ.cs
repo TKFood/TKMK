@@ -202,6 +202,25 @@ namespace TKMK
             }
         }
 
+
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            SETNULL();
+
+            if (dataGridView1.CurrentRow != null)
+            {
+                int rowindex = dataGridView1.CurrentRow.Index;
+
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView1.Rows[rowindex];
+                    string MJ003 = row.Cells["活動代號"].Value.ToString();
+
+                    textBox4.Text = MJ003;
+                }
+            }
+        }
+
         public DataTable FIND_TB_MJ003(string YEARS)
         {
             DataTable DT = new DataTable();
@@ -332,13 +351,78 @@ namespace TKMK
             }
             catch (Exception ex)
             {
-                MessageBox.Show("更新失敗 " + ex.ToString());
+                MessageBox.Show("失敗 " + ex.ToString());
             }
 
             finally
             {
                 sqlConn.Close();
             }
+        }
+
+        public void DELETE_TB_MJ003(
+           string MJ003        
+           )
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+
+                sbSql.AppendFormat(@" 
+                                    DELETE [TKMK].[dbo].[TB_MJ003]
+                                    WHERE  [MJ003]='{0}'                                   
+                                    ", MJ003
+                                   
+                                    );
+
+                sbSql.AppendFormat(@" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("失敗 " + ex.ToString());
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+        public void SETNULL()
+        {
+            textBox4.Text = "";
         }
 
         #endregion
@@ -386,10 +470,26 @@ namespace TKMK
 
         private void button2_Click(object sender, EventArgs e)
         {
+            DialogResult dialogResult = MessageBox.Show("要刪除了?", "要刪除了?", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                string MJ003 = textBox4.Text.Trim();
+                if(!string.IsNullOrEmpty(MJ003))
+                {
+                    DELETE_TB_MJ003(MJ003);
+                    SEARCH();
+                    MessageBox.Show("完成");
+                }                
 
+            }
+            else if (dialogResult == DialogResult.No)
+            {
+                //do something else
+            }
         }
+
         #endregion
 
-
+     
     }
 }
