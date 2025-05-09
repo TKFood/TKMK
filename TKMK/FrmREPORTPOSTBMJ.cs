@@ -57,11 +57,11 @@ namespace TKMK
         }
 
         #region FUNCTION
-        public void SETFASTREPORT(string SDATES, string EDATES)
+        public void SETFASTREPORT(string SDATES, string EDATES,string YEARS)
         {
             StringBuilder SQL1 = new StringBuilder();
 
-            SQL1 = SETSQL(SDATES, EDATES);
+            SQL1 = SETSQL(SDATES, EDATES, YEARS);
             Report report1 = new Report();
             report1.Load(@"REPORT\觀光查活動組合.frx");
 
@@ -89,7 +89,7 @@ namespace TKMK
             report1.Show();
         }
 
-        public StringBuilder SETSQL(string SDATES, string EDATES)
+        public StringBuilder SETSQL(string SDATES, string EDATES,string YEARS)
         {
             StringBuilder SB = new StringBuilder();
 
@@ -118,7 +118,7 @@ namespace TKMK
                             (
 	                            SELECT MJ004
 	                            FROM [TK].dbo.POSMJ
-	                            WHERE MJ003 IN (SELECT  [MJ003]  FROM [TKMK].[dbo].[TB_MJ003])
+	                            WHERE MJ003 IN (SELECT  [MJ003]  FROM [TKMK].[dbo].[TB_MJ003] WHERE YEARS='{2}')
                             )
                             GROUP BY TA002,TA001,TA003,TA014
                             ) AS TEMP 
@@ -128,7 +128,7 @@ namespace TKMK
                             ORDER BY TA002,TA001,TA003,TA014
  
 
-                            ", SDATES, EDATES);
+                            ", SDATES, EDATES, YEARS);
 
             return SB;
 
@@ -201,17 +201,192 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
+
+        public DataTable FIND_TB_MJ003(string YEARS)
+        {
+            DataTable DT = new DataTable();
+
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"                                     
+                                   SELECT 
+                                    [MJ003] AS '活動代號'
+                                    ,[NAMES] AS '名稱'
+                                    ,[YEARS] AS '年度'
+                                    FROM [TKMK].[dbo].[TB_MJ003]
+                                    WHERE [YEARS]='{0}'
+                                    ORDER BY [YEARS]
+
+                                    ", YEARS);
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return ds1.Tables["ds1"];
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+        public void ADD_TB_MJ003(
+            string MJ003
+            ,string NAMES
+            ,string YEARS
+            )
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+
+                sbSql.AppendFormat(@" 
+                                    INSERT INTO [TKMK].[dbo].[TB_MJ003]
+                                    (
+                                    [MJ003]
+                                    ,[NAMES]
+                                    ,[YEARS]
+                                    )
+                                    VALUES
+                                    (
+                                    '{0}'
+                                    ,'{1}'
+                                    ,'{2}'
+                                    )
+                                    ", MJ003
+                                    , NAMES
+                                    , YEARS
+                                    );
+
+                sbSql.AppendFormat(@" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("更新失敗 " + ex.ToString());
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
         #endregion
 
         #region BUTTON
         private void button4_Click(object sender, EventArgs e)
         {
-            SETFASTREPORT(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+            SETFASTREPORT(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"), dateTimePicker1.Value.ToString("yyyy"));
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             SEARCH();
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            string YEARS = textBox2.Text.Trim();
+            string MJ003 = textBox1.Text.Trim();
+            string NAMES = textBox3.Text.Trim();
+            DataTable DT = FIND_TB_MJ003(YEARS);
+
+            if(!string.IsNullOrEmpty(YEARS))
+            {
+                if (DT != null && DT.Rows.Count >= 1)
+                {
+                    MessageBox.Show("同年度不可有2個活動檢查設定");
+                }
+                else
+                {
+                    ADD_TB_MJ003(
+                        MJ003
+                        , NAMES
+                        , YEARS
+                        );
+                    SEARCH();
+                    MessageBox.Show("完成");
+                }
+            }
+            else
+            {
+                MessageBox.Show("活動代號、名稱、年度 不得空白");
+            }
+           
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
         }
         #endregion
 
