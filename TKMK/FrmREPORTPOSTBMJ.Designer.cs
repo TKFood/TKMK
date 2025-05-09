@@ -348,10 +348,10 @@
             this.tableLayoutPanel2.Controls.Add(this.textBox1, 1, 1);
             this.tableLayoutPanel2.Controls.Add(this.textBox2, 1, 2);
             this.tableLayoutPanel2.Controls.Add(this.textBox3, 1, 3);
-            this.tableLayoutPanel2.Controls.Add(this.button3, 1, 4);
             this.tableLayoutPanel2.Controls.Add(this.button2, 1, 7);
             this.tableLayoutPanel2.Controls.Add(this.label6, 0, 6);
             this.tableLayoutPanel2.Controls.Add(this.textBox4, 1, 6);
+            this.tableLayoutPanel2.Controls.Add(this.button3, 1, 5);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(4);
@@ -428,6 +428,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(149, 27);
             this.textBox1.TabIndex = 31;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // textBox2
             // 
@@ -440,15 +441,17 @@
             // textBox3
             // 
             this.textBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox3.Location = new System.Drawing.Point(94, 126);
+            this.textBox3.Location = new System.Drawing.Point(94, 123);
+            this.textBox3.Multiline = true;
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(149, 27);
+            this.tableLayoutPanel2.SetRowSpan(this.textBox3, 2);
+            this.textBox3.Size = new System.Drawing.Size(149, 74);
             this.textBox3.TabIndex = 33;
             // 
             // button3
             // 
             this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button3.Location = new System.Drawing.Point(95, 164);
+            this.button3.Location = new System.Drawing.Point(95, 204);
             this.button3.Margin = new System.Windows.Forms.Padding(4);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(147, 32);

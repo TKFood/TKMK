@@ -221,71 +221,7 @@ namespace TKMK
             }
         }
 
-        public DataTable FIND_TB_MJ003(string YEARS)
-        {
-            DataTable DT = new DataTable();
-
-            SqlDataAdapter adapter1 = new SqlDataAdapter();
-            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
-            DataSet ds1 = new DataSet();
-
-            try
-            {
-                //20210902密
-                Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
-
-                //資料庫使用者密碼解密
-                sqlsb.Password = TKID.Decryption(sqlsb.Password);
-                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
-
-                String connectionString;
-                sqlConn = new SqlConnection(sqlsb.ConnectionString);
-
-
-                sbSql.Clear();
-                sbSqlQuery.Clear();
-
-                sbSql.AppendFormat(@"                                     
-                                   SELECT 
-                                    [MJ003] AS '活動代號'
-                                    ,[NAMES] AS '名稱'
-                                    ,[YEARS] AS '年度'
-                                    FROM [TKMK].[dbo].[TB_MJ003]
-                                    WHERE [YEARS]='{0}'
-                                    ORDER BY [YEARS]
-
-                                    ", YEARS);
-
-
-                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
-
-                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
-                sqlConn.Open();
-                ds1.Clear();
-                adapter1.Fill(ds1, "ds1");
-                sqlConn.Close();
-
-
-                if (ds1.Tables["ds1"].Rows.Count >= 1)
-                {
-                    return ds1.Tables["ds1"];
-                }
-                else
-                {
-                    return null;
-                }
-
-            }
-            catch
-            {
-                return null;
-            }
-            finally
-            {
-                sqlConn.Close();
-            }
-        }
+       
         public void ADD_TB_MJ003(
             string MJ003
             ,string NAMES
@@ -420,9 +356,155 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
+        public DataTable FIND_TB_MJ003(string YEARS)
+        {
+            DataTable DT = new DataTable();
+
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"                                     
+                                   SELECT 
+                                    [MJ003] AS '活動代號'
+                                    ,[NAMES] AS '名稱'
+                                    ,[YEARS] AS '年度'
+                                    FROM [TKMK].[dbo].[TB_MJ003]
+                                    WHERE [YEARS]='{0}'
+                                    ORDER BY [YEARS]
+
+                                    ", YEARS);
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return ds1.Tables["ds1"];
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+        public DataTable FIND_POSMI(string MI003)
+        {
+            DataTable DT = new DataTable();
+
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"                                     
+                                    SELECT MI001,MI002,MI003,MI004,SUBSTRING(MI006,1,4) YEARS      
+                                    FROM [TK].dbo.POSMI
+                                    WHERE MI003='{0}'
+
+                                    ", MI003);
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count >= 1)
+                {
+                    return ds1.Tables["ds1"];
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            string MI003 = textBox1.Text.Trim();
+            if(!string.IsNullOrEmpty(MI003))
+            {
+                SETNULL2();
+                DataTable DT = FIND_POSMI(MI003);
+                if(DT!=null && DT.Rows.Count>=1)
+                {
+                    textBox2.Text = DT.Rows[0]["YEARS"].ToString();
+                    textBox3.Text = DT.Rows[0]["MI004"].ToString();
+                }
+            }
+           
+        }
         public void SETNULL()
         {
             textBox4.Text = "";
+        }
+        public void SETNULL2()
+        {
+            textBox2.Text = "";
+            textBox3.Text = "";
         }
 
         #endregion
@@ -488,8 +570,9 @@ namespace TKMK
             }
         }
 
+
         #endregion
 
-     
+        
     }
 }
