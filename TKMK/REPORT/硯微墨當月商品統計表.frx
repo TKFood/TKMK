@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="03/26/2025 14:09:58" ReportInfo.Modified="03/27/2025 15:01:03" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="03/26/2025 14:09:58" ReportInfo.Modified="05/09/2025 11:15:34" ReportInfo.CreatorVersion="2016.4.4.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpN+i5gA3VDGcwlcfm6L9ZMsLrZ3U+wEDtHCQtd9vw2XUEnKaJSzkHi18r+LvKL/G1S">
-      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT &#13;&#10;[ID]&#13;&#10;,[SMONTHS] AS '年月'&#13;&#10;,[MB001] AS '品號'&#13;&#10;,[MB002] AS '品名'&#13;&#10;,[SALENUMS] AS '銷售累計總數量'&#13;&#10;,[INNUMS] AS '入庫累計總數量'&#13;&#10;,[PUBNUMS] AS '試吃+公關累計總數量'&#13;&#10;,[NOWNUMS] AS '目前庫存數量'&#13;&#10;,[COMMENTS]AS '備註'&#13;&#10;,[CREATEDATES]&#13;&#10;FROM [TKMK].[dbo].[TBDAILYPOSTBMONTH]&#13;&#10;WHERE [SMONTHS]='202503'&#13;&#10;ORDER BY [MB001]">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpN+i5gA3VDGcwlcfm6L9ZMsLrZ3U+wEDtHCQtd9vw2XUGe5yA+iEGFSEbV7DuyhAU/">
+      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT &#13;&#10;[ID]&#13;&#10;,[SMONTHS] AS '年月'&#13;&#10;,[MB001] AS '品號'&#13;&#10;,[MB002] AS '品名'&#13;&#10;,[SALENUMS] AS '銷售累計總數量'&#13;&#10;,[INNUMS] AS '入庫累計總數量'&#13;&#10;,[PUBNUMS] AS '試吃+公關累計總數量'&#13;&#10;,[NOWNUMS] AS '目前庫存數量'&#13;&#10;,[COMMENTS]AS '備註'&#13;&#10;,[CREATEDATES]&#13;&#10;FROM [TKMK].[dbo].[TBDAILYPOSTBMONTH]&#13;&#10;WHERE [SMONTHS]='202505'&#13;&#10;ORDER BY [MB001]">
         <Column Name="品號" DataType="System.String"/>
         <Column Name="品名" DataType="System.String"/>
         <Column Name="備註" DataType="System.String"/>
@@ -37,7 +37,7 @@
       <TextObject Name="Text7" Left="330.75" Width="113.4" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.銷售累計總數量]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center"/>
       <TextObject Name="Text9" Left="444.15" Width="113.4" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.入庫累計總數量]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center"/>
       <TextObject Name="Text11" Left="689.85" Width="113.4" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.目前庫存數量]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center"/>
-      <TextObject Name="Text15" Left="557.55" Width="132.3" Height="18.9" Border.Lines="All" Text="[Table.試吃+公關累計總數量]" HorzAlign="Right" VertAlign="Center"/>
+      <TextObject Name="Text15" Left="557.55" Width="132.3" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.試吃+公關累計總數量]" HorzAlign="Right" VertAlign="Center"/>
     </DataBand>
     <PageFooterBand Name="PageFooter1" Top="89.39" Width="1047.06" Height="18.9"/>
   </ReportPage>
