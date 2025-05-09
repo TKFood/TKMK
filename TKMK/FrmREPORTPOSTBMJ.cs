@@ -53,7 +53,7 @@ namespace TKMK
 
         private void FrmREPORTPOSTBMJ_Load(object sender, EventArgs e)
         {
-
+            //SEARCH();
         }
 
         #region FUNCTION
@@ -133,6 +133,74 @@ namespace TKMK
             return SB;
 
         }
+
+        public void SEARCH()
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
+
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"                                     
+                                    SELECT 
+                                    [MJ003] AS '活動代號'
+                                    ,[NAMES] AS '名稱'
+                                    ,[YEARS] AS '年度'
+                                    FROM [TKMK].[dbo].[TB_MJ003]
+                                    ORDER BY [YEARS]
+
+                                    ");
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count == 0)
+                {
+                    dataGridView1.DataSource = null;
+                }
+                else
+                {
+                    if (ds1.Tables["ds1"].Rows.Count >= 1)
+                    {
+                        dataGridView1.DataSource = ds1.Tables["ds1"];
+                        dataGridView1.AutoResizeColumns();                      
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
         #endregion
 
         #region BUTTON
@@ -141,8 +209,12 @@ namespace TKMK
             SETFASTREPORT(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
         }
 
-
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SEARCH();
+        }
         #endregion
+
 
     }
 }
