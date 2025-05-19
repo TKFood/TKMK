@@ -79,8 +79,10 @@ namespace TKMK
 
         public frmGROUPSALESBYTA008()
         {
-            InitializeComponent();
-
+            InitializeComponent();   
+        }
+        private void frmGROUPSALESBYTA008_Load(object sender, EventArgs e)
+        {
             comboBox1load();
             comboBox2load();
             comboBox3load();
@@ -88,6 +90,8 @@ namespace TKMK
             comboBox5load();
             comboBox8load();
             comboBox9load();
+            comboBox10load();
+            comboBox11load();
 
             dateTimePicker1.Value = DateTime.Now;
             dateTimePicker2.Value = DateTime.Now;
@@ -96,14 +100,12 @@ namespace TKMK
             textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
 
             timer1.Enabled = true;
-            timer1.Interval = 1000 * 60*10;
+            timer1.Interval = 1000 * 60 * 10;
             timer1.Start();
 
             // 添加一个复选框列到DataGridView的第一个位置
-            AddCheckBoxColumn();           
-           
+            AddCheckBoxColumn();
         }
-
         #region FUNCTION       
         /// <summary>
         /// 添加一个复选框列到DataGridView的第一个位置
@@ -479,10 +481,68 @@ namespace TKMK
             //}
         }
 
+        public void comboBox10load()
+        {
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"                                 
+                                SELECT [PARASNAMES],[DVALUES] FROM [TKMK].[dbo].[TBZPARAS] WHERE [KINDS]='PLAYDAYKINDS' ORDER BY [PARASNAMES]
+                                ");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("PARASNAMES", typeof(string));
+            da.Fill(dt);
+            comboBox10.DataSource = dt.DefaultView;
+            comboBox10.ValueMember = "PARASNAMES";
+            comboBox10.DisplayMember = "PARASNAMES";
+            sqlConn.Close();
+
+        }
+        public void comboBox11load()
+        {
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"                                 
+                                SELECT [PARASNAMES],[DVALUES] FROM [TKMK].[dbo].[TBZPARAS] WHERE [KINDS]='PLAYDAYS' ORDER BY [PARASNAMES]
+                                ");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("PARASNAMES", typeof(string));
+            da.Fill(dt);
+            comboBox11.DataSource = dt.DefaultView;
+            comboBox11.ValueMember = "PARASNAMES";
+            comboBox11.DisplayMember = "PARASNAMES";
+            sqlConn.Close();
+
+        }
         /// <summary>
         /// 尋找 業務員/會員
         /// </summary>
-        /// <param name="MI001"></param>
+        /// <param name="MI001"></param> 
         public void SEARCH_POSMU(string MU001)
         {
             SqlDataAdapter adapter = new SqlDataAdapter();
@@ -4205,8 +4265,9 @@ namespace TKMK
         }
 
 
+
         #endregion
 
-       
+      
     }
 }
