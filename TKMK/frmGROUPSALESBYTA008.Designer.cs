@@ -1521,11 +1521,11 @@
             // 
             this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(3, 0);
+            this.label8.Location = new System.Drawing.Point(3, 6);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(68, 29);
+            this.label8.Size = new System.Drawing.Size(68, 16);
             this.label8.TabIndex = 7;
-            this.label8.Text = "交易筆數";
+            this.label8.Text = "交易數";
             // 
             // label36
             // 
