@@ -2689,6 +2689,8 @@ namespace TKMK
             comboBox3.Enabled = true;
             comboBox5.Enabled = true;
             comboBox6.Enabled = true;
+            comboBox10.Enabled = true;
+            comboBox11.Enabled = true;
         }
 
         public void SETTEXT2()
@@ -2703,6 +2705,8 @@ namespace TKMK
             comboBox3.Enabled = false;
             comboBox5.Enabled = false;
             comboBox6.Enabled = false;
+            comboBox10.Enabled = false;
+            comboBox11.Enabled = false;
         }
 
         public void SETTEXT3()
@@ -2716,6 +2720,8 @@ namespace TKMK
             comboBox2.Enabled = true;
             comboBox5.Enabled = true;
             comboBox6.Enabled = true;
+            comboBox10.Enabled = true;
+            comboBox11.Enabled = true;
 
         }
 
@@ -2730,6 +2736,8 @@ namespace TKMK
             comboBox2.Enabled = false;
             comboBox5.Enabled = false;
             comboBox6.Enabled = false;
+            comboBox10.Enabled = false;
+            comboBox11.Enabled = false;
         }
         public void SETTEXT5()
         {
