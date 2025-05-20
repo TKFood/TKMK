@@ -53,6 +53,8 @@ namespace TKMK
             comboBox2load();
             comboBox3load();
             comboBox4load();
+            comboBox10load();
+            comboBox11load();
         }
 
         #region FUNCTION    
@@ -181,7 +183,64 @@ namespace TKMK
 
             comboBox4.Font = new Font("Arial", 10); // 使用 "Arial" 字體，字體大小為 12
         }
+        public void comboBox10load()
+        {
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
 
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"                                 
+                                SELECT [PARASNAMES],[DVALUES] FROM [TKMK].[dbo].[TBZPARAS] WHERE [KINDS]='PLAYDAYKINDS' ORDER BY [PARASNAMES]
+                                ");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("PARASNAMES", typeof(string));
+            da.Fill(dt);
+            comboBox10.DataSource = dt.DefaultView;
+            comboBox10.ValueMember = "PARASNAMES";
+            comboBox10.DisplayMember = "PARASNAMES";
+            sqlConn.Close();
+
+        }
+        public void comboBox11load()
+        {
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"                                 
+                                SELECT [PARASNAMES],[DVALUES] FROM [TKMK].[dbo].[TBZPARAS] WHERE [KINDS]='PLAYDAYS' ORDER BY [PARASNAMES]
+                                ");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("PARASNAMES", typeof(string));
+            da.Fill(dt);
+            comboBox11.DataSource = dt.DefaultView;
+            comboBox11.ValueMember = "PARASNAMES";
+            comboBox11.DisplayMember = "PARASNAMES";
+            sqlConn.Close();
+
+        }
         public void SEARCHGROUPSALES(string CREATEDATES)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
@@ -215,11 +274,15 @@ namespace TKMK
                                     ,[GROUPKIND]  AS '團類'
                                     ,[ISEXCHANGE] AS '兌換券'
                                     ,[CARCOMPANY] AS '來車公司'
+                                    ,[EXCHANACOOUNT] AS '優惠券帳號'
+                                    ,[PLAYDAYKINDS] AS '旅遊天數'
+                                    ,[PLAYDAYS] AS '第幾天'
                                     ,CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間'
                                     ,CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間'
                                     ,[STATUS] AS '狀態'
                                     ,[ID]
                                     ,[CREATEDATES]
+
                                     FROM [TKMK].[dbo].[GROUPSALES]
                                     WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'
                                     ORDER BY CONVERT(nvarchar,[CREATEDATES],112),CONVERT(int,[SERNO]) 
@@ -315,6 +378,8 @@ namespace TKMK
                     comboBox2.Text = row.Cells["車種"].Value.ToString();   
                     comboBox3.Text = row.Cells["團類"].Value.ToString();
                     comboBox4.Text = row.Cells["兌換券"].Value.ToString();
+                    comboBox10.Text = row.Cells["旅遊天數"].Value.ToString();
+                    comboBox11.Text = row.Cells["第幾天"].Value.ToString();
                 }
                 else
                 {
@@ -325,14 +390,16 @@ namespace TKMK
         }
 
         public void UPDATE_GROUPSALES(
-            string ID,
-            string TA008,
-            string CARNAME,
-            string CARNO,
-            string CARKIND,
-            string GROUPKIND,
-            string ISEXCHANGE,
-            string CARCOMPANY
+            string ID
+            , string TA008
+            , string CARNAME
+            , string CARNO
+            , string CARKIND
+            , string GROUPKIND
+            , string ISEXCHANGE
+            , string CARCOMPANY
+            , string PLAYDAYKINDS
+            , string PLAYDAYS
             )
         {
             try
@@ -358,24 +425,28 @@ namespace TKMK
                 sbSql.AppendFormat(@" 
                                     UPDATE [TKMK].[dbo].[GROUPSALES]
                                     SET 
-                                        TA008='{1}',
-                                        CARNAME='{2}',
-                                        CARNO='{3}',
-                                        CARKIND='{4}',
-                                        GROUPKIND='{5}',
-                                        ISEXCHANGE='{6}',
-                                        CARCOMPANY='{7}'
+                                        TA008='{1}'
+                                        , CARNAME='{2}'
+                                        , CARNO='{3}'
+                                        , CARKIND='{4}'
+                                        , GROUPKIND='{5}'
+                                        , ISEXCHANGE='{6}'
+                                        , CARCOMPANY='{7}'
+                                        , PLAYDAYKINDS='{8}'
+                                        , PLAYDAYS='{9}'
                                     WHERE 
                                     ID='{0}'
                                     ",
-                                    ID,
-                                    TA008,
-                                    CARNAME,
-                                    CARNO,
-                                    CARKIND,
-                                    GROUPKIND,
-                                    ISEXCHANGE,
-                                    CARCOMPANY
+                                    ID
+                                    , TA008
+                                    , CARNAME
+                                    , CARNO
+                                    , CARKIND
+                                    , GROUPKIND
+                                     ,ISEXCHANGE
+                                    , CARCOMPANY
+                                    , PLAYDAYKINDS
+                                    , PLAYDAYS
                                     );
 
                 sbSql.AppendFormat(@" ");
@@ -614,8 +685,10 @@ namespace TKMK
             string GROUPKIND = "";
             string ISEXCHANGE = "";
             string CARCOMPANY = "";
-            
-            if(!string.IsNullOrEmpty(textBox1.Text.Trim()))
+            string PLAYDAYKINDS = "";
+            string PLAYDAYS = "";
+
+            if (!string.IsNullOrEmpty(textBox1.Text.Trim()))
             {
                 ID = textBox1.Text.Trim();
                 TA008 = textBox151.Text.Trim();
@@ -625,16 +698,20 @@ namespace TKMK
                 GROUPKIND = comboBox3.Text.ToString().Trim();
                 ISEXCHANGE = comboBox4.Text.ToString().Trim();
                 CARCOMPANY = comboBox1.Text.ToString().Trim();
+                PLAYDAYKINDS = comboBox10.Text.Trim();
+                PLAYDAYS = comboBox11.Text.Trim();
 
                 UPDATE_GROUPSALES(
-                            ID,
-                            TA008,
-                            CARNAME,
-                            CARNO,
-                            CARKIND,
-                            GROUPKIND,
-                            ISEXCHANGE,
-                            CARCOMPANY
+                            ID
+                            ,TA008
+                            ,CARNAME
+                            ,CARNO
+                            ,CARKIND
+                            ,GROUPKIND
+                            ,ISEXCHANGE
+                            ,CARCOMPANY
+                            ,PLAYDAYKINDS
+                            ,PLAYDAYS
                             );
 
                 SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
