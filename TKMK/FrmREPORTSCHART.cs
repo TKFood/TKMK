@@ -70,6 +70,8 @@ namespace TKMK
             dateTimePicker6.Value = LastDay;
             dateTimePicker7.Value = MONTHFirstDay;
             dateTimePicker8.Value = LastDay;
+            dateTimePicker9.Value = MONTHFirstDay;
+            dateTimePicker10.Value = LastDay;
         }
 
         public void SETFASTREPORT(string SDATES, string EDATES)
@@ -381,6 +383,93 @@ namespace TKMK
 
         }
 
+        public void SETFASTREPORT5(string SDATES, string EDATES)
+        {
+            StringBuilder SQL1 = new StringBuilder();
+            StringBuilder SQL2= new StringBuilder();
+
+            SQL1 = SETSQL5A(SDATES, EDATES);
+            SQL2 = SETSQL5B(SDATES, EDATES);
+            Report report1 = new Report();
+            report1.Load(@"REPORT\團車旅遊圖表.frx");
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+            report1.Dictionary.Connections[0].CommandTimeout = 180;
+
+
+            TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
+            table.SelectCommand = SQL1.ToString();
+            TableDataSource table1 = report1.GetDataSource("Table1") as TableDataSource;
+            table1.SelectCommand = SQL2.ToString();
+
+
+            report1.SetParameterValue("P1", SDATES);
+            report1.SetParameterValue("P2", EDATES);
+
+            report1.Preview = previewControl5;
+            report1.Show();
+        }
+
+        public StringBuilder SETSQL5A(string SDATES, string EDATES)
+        {
+            StringBuilder SB = new StringBuilder();
+
+
+            SB.AppendFormat(@"                              
+                             SELECT 
+                                [PLAYDAYKINDS] + ' ' + CONVERT(NVARCHAR, CAST(COUNT([PLAYDAYKINDS]) * 100.0 / SUM(COUNT([PLAYDAYKINDS])) OVER () AS DECIMAL(5, 2))) + '%' AS [PLAYDAYKINDS],
+                                COUNT([PLAYDAYKINDS]) AS NUM
+                            FROM 
+                                [TKMK].[dbo].[GROUPSALES]
+                            WHERE 
+                                CONVERT(NVARCHAR,[CREATEDATES],112) >= '{0}'
+	                            AND  CONVERT(NVARCHAR,[CREATEDATES],112) <= '{1}'
+                            GROUP BY 
+                                [PLAYDAYKINDS]
+                            ORDER BY 
+                                COUNT([PLAYDAYKINDS]) DESC
+
+                            ", SDATES, EDATES);
+
+            return SB;
+
+        }
+        public StringBuilder SETSQL5B(string SDATES, string EDATES)
+        {
+            StringBuilder SB = new StringBuilder();
+
+
+            SB.AppendFormat(@" 
+                            SELECT 
+                                [PLAYDAYS] + ' ' + CONVERT(NVARCHAR, CAST(COUNT([PLAYDAYS]) * 100.0 / SUM(COUNT([PLAYDAYS])) OVER () AS DECIMAL(5, 2))) + '%' AS [PLAYDAYS],
+                                COUNT([PLAYDAYS]) AS NUM
+                            FROM 
+                                [TKMK].[dbo].[GROUPSALES]
+                            WHERE 
+                                CONVERT(NVARCHAR,[CREATEDATES],112) >= '{0}'
+	                            AND  CONVERT(NVARCHAR,[CREATEDATES],112) <= '{1}'
+                            GROUP BY 
+                                [PLAYDAYS]
+                            ORDER BY 
+                                COUNT([PLAYDAYS]) DESC                             
+
+                            ", SDATES, EDATES);
+
+            return SB;
+
+        }
+
 
         #endregion
 
@@ -404,6 +493,10 @@ namespace TKMK
             SETFASTREPORT4(dateTimePicker7.Value.ToString("yyyyMMdd"), dateTimePicker8.Value.ToString("yyyyMMdd"));
         }
 
+        private void button5_Click(object sender, EventArgs e)
+        {
+            SETFASTREPORT5(dateTimePicker9.Value.ToString("yyyyMMdd"), dateTimePicker10.Value.ToString("yyyyMMdd"));
+        }
         #endregion
 
 
