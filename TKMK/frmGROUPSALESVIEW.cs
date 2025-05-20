@@ -151,9 +151,38 @@ namespace TKMK
                 sbSqlQuery.Clear();
 
                 sbSql.AppendFormat(@" SELECT  
-                                    [SERNO] AS '序號',[CARNAME] AS '車名',[CARNO] AS '車號',[CARKIND] AS '車種',[GROUPKIND]  AS '團類',[ISEXCHANGE] AS '兌換券',[EXCHANGETOTALMONEYS] AS '券總額',[EXCHANGESALESMMONEYS] AS '券消費',[SALESMMONEYS] AS '消費總額'
-                                    ,[SPECIALMNUMS] AS '特賣數',[SPECIALMONEYS] AS '特賣獎金',[COMMISSIONBASEMONEYS] AS '茶水費',[COMMISSIONPCTMONEYS] AS '消費獎金',[TOTALCOMMISSIONMONEYS] AS '總獎金',[CARNUM] AS '車數',[GUSETNUM] AS '交易筆數',[EXCHANNO] AS '優惠券名',[EXCHANACOOUNT] AS '優惠券帳號',CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間',CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間',[STATUS] AS '狀態'
-                                    ,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間',CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間',[EXCHANGEMONEYS] AS '領券額',[CARCOMPANY] AS '來車公司',[ID],[CREATEDATES]
+                                    [SERNO] AS '序號'
+                                    ,[CARNAME] AS '車名'
+                                    ,[CARNO] AS '車號'
+                                    ,[CARKIND] AS '車種'
+                                    ,[GROUPKIND]  AS '團類'
+                                    ,[ISEXCHANGE] AS '兌換券'
+                                    ,[EXCHANGETOTALMONEYS] AS '券總額'
+                                    ,[EXCHANGESALESMMONEYS] AS '券消費'
+                                    ,[SALESMMONEYS] AS '消費總額'
+                                    ,[SPECIALMNUMS] AS '特賣數'
+                                    ,[SPECIALMONEYS] AS '特賣獎金'
+                                    ,[COMMISSIONBASEMONEYS] AS '茶水費'
+                                    ,[COMMISSIONPCTMONEYS] AS '消費獎金'
+                                    ,[TOTALCOMMISSIONMONEYS] AS '總獎金'
+                                    ,[CARNUM] AS '車數'
+                                    ,[GUSETNUM] AS '交易筆數'
+                                    ,[CARCOMPANY] AS '來車公司'
+                                    ,[TA008NO] AS '業務員名'
+                                    ,[TA008] AS '業務員帳號'
+                                    ,[EXCHANNO] AS '優惠券名'
+                                    ,[EXCHANACOOUNT] AS '優惠券帳號'
+                                    ,[PLAYDAYKINDS] AS '旅遊天數'
+                                    ,[PLAYDAYS] AS '第幾天'
+                                    ,CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間'
+                                    ,CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間'
+                                    ,[STATUS] AS '狀態'
+                                    ,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間'
+                                    ,CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間'
+                                    ,[EXCHANGEMONEYS] AS '領券額'
+                                    ,[ID]
+                                    ,[CREATEDATES]
+
                                     FROM [TKMK].[dbo].[GROUPSALES]
                                     WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'
                                     AND [STATUS]<>'取消預約'
