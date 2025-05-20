@@ -1084,6 +1084,8 @@ namespace TKMK
             , string PURGROUPENDDATES
             , string GROUPENDDATES
             , string STATUS
+            , string PLAYDAYKINDS
+            , string PLAYDAYS
            )
         {
 
@@ -1140,6 +1142,8 @@ namespace TKMK
                                     ,[PURGROUPENDDATES]
                                     ,[GROUPENDDATES]
                                     ,[STATUS]
+                                    ,[PLAYDAYKINDS]
+                                    ,[PLAYDAYS]
                                     )
                                     VALUES
                                     (
@@ -1172,6 +1176,8 @@ namespace TKMK
                                     ,'{26}'
                                     ,'{27}'
                                     ,'{28}'
+                                    ,'{29}'
+                                    ,'{30}'
                                     )
                                     ", CREATEDATES
                                     , SERNO
@@ -1202,6 +1208,8 @@ namespace TKMK
                                     , PURGROUPENDDATES
                                     , GROUPENDDATES
                                     , STATUS
+                                    , PLAYDAYKINDS
+                                    , PLAYDAYS
                                     );
                 sbSql.AppendFormat(@" ");
 
@@ -1222,9 +1230,9 @@ namespace TKMK
 
                 }
             }
-            catch
+            catch(Exception ex)
             {
-
+                MessageBox.Show(ex.ToString());
             }
 
             finally
@@ -1264,6 +1272,8 @@ namespace TKMK
                                     , string EXCHANNO
                                     , string EXCHANACOOUNT
                                     , string STATUS
+                                    , string PLAYDAYKINDS
+                                    , string PLAYDAYS
                                     )
         {
             try
@@ -1301,6 +1311,8 @@ namespace TKMK
                                     ,EXCHANNO='{11}'
                                     ,EXCHANACOOUNT='{12}'
                                     ,STATUS='{13}'
+                                    ,PLAYDAYKINDS='{14}'
+                                    ,PLAYDAYS='{15}'
                                     WHERE ID='{0}'
                                   ", ID
                                     , CARCOMPANY
@@ -1316,6 +1328,8 @@ namespace TKMK
                                     , EXCHANNO
                                     , EXCHANACOOUNT
                                     , STATUS
+                                    , PLAYDAYKINDS
+                                    , PLAYDAYS
                                   );
 
                 cmd.Connection = sqlConn;
@@ -3646,6 +3660,8 @@ namespace TKMK
                 string CARKIND = comboBox1.Text.Trim();
                 string GROUPKIND = comboBox2.Text.Trim();
                 string ISEXCHANGE = comboBox6.Text.Trim();
+                string PLAYDAYKINDS = comboBox10.Text.Trim();
+                string PLAYDAYS = comboBox11.Text.Trim();
 
 
 
@@ -3707,6 +3723,8 @@ namespace TKMK
                         , PURGROUPENDDATES
                         , GROUPENDDATES
                         , STATUS
+                        , PLAYDAYKINDS
+                        , PLAYDAYS
                        );
 
                         textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
@@ -3752,6 +3770,8 @@ namespace TKMK
                     string CARKIND = comboBox1.Text.Trim();
                     string GROUPKIND = comboBox2.Text.Trim();
                     string ISEXCHANGE = comboBox6.Text.Trim();
+                    string PLAYDAYKINDS = comboBox10.Text.Trim();
+                    string PLAYDAYS = comboBox11.Text.Trim();
 
                     string CARNUM = textBox142.Text.Trim();
                     string GUSETNUM = textBox143.Text.Trim();
@@ -3781,6 +3801,8 @@ namespace TKMK
                                     , EXCHANNO
                                     , EXCHANACOOUNT
                                     , "預約接團"
+                                    , PLAYDAYKINDS
+                                    , PLAYDAYS
                                     );
                     }
 
@@ -4014,6 +4036,8 @@ namespace TKMK
                     string CARKIND = comboBox1.Text.Trim();
                     string GROUPKIND = comboBox2.Text.Trim();
                     string ISEXCHANGE = comboBox6.Text.Trim();
+                    string PLAYDAYKINDS = comboBox10.Text.Trim();
+                    string PLAYDAYS = comboBox11.Text.Trim();
 
                     string CARNUM = textBox142.Text.Trim();
                     string GUSETNUM = textBox143.Text.Trim();
@@ -4038,6 +4062,8 @@ namespace TKMK
                                     , EXCHANNO
                                     , EXCHANACOOUNT
                                     , "取消預約"
+                                    , PLAYDAYKINDS
+                                    , PLAYDAYS
                                     );
                 }
 
@@ -4061,6 +4087,8 @@ namespace TKMK
                     string CARKIND = comboBox1.Text.Trim();
                     string GROUPKIND = comboBox2.Text.Trim();
                     string ISEXCHANGE = comboBox6.Text.Trim();
+                    string PLAYDAYKINDS = comboBox10.Text.Trim();
+                    string PLAYDAYS = comboBox11.Text.Trim();
 
                     string CARNUM = textBox142.Text.Trim();
                     string GUSETNUM = textBox143.Text.Trim();
@@ -4085,6 +4113,8 @@ namespace TKMK
                                     , EXCHANNO
                                     , EXCHANACOOUNT
                                     , "異常結案"
+                                    , PLAYDAYKINDS
+                                    , PLAYDAYS
                                     );
                 }
 
