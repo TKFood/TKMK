@@ -111,7 +111,7 @@ namespace TKMK
 	                            FROM [TK].dbo.POSML
 	                            WHERE ML003 IN 
                                     (
-                                        SELECT  [MJ003]  FROM [TKMK].[dbo].[TB_MJ003] WHERE YEARS='2025'
+                                        SELECT  [MJ003]  FROM [TKMK].[dbo].[TB_MJ003] WHERE YEARS='{2}'
                                     )
                                 ) AS 'ML004005'
                             FROM [TK].dbo.POSTA WITH(NOLOCK),[TK].dbo.POSTB WITH(NOLOCK)
