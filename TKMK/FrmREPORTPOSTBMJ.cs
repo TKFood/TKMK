@@ -109,7 +109,11 @@ namespace TKMK
                             TA002,TA001,TA003,TA014,SUM(TB019) 'TB019',SUM(TB025) 'TB025'
 	                            ,(SELECT SUM(ML004+ML005)
 	                            FROM [TK].dbo.POSML
-	                            WHERE ML003='420250101016') AS 'ML004005'
+	                            WHERE ML003 IN 
+                                    (
+                                        SELECT  [MJ003]  FROM [TKMK].[dbo].[TB_MJ003] WHERE YEARS='2025'
+                                    )
+                                ) AS 'ML004005'
                             FROM [TK].dbo.POSTA WITH(NOLOCK),[TK].dbo.POSTB WITH(NOLOCK)
                             WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006
                             AND TA002 IN (SELECT  [TA002]  FROM [TKMK].[dbo].[TB_TA002])
