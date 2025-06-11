@@ -201,6 +201,12 @@
     <Compile Include="FrmREPORTSCHART.Designer.cs">
       <DependentUpon>FrmREPORTSCHART.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmREPORTSCOUNTS.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmREPORTSCOUNTS.Designer.cs">
+      <DependentUpon>FrmREPORTSCOUNTS.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmREPORTSDALYPOS.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -286,6 +292,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmREPORTSCHART.resx">
       <DependentUpon>FrmREPORTSCHART.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmREPORTSCOUNTS.resx">
+      <DependentUpon>FrmREPORTSCOUNTS.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmREPORTSDALYPOS.resx">
       <DependentUpon>FrmREPORTSDALYPOS.cs</DependentUpon>
