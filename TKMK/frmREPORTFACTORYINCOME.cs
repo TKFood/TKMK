@@ -125,7 +125,7 @@ namespace TKMK
                                     ,(SUM(TA026)-(SELECT ROUND(ISNULL(SUM([SALESMMONEYS]),0),0) FROM [TKMK].[dbo].[GROUPSALES] WHERE  [STATUS]='完成接團' AND CONVERT(nvarchar,[CREATEDATES],112)=TA001)) AS 'VISITORMONEYS'
                                     ,(SELECT ISNULL(SUM(CARNUM),0) FROM [TKMK].[dbo].[GROUPSALES] WHERE  [STATUS]='完成接團' AND CONVERT(nvarchar,[CREATEDATES],112)=TA001) AS 'CARNUM'
                                     FROM [TK].dbo.POSTA
-                                    WHERE TA002 IN ('106701','106702')
+                                    WHERE TA002 IN (SELECT  [TA002]  FROM [TKMK].[dbo].[TB_POS_TA002])
                                     AND TA001>='{0}' AND TA001<='{1}'
                                     GROUP BY TA001
                                     ) AS TEMP
