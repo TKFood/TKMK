@@ -95,7 +95,7 @@ namespace TKMK
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
                 sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
-
+                 
                 String connectionString;
                 sqlConn = new SqlConnection(sqlsb.ConnectionString);
 
