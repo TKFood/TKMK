@@ -123,6 +123,12 @@
     <Compile Include="frmGROUPSALESBYTA008.Designer.cs">
       <DependentUpon>frmGROUPSALESBYTA008.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmGROUPSALESBYTA008TEMP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmGROUPSALESBYTA008TEMP.Designer.cs">
+      <DependentUpon>frmGROUPSALESBYTA008TEMP.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmGROUPSALESLOCAL.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -253,6 +259,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmGROUPSALESBYTA008.resx">
       <DependentUpon>frmGROUPSALESBYTA008.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmGROUPSALESBYTA008TEMP.resx">
+      <DependentUpon>frmGROUPSALESBYTA008TEMP.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmGROUPSALESLOCAL.resx">
       <DependentUpon>frmGROUPSALESLOCAL.cs</DependentUpon>
