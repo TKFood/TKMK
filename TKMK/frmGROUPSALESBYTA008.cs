@@ -3475,14 +3475,14 @@ namespace TKMK
                                     AND [GROUPSALES].[STATUS] IN ('預約接團')
                                     AND [GROUPSALES].ID=#TempTable.ID
 
-                                    UPDATE [TKMK].[dbo].[GROUPSALES]
+                                   UPDATE [TKMK].[dbo].[GROUPSALES]
                                     SET [COMMISSIONBASEMONEYS]=0
                                     ,[COMMISSIONPCT]=0.1
                                     ,[COMMISSIONPCTMONEYS]=[SALESMMONEYS]*0.1
                                     ,[TOTALCOMMISSIONMONEYS]=[SALESMMONEYS]*0.1
                                     WHERE [CARKIND]='空車伴手禮' 
                                     AND [SALESMMONEYS]>=1 AND [SALESMMONEYS]<=4999 
-                                    ANDCONVERT(nvarchar,[GROUPSALES].[CREATEDATES],112)='{0}'
+                                    AND CONVERT(nvarchar,[GROUPSALES].[CREATEDATES],112)='{0}'
 
                                    ", SDATES);
 
