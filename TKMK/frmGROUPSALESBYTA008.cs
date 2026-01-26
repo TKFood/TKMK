@@ -4672,6 +4672,8 @@ namespace TKMK
             );
 
             SEARCH_GV3(dateTimePicker8.Value.ToString("yyyyMMdd"), dateTimePicker9.Value.ToString("yyyyMMdd"));
+
+            MessageBox.Show("完成");
         }
 
 
