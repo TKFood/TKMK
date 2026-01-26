@@ -745,6 +745,8 @@ namespace TKMK
                                     ,[EXCHANACOOUNT] AS '優惠券帳號'
                                     ,[PLAYDAYKINDS] AS '旅遊天數'
                                     ,[PLAYDAYS] AS '第幾天'
+                                    ,[DRIVERS] AS '司機'
+                                    ,[TOURS] AS '領隊'
                                     ,CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間'
                                     ,CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間'
                                     ,[STATUS] AS '狀態'
@@ -1086,6 +1088,8 @@ namespace TKMK
             , string STATUS
             , string PLAYDAYKINDS
             , string PLAYDAYS
+            , string DRIVERS
+            , string TOURS
            )
         {
 
@@ -1144,6 +1148,8 @@ namespace TKMK
                                     ,[STATUS]
                                     ,[PLAYDAYKINDS]
                                     ,[PLAYDAYS]
+                                    ,[DRIVERS]
+                                    ,[TOURS]
                                     )
                                     VALUES
                                     (
@@ -1178,6 +1184,8 @@ namespace TKMK
                                     ,'{28}'
                                     ,'{29}'
                                     ,'{30}'
+                                     ,'{31}'
+                                     ,'{32}'
                                     )
                                     ", CREATEDATES
                                     , SERNO
@@ -1210,6 +1218,8 @@ namespace TKMK
                                     , STATUS
                                     , PLAYDAYKINDS
                                     , PLAYDAYS
+                                    , DRIVERS
+                                    , TOURS
                                     );
                 sbSql.AppendFormat(@" ");
 
@@ -1274,6 +1284,8 @@ namespace TKMK
                                     , string STATUS
                                     , string PLAYDAYKINDS
                                     , string PLAYDAYS
+                                    , string DRIVERS
+                                    , string TOURS
                                     )
         {
             try
@@ -1313,6 +1325,8 @@ namespace TKMK
                                     ,STATUS='{13}'
                                     ,PLAYDAYKINDS='{14}'
                                     ,PLAYDAYS='{15}'
+                                    ,DRIVERS='{16}'
+                                    ,TOURS='{17}'
                                     WHERE ID='{0}'
                                   ", ID
                                     , CARCOMPANY
@@ -1330,6 +1344,8 @@ namespace TKMK
                                     , STATUS
                                     , PLAYDAYKINDS
                                     , PLAYDAYS
+                                    , DRIVERS
+                                    , TOURS
                                   );
 
                 cmd.Connection = sqlConn;
@@ -3695,6 +3711,8 @@ namespace TKMK
                 string TA008 = comboBox3.Text.Trim().Substring(0, 7).ToString();
                 string TA008NO = textBox144.Text.Trim();
                 string CARCOMPANY = comboBox5.SelectedValue.ToString();
+                string DRIVERS = textBox151.Text.Trim();
+                string TOURS = textBox161.Text.Trim();
 
                 try
                 {
@@ -3733,6 +3751,8 @@ namespace TKMK
                         , STATUS
                         , PLAYDAYKINDS
                         , PLAYDAYS
+                        , DRIVERS
+                        , TOURS
                        );
 
                         textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
@@ -3756,6 +3776,7 @@ namespace TKMK
                 if (!string.IsNullOrEmpty(CARNO) && !string.IsNullOrEmpty(CARNAME) && !string.IsNullOrEmpty(CARKIND))
                 {
                     int ISCAR = SEARCHGROUPCAR(CARNO);
+
 
                     if (ISCAR == 0)
                     {
@@ -3788,6 +3809,8 @@ namespace TKMK
                     string CARCOMPANY = comboBox5.SelectedValue.ToString();
                     string TA008NO = textBox144.Text.Trim();
                     string TA008 = comboBox3.Text.Trim().Substring(0, 7).ToString();
+                    string DRIVERS = textBox151.Text.Trim();
+                    string TOURS = textBox161.Text.Trim();
                     //string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     //string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     //string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
@@ -3811,6 +3834,8 @@ namespace TKMK
                                     , "預約接團"
                                     , PLAYDAYKINDS
                                     , PLAYDAYS
+                                    , DRIVERS
+                                    , TOURS
                                     );
                     }
 
@@ -4053,8 +4078,10 @@ namespace TKMK
                     string EXCHANACOOUNT = comboBox3.Text.Trim().Substring(0, 7).ToString();
                     string CARCOMPANY = comboBox5.SelectedValue.ToString();
                     string TA008NO = textBox144.Text.Trim();
-                    string TA008 = comboBox3.Text.Trim().Substring(0, 7).ToString();               
-                    
+                    string TA008 = comboBox3.Text.Trim().Substring(0, 7).ToString();
+                    string DRIVERS = textBox151.Text.Trim();
+                    string TOURS = textBox161.Text.Trim();
+
                     UPDATEGROUPSALES(
                                       ID
                                     , CARCOMPANY
@@ -4072,6 +4099,8 @@ namespace TKMK
                                     , "取消預約"
                                     , PLAYDAYKINDS
                                     , PLAYDAYS
+                                    , DRIVERS
+                                    , TOURS
                                     );
                 }
 
@@ -4105,7 +4134,9 @@ namespace TKMK
                     string CARCOMPANY = comboBox5.SelectedValue.ToString();
                     string TA008NO = textBox144.Text.Trim();
                     string TA008 = comboBox3.Text.Trim().Substring(0, 7).ToString();
-                  
+                    string DRIVERS = textBox151.Text.Trim();
+                    string TOURS = textBox161.Text.Trim();
+
                     UPDATEGROUPSALES(
                                       ID
                                     , CARCOMPANY
@@ -4123,6 +4154,8 @@ namespace TKMK
                                     , "異常結案"
                                     , PLAYDAYKINDS
                                     , PLAYDAYS
+                                    , DRIVERS
+                                    , TOURS
                                     );
                 }
 
