@@ -2777,7 +2777,7 @@ namespace TKMK
         }
         public void SETTEXT5()
         {
-            comboBox3.Enabled = true;
+            comboBox3.Enabled = true; 
         }
 
         public void SETTEXT6()
@@ -2870,12 +2870,14 @@ namespace TKMK
                             ,[GROUPENDDATES]
                             ,DATEDIFF(HOUR, CONVERT(DATETIME,[GROUPSTARTDATES]), CONVERT(DATETIME,[GROUPENDDATES])) AS '停留小時'
                             ,DATEDIFF(MINUTE, CONVERT(DATETIME,[GROUPSTARTDATES]), CONVERT(DATETIME,[GROUPENDDATES])) AS '停留分鐘'
+                            ,[DRIVERS] AS '司機'
+                            ,[TOURS] AS '領隊'
                             FROM [TKMK].[dbo].[GROUPSALES] WITH (NOLOCK) 
                              WHERE CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)>='{0}' AND CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)<='{1}'                              
                              AND [STATUS]='完成接團'
                                 {2}
                              ORDER BY CONVERT(NVARCHAR,[PURGROUPSTARTDATES], 112),[SERNO]
-                            ",SDATES, EDATES, SBQUERY1.ToString());
+                            ", SDATES, EDATES, SBQUERY1.ToString());
 
             return SB;
 
