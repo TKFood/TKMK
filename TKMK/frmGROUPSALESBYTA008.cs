@@ -3629,7 +3629,306 @@ namespace TKMK
             return isChecked;
         }
 
+        public void SEARCH_GV3(string SDATES,string EDATES)
+        {
+            SqlDataAdapter adapter1 = new SqlDataAdapter();
+            SqlCommandBuilder sqlCmdBuilder1 = new SqlCommandBuilder();
+            DataSet ds1 = new DataSet();
 
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sbSqlQuery.Clear();
+
+                sbSql.AppendFormat(@"                                     
+                                    SELECT  
+                                    [SERNO] AS '序號'
+                                    ,[CARNAME] AS '車名'
+                                    ,[CARNO] AS '車號'
+                                    ,[CARKIND] AS '車種'
+                                    ,[GROUPKIND]  AS '團類'
+                                    ,[ISEXCHANGE] AS '兌換券'
+                                    ,[EXCHANGETOTALMONEYS] AS '券總額'
+                                    ,[EXCHANGESALESMMONEYS] AS '券消費'
+                                    ,[SALESMMONEYS] AS '消費總額'
+                                    ,[SPECIALMNUMS] AS '特賣數'
+                                    ,[SPECIALMONEYS] AS '特賣獎金'
+                                    ,[COMMISSIONBASEMONEYS] AS '茶水費'
+                                    ,[COMMISSIONPCTMONEYS] AS '消費獎金'
+                                    ,[TOTALCOMMISSIONMONEYS] AS '總獎金'
+                                    ,[CARNUM] AS '車數'
+                                    ,[GUSETNUM] AS '交易筆數'
+                                    ,[CARCOMPANY] AS '來車公司'
+                                    ,[TA008NO] AS '業務員名'
+                                    ,[TA008] AS '業務員帳號'
+                                    ,[EXCHANNO] AS '優惠券名'
+                                    ,[EXCHANACOOUNT] AS '優惠券帳號'
+                                    ,[PLAYDAYKINDS] AS '旅遊天數'
+                                    ,[PLAYDAYS] AS '第幾天'
+                                    ,[DRIVERS] AS '司機'
+                                    ,[TOURS] AS '領隊'
+                                    ,CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間'
+                                    ,CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間'
+                                    ,[STATUS] AS '狀態'
+                                    ,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間'
+                                    ,CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間'
+                                    ,[EXCHANGEMONEYS] AS '領券額'
+                                    ,[ID]
+                                    ,[CREATEDATES]
+
+                                    FROM [TKMK].[dbo].[GROUPSALES]
+                                    WHERE CONVERT(nvarchar,[CREATEDATES],112)>='{0}' AND CONVERT(nvarchar,[CREATEDATES],112)<='{1}'
+                                    AND [STATUS]<>'取消預約'
+                                    ORDER BY CONVERT(nvarchar,[CREATEDATES],112),CONVERT(int,[SERNO]) DESC
+                                    ", SDATES, EDATES);
+
+
+                adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
+                sqlConn.Open();
+                ds1.Clear();
+                adapter1.Fill(ds1, "ds1");
+                sqlConn.Close();
+
+
+                if (ds1.Tables["ds1"].Rows.Count == 0)
+                {
+                    dataGridView1.DataSource = null;
+                }
+                else
+                {
+                    if (ds1.Tables["ds1"].Rows.Count >= 1)
+                    {
+                        DataGridView DGV = new DataGridView();
+                        DGV = dataGridView3;
+                        DGV.DataSource = ds1.Tables["ds1"];
+
+                        DGV.AutoResizeColumns();
+                        DGV.ColumnHeadersDefaultCellStyle.Font = new Font("Tahoma", 9);
+                        DGV.DefaultCellStyle.Font = new Font("Tahoma", 10);
+                        DGV.Columns["序號"].Width = 30;
+                        DGV.Columns["車名"].Width = 80;
+                        DGV.Columns["車號"].Width = 100;
+                        DGV.Columns["車種"].Width = 160;
+                        DGV.Columns["團類"].Width = 80;
+                        DGV.Columns["兌換券"].Width = 20;
+
+                        DGV.Columns["券總額"].Width = 60;
+                        DGV.Columns["券消費"].Width = 60;
+                        DGV.Columns["券消費"].DefaultCellStyle.Format = "#,##0";
+                        DGV.Columns["券消費"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                        DGV.Columns["消費總額"].Width = 80;
+                        DGV.Columns["消費總額"].DefaultCellStyle.Format = "#,##0";
+                        DGV.Columns["消費總額"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                        DGV.Columns["特賣數"].Width = 60;
+                        DGV.Columns["特賣數"].DefaultCellStyle.Format = "#,##0";
+                        DGV.Columns["特賣數"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                        DGV.Columns["特賣獎金"].Width = 60;
+                        DGV.Columns["特賣獎金"].DefaultCellStyle.Format = "#,##0";
+                        DGV.Columns["特賣獎金"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                        DGV.Columns["茶水費"].Width = 60;
+                        DGV.Columns["茶水費"].DefaultCellStyle.Format = "#,##0";
+                        DGV.Columns["茶水費"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                        DGV.Columns["消費獎金"].Width = 60;
+                        DGV.Columns["消費獎金"].DefaultCellStyle.Format = "#,##0";
+                        DGV.Columns["消費獎金"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                        DGV.Columns["總獎金"].Width = 60;
+                        DGV.Columns["總獎金"].DefaultCellStyle.Format = "#,##0";
+                        DGV.Columns["總獎金"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                        DGV.Columns["車數"].Width = 60;
+                        DGV.Columns["交易筆數"].Width = 60;
+                        DGV.Columns["業務員名"].Width = 80;
+                        DGV.Columns["業務員帳號"].Width = 80;
+                        DGV.Columns["優惠券名"].Width = 80;
+                        DGV.Columns["優惠券帳號"].Width = 80;
+                        DGV.Columns["實際到達時間"].Width = 160;
+
+                        DGV.Columns["實際離開時間"].Width = 160;
+                        DGV.Columns["狀態"].Width = 160;
+                        DGV.Columns["預計到達時間"].Width = 100;
+                        DGV.Columns["預計離開時間"].Width = 80;
+                        //dataGridView1.Columns["抽佣比率"].Width = 80;
+                        DGV.Columns["領券額"].Width = 80;
+                        DGV.Columns["來車公司"].Width = 80;
+                        DGV.Columns["ID"].Width = 100;
+                        DGV.Columns["CREATEDATES"].Width = 80;
+
+                        //根据列表中数据不同，显示不同颜色背景
+                        foreach (DataGridViewRow dgRow in DGV.Rows)
+                        {
+                            dgRow.Cells["車名"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["車號"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["券總額"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["券消費"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["消費總額"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["消費獎金"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["特賣數"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["特賣獎金"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["茶水費"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["總獎金"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["交易筆數"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["優惠券名"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["業務員名"].Style.Font = new Font("Tahoma", 14);
+                            dgRow.Cells["來車公司"].Style.Font = new Font("Tahoma", 14);
+
+                            //判断
+                            if (dgRow.Cells["狀態"].Value.ToString().Trim().Equals("完成接團"))
+                            {
+                                //将这行的背景色设置成Pink
+                                dgRow.DefaultCellStyle.ForeColor = Color.Blue;
+                            }
+                            else if (dgRow.Cells["狀態"].Value.ToString().Trim().Equals("取消預約"))
+                            {
+                                //将这行的背景色设置成Pink
+                                dgRow.DefaultCellStyle.ForeColor = Color.Pink;
+                            }
+                            else if (dgRow.Cells["狀態"].Value.ToString().Trim().Equals("異常結案"))
+                            {
+                                //将这行的背景色设置成Pink
+                                dgRow.DefaultCellStyle.ForeColor = Color.Red;
+                            }
+                        }
+                    }
+
+                }
+
+
+                if (ROWSINDEX > 0 || COLUMNSINDEX > 0)
+                {
+                    dataGridView3.CurrentCell = dataGridView3.Rows[ROWSINDEX].Cells[COLUMNSINDEX];
+
+                    DataGridViewRow row = dataGridView3.Rows[ROWSINDEX];
+                    ID = row.Cells["ID"].Value.ToString();
+
+                }
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        private void dataGridView3_SelectionChanged(object sender, EventArgs e)
+        {
+            SET_TEXTBOX_NULL();
+
+            if (dataGridView3.CurrentRow != null)
+            {
+                int rowindex = dataGridView3.CurrentRow.Index;
+                
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView3.Rows[rowindex];
+                    ID = row.Cells["ID"].Value.ToString();
+                    textBox321.Text = ID;
+
+                    textBox311.Text = row.Cells["車號"].Value.ToString();
+                    textBox312.Text = row.Cells["車名"].Value.ToString();
+                    textBox313.Text = row.Cells["司機"].Value.ToString();
+                    textBox314.Text = row.Cells["領隊"].Value.ToString();
+      
+                }
+                else
+                {
+                    ID = null;
+                    STATUS = null;
+                }
+            }
+        }
+
+        public void UPDATE_GROUPSALES_CARS(
+            string  ID
+            ,string CARNO
+            , string CARNAME
+            , string DRIVERS
+            , string TOURS
+            )
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                sbSql.Clear();
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+
+                sbSql.AppendFormat(@" 
+                                    UPDATE [TKMK].[dbo].[GROUPSALES]
+                                    SET CARNO='{1}',CARNAME='{2}',DRIVERS='{3}',TOURS='{4}'
+                                    WHERE [ID]='{0}'
+                                    
+                                    ", ID
+                                    , CARNO
+                                    , CARNAME                                  
+                                    , DRIVERS
+                                    , TOURS
+                                    );
+                sbSql.AppendFormat(@" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+        public void SET_TEXTBOX_NULL()
+        {
+            textBox311.Text = "";
+            textBox312.Text = "";
+            textBox313.Text = "";
+            textBox314.Text = "";
+            textBox321.Text = "";
+        }
         #endregion
 
         #region BUTTON
@@ -4349,10 +4648,33 @@ namespace TKMK
             //this.Enabled = true;
         }
 
+        private void button19_Click(object sender, EventArgs e)
+        {
+            SEARCH_GV3(dateTimePicker8.Value.ToString("yyyyMMdd"), dateTimePicker9.Value.ToString("yyyyMMdd"));
+        }
+
+        private void button20_Click(object sender, EventArgs e)
+        {
+            string ID = textBox321.Text;
+            string CARNO = textBox311.Text;
+            string CARNAME = textBox312.Text;
+            string DRIVERS = textBox313.Text;
+            string TOURS = textBox314.Text;
+
+            UPDATE_GROUPSALES_CARS(
+             ID
+            , CARNO
+            , CARNAME
+            , DRIVERS
+            , TOURS
+            );
+
+            SEARCH_GV3(dateTimePicker8.Value.ToString("yyyyMMdd"), dateTimePicker9.Value.ToString("yyyyMMdd"));
+        }
 
 
         #endregion
 
-      
+       
     }
 }
