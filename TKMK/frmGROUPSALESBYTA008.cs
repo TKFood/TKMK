@@ -19,6 +19,7 @@ using FastReport;
 using FastReport.Data;
 using TKITDLL;
 using System.Runtime.InteropServices;
+using System.Xml;
 
 namespace TKMK
 {
@@ -4062,6 +4063,355 @@ namespace TKMK
                 }
             }
         }
+
+        public void UPDATE_GROUPSALES_STATUS(string id, string status)
+        {
+            // 1. 處理連線字串與解密
+            Class1 tkId = new Class1();
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+            sqlsb.Password = tkId.Decryption(sqlsb.Password);
+            sqlsb.UserID = tkId.Decryption(sqlsb.UserID);
+
+            // 2. 使用 using 確保資源自動釋放
+            using (SqlConnection conn = new SqlConnection(sqlsb.ConnectionString))
+            {
+                conn.Open();
+                // 開啟交易
+                using (SqlTransaction trans = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        string sql = @"UPDATE [TKMK].[dbo].[GROUPSALES]
+                               SET STATUS = @Status
+                               WHERE ID = @ID";
+
+                        using (SqlCommand command = new SqlCommand(sql, conn, trans))
+                        {
+                            command.CommandTimeout = 60;
+                            // 使用參數化查詢，避免 SQL Injection
+                            command.Parameters.AddWithValue("@Status", status ?? (object)DBNull.Value);
+                            command.Parameters.AddWithValue("@ID", id);
+
+                            int rowsAffected = command.ExecuteNonQuery();
+
+                            if (rowsAffected > 0)
+                            {
+                                trans.Commit();
+                            }
+                            else
+                            {
+                                // 若更新筆數為 0，通常代表 ID 不存在
+                                trans.Rollback();
+                                MessageBox.Show("找不到指定的 ID，更新失敗。");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // 發生錯誤時回滾
+                        if (trans.Connection != null) trans.Rollback();
+                        MessageBox.Show("系統錯誤：" + ex.Message);
+                    }
+                }
+            }
+        }
+
+        public void ADDTB_WKF_EXTERNAL_TASK_COPTECOPTF(string CARID)
+        {
+            int rowscounts = 0;
+
+            try
+            {
+                DataTable DT = SEARCH_UOF_GROUPSALES(CARID);
+
+                string EXTERNAL_FORM_NBR = CARID + "-" + DT.Rows[0]["CREATEDATES"].ToString().Trim() + "-" + DT.Rows[0]["序號"].ToString().Trim() + "-" + DT.Rows[0]["車名"].ToString().Trim();
+
+                string account = DT.Rows[0]["ACCOUNT"].ToString();
+                string jobTitleId = DT.Rows[0]["TITLE_ID"].ToString();
+                string fillerName = DT.Rows[0]["NAMES"].ToString();
+                string fillerUserGuid = DT.Rows[0]["USER_GUID"].ToString();
+                string depname = DT.Rows[0]["DEPNAME"].ToString();
+                string depno = DT.Rows[0]["DEPNO"].ToString();
+                string groupId = DT.Rows[0]["GROUP_ID"].ToString();
+
+                string form_id = SEARCHFORM_UOF_VERSION_ID("2001.團車申請表");
+
+                // 建立XML
+                XmlDocument xmlDoc = new XmlDocument();
+                XmlElement form = xmlDoc.CreateElement("Form");
+                if (!string.IsNullOrEmpty(form_id)) form.SetAttribute("formVersionId", form_id);
+                form.SetAttribute("urgentLevel", "2");
+                xmlDoc.AppendChild(form);
+                //建立XML的 applicant 節點
+                XmlElement applicant = CreateApplicant(xmlDoc, account, groupId, jobTitleId);
+                form.AppendChild(applicant);
+                //建立XML的 Comment 節點
+                XmlElement comment = xmlDoc.CreateElement("Comment");
+                comment.InnerText = "申請者意見";
+                applicant.AppendChild(comment);
+
+                //建立節點 FormFieldValue
+                XmlElement FormFieldValue = xmlDoc.CreateElement("FormFieldValue");
+                //加入至節點底下
+                form.AppendChild(FormFieldValue);
+
+                //建立節點FieldItem
+                //ID 表單編號	
+                AddFieldItem(xmlDoc, FormFieldValue, "ID", "", fillerName, fillerUserGuid, account);
+                AddFieldItem(xmlDoc, FormFieldValue, "SHOW", "", fillerName, fillerUserGuid, account);
+                AddFieldItem(xmlDoc, FormFieldValue, "CARID", DT.Rows[0]["ID"].ToString(), fillerName, fillerUserGuid, account);
+                AddFieldItem(xmlDoc, FormFieldValue, "CREATEDATES", DT.Rows[0]["CREATEDATES"].ToString(), fillerName, fillerUserGuid, account);
+                AddFieldItem(xmlDoc, FormFieldValue, "SERNO", DT.Rows[0]["序號"].ToString(), fillerName, fillerUserGuid, account);
+                AddFieldItem(xmlDoc, FormFieldValue, "CARNO", DT.Rows[0]["車號"].ToString(), fillerName, fillerUserGuid, account);
+                AddFieldItem(xmlDoc, FormFieldValue, "CARNAME", DT.Rows[0]["車名"].ToString(), fillerName, fillerUserGuid, account);
+
+                ////用ADDTACK，直接啟動起單
+                //ADDTACK(Form);
+
+                //ADD TO DB
+                //string connectionString = ConfigurationManager.ConnectionStrings["dbUOF"].ToString();
+
+                //connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                //sqlConn = new SqlConnection(connectionString);
+
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbUOF"].ConnectionString);
+
+                // 資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                string connectionString = sqlsb.ConnectionString;
+
+                StringBuilder queryString = new StringBuilder();
+                queryString.AppendFormat(@"
+                                    INSERT INTO [UOF].dbo.TB_WKF_EXTERNAL_TASK
+                                    (EXTERNAL_TASK_ID, FORM_INFO, STATUS, EXTERNAL_FORM_NBR)
+                                    VALUES (NEWID(), @XML, 2, '{0}')
+                                    ", EXTERNAL_FORM_NBR);
+
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    using (SqlCommand command = new SqlCommand(queryString.ToString(), connection))
+                    {
+                        command.Parameters.Add("@XML", SqlDbType.NVarChar).Value = form.OuterXml;
+
+                        connection.Open();
+                        int count = command.ExecuteNonQuery();
+                        // 可依需求輸出執行結果，例如：
+                        // Console.WriteLine($"新增筆數: {count}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // 記錄或顯示例外訊息，方便除錯
+                    Console.WriteLine("資料庫寫入錯誤: " + ex.Message);
+                }
+
+            }
+            catch(Exception EX)
+            {
+
+            }
+            finally
+            {
+
+            }
+
+
+        }
+
+        public DataTable SEARCH_UOF_GROUPSALES(string CARID)
+        {
+            StringBuilder SQLQUERYS = new StringBuilder();
+            try
+            {
+                // 1. 處理連線字串與解密
+                Class1 tkId = new Class1();
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                sqlsb.Password = tkId.Decryption(sqlsb.Password);
+                sqlsb.UserID = tkId.Decryption(sqlsb.UserID);
+
+                using (SqlConnection sqlConn = new SqlConnection(sqlsb.ConnectionString))
+                {
+                    SQLQUERYS.AppendFormat(@"
+                                            SELECT 
+                                            [ID],
+                                            CONVERT(varchar(100), [CREATEDATES], 112) CREATEDATES,                                           
+                                            [SERNO] AS '序號',[CARNAME] AS '車名',[CARNO] AS '車號',[CARKIND] AS '車種',
+                                            [GROUPKIND] AS '團類',[ISEXCHANGE] AS '兌換券',[EXCHANGETOTALMONEYS] AS '券總額',
+                                            [EXCHANGESALESMMONEYS] AS '券消費', [SALESMMONEYS] AS '消費總額',
+                                            [SPECIALMNUMS] AS '特賣數',[SPECIALMONEYS] AS '特賣獎金',
+                                            [COMMISSIONBASEMONEYS] AS '茶水費',[COMMISSIONPCTMONEYS] AS '消費獎金',
+                                            [TOTALCOMMISSIONMONEYS] AS '總獎金',[CARNUM] AS '車數',[GUSETNUM] AS '交易筆數',
+                                            [CARCOMPANY] AS '來車公司',[TA008NO] AS '業務員名',[TA008] AS '業務員帳號',
+                                            [EXCHANNO] AS '優惠券名',[EXCHANACOOUNT] AS '優惠券帳號',[PLAYDAYKINDS] AS '旅遊天數',
+                                            [PLAYDAYS] AS '第幾天',[DRIVERS] AS '司機',[TOURS] AS '領隊',
+                                            CONVERT(varchar(100), [GROUPSTARTDATES], 120) AS '實際到達時間',
+                                            CONVERT(varchar(100), [GROUPENDDATES], 120) AS '實際離開時間',
+                                            [STATUS] AS '狀態',
+                                            CONVERT(varchar(100), [PURGROUPSTARTDATES], 120) AS '預計到達時間',
+                                            CONVERT(varchar(100), [PURGROUPENDDATES], 120) AS '預計離開時間',
+                                            [EXCHANGEMONEYS] AS '領券額',
+                                            [GROUP_NAME] AS 'DEPNAME',
+                                            [TB_EB_EMPL_DEP].[GROUP_ID] + ',' + [GROUP_NAME] + ',False' AS 'DEPNO',
+                                            [TB_EB_USER].[USER_GUID],
+                                            [APPLY_ACCOUNTS].[ACCOUNT],
+                                            [APPLY_ACCOUNTS].[NAMES],
+                                            [TB_EB_EMPL_DEP].[GROUP_ID],
+                                            [TITLE_ID],
+                                            [GROUP_NAME],
+                                            [GROUP_CODE]
+                                            FROM [TKMK].[dbo].[GROUPSALES],[TKMK].[dbo].[APPLY_ACCOUNTS]
+                                            JOIN [192.168.1.223].[UOF].[dbo].[TB_EB_USER] ON [TB_EB_USER].ACCOUNT=[APPLY_ACCOUNTS].ACCOUNT COLLATE Chinese_Taiwan_Stroke_BIN
+                                            JOIN [192.168.1.223].[UOF].[dbo].[TB_EB_EMPL_DEP]  ON ORDERS=0 AND [TB_EB_USER].[USER_GUID] = [TB_EB_EMPL_DEP].[USER_GUID]
+                                            JOIN [192.168.1.223].[UOF].[dbo].[TB_EB_GROUP]  ON [TB_EB_EMPL_DEP].[GROUP_ID] = [TB_EB_GROUP].[GROUP_ID]
+                                            WHERE ISNULL([TB_EB_GROUP].[GROUP_CODE], '') <> ''
+                                            AND ID='{0}'
+
+                                        ", CARID);
+
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(SQLQUERYS.ToString(), sqlConn))
+                    using (DataSet ds = new DataSet())
+                    {
+                        sqlConn.Open();
+                        adapter.Fill(ds);
+
+                        return ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 ? ds.Tables[0] : null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // log ex if needed
+                return null;
+            }
+        }
+
+        public string SEARCHFORM_UOF_VERSION_ID(string formName)
+        {
+            try
+            {
+                Class1 TKID = new Class1();
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbUOF"].ConnectionString);
+
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                using (SqlConnection sqlConn = new SqlConnection(sqlsb.ConnectionString))
+                {
+                    string sql = @"
+                                SELECT TOP 1 RTRIM(LTRIM(FORM_VERSION_ID)) AS FORM_VERSION_ID
+                                FROM [UOF].dbo.TB_WKF_FORM_VERSION V
+                                JOIN [UOF].dbo.TB_WKF_FORM F ON V.FORM_ID = F.FORM_ID
+                                WHERE V.ISSUE_CTL = 1
+                                    AND F.FORM_NAME = @FORM_NAME
+                                ORDER BY V.FORM_ID, V.VERSION DESC";
+
+                    using (SqlCommand cmd = new SqlCommand(sql, sqlConn))
+                    {
+                        cmd.Parameters.AddWithValue("@FORM_NAME", formName);
+
+                        sqlConn.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return reader["FORM_VERSION_ID"].ToString();
+                            }
+                        }
+                    }
+                }
+
+                return "";
+            }
+            catch (Exception EX)
+            {
+                return "";
+            }
+        }
+
+        /// <summary>
+        /// 建立 Applicant
+        /// </summary>
+        /// <param name="xmlDoc"></param>
+        /// <param name="account"></param>
+        /// <param name="groupId"></param>
+        /// <param name="jobTitleId"></param>
+        /// <returns></returns>
+        private XmlElement CreateApplicant(XmlDocument xmlDoc, string account, string groupId, string jobTitleId)
+        {
+            XmlElement applicant = xmlDoc.CreateElement("Applicant");
+            applicant.SetAttribute("account", account);
+            applicant.SetAttribute("groupId", groupId);
+            applicant.SetAttribute("jobTitleId", jobTitleId);
+            return applicant;
+        }
+        /// <summary>
+        /// 建立 FieldItem
+        /// </summary>
+        /// <param name="xmlDoc"></param>
+        /// <param name="parent"></param>
+        /// <param name="fieldId"></param>
+        /// <param name="fieldValue"></param>
+        /// <param name="fillerName"></param>
+        /// <param name="fillerUserGuid"></param>
+        /// <param name="fillerAccount"></param>
+        /// <param name="realValue"></param>
+        /// <returns></returns>
+        ///  AddFieldItem(xmlDoc, FormFieldValue, "ID", "", fillerName, fillerUserGuid, account);
+        private XmlElement AddFieldItem(XmlDocument xmlDoc, XmlElement parent, string fieldId, string fieldValue, string fillerName, string fillerUserGuid, string fillerAccount, string realValue = "", string customValue = "")
+        {
+            XmlElement fieldItem = xmlDoc.CreateElement("FieldItem");
+            fieldItem.SetAttribute("fieldId", fieldId);
+            fieldItem.SetAttribute("fieldValue", fieldValue);
+            fieldItem.SetAttribute("realValue", realValue);
+            fieldItem.SetAttribute("customValue", customValue);
+            fieldItem.SetAttribute("enableSearch", "True");
+            fieldItem.SetAttribute("fillerName", fillerName);
+            fieldItem.SetAttribute("fillerUserGuid", fillerUserGuid);
+            fieldItem.SetAttribute("fillerAccount", fillerAccount);
+            fieldItem.SetAttribute("fillSiteId", "");
+            parent.AppendChild(fieldItem);
+            return fieldItem;
+        }
+
+        /// <summary>
+        /// 建立 Cell
+        /// </summary>
+        /// <param name="xmlDoc"></param>
+        /// <param name="row"></param>
+        /// <param name="od"></param>
+        /// <param name="fid"></param>
+        /// <param name="fid"></param>
+        /// <param name="withFieldMessage"></param>
+        private void AppendCellToRow(XmlDocument xmlDoc, XmlElement row, DataRow od, string fid, bool withFieldMessage = false, string cellfieldValue = "", string customValue = "")
+        {
+            string value = od.Table.Columns.Contains(fid) ? od[fid].ToString() : "";
+
+            if (!string.IsNullOrEmpty(cellfieldValue))
+            {
+                value = cellfieldValue;
+            }
+
+
+            XmlElement cell = xmlDoc.CreateElement("Cell");
+            cell.SetAttribute("fieldId", fid);
+            cell.SetAttribute("fieldValue", value);
+            cell.SetAttribute("realValue", "");
+            cell.SetAttribute("customValue", customValue);
+            cell.SetAttribute("enableSearch", "True");
+
+            if (withFieldMessage)
+            {
+                cell.SetAttribute("fieldMessage", "Y");
+            }
+            // *** 關鍵修改：使用傳入的 customValue 覆寫預設值 "" ***   
+
+            row.AppendChild(cell);
+        }
         public void SET_TEXTBOX_NULL()
         {
             textBox311.Text = "";
@@ -4820,9 +5170,50 @@ namespace TKMK
             SEARCHGROUPSALES_GV10(dateTimePicker1.Value.ToString("yyyyMMdd"));
         }
 
+        private void button22_Click(object sender, EventArgs e)
+        {
+
+            string ID = textBox4.Text.Trim();
+            string STATUS = "預約接團";
+
+            if (!string.IsNullOrEmpty(ID))
+            {
+                // 1. 彈出詢問視窗
+                // 參數說明：(顯示訊息, 視窗標題, 按鈕類型, 圖示類型)
+                DialogResult result = MessageBox.Show(
+                    string.Format("確定要將 ID: {0} 變更為「{1}」並執行同步嗎？", ID, STATUS),
+                    "執行確認",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question
+                );
+
+                // 2. 判斷使用者點擊的是否為「是」
+                if (result == DialogResult.Yes)
+                {
+                    // 執行原本的邏輯
+                    UPDATE_GROUPSALES_STATUS(ID, STATUS);
+                    ADDTB_WKF_EXTERNAL_TASK_COPTECOPTF(ID);
+
+                    // 重新查詢
+                    SEARCHGROUPSALES_GV10(dateTimePicker1.Value.ToString("yyyyMMdd"));
+
+                    // 建議執行完可以給個簡單提示
+                    // MessageBox.Show("更新完成！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    // 使用者選「否」，不執行任何動作
+                    return;
+                }
+            }
+            else
+            {
+                MessageBox.Show("請先輸入 ID 才能執行。", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
 
         #endregion
 
-      
+
     }
 }

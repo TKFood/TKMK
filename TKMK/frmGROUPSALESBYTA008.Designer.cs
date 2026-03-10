@@ -169,6 +169,7 @@
             this.dateTimePicker10 = new System.Windows.Forms.DateTimePicker();
             this.button21 = new System.Windows.Forms.Button();
             this.textBox4 = new System.Windows.Forms.TextBox();
+            this.button22 = new System.Windows.Forms.Button();
             this.dataGridView4 = new System.Windows.Forms.DataGridView();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.tabControl1.SuspendLayout();
@@ -1951,8 +1952,8 @@
             this.tableLayoutPanel10.ColumnCount = 11;
             this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
             this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
-            this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
-            this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
+            this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
+            this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
             this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
             this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
@@ -1964,6 +1965,7 @@
             this.tableLayoutPanel10.Controls.Add(this.dateTimePicker10, 1, 0);
             this.tableLayoutPanel10.Controls.Add(this.button21, 2, 0);
             this.tableLayoutPanel10.Controls.Add(this.textBox4, 1, 2);
+            this.tableLayoutPanel10.Controls.Add(this.button22, 2, 2);
             this.tableLayoutPanel10.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel10.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel10.Name = "tableLayoutPanel10";
@@ -2001,7 +2003,7 @@
             this.button21.ForeColor = System.Drawing.Color.Fuchsia;
             this.button21.Location = new System.Drawing.Point(243, 3);
             this.button21.Name = "button21";
-            this.button21.Size = new System.Drawing.Size(114, 34);
+            this.button21.Size = new System.Drawing.Size(134, 34);
             this.button21.TabIndex = 611;
             this.button21.Text = "查詢";
             this.button21.UseVisualStyleBackColor = true;
@@ -2015,6 +2017,17 @@
             this.textBox4.ReadOnly = true;
             this.textBox4.Size = new System.Drawing.Size(114, 27);
             this.textBox4.TabIndex = 614;
+            // 
+            // button22
+            // 
+            this.button22.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.button22.Location = new System.Drawing.Point(243, 85);
+            this.button22.Name = "button22";
+            this.button22.Size = new System.Drawing.Size(134, 30);
+            this.button22.TabIndex = 615;
+            this.button22.Text = "申請改預約接團";
+            this.button22.UseVisualStyleBackColor = true;
+            this.button22.Click += new System.EventHandler(this.button22_Click);
             // 
             // dataGridView4
             // 
@@ -2260,5 +2273,6 @@
         private System.Windows.Forms.Button button21;
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.DataGridView dataGridView4;
+        private System.Windows.Forms.Button button22;
     }
 }
