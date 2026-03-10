@@ -3923,6 +3923,145 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
+       
+        public void SEARCHGROUPSALES_GV10(string CREATEDATES)
+        {
+            // 預先定義字型與顏色，避免在迴圈內反覆 new，提升效能
+            Font baseFont = new Font("Tahoma", 10);
+            Font headerFont = new Font("Tahoma", 9);
+            Font largeFont = new Font("Tahoma", 14);
+
+            try
+            {
+                Class1 TKID = new Class1();
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                using (SqlConnection conn = new SqlConnection(sqlsb.ConnectionString))
+                {
+                    // 使用參數化查詢 @Date，解決字串拼接風險
+                    string sql = @"
+                                    SELECT  
+                                    [SERNO] AS '序號',[CARNAME] AS '車名',[CARNO] AS '車號',[CARKIND] AS '車種',
+                                    [GROUPKIND] AS '團類',[ISEXCHANGE] AS '兌換券',[EXCHANGETOTALMONEYS] AS '券總額',
+                                    [EXCHANGESALESMMONEYS] AS '券消費', [SALESMMONEYS] AS '消費總額',
+                                    [SPECIALMNUMS] AS '特賣數',[SPECIALMONEYS] AS '特賣獎金',
+                                    [COMMISSIONBASEMONEYS] AS '茶水費',[COMMISSIONPCTMONEYS] AS '消費獎金',
+                                    [TOTALCOMMISSIONMONEYS] AS '總獎金',[CARNUM] AS '車數',[GUSETNUM] AS '交易筆數',
+                                    [CARCOMPANY] AS '來車公司',[TA008NO] AS '業務員名',[TA008] AS '業務員帳號',
+                                    [EXCHANNO] AS '優惠券名',[EXCHANACOOUNT] AS '優惠券帳號',[PLAYDAYKINDS] AS '旅遊天數',
+                                    [PLAYDAYS] AS '第幾天',[DRIVERS] AS '司機',[TOURS] AS '領隊',
+                                    CONVERT(varchar(100), [GROUPSTARTDATES], 120) AS '實際到達時間',
+                                    CONVERT(varchar(100), [GROUPENDDATES], 120) AS '實際離開時間',
+                                    [STATUS] AS '狀態',
+                                    CONVERT(varchar(100), [PURGROUPSTARTDATES], 120) AS '預計到達時間',
+                                    CONVERT(varchar(100), [PURGROUPENDDATES], 120) AS '預計離開時間',
+                                    [EXCHANGEMONEYS] AS '領券額',[ID],[CREATEDATES]
+                                    FROM [TKMK].[dbo].[GROUPSALES]
+                                    WHERE CONVERT(nvarchar, [CREATEDATES], 112) = @Date
+                                    AND [STATUS] <> '取消預約'
+                                    ORDER BY CONVERT(nvarchar, [CREATEDATES], 112), CONVERT(int, [SERNO]) DESC";
+
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Date", CREATEDATES);
+                        SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                        DataTable dt = new DataTable();
+                        adapter.Fill(dt);
+
+                        if (dt.Rows.Count == 0)
+                        {
+                            dataGridView4.DataSource = null;
+                            return;
+                        }
+
+                        // 綁定資料
+                        dataGridView4.DataSource = dt;
+                    }
+                }
+
+                // --- UI 樣式優化 ---
+                dataGridView4_SetupGridViewStyles(headerFont, baseFont);
+
+                // 針對特定列的高級設定
+                foreach (DataGridViewRow dgRow in dataGridView4.Rows)
+                {
+                    // 批次設定字型
+                    string[] largeFontCols = { "車名", "車號", "券總額", "券消費", "消費總額", "消費獎金", "特賣數", "特賣獎金", "茶水費", "總獎金", "交易筆數", "優惠券名", "業務員名", "來車公司" };
+                    foreach (string col in largeFontCols)
+                    {
+                        dgRow.Cells[col].Style.Font = largeFont;
+                    }
+
+                    // 狀態顏色判斷 (使用 switch 效能更佳且易讀)
+                    string status = (dgRow.Cells["狀態"].Value ?? "").ToString().Trim();
+                    switch (status)
+                    {
+                        case "完成接團":
+                            dgRow.DefaultCellStyle.ForeColor = Color.Blue;
+                            break;
+                        case "取消預約":
+                            dgRow.DefaultCellStyle.ForeColor = Color.Pink;
+                            break;
+                        case "異常結案":
+                            dgRow.DefaultCellStyle.ForeColor = Color.Red;
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // 建議至少記錄錯誤，不要讓 catch 空著
+                MessageBox.Show("查詢失敗: " + ex.Message);
+            }
+        }
+
+        private void dataGridView4_SetupGridViewStyles(Font headerFont, Font defaultFont)
+        {
+            dataGridView4.AutoResizeColumns();
+            dataGridView4.ColumnHeadersDefaultCellStyle.Font = headerFont;
+            dataGridView4.DefaultCellStyle.Font = defaultFont;
+
+            // 定義欄位寬度與格式的字典配置（可再縮減代碼）
+            dataGridView4_SetColProperty("序號", 30);
+            dataGridView4_SetColProperty("車名", 80);
+            dataGridView4_SetColProperty("車號", 100);
+            dataGridView4_SetColProperty("車種", 160);
+            dataGridView4_SetColProperty("券消費", 60, "#,##0", DataGridViewContentAlignment.MiddleRight);
+            dataGridView4_SetColProperty("消費總額", 80, "#,##0", DataGridViewContentAlignment.MiddleRight);
+            dataGridView4_SetColProperty("總獎金", 60, "#,##0", DataGridViewContentAlignment.MiddleRight);
+            // ... 其他欄位依此類推
+        }
+
+        private void dataGridView4_SetColProperty(string colName, int width, string format = null, DataGridViewContentAlignment align = DataGridViewContentAlignment.MiddleLeft)
+        {
+            if (dataGridView4.Columns.Contains(colName))
+            {
+                dataGridView4.Columns[colName].Width = width;
+                dataGridView4.Columns[colName].DefaultCellStyle.Alignment = align;
+                if (format != null) dataGridView4.Columns[colName].DefaultCellStyle.Format = format;
+            }
+        }
+
+        private void dataGridView4_SelectionChanged(object sender, EventArgs e)
+        {
+            textBox4.Text = "";
+
+            if (dataGridView4.CurrentRow != null)
+            {
+                int rowindex = dataGridView4.CurrentRow.Index;
+
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView4.Rows[rowindex];                    
+                    textBox4.Text = row.Cells["ID"].Value.ToString();
+                }
+                else
+                {                    
+                }
+            }
+        }
         public void SET_TEXTBOX_NULL()
         {
             textBox311.Text = "";
@@ -4676,9 +4815,14 @@ namespace TKMK
             MessageBox.Show("完成");
         }
 
+        private void button21_Click(object sender, EventArgs e)
+        {
+            SEARCHGROUPSALES_GV10(dateTimePicker1.Value.ToString("yyyyMMdd"));
+        }
+
 
         #endregion
 
-       
+      
     }
 }
