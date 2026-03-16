@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="03/31/2026 11:01:53" ReportInfo.Modified="03/31/2026 11:13:09" ReportInfo.CreatorVersion="2017.4.1.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNS8V+op55d8q+MyIM1gh0M9zlGOgK4zWs8Nahyki0xHW6v1SoNjLsQ40hUEIevZodc4nZn1VMr9PyrOeyOFQcW49yN37Wommt8wACdM4FKHAeO5qqwIh8UI3n9QTXxqWwTPNcGNXwg8b50ejNaLPKKg==">
+      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT &#13;&#10;[SDATES] AS '日期起'&#13;&#10;,[EDATES] AS '日期迄'&#13;&#10;,[MB001] AS '品號' &#13;&#10;,[MB002] AS '品名'&#13;&#10;,[期初庫存]&#13;&#10;,[期末庫存]&#13;&#10;,[本期銷售]&#13;&#10;,[本期入庫]&#13;&#10;,[本期領用]&#13;&#10;,[本期轉撥入]&#13;&#10;,[本期轉撥出]&#13;&#10;,[其他]&#13;&#10;,[販售率]    &#13;&#10;      &#13;&#10;FROM [TKMK].[dbo].[TBDAILYSDATESEDATES]&#13;&#10;WHERE [SDATES]='20260301' AND [EDATES]='20260329'&#13;&#10;ORDER BY [MB001]&#13;&#10;&#13;&#10;">
+        <Column Name="日期起" DataType="System.String"/>
+        <Column Name="日期迄" DataType="System.String"/>
+        <Column Name="品號" DataType="System.String"/>
+        <Column Name="品名" DataType="System.String"/>
+        <Column Name="期初庫存" DataType="System.Int32"/>
+        <Column Name="期末庫存" DataType="System.Int32"/>
+        <Column Name="本期銷售" DataType="System.Int32"/>
+        <Column Name="本期入庫" DataType="System.Int32"/>
+        <Column Name="本期領用" DataType="System.Int32"/>
+        <Column Name="本期轉撥入" DataType="System.Int32"/>
+        <Column Name="本期轉撥出" DataType="System.Int32"/>
+        <Column Name="其他" DataType="System.Int32"/>
+        <Column Name="販售率" DataType="System.Decimal"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+  </Dictionary>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="400" PaperHeight="210" FirstPageSource="15" OtherPagesSource="15">
+    <ReportTitleBand Name="ReportTitle1" Width="1436.4" Height="18.9">
+      <TextObject Name="Text1" Width="160.65" Height="18.9" Text="硯微墨商品販售率"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="22.9" Width="1436.4" Height="18.9">
+      <TextObject Name="Text3" Width="94.5" Height="18.9" Border.Lines="All" Text="日期起" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text5" Left="94.5" Width="94.5" Height="18.9" Border.Lines="All" Text="日期迄" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text7" Left="189" Width="141.75" Height="18.9" Border.Lines="All" Text="品號" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text9" Left="330.75" Width="217.35" Height="18.9" Border.Lines="All" Text="品名" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text11" Left="548.1" Width="66.15" Height="18.9" Border.Lines="All" Text="期初庫存" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text13" Left="614.25" Width="66.15" Height="18.9" Border.Lines="All" Text="期末庫存" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text15" Left="680.4" Width="66.15" Height="18.9" Border.Lines="All" Text="本期銷售" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text17" Left="746.55" Width="66.15" Height="18.9" Border.Lines="All" Text="本期入庫" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text19" Left="812.7" Width="66.15" Height="18.9" Border.Lines="All" Text="本期領用" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text21" Left="878.85" Width="75.6" Height="18.9" Border.Lines="All" Text="本期轉撥入" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text23" Left="954.45" Width="75.6" Height="18.9" Border.Lines="All" Text="本期轉撥出" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text25" Left="1030.05" Width="66.15" Height="18.9" Border.Lines="All" Text="其他" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text27" Left="1096.2" Width="66.15" Height="18.9" Border.Lines="All" Text="販售率%" HorzAlign="Center" VertAlign="Center"/>
+    </PageHeaderBand>
+    <DataBand Name="Data1" Top="45.8" Width="1436.4" Height="18.9" CanGrow="true" DataSource="Table">
+      <TextObject Name="Text2" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.日期起]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text4" Left="94.5" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.日期迄]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text6" Left="189" Width="141.75" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.品號]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text8" Left="330.75" Width="217.35" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.品名]" VertAlign="Center"/>
+      <TextObject Name="Text10" Left="548.1" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.期初庫存]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text12" Left="614.25" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.期末庫存]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text14" Left="680.4" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.本期銷售]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text16" Left="746.55" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.本期入庫]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text18" Left="812.7" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.本期領用]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text20" Left="878.85" Width="75.6" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.本期轉撥入]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text22" Left="954.45" Width="75.6" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.本期轉撥出]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text24" Left="1030.05" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.其他]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text26" Left="1096.2" Width="66.15" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.販售率]%" Format="Number" Format.UseLocale="true" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="68.7" Width="1436.4" Height="18.9"/>
+  </ReportPage>
+</Report>

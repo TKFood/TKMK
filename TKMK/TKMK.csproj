@@ -292,6 +292,12 @@
     <Compile Include="frmREPORTTBSTOREDAILY.Designer.cs">
       <DependentUpon>frmREPORTTBSTOREDAILY.cs</DependentUpon>
     </Compile>
+    <Compile Include="frm_REPORT_TBDAILYSDATESEDATES.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frm_REPORT_TBDAILYSDATESEDATES.Designer.cs">
+      <DependentUpon>frm_REPORT_TBDAILYSDATESEDATES.cs</DependentUpon>
+    </Compile>
     <Compile Include="frnRECOPTGH.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -368,6 +374,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmREPORTTBSTOREDAILY.resx">
       <DependentUpon>frmREPORTTBSTOREDAILY.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frm_REPORT_TBDAILYSDATESEDATES.resx">
+      <DependentUpon>frm_REPORT_TBDAILYSDATESEDATES.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frnRECOPTGH.resx">
       <DependentUpon>frnRECOPTGH.cs</DependentUpon>
