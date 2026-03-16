@@ -172,6 +172,8 @@
             this.button22 = new System.Windows.Forms.Button();
             this.dataGridView4 = new System.Windows.Forms.DataGridView();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.label50 = new System.Windows.Forms.Label();
+            this.comboBox12 = new System.Windows.Forms.ComboBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -287,6 +289,8 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 101F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
+            this.tableLayoutPanel1.Controls.Add(this.comboBox12, 7, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label50, 6, 1);
             this.tableLayoutPanel1.Controls.Add(this.label37, 9, 0);
             this.tableLayoutPanel1.Controls.Add(this.label36, 8, 0);
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
@@ -307,7 +311,6 @@
             this.tableLayoutPanel1.Controls.Add(this.comboBox3, 5, 1);
             this.tableLayoutPanel1.Controls.Add(this.button3, 4, 2);
             this.tableLayoutPanel1.Controls.Add(this.textBox144, 5, 2);
-            this.tableLayoutPanel1.Controls.Add(this.button5, 6, 1);
             this.tableLayoutPanel1.Controls.Add(this.button18, 3, 0);
             this.tableLayoutPanel1.Controls.Add(this.button4, 7, 0);
             this.tableLayoutPanel1.Controls.Add(this.comboBox6, 5, 3);
@@ -329,6 +332,7 @@
             this.tableLayoutPanel1.Controls.Add(this.label41, 0, 5);
             this.tableLayoutPanel1.Controls.Add(this.textBox151, 1, 4);
             this.tableLayoutPanel1.Controls.Add(this.textBox161, 1, 5);
+            this.tableLayoutPanel1.Controls.Add(this.button5, 6, 2);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -513,7 +517,7 @@
             "取消預約",
             "異常結案",
             "完成接團"});
-            this.comboBox4.Location = new System.Drawing.Point(862, 75);
+            this.comboBox4.Location = new System.Drawing.Point(862, 77);
             this.comboBox4.Name = "comboBox4";
             this.comboBox4.Size = new System.Drawing.Size(95, 24);
             this.comboBox4.TabIndex = 710;
@@ -534,7 +538,7 @@
             this.comboBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox3.Enabled = false;
             this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(617, 42);
+            this.comboBox3.Location = new System.Drawing.Point(617, 40);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(127, 24);
             this.comboBox3.TabIndex = 90;
@@ -566,7 +570,7 @@
             // 
             this.button5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.button5.ForeColor = System.Drawing.Color.Blue;
-            this.button5.Location = new System.Drawing.Point(750, 38);
+            this.button5.Location = new System.Drawing.Point(750, 73);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(106, 29);
             this.button5.TabIndex = 620;
@@ -607,7 +611,7 @@
             this.comboBox6.Items.AddRange(new object[] {
             "否",
             "是"});
-            this.comboBox6.Location = new System.Drawing.Point(617, 112);
+            this.comboBox6.Location = new System.Drawing.Point(617, 110);
             this.comboBox6.Name = "comboBox6";
             this.comboBox6.Size = new System.Drawing.Size(127, 24);
             this.comboBox6.TabIndex = 723;
@@ -710,7 +714,7 @@
             this.comboBox11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox11.Enabled = false;
             this.comboBox11.FormattingEnabled = true;
-            this.comboBox11.Location = new System.Drawing.Point(328, 182);
+            this.comboBox11.Location = new System.Drawing.Point(328, 180);
             this.comboBox11.Name = "comboBox11";
             this.comboBox11.Size = new System.Drawing.Size(178, 24);
             this.comboBox11.TabIndex = 738;
@@ -730,7 +734,7 @@
             this.comboBox10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox10.Enabled = false;
             this.comboBox10.FormattingEnabled = true;
-            this.comboBox10.Location = new System.Drawing.Point(328, 147);
+            this.comboBox10.Location = new System.Drawing.Point(328, 145);
             this.comboBox10.Name = "comboBox10";
             this.comboBox10.Size = new System.Drawing.Size(178, 24);
             this.comboBox10.TabIndex = 737;
@@ -750,7 +754,7 @@
             this.comboBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox2.Enabled = false;
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(328, 112);
+            this.comboBox2.Location = new System.Drawing.Point(328, 110);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(178, 24);
             this.comboBox2.TabIndex = 80;
@@ -780,7 +784,7 @@
             this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox1.Enabled = false;
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(328, 75);
+            this.comboBox1.Location = new System.Drawing.Point(328, 77);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(178, 24);
             this.comboBox1.TabIndex = 50;
@@ -790,7 +794,7 @@
             this.comboBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox5.Enabled = false;
             this.comboBox5.FormattingEnabled = true;
-            this.comboBox5.Location = new System.Drawing.Point(328, 40);
+            this.comboBox5.Location = new System.Drawing.Point(328, 42);
             this.comboBox5.Name = "comboBox5";
             this.comboBox5.Size = new System.Drawing.Size(178, 24);
             this.comboBox5.TabIndex = 727;
@@ -1352,7 +1356,7 @@
             this.comboBox7.Items.AddRange(new object[] {
             "遊覽車對帳明細表",
             "多年期月份團務比較表"});
-            this.comboBox7.Location = new System.Drawing.Point(123, 50);
+            this.comboBox7.Location = new System.Drawing.Point(123, 48);
             this.comboBox7.Name = "comboBox7";
             this.comboBox7.Size = new System.Drawing.Size(234, 24);
             this.comboBox7.TabIndex = 613;
@@ -1362,7 +1366,7 @@
             // 
             this.comboBox8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox8.FormattingEnabled = true;
-            this.comboBox8.Location = new System.Drawing.Point(123, 88);
+            this.comboBox8.Location = new System.Drawing.Point(123, 90);
             this.comboBox8.Name = "comboBox8";
             this.comboBox8.Size = new System.Drawing.Size(114, 24);
             this.comboBox8.TabIndex = 731;
@@ -1487,7 +1491,7 @@
             this.comboBox9.FormattingEnabled = true;
             this.comboBox9.Items.AddRange(new object[] {
             "團車簽收單"});
-            this.comboBox9.Location = new System.Drawing.Point(123, 48);
+            this.comboBox9.Location = new System.Drawing.Point(123, 50);
             this.comboBox9.Name = "comboBox9";
             this.comboBox9.Size = new System.Drawing.Size(234, 24);
             this.comboBox9.TabIndex = 613;
@@ -2048,6 +2052,25 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // label50
+            // 
+            this.label50.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label50.AutoSize = true;
+            this.label50.Location = new System.Drawing.Point(750, 44);
+            this.label50.Name = "label50";
+            this.label50.Size = new System.Drawing.Size(106, 16);
+            this.label50.TabIndex = 743;
+            this.label50.Text = "人員工號";
+            // 
+            // comboBox12
+            // 
+            this.comboBox12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBox12.FormattingEnabled = true;
+            this.comboBox12.Location = new System.Drawing.Point(862, 40);
+            this.comboBox12.Name = "comboBox12";
+            this.comboBox12.Size = new System.Drawing.Size(95, 24);
+            this.comboBox12.TabIndex = 744;
+            // 
             // frmGROUPSALESBYTA008
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 16F);
@@ -2274,5 +2297,7 @@
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.DataGridView dataGridView4;
         private System.Windows.Forms.Button button22;
+        private System.Windows.Forms.Label label50;
+        private System.Windows.Forms.ComboBox comboBox12;
     }
 }

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="07/28/2022 09:50:01" ReportInfo.Modified="07/28/2022 10:02:11" ReportInfo.CreatorVersion="2016.4.4.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="07/28/2022 09:50:01" ReportInfo.Modified="03/16/2026 15:56:03" ReportInfo.CreatorVersion="2017.4.1.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpN+i5gA3VDGcwlcfm6L9ZMsLrZ3U+wEDtHCQtd9vw2XUEK/mpdLAwHvkHN5KyvLvox">
-      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="--20220728 查團車&#13;&#10;SELECT  &#13;&#10;CONVERT(nvarchar,[CREATEDATES],112) AS '日期'&#13;&#10;,[SERNO] AS '序號'&#13;&#10;,[CARNAME] AS '車名'&#13;&#10;,[CARNO] AS '車號'&#13;&#10;,[CARKIND] AS '車種'&#13;&#10;,[GROUPKIND]  AS '團類'&#13;&#10;,[ISEXCHANGE] AS '兌換券'&#13;&#10;,[EXCHANGETOTALMONEYS] AS '券總額'&#13;&#10;,[EXCHANGESALESMMONEYS] AS '券消費'&#13;&#10;,[SALESMMONEYS] AS '消費總額'&#13;&#10;,[SPECIALMNUMS] AS '特賣數'&#13;&#10;,[SPECIALMONEYS] AS '特賣獎金'&#13;&#10;,[COMMISSIONBASEMONEYS] AS '茶水費'&#13;&#10;,[COMMISSIONPCTMONEYS] AS '消費獎金'&#13;&#10;,[TOTALCOMMISSIONMONEYS] AS '總獎金'&#13;&#10;,[CARNUM] AS '車數'&#13;&#10;,[GUSETNUM] AS '來客數'&#13;&#10;,[EXCHANNO] AS '優惠券名'&#13;&#10;,[EXCHANACOOUNT] AS '優惠券帳號'&#13;&#10;,CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間'&#13;&#10;,CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間'&#13;&#10;,[STATUS] AS '狀態'&#13;&#10;,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間'&#13;&#10;,CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間'&#13;&#10;,[EXCHANGEMONEYS] AS '領券額'&#13;&#10;,[ID]&#13;&#10;,[CREATEDATES]&#13;&#10;FROM [TKMK].[dbo].[GROUPSALES]&#13;&#10;WHERE CONVERT(nvarchar,[CREATEDATES],112)&gt;='20220701' AND CONVERT(nvarchar,[CREATEDATES],112)&lt;='20220731'&#13;&#10;AND [STATUS]&lt;&gt;'取消預約'&#13;&#10;ORDER BY CONVERT(nvarchar,[CREATEDATES],112),SERNO&#13;&#10;">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpN+i5gA3VDGcwlcfm6L9ZMsLrZ3U+wEDtHCQtd9vw2XUGrpismPSvDvKkW1ySTeRKX">
+      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="--20220728 查團車&#13;&#10;SELECT  &#13;&#10;CONVERT(nvarchar,[CREATEDATES],112) AS '日期'&#13;&#10;,[SERNO] AS '序號'&#13;&#10;,[CARNAME] AS '車名'&#13;&#10;,[CARNO] AS '車號'&#13;&#10;,[CARKIND] AS '車種'&#13;&#10;,[GROUPKIND]  AS '團類'&#13;&#10;,[ISEXCHANGE] AS '兌換券'&#13;&#10;,[EXCHANGETOTALMONEYS] AS '券總額'&#13;&#10;,[EXCHANGESALESMMONEYS] AS '券消費'&#13;&#10;,[SALESMMONEYS] AS '消費總額'&#13;&#10;,[SPECIALMNUMS] AS '特賣數'&#13;&#10;,[SPECIALMONEYS] AS '特賣獎金'&#13;&#10;,[COMMISSIONBASEMONEYS] AS '茶水費'&#13;&#10;,[COMMISSIONPCTMONEYS] AS '消費獎金'&#13;&#10;,[TOTALCOMMISSIONMONEYS] AS '總獎金'&#13;&#10;,[CARNUM] AS '車數'&#13;&#10;,[GUSETNUM] AS '來客數'&#13;&#10;,[EXCHANNO] AS '優惠券名'&#13;&#10;,[EXCHANACOOUNT] AS '優惠券帳號'&#13;&#10;,CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間'&#13;&#10;,CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間'&#13;&#10;,[STATUS] AS '狀態'&#13;&#10;,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間'&#13;&#10;,CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間'&#13;&#10;,[EXCHANGEMONEYS] AS '領券額'&#13;&#10;,[GROUPSALES_LOGIN] AS '人員工號'&#13;&#10;,[ID]&#13;&#10;,[CREATEDATES]&#13;&#10;FROM [TKMK].[dbo].[GROUPSALES]&#13;&#10;WHERE CONVERT(nvarchar,[CREATEDATES],112)&gt;='20220701' AND CONVERT(nvarchar,[CREATEDATES],112)&lt;='20220731'&#13;&#10;AND [STATUS]&lt;&gt;'取消預約'&#13;&#10;ORDER BY CONVERT(nvarchar,[CREATEDATES],112),SERNO&#13;&#10;">
         <Column Name="日期" DataType="System.String"/>
         <Column Name="序號" DataType="System.Int32"/>
         <Column Name="車名" DataType="System.String"/>
@@ -30,14 +30,15 @@
         <Column Name="領券額" DataType="System.Int32"/>
         <Column Name="ID" DataType="System.Guid"/>
         <Column Name="CREATEDATES" DataType="System.DateTime"/>
+        <Column Name="人員工號" DataType="System.String"/>
       </TableDataSource>
     </MsSqlDataConnection>
   </Dictionary>
-  <ReportPage Name="Page1" Landscape="true" PaperWidth="600" PaperHeight="210">
-    <ReportTitleBand Name="ReportTitle1" Width="2192.4" Height="18.9">
-      <TextObject Name="Text1" Width="2192.4" Height="18.9" Text="團車明細" HorzAlign="Center" VertAlign="Center"/>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="640" PaperHeight="210" FirstPageSource="15" OtherPagesSource="15">
+    <ReportTitleBand Name="ReportTitle1" Width="2343.6" Height="18.9">
+      <TextObject Name="Text1" Width="2286.9" Height="18.9" Text="團車明細" HorzAlign="Center" VertAlign="Center"/>
     </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="23.39" Width="2192.4" Height="18.9">
+    <PageHeaderBand Name="PageHeader1" Top="22.9" Width="2343.6" Height="18.9">
       <TextObject Name="Text3" Width="94.5" Height="18.9" Border.Lines="All" Text="日期" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text5" Left="94.5" Width="47.25" Height="18.9" Border.Lines="All" Text="序號" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text7" Left="141.75" Width="94.5" Height="18.9" Border.Lines="All" Text="車名" HorzAlign="Center" VertAlign="Center"/>
@@ -61,8 +62,9 @@
       <TextObject Name="Text43" Left="1852.2" Width="151.2" Height="18.9" Border.Lines="All" Text="實際離開時間" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text45" Left="2003.4" Width="94.5" Height="18.9" Border.Lines="All" Text="狀態" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text47" Left="2097.9" Width="94.5" Height="18.9" Border.Lines="All" Text="領券額" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text49" Left="2192.4" Width="94.5" Height="18.9" Border.Lines="All" Text="人員工號" HorzAlign="Center" VertAlign="Center"/>
     </PageHeaderBand>
-    <DataBand Name="Data1" Top="46.79" Width="2192.4" Height="18.9" CanGrow="true" DataSource="Table">
+    <DataBand Name="Data1" Top="45.8" Width="2343.6" Height="18.9" CanGrow="true" DataSource="Table">
       <TextObject Name="Text2" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.日期]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text4" Left="94.5" Width="47.25" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.序號]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text6" Left="141.75" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.車名]" VertAlign="Center"/>
@@ -86,7 +88,8 @@
       <TextObject Name="Text42" Left="1852.2" Width="151.2" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.實際離開時間]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text44" Left="2003.4" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.狀態]" HorzAlign="Center" VertAlign="Center"/>
       <TextObject Name="Text46" Left="2097.9" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.領券額]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text48" Left="2192.4" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.人員工號]" HorzAlign="Center" VertAlign="Center"/>
     </DataBand>
-    <PageFooterBand Name="PageFooter1" Top="70.18" Width="2192.4" Height="18.9"/>
+    <PageFooterBand Name="PageFooter1" Top="68.7" Width="2343.6" Height="18.9"/>
   </ReportPage>
 </Report>

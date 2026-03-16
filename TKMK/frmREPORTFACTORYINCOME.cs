@@ -414,12 +414,13 @@ namespace TKMK
                                 ,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間'
                                 ,CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間'
                                 ,[EXCHANGEMONEYS] AS '領券額'
+                                ,[GROUPSALES_LOGIN] AS '人員工號'
                                 ,[ID]
                                 ,[CREATEDATES]
                                 FROM [TKMK].[dbo].[GROUPSALES]
                                 WHERE CONVERT(nvarchar,[CREATEDATES],112)>='{0}' AND CONVERT(nvarchar,[CREATEDATES],112)<='{1}'
                                 AND [STATUS]<>'取消預約'
-                                ORDER BY CONVERT(nvarchar,[CREATEDATES],112),SERNO
+                                ORDER BY CONVERT(nvarchar,[CREATEDATES],112),SERNO 
 
                                 ", SDATE,EDATES);
 
