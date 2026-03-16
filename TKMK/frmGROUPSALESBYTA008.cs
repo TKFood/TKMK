@@ -93,6 +93,7 @@ namespace TKMK
             comboBox9load();
             comboBox10load();
             comboBox11load();
+            comboBox12_load();
 
             dateTimePicker1.Value = DateTime.Now;
             dateTimePicker2.Value = DateTime.Now;
@@ -540,6 +541,42 @@ namespace TKMK
             sqlConn.Close();
 
         }
+
+        public void comboBox12_load()
+        {
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"                                 
+                                SELECT
+                                [KINDS]
+                                ,[PARASNAMES]
+                                ,[DVALUES]
+                                FROM [TKMK].[dbo].[TBZPARAS]
+                                WHERE [KINDS]='GROUPSALES_LOGIN'
+                                ORDER BY [DVALUES]
+                                ");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("DVALUES", typeof(string));
+            da.Fill(dt);
+            comboBox12.DataSource = dt.DefaultView;
+            comboBox12.ValueMember = "DVALUES";
+            comboBox12.DisplayMember = "DVALUES";
+            sqlConn.Close();
+
+        }
         /// <summary>
         /// 尋找 業務員/會員
         /// </summary>
@@ -754,6 +791,7 @@ namespace TKMK
                                     ,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間'
                                     ,CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間'
                                     ,[EXCHANGEMONEYS] AS '領券額'
+                                    ,[GROUPSALES_LOGIN] AS '人員工號'
                                     ,[ID]
                                     ,[CREATEDATES]
 
@@ -1024,38 +1062,8 @@ namespace TKMK
             }
         }
         /// <summary>
-        /// 新增團務 資料
+        /// 新增團務 資料 (參數化查詢，防止 SQL 注入)
         /// </summary>
-        /// <param name="ID"></param>
-        /// <param name="CREATEDATES"></param>
-        /// <param name="SERNO"></param>
-        /// <param name="CARCOMPANY"></param>
-        /// <param name="TA008NO"></param>
-        /// <param name="TA008"></param>
-        /// <param name="CARNO"></param>
-        /// <param name="CARNAME"></param>
-        /// <param name="CARKIND"></param>
-        /// <param name="GROUPKIND"></param>
-        /// <param name="ISEXCHANGE"></param>
-        /// <param name="EXCHANGEMONEYS"></param>
-        /// <param name="EXCHANGETOTALMONEYS"></param>
-        /// <param name="EXCHANGESALESMMONEYS"></param>
-        /// <param name="SPECIALMNUMS"></param>
-        /// <param name="SPECIALMONEYS"></param>
-        /// <param name="SALESMMONEYS"></param>
-        /// <param name="COMMISSIONBASEMONEYS"></param>
-        /// <param name="COMMISSIONPCT"></param>
-        /// <param name="COMMISSIONPCTMONEYS"></param>
-        /// <param name="TOTALCOMMISSIONMONEYS"></param>
-        /// <param name="CARNUM"></param>
-        /// <param name="GUSETNUM"></param>
-        /// <param name="EXCHANNO"></param>
-        /// <param name="EXCHANACOOUNT"></param>
-        /// <param name="PURGROUPSTARTDATES"></param>
-        /// <param name="GROUPSTARTDATES"></param>
-        /// <param name="PURGROUPENDDATES"></param>
-        /// <param name="GROUPENDDATES"></param>
-        /// <param name="STATUS"></param>
         public void ADDGROUPSALES(
             string ID
             , string CREATEDATES
@@ -1091,164 +1099,115 @@ namespace TKMK
             , string PLAYDAYS
             , string DRIVERS
             , string TOURS
+            , string GROUPSALES_LOGIN
            )
         {
-
-
             try
             {
-                //20210902密
-                Class1 TKID = new Class1();//用new 建立類別實體
+                // 取得解密後的連線字串
+                Class1 TKID = new Class1();
                 SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
-
-                //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
                 sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
 
-                String connectionString;
-                sqlConn = new SqlConnection(sqlsb.ConnectionString);
-
-
-                sbSql.Clear();
-                sqlConn.Close();
-                sqlConn.Open();
-                tran = sqlConn.BeginTransaction();
-
-           
-                sbSql.AppendFormat(@" 
-                                    INSERT INTO [TKMK].[dbo].[GROUPSALES]
-                                    (
-                                    [CREATEDATES]
-                                    ,[SERNO]
-                                    ,[CARCOMPANY]
-                                    ,[TA008NO]
-                                    ,[TA008]
-                                    ,[CARNO]
-                                    ,[CARNAME]
-                                    ,[CARKIND]
-                                    ,[GROUPKIND]
-                                    ,[ISEXCHANGE]
-                                    ,[EXCHANGEMONEYS]
-                                    ,[EXCHANGETOTALMONEYS]
-                                    ,[EXCHANGESALESMMONEYS]
-                                    ,[SPECIALMNUMS]
-                                    ,[SPECIALMONEYS]
-                                    ,[SALESMMONEYS]
-                                    ,[COMMISSIONBASEMONEYS]
-                                    ,[COMMISSIONPCT]
-                                    ,[COMMISSIONPCTMONEYS]
-                                    ,[TOTALCOMMISSIONMONEYS]
-                                    ,[CARNUM]
-                                    ,[GUSETNUM]
-                                    ,[EXCHANNO]
-                                    ,[EXCHANACOOUNT]
-                                    ,[PURGROUPSTARTDATES]
-                                    ,[GROUPSTARTDATES]
-                                    ,[PURGROUPENDDATES]
-                                    ,[GROUPENDDATES]
-                                    ,[STATUS]
-                                    ,[PLAYDAYKINDS]
-                                    ,[PLAYDAYS]
-                                    ,[DRIVERS]
-                                    ,[TOURS]
-                                    )
-                                    VALUES
-                                    (
-                                    '{0}'
-                                    ,'{1}'
-                                    ,'{2}'
-                                    ,'{3}'
-                                    ,'{4}'
-                                    ,'{5}'
-                                    ,'{6}'
-                                    ,'{7}'
-                                    ,'{8}'
-                                    ,'{9}'
-                                    ,'{10}'
-                                    ,'{11}'
-                                    ,'{12}'
-                                    ,'{13}'
-                                    ,'{14}'
-                                    ,'{15}'
-                                    ,'{16}'
-                                    ,'{17}'
-                                    ,'{18}'
-                                    ,'{19}'
-                                    ,'{20}'
-                                    ,'{21}'
-                                    ,'{22}'
-                                    ,'{23}'
-                                    ,'{24}'
-                                    ,'{25}'
-                                    ,'{26}'
-                                    ,'{27}'
-                                    ,'{28}'
-                                    ,'{29}'
-                                    ,'{30}'
-                                     ,'{31}'
-                                     ,'{32}'
-                                    )
-                                    ", CREATEDATES
-                                    , SERNO
-                                    , CARCOMPANY
-                                    , TA008NO
-                                    , TA008
-                                    , CARNO
-                                    , CARNAME
-                                    , CARKIND
-                                    , GROUPKIND
-                                    , ISEXCHANGE
-                                    , EXCHANGEMONEYS
-                                    , EXCHANGETOTALMONEYS
-                                    , EXCHANGESALESMMONEYS
-                                    , SPECIALMNUMS
-                                    , SPECIALMONEYS
-                                    , SALESMMONEYS
-                                    , COMMISSIONBASEMONEYS
-                                    , COMMISSIONPCT
-                                    , COMMISSIONPCTMONEYS
-                                    , TOTALCOMMISSIONMONEYS
-                                    , CARNUM
-                                    , GUSETNUM
-                                    , EXCHANNO
-                                    , EXCHANACOOUNT
-                                    , PURGROUPSTARTDATES
-                                    , GROUPSTARTDATES
-                                    , PURGROUPENDDATES
-                                    , GROUPENDDATES
-                                    , STATUS
-                                    , PLAYDAYKINDS
-                                    , PLAYDAYS
-                                    , DRIVERS
-                                    , TOURS
-                                    );
-                sbSql.AppendFormat(@" ");
-
-                cmd.Connection = sqlConn;
-                cmd.CommandTimeout = 60;
-                cmd.CommandText = sbSql.ToString();
-                cmd.Transaction = tran;
-                result = cmd.ExecuteNonQuery();
-
-                if (result == 0)
+                // 使用 using 確保資源自動釋放
+                using (SqlConnection conn = new SqlConnection(sqlsb.ConnectionString))
                 {
-                    tran.Rollback();    //交易取消
-                }
-                else
-                {
-                    tran.Commit();      //執行交易  
+                    conn.Open();
+                    using (SqlTransaction trans = conn.BeginTransaction())
+                    {
+                        try
+                        {
+                            // 參數化 SQL 查詢，避免 SQL 注入
+                            string sql = @"
+                                INSERT INTO [TKMK].[dbo].[GROUPSALES]
+                                (
+                                [CREATEDATES], [SERNO], [CARCOMPANY], [TA008NO], [TA008],
+                                [CARNO], [CARNAME], [CARKIND], [GROUPKIND], [ISEXCHANGE],
+                                [EXCHANGEMONEYS], [EXCHANGETOTALMONEYS], [EXCHANGESALESMMONEYS],
+                                [SPECIALMNUMS], [SPECIALMONEYS], [SALESMMONEYS],
+                                [COMMISSIONBASEMONEYS], [COMMISSIONPCT], [COMMISSIONPCTMONEYS],
+                                [TOTALCOMMISSIONMONEYS], [CARNUM], [GUSETNUM],
+                                [EXCHANNO], [EXCHANACOOUNT], [PURGROUPSTARTDATES],
+                                [GROUPSTARTDATES], [PURGROUPENDDATES], [GROUPENDDATES],
+                                [STATUS], [PLAYDAYKINDS], [PLAYDAYS], [DRIVERS], [TOURS], [GROUPSALES_LOGIN]
+                                )
+                                VALUES
+                                (
+                                @CREATEDATES, @SERNO, @CARCOMPANY, @TA008NO, @TA008,
+                                @CARNO, @CARNAME, @CARKIND, @GROUPKIND, @ISEXCHANGE,
+                                @EXCHANGEMONEYS, @EXCHANGETOTALMONEYS, @EXCHANGESALESMMONEYS,
+                                @SPECIALMNUMS, @SPECIALMONEYS, @SALESMMONEYS,
+                                @COMMISSIONBASEMONEYS, @COMMISSIONPCT, @COMMISSIONPCTMONEYS,
+                                @TOTALCOMMISSIONMONEYS, @CARNUM, @GUSETNUM,
+                                @EXCHANNO, @EXCHANACOOUNT, @PURGROUPSTARTDATES,
+                                @GROUPSTARTDATES, @PURGROUPENDDATES, @GROUPENDDATES,
+                                @STATUS, @PLAYDAYKINDS, @PLAYDAYS, @DRIVERS, @TOURS, @GROUPSALES_LOGIN
+                                )";
 
+                            using (SqlCommand command = new SqlCommand(sql, conn, trans))
+                            {
+                                command.CommandTimeout = 60;
 
+                                // 使用參數避免 SQL 注入
+                                command.Parameters.AddWithValue("@CREATEDATES", CREATEDATES ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@SERNO", SERNO ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@CARCOMPANY", CARCOMPANY ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@TA008NO", TA008NO ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@TA008", TA008 ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@CARNO", CARNO ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@CARNAME", CARNAME ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@CARKIND", CARKIND ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@GROUPKIND", GROUPKIND ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@ISEXCHANGE", ISEXCHANGE ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@EXCHANGEMONEYS", EXCHANGEMONEYS ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@EXCHANGETOTALMONEYS", EXCHANGETOTALMONEYS ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@EXCHANGESALESMMONEYS", EXCHANGESALESMMONEYS ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@SPECIALMNUMS", SPECIALMNUMS ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@SPECIALMONEYS", SPECIALMONEYS ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@SALESMMONEYS", SALESMMONEYS ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@COMMISSIONBASEMONEYS", COMMISSIONBASEMONEYS ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@COMMISSIONPCT", COMMISSIONPCT ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@COMMISSIONPCTMONEYS", COMMISSIONPCTMONEYS ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@TOTALCOMMISSIONMONEYS", TOTALCOMMISSIONMONEYS ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@CARNUM", CARNUM ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@GUSETNUM", GUSETNUM ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@EXCHANNO", EXCHANNO ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@EXCHANACOOUNT", EXCHANACOOUNT ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@PURGROUPSTARTDATES", PURGROUPSTARTDATES ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@GROUPSTARTDATES", GROUPSTARTDATES ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@PURGROUPENDDATES", PURGROUPENDDATES ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@GROUPENDDATES", GROUPENDDATES ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@STATUS", STATUS ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@PLAYDAYKINDS", PLAYDAYKINDS ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@PLAYDAYS", PLAYDAYS ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@DRIVERS", DRIVERS ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@TOURS", TOURS ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@GROUPSALES_LOGIN", GROUPSALES_LOGIN ?? (object)DBNull.Value);
+
+                                int result = command.ExecuteNonQuery();
+
+                                if (result > 0)
+                                {
+                                    trans.Commit();
+                                }
+                                else
+                                {
+                                    trans.Rollback();
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            trans.Rollback();
+                            MessageBox.Show("新增團務資料失敗: " + ex.Message);
+                        }
+                    }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
-            }
-
-            finally
-            {
-                sqlConn.Close();
+                MessageBox.Show("連線或初始化失敗: " + ex.Message);
             }
         }
         /// <summary>
@@ -2715,6 +2674,9 @@ namespace TKMK
             textBox141.Text = null;
             textBox142.Text = "1";
             textBox143.Text = "1";
+
+            textBox151.Text = null;
+            textBox161.Text = null;
 
             textBox131.ReadOnly = false;
             textBox141.ReadOnly = false;
@@ -4476,7 +4438,7 @@ namespace TKMK
                 string ISEXCHANGE = comboBox6.Text.Trim();
                 string PLAYDAYKINDS = comboBox10.Text.Trim();
                 string PLAYDAYS = comboBox11.Text.Trim();
-
+                string GROUPSALES_LOGIN = comboBox12.Text.Trim();
 
 
                 string EXCHANGEMONEYS = "0";
@@ -4543,6 +4505,7 @@ namespace TKMK
                         , PLAYDAYS
                         , DRIVERS
                         , TOURS
+                        , GROUPSALES_LOGIN
                        );
 
                         textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
