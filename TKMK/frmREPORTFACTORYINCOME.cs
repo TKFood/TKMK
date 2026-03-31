@@ -62,7 +62,7 @@ namespace TKMK
 
             //因為是以星期一為第一天，所以要判斷weeknow等於0時，要向前推6天。  
             weeknow = (weeknow == 0 ? (7 - 1) : (weeknow - 1));
-            int daydiff = (-1) * weeknow-7;
+            int daydiff = (-1) * weeknow - 7;
 
             //本週第一天  
             DateTime FirstDay = nowTime.AddDays(daydiff);
@@ -74,7 +74,7 @@ namespace TKMK
             //星期天為最後一天  
             int lastWeekDay = Convert.ToInt32(nowTime.DayOfWeek);
             lastWeekDay = lastWeekDay == 0 ? (7 - lastWeekDay) : lastWeekDay;
-            int lastWeekDiff = (7 - lastWeekDay)-7;
+            int lastWeekDiff = (7 - lastWeekDay) - 7;
 
             //本週最後一天  
             DateTime LastDay = nowTime.AddDays(lastWeekDiff);
@@ -83,29 +83,22 @@ namespace TKMK
             #endregion
         }
 
-        public void ADDTKMK_TBFACTORYINCOME(string SDATES,string EDATES)
+        public void ADDTKMK_TBFACTORYINCOME(string SDATES, string EDATES)
         {
             try
-            {
-
-                //20210902密
+            {  //20210902密
                 Class1 TKID = new Class1();//用new 建立類別實體
                 SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
-
                 //資料庫使用者密碼解密
                 sqlsb.Password = TKID.Decryption(sqlsb.Password);
                 sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
-                 
                 String connectionString;
                 sqlConn = new SqlConnection(sqlsb.ConnectionString);
 
 
                 sbSql.Clear();
-                sqlConn.Close();
-                sqlConn.Open();
-                tran = sqlConn.BeginTransaction();
-
-
+                sqlConn.Close();               
+               
                 sbSql.AppendFormat(@" 
                                     DELETE [TKMK].[dbo].[TBFACTORYINCOME]
                                     WHERE INDATES>='{0}' AND INDATES<='{1}'
@@ -116,40 +109,44 @@ namespace TKMK
                                     SELECT INDATES,YEARS,WEEKS,CONVERT(INT,TOTALMONEYS) TOTALMONEYS,CONVERT(INT,GROUPMONEYS)  GROUPMONEYS,CONVERT(INT,VISITORMONEYS)  VISITORMONEYS,CARNUM
                                     ,CASE WHEN CARNUM>0 THEN CONVERT(INT,ROUND(GROUPMONEYS/CARNUM,0))  ELSE 0 END AS 'CARAVGMONEYS'
                                     FROM (
-                                    SELECT 
-                                    TA001 AS 'INDATES'
-                                    ,DATEPART(YEAR, [TA001]) AS YEARS
-                                    ,DATEPART(Week, [TA001]) AS WEEKS
-                                    ,SUM(TA026) AS 'TOTALMONEYS'
-                                    ,(SELECT ROUND(ISNULL(SUM([SALESMMONEYS]),0),0) FROM [TKMK].[dbo].[GROUPSALES] WHERE  [STATUS]='完成接團' AND CONVERT(nvarchar,[CREATEDATES],112)=TA001) AS 'GROUPMONEYS'
-                                    ,(SUM(TA026)-(SELECT ROUND(ISNULL(SUM([SALESMMONEYS]),0),0) FROM [TKMK].[dbo].[GROUPSALES] WHERE  [STATUS]='完成接團' AND CONVERT(nvarchar,[CREATEDATES],112)=TA001)) AS 'VISITORMONEYS'
-                                    ,(SELECT ISNULL(SUM(CARNUM),0) FROM [TKMK].[dbo].[GROUPSALES] WHERE  [STATUS]='完成接團' AND CONVERT(nvarchar,[CREATEDATES],112)=TA001) AS 'CARNUM'
-                                    FROM [TK].dbo.POSTA
-                                    WHERE TA002 IN (SELECT  [TA002]  FROM [TKMK].[dbo].[TB_POS_TA002])
-                                    AND TA001>='{0}' AND TA001<='{1}'
-                                    GROUP BY TA001
+                                        SELECT 
+                                        TA001 AS 'INDATES'
+                                        ,DATEPART(YEAR, [TA001]) AS YEARS
+                                        ,DATEPART(Week, [TA001]) AS WEEKS
+                                        ,SUM(TA026) AS 'TOTALMONEYS'
+                                        ,(SELECT ROUND(ISNULL(SUM([SALESMMONEYS]),0),0) FROM [TKMK].[dbo].[GROUPSALES] WHERE  [STATUS]='完成接團' AND CONVERT(nvarchar,[CREATEDATES],112)=TA001) AS 'GROUPMONEYS'
+                                        ,(SUM(TA026)-(SELECT ROUND(ISNULL(SUM([SALESMMONEYS]),0),0) FROM [TKMK].[dbo].[GROUPSALES] WHERE  [STATUS]='完成接團' AND CONVERT(nvarchar,[CREATEDATES],112)=TA001)) AS 'VISITORMONEYS'
+                                        ,(SELECT ISNULL(SUM(CARNUM),0) FROM [TKMK].[dbo].[GROUPSALES] WHERE  [STATUS]='完成接團' AND CONVERT(nvarchar,[CREATEDATES],112)=TA001) AS 'CARNUM'
+                                        FROM [TK].dbo.POSTA
+                                        WHERE TA002 IN (SELECT  [TA002]  FROM [TKMK].[dbo].[TB_POS_TA002])
+                                        AND TA001>='{0}' AND TA001<='{1}'
+                                        GROUP BY TA001
                                     ) AS TEMP
                                     ORDER BY INDATES
                                     ", SDATES, EDATES);
 
                 cmd.Connection = sqlConn;
-                cmd.CommandTimeout = 60;
-                cmd.CommandText = sbSql.ToString();
-                cmd.Transaction = tran;
-                result = cmd.ExecuteNonQuery();
-
-                if (result == 0)
+                using (sqlConn)
                 {
-                    tran.Rollback();    //交易取消
-                }
-                else
-                {
-                    tran.Commit();      //執行交易  
-                    MessageBox.Show("完成");
-
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+                        //MessageBox.Show("完成1");
+                    }
+                    sqlConn.Close();
                 }
             }
-            catch
+            catch(Exception ex) 
             {
 
             }
@@ -159,6 +156,86 @@ namespace TKMK
                 sqlConn.Close();
             }
         }
+
+        public void ADDTKMK_TBFACTORYINCOME_TA002(string SDATES, string EDATES)
+        {
+            try
+            {
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                //資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+                String connectionString;
+                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+                sbSql.AppendFormat(@" 
+                                    DELETE [TKMK].[dbo].[TBFACTORYINCOME_TA002] WHERE [INDATES]>='{0}' AND [INDATES]<='{1}'
+
+                                    INSERT INTO  [TKMK].[dbo].[TBFACTORYINCOME_TA002]
+                                    (
+                                    [TA002]
+                                    ,[INDATES]
+                                    ,[ME002]
+                                    ,[YEARS]
+                                    ,[WEEKS]
+                                    ,[TOTALMONEYS]
+                                    ,[GROUPMONEYS]
+                                    ,[VISITORMONEYS]
+                                    ,[CARNUM]
+                                    ,[CARAVGMONEYS]
+                                    )
+                                    SELECT TA002,INDATES  ,ME002 ,YEARS,WEEKS,CONVERT(INT,TOTALMONEYS) TOTALMONEYS,CONVERT(INT,GROUPMONEYS)  GROUPMONEYS,CONVERT(INT,VISITORMONEYS)  VISITORMONEYS,CARNUM
+                                    ,CASE WHEN CARNUM>0 THEN CONVERT(INT,ROUND(GROUPMONEYS/CARNUM,0))  ELSE 0 END AS 'CARAVGMONEYS'
+                                    FROM (
+                                        SELECT 
+                                        TA001 AS 'INDATES'
+                                        ,TA002 
+                                        ,DATEPART(YEAR, [TA001]) AS YEARS
+                                        ,DATEPART(Week, [TA001]) AS WEEKS
+                                        ,SUM(TA026) AS 'TOTALMONEYS'
+                                        ,(SELECT ISNULL(SUM(TA026),0) FROM [TK].dbo.POSTA POSTA2 WHERE (POSTA2.TA008 LIKE '68%' OR POSTA2.TA008 LIKE '69%')  AND POSTA2.TA002=POSTA.TA002 AND  POSTA2.TA001=POSTA.TA001) AS 'GROUPMONEYS'
+                                        ,SUM(TA026)-(SELECT ISNULL(SUM(TA026),0) FROM [TK].dbo.POSTA POSTA2 WHERE (POSTA2.TA008 LIKE '68%' OR POSTA2.TA008 LIKE '69%')  AND POSTA2.TA002=POSTA.TA002 AND  POSTA2.TA001=POSTA.TA001) AS 'VISITORMONEYS'
+                                        ,(SELECT ISNULL(SUM(CARNUM),0) FROM [TKMK].[dbo].[GROUPSALES] WHERE  [STATUS]='完成接團' AND CONVERT(nvarchar,[CREATEDATES],112)=TA001) AS 'CARNUM'
+                                        FROM [TK].dbo.POSTA
+                                        WHERE TA002 IN (SELECT  [TA002]  FROM [TKMK].[dbo].[TB_POS_TA002])
+                                        AND TA001>='{0}' AND TA001<='{1}'
+                                        GROUP BY TA001  ,TA002 
+                                    ) AS TEMP
+                                    LEFT JOIN [TK].dbo.CMSME ON ME001=TA002
+                                    ORDER BY TA002,INDATES
+                                    ", SDATES, EDATES);
+
+                cmd.Connection = sqlConn;
+                using (sqlConn)
+                {
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+                       
+                    }
+                    sqlConn.Close();
+                }
+
+            }
+            catch (Exception EX)
+            { }
+            finally
+            { }        
+           
+        }
+
 
         public void SETFASTREPORT(string SDATES, string EDATES)
         {
@@ -503,13 +580,64 @@ namespace TKMK
             report1.Show();
         }
 
+        public void SETFASTREPORT6(string SDATE, string EDATES)
+        {
+            StringBuilder SQL4 = new StringBuilder();
+            SQL4.Clear();
+            SQL4.AppendFormat(@"
+                               SELECT 
+                                [TA002] AS '門市代號'
+                                ,[INDATES]  AS '日期'
+                                ,[ME002] AS '門市'
+                                ,[YEARS]  AS '年'
+                                ,[WEEKS] AS '週'
+                                ,[TOTALMONEYS] AS '當日總業績'
+                                ,[GROUPMONEYS] AS '團客業績'
+                                ,[VISITORMONEYS] AS '散客業績'
+                                ,[CARNUM] AS '團車數'
+                                ,[CARAVGMONEYS]  AS '每車平均業績'
+                                FROM [TKMK].[dbo].[TBFACTORYINCOME_TA002]
+                                WHERE INDATES>='{0}' AND INDATES<='{1}'                               
+                                ORDER BY TA002,INDATES
+                                ", SDATE, EDATES);
+
+            Report report1 = new Report();
+            report1.Load(@"REPORT\觀光業績及車次明細表-門市.frx");
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+
+
+            TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
+            table.SelectCommand = SQL4.ToString();
+
+
+            //report1.SetParameterValue("P1", dateTimePicker1.Value.ToString("yyyyMMdd"));
+            //report1.SetParameterValue("P2", dateTimePicker2.Value.ToString("yyyyMMdd"));
+            report1.Preview = previewControl1;
+            report1.Show();
+        }
 
         #endregion
 
-        #region BUTTON
+            #region BUTTON
         private void button1_Click(object sender, EventArgs e)
         {
             ADDTKMK_TBFACTORYINCOME(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+
+            ADDTKMK_TBFACTORYINCOME_TA002(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+
+            MessageBox.Show("完成");
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -530,6 +658,11 @@ namespace TKMK
         private void button6_Click(object sender, EventArgs e)
         {
             SETFASTREPORT5(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            SETFASTREPORT6(dateTimePicker1.Value.ToString("yyyyMMdd"), dateTimePicker2.Value.ToString("yyyyMMdd"));
         }
 
         #endregion

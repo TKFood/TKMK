@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="03/31/2026 11:01:53" ReportInfo.Modified="03/31/2026 11:13:09" ReportInfo.CreatorVersion="2017.4.1.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="03/31/2026 11:01:53" ReportInfo.Modified="03/31/2026 16:54:13" ReportInfo.CreatorVersion="2017.4.1.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNS8V+op55d8q+MyIM1gh0M9zlGOgK4zWs8Nahyki0xHW6v1SoNjLsQ40hUEIevZodc4nZn1VMr9PyrOeyOFQcW49yN37Wommt8wACdM4FKHAeO5qqwIh8UI3n9QTXxqWwTPNcGNXwg8b50ejNaLPKKg==">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNS8V+op55d8q+MyIM1gh0M9zlGOgK4zWs8Nahyki0xHW6v1SoNjLsQ40hUEIevZodc4nZn1VMr9PyrOeyOFQcW49yN37Wommt8wACdM4FKHAeO5qqwIh8UI3n9QTXxqWwjLtF+K+tEZAXhil46pwFUA==">
       <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT &#13;&#10;[SDATES] AS '日期起'&#13;&#10;,[EDATES] AS '日期迄'&#13;&#10;,[MB001] AS '品號' &#13;&#10;,[MB002] AS '品名'&#13;&#10;,[期初庫存]&#13;&#10;,[期末庫存]&#13;&#10;,[本期銷售]&#13;&#10;,[本期入庫]&#13;&#10;,[本期領用]&#13;&#10;,[本期轉撥入]&#13;&#10;,[本期轉撥出]&#13;&#10;,[其他]&#13;&#10;,[販售率]    &#13;&#10;      &#13;&#10;FROM [TKMK].[dbo].[TBDAILYSDATESEDATES]&#13;&#10;WHERE [SDATES]='20260301' AND [EDATES]='20260329'&#13;&#10;ORDER BY [MB001]&#13;&#10;&#13;&#10;">
         <Column Name="日期起" DataType="System.String"/>
         <Column Name="日期迄" DataType="System.String"/>

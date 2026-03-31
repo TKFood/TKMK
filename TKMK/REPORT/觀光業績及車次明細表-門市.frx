@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="10/14/2021 13:57:48" ReportInfo.Modified="04/17/2026 10:55:22" ReportInfo.CreatorVersion="2017.4.1.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpNK7VAg28EMb2zujBtCWMs8uR7KE3TT1XHtlPqNg0WX9L1EQ9tgOC4AJxRrO52fSr+">
+      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT &#13;&#10;[TA002] AS '門市代號'&#13;&#10;,[INDATES]  AS '日期'&#13;&#10;,[ME002] AS '門市'&#13;&#10;,[YEARS]  AS '年'&#13;&#10;,[WEEKS] AS '週'&#13;&#10;,[TOTALMONEYS] AS '當日總業績'&#13;&#10;,[GROUPMONEYS] AS '團客業績'&#13;&#10;,[VISITORMONEYS] AS '散客業績'&#13;&#10;,[CARNUM] AS '團車數'&#13;&#10;,[CARAVGMONEYS]  AS '每車平均業績'&#13;&#10;FROM [TKMK].[dbo].[TBFACTORYINCOME_TA002]&#13;&#10;WHERE [INDATES]&gt;='20260401' AND [INDATES]&lt;='20260416'&#13;&#10;ORDER BY [TA002] ,[INDATES]&#13;&#10;">
+        <Column Name="日期" DataType="System.String"/>
+        <Column Name="年" DataType="System.String"/>
+        <Column Name="週" DataType="System.String"/>
+        <Column Name="團客業績" DataType="System.Int32"/>
+        <Column Name="散客業績" DataType="System.Int32"/>
+        <Column Name="每車平均業績" DataType="System.Int32"/>
+        <Column Name="門市代號" DataType="System.String"/>
+        <Column Name="門市" DataType="System.String"/>
+        <Column Name="當日總業績" DataType="System.Int32"/>
+        <Column Name="團車數" DataType="System.Int32"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Total Name="Total團客業績" Expression="[Table.團客業績]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="Total散客業績" Expression="[Table.散客業績]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="Total當日總業績" Expression="[Table.當日總業績]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="avg每車平均業績" TotalType="Avg" Expression="[Table.每車平均業績]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+    <Total Name="Total團車數" Expression="[Table.團車數]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+  </Dictionary>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="297" PaperHeight="210" RawPaperSize="9" FirstPageSource="15" OtherPagesSource="15">
+    <ReportTitleBand Name="ReportTitle1" Width="1047.06" Height="18.9">
+      <TextObject Name="Text1" Left="151.2" Width="897.75" Height="18.9" Text="觀光業績及車次明細表-門市" HorzAlign="Center" VertAlign="Center"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="22.9" Width="1047.06" Height="18.9">
+      <TextObject Name="Text3" Width="85.05" Height="18.9" Border.Lines="All" Text="門市代號" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text5" Left="217.35" Width="94.5" Height="18.9" Border.Lines="All" Text="日期" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text7" Left="311.85" Width="94.5" Height="18.9" Border.Lines="All" Text="年" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text9" Left="406.35" Width="56.7" Height="18.9" Border.Lines="All" Text="週" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text11" Left="463.05" Width="85.05" Height="18.9" Border.Lines="All" Text="當日總業績" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text13" Left="548.1" Width="85.05" Height="18.9" Border.Lines="All" Text="團客業績" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text15" Left="633.15" Width="85.05" Height="18.9" Border.Lines="All" Text="散客業績" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text17" Left="718.2" Width="85.05" Height="18.9" Border.Lines="All" Text="團車數" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text19" Left="803.25" Width="85.05" Height="18.9" Border.Lines="All" Text="每車平均業績" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text21" Left="85.05" Width="132.3" Height="18.9" Border.Lines="All" Text="門市" HorzAlign="Center" VertAlign="Center"/>
+    </PageHeaderBand>
+    <GroupHeaderBand Name="GroupHeader1" Top="45.8" Width="1047.06" Condition="[Table.門市代號]" SortOrder="None">
+      <DataBand Name="Data1" Top="49.8" Width="1047.06" Height="18.9" CanGrow="true" CanBreak="true" DataSource="Table">
+        <TextObject Name="Text12" Left="548.1" Width="85.05" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.團客業績]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false"/>
+        <TextObject Name="Text18" Left="803.25" Width="85.05" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.每車平均業績]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center"/>
+        <TextObject Name="Text2" Width="85.05" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.門市代號]" HorzAlign="Center" VertAlign="Center" WordWrap="false"/>
+        <TextObject Name="Text4" Left="217.35" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.日期]" HorzAlign="Center" VertAlign="Center" WordWrap="false"/>
+        <TextObject Name="Text6" Left="311.85" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.年]" HorzAlign="Center" VertAlign="Center" WordWrap="false"/>
+        <TextObject Name="Text8" Left="406.35" Width="56.7" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.週]" HorzAlign="Center" VertAlign="Center" WordWrap="false"/>
+        <TextObject Name="Text10" Left="463.05" Width="85.05" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.當日總業績]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false"/>
+        <TextObject Name="Text14" Left="633.15" Width="85.05" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.散客業績]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false"/>
+        <TextObject Name="Text16" Left="718.2" Width="85.05" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.團車數]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false"/>
+        <TextObject Name="Text20" Left="85.05" Width="132.3" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.門市]" HorzAlign="Center" VertAlign="Center" WordWrap="false"/>
+      </DataBand>
+      <GroupFooterBand Name="GroupFooter1" Top="72.7" Width="1047.06" Height="18.9">
+        <TextObject Name="Text22" Left="463.05" Width="85.05" Height="18.9" Border.Lines="All" Fill.Color="Wheat" CanGrow="true" GrowToBottom="true" Text="[Total當日總業績]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center"/>
+        <TextObject Name="Text23" Left="548.1" Width="85.05" Height="18.9" Border.Lines="All" Fill.Color="Wheat" CanGrow="true" GrowToBottom="true" Text="[Total團客業績]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center"/>
+        <TextObject Name="Text24" Left="633.15" Width="85.05" Height="18.9" Border.Lines="All" Fill.Color="Wheat" CanGrow="true" GrowToBottom="true" Text="[Total散客業績]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center"/>
+        <TextObject Name="Text25" Left="718.2" Width="85.05" Height="18.9" Border.Lines="All" Fill.Color="Wheat" CanGrow="true" GrowToBottom="true" Text="[Total團車數]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center"/>
+        <TextObject Name="Text26" Left="803.25" Width="85.05" Height="18.9" Border.Lines="All" Fill.Color="Wheat" CanGrow="true" GrowToBottom="true" Text="[avg每車平均業績]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center"/>
+        <TextObject Name="Text27" Width="463.05" Height="18.9" Border.Lines="All" Fill.Color="Wheat" Text="小計" HorzAlign="Center" VertAlign="Center"/>
+      </GroupFooterBand>
+    </GroupHeaderBand>
+    <ReportSummaryBand Name="ReportSummary1" Top="95.6" Width="1047.06" Height="18.9"/>
+    <PageFooterBand Name="PageFooter1" Top="118.5" Width="1047.06" Height="18.9"/>
+  </ReportPage>
+</Report>
