@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="05/13/2026 13:24:46" ReportInfo.Modified="05/13/2026 14:10:05" ReportInfo.CreatorVersion="2017.4.1.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNS8V+op55d8q+MyIM1gh0M9zlGOgK4zWs8Nahyki0xHW6v1SoNjLsQ40hUEIevZodc4nZn1VMr9PyrOeyOFQcW49yN37Wommt8wACdM4FKHAeO5qqwIh8UI3n9QTXxqWwdtHhDQZ4b+n26H7mQACfvQ==">
+      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT &#13;&#10;LA004 AS '日期'&#13;&#10;,LA001 AS '品號'&#13;&#10;,MB002 AS '品名'&#13;&#10;,SUM(INNUMS) AS '當日入庫數量'&#13;&#10;,SUM(USEDNUMS) AS '當日領用數量'&#13;&#10;,SUM(TURNNUMS) AS '當日轉出數量'&#13;&#10;,SUM(POSNUMS) AS '當日銷售數量'&#13;&#10;,(CASE WHEN (SUM(POSNUMS)-SUM(INNUMS)+SUM(USEDNUMS)+-SUM(TURNNUMS))&gt;0 THEN (SUM(POSNUMS)-SUM(INNUMS)+SUM(USEDNUMS)+-SUM(TURNNUMS)) ELSE 0 END) AS '前期庫存數量'&#13;&#10;,(CASE WHEN SUM(INNUMS) -SUM(USEDNUMS)-SUM(TURNNUMS)&gt;0 THEN SUM(INNUMS) -SUM(USEDNUMS)-SUM(TURNNUMS) ELSE 0 END ) AS '當日進貨量（不含前期庫存）'&#13;&#10;,(CASE WHEN SUM(INNUMS) -SUM(USEDNUMS)-SUM(TURNNUMS)&gt;0 THEN (SUM(POSNUMS)/(SUM(INNUMS) -SUM(USEDNUMS)-SUM(TURNNUMS))) ELSE 0 END )AS '當日完銷率 = 當日銷量 / 當日進貨量（不含前期庫存）'&#13;&#10;FROM  (&#13;&#10;	SELECT &#13;&#10;	LA004,&#13;&#10;	LA001,&#13;&#10;	MB002,&#13;&#10;	(CASE WHEN LA006 IN ('A582') THEN LA011 ELSE 0 END ) AS 'INNUMS',&#13;&#10;	(CASE WHEN LA006 IN ('A111') THEN LA011 ELSE 0 END ) AS 'USEDNUMS',&#13;&#10;	(CASE WHEN LA006 IN ('A121') AND LA009 IN('21002') AND LA005 IN ('-1')THEN LA011 ELSE 0 END ) 'TURNNUMS',&#13;&#10;	(CASE WHEN LA010 IN ('POS產生') THEN LA011 ELSE 0 END ) AS 'POSNUMS'&#13;&#10;	FROM [TK].dbo.INVLA&#13;&#10;	INNER JOIN [TK].dbo.INVMB ON MB001=LA001&#13;&#10;	WHERE 1=1&#13;&#10;	AND LA011&gt;0&#13;&#10;	AND LA009 IN('21002')&#13;&#10;	AND LA001 LIKE '409%'&#13;&#10;	AND LA004&gt;='20260501' AND LA004&lt;='20260513'&#13;&#10;) AS TEMP&#13;&#10;GROUP BY LA004,LA001,MB002&#13;&#10;ORDER BY LA001,MB002,LA004">
+        <Column Name="日期" DataType="System.String"/>
+        <Column Name="品號" DataType="System.String"/>
+        <Column Name="品名" DataType="System.String"/>
+        <Column Name="當日入庫數量" DataType="System.Decimal"/>
+        <Column Name="當日領用數量" DataType="System.Decimal"/>
+        <Column Name="當日轉出數量" DataType="System.Decimal"/>
+        <Column Name="當日銷售數量" DataType="System.Decimal"/>
+        <Column Name="前期庫存數量" DataType="System.Decimal"/>
+        <Column Name="當日進貨量（不含前期庫存）" DataType="System.Decimal"/>
+        <Column Name="當日完銷率 = 當日銷量 / 當日進貨量（不含前期庫存）" DataType="System.Decimal"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+  </Dictionary>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="297" PaperHeight="210" RawPaperSize="9" FirstPageSource="15" OtherPagesSource="15">
+    <ReportTitleBand Name="ReportTitle1" Width="1047.06" Height="47.25">
+      <TextObject Name="Text1" Width="689.85" Height="47.25" Text="硯微墨當日完銷率&#13;&#10;&#13;&#10;(說明:若完銷率超過 100%，係因銷售包含前期庫存之累計，故當日銷量高於當日進貨量)"/>
+    </ReportTitleBand>
+    <DataBand Name="Data1" Top="52.58" Width="1047.06" Height="36.38">
+      <MatrixObject Name="Matrix1" Width="422.45" Height="36.38" FixedRows="1" FixedColumns="2" DataSource="Table">
+        <MatrixColumns>
+          <Header Expression="[Table.日期]" Totals="false"/>
+        </MatrixColumns>
+        <MatrixRows>
+          <Header Expression="[Table.品名]" Totals="false"/>
+          <Header Expression="[Table.品號]" Totals="false"/>
+        </MatrixRows>
+        <MatrixCells>
+          <Cell Expression="[Table.當日完銷率 = 當日銷量 / 當日進貨量（不含前期庫存）]"/>
+        </MatrixCells>
+        <TableColumn Name="Column1" Width="46.07" AutoSize="true"/>
+        <TableColumn Name="Column2" Width="46.07" AutoSize="true"/>
+        <TableColumn Name="Column3" Width="330.31" AutoSize="true"/>
+        <TableRow Name="Row1" Height="18.19" AutoSize="true">
+          <TableCell Name="Cell1" Border.Lines="All" Text="品名" HorzAlign="Center" VertAlign="Center"/>
+          <TableCell Name="Cell2" Border.Lines="All" Text="品號" HorzAlign="Center" VertAlign="Center"/>
+          <TableCell Name="Cell5" Border.Lines="All" Text="[日期]" HorzAlign="Center" VertAlign="Center"/>
+        </TableRow>
+        <TableRow Name="Row2" Height="18.19" AutoSize="true">
+          <TableCell Name="Cell3" Border.Lines="All" Text="[品名]" VertAlign="Center"/>
+          <TableCell Name="Cell4" Border.Lines="All" Text="[品號]" VertAlign="Center"/>
+          <TableCell Name="Cell6" Border.Lines="All" Text="[當日完銷率 = 當日銷量 / 當日進貨量（不含前期庫存）]" Format="Percent" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="." Format.GroupSeparator="," Format.PercentSymbol="%" Format.PositivePattern="1" Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center"/>
+        </TableRow>
+      </MatrixObject>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="94.3" Width="1047.06" Height="18.9"/>
+  </ReportPage>
+</Report>

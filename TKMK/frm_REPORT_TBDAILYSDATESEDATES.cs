@@ -264,6 +264,154 @@ namespace TKMK
             return SB;
 
         }
+
+        public void SETFASTREPORT2(string SDATES, string EDATES)
+        {
+            StringBuilder SQL1 = new StringBuilder();
+
+            SQL1 = SETSQL2(SDATES, EDATES);
+            Report report1 = new Report();
+            report1.Load(@"REPORT\\硯微墨商品當日完售率.frx");
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password); 
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+
+            TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
+            table.SelectCommand = SQL1.ToString();
+
+            //report1.SetParameterValue("P1", dateTimePicker1.Value.ToString("yyyyMMdd"));
+            //report1.SetParameterValue("P2", dateTimePicker2.Value.ToString("yyyyMMdd"));
+            report1.Preview = previewControl2;
+            report1.Show();
+        }
+
+        public StringBuilder SETSQL2(string SDATES, string EDATES)
+        {
+            StringBuilder SB = new StringBuilder();
+
+            SB.AppendFormat(@" 
+                            SELECT 
+                            LA004 AS '日期'
+                            ,LA001 AS '品號'
+                            ,MB002 AS '品名'
+                            ,SUM(INNUMS) AS '當日入庫數量'
+                            ,SUM(USEDNUMS) AS '當日領用數量'
+                            ,SUM(TURNNUMS) AS '當日轉出數量'
+                            ,SUM(POSNUMS) AS '當日銷售數量'
+                            ,(CASE WHEN (SUM(POSNUMS)-SUM(INNUMS)+SUM(USEDNUMS)+-SUM(TURNNUMS))>0 THEN (SUM(POSNUMS)-SUM(INNUMS)+SUM(USEDNUMS)+-SUM(TURNNUMS)) ELSE 0 END) AS '前期庫存數量'
+                            ,(CASE WHEN SUM(INNUMS) -SUM(USEDNUMS)-SUM(TURNNUMS)>0 THEN SUM(INNUMS) -SUM(USEDNUMS)-SUM(TURNNUMS) ELSE 0 END ) AS '當日進貨量（不含前期庫存）'
+                            ,(CASE WHEN SUM(INNUMS) -SUM(USEDNUMS)-SUM(TURNNUMS)>0 THEN (SUM(POSNUMS)/(SUM(INNUMS) -SUM(USEDNUMS)-SUM(TURNNUMS))) ELSE 0 END )AS '當日完銷率 = 當日銷量 / 當日進貨量（不含前期庫存）'
+                            FROM  (
+	                            SELECT 
+	                            LA004,
+	                            LA001,
+	                            MB002,
+	                            (CASE WHEN LA006 IN ('A582') THEN LA011 ELSE 0 END ) AS 'INNUMS',
+	                            (CASE WHEN LA006 IN ('A111') THEN LA011 ELSE 0 END ) AS 'USEDNUMS',
+	                            (CASE WHEN LA006 IN ('A121') AND LA009 IN('21002') AND LA005 IN ('-1')THEN LA011 ELSE 0 END ) 'TURNNUMS',
+	                            (CASE WHEN LA010 IN ('POS產生') THEN LA011 ELSE 0 END ) AS 'POSNUMS'
+	                            FROM [TK].dbo.INVLA
+	                            INNER JOIN [TK].dbo.INVMB ON MB001=LA001
+	                            WHERE 1=1
+	                            AND LA011>0
+	                            AND LA009 IN('21002')
+	                            AND LA001 LIKE '409%'
+	                            AND LA004>='{0}' AND LA004<='{1}'
+                            ) AS TEMP
+                            GROUP BY LA004,LA001,MB002
+                            ORDER BY LA001,MB002,LA004
+
+
+                            ", SDATES, EDATES);
+
+            return SB;
+
+        }
+
+        public void SETFASTREPORT3(string SDATES, string EDATES)
+        {
+            StringBuilder SQL1 = new StringBuilder();
+
+            SQL1 = SETSQL3(SDATES, EDATES);
+            Report report1 = new Report();
+            report1.Load(@"REPORT\\硯微墨商品當日完售率-明細.frx");
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+
+            TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
+            table.SelectCommand = SQL1.ToString();
+
+            //report1.SetParameterValue("P1", dateTimePicker1.Value.ToString("yyyyMMdd"));
+            //report1.SetParameterValue("P2", dateTimePicker2.Value.ToString("yyyyMMdd"));
+            report1.Preview = previewControl3;
+            report1.Show();
+        }
+
+        public StringBuilder SETSQL3(string SDATES, string EDATES)
+        {
+            StringBuilder SB = new StringBuilder();
+
+            SB.AppendFormat(@" 
+                            SELECT 
+                            LA004 AS '日期'
+                            ,LA001 AS '品號'
+                            ,MB002 AS '品名'
+                            ,SUM(INNUMS) AS '當日入庫數量'
+                            ,SUM(USEDNUMS) AS '當日領用數量'
+                            ,SUM(TURNNUMS) AS '當日轉出數量'
+                            ,SUM(POSNUMS) AS '當日銷售數量'
+                            ,(CASE WHEN (SUM(POSNUMS)-SUM(INNUMS)+SUM(USEDNUMS)+-SUM(TURNNUMS))>0 THEN (SUM(POSNUMS)-SUM(INNUMS)+SUM(USEDNUMS)+-SUM(TURNNUMS)) ELSE 0 END) AS '前期庫存數量'
+                            ,(CASE WHEN SUM(INNUMS) -SUM(USEDNUMS)-SUM(TURNNUMS)>0 THEN SUM(INNUMS) -SUM(USEDNUMS)-SUM(TURNNUMS) ELSE 0 END ) AS '當日進貨量（不含前期庫存）'
+                            ,(CASE WHEN SUM(INNUMS) -SUM(USEDNUMS)-SUM(TURNNUMS)>0 THEN (SUM(POSNUMS)/(SUM(INNUMS) -SUM(USEDNUMS)-SUM(TURNNUMS))) ELSE 0 END )AS '當日完銷率 = 當日銷量 / 當日進貨量（不含前期庫存）'
+                            FROM  (
+	                            SELECT 
+	                            LA004,
+	                            LA001,
+	                            MB002,
+	                            (CASE WHEN LA006 IN ('A582') THEN LA011 ELSE 0 END ) AS 'INNUMS',
+	                            (CASE WHEN LA006 IN ('A111') THEN LA011 ELSE 0 END ) AS 'USEDNUMS',
+	                            (CASE WHEN LA006 IN ('A121') AND LA009 IN('21002') AND LA005 IN ('-1')THEN LA011 ELSE 0 END ) 'TURNNUMS',
+	                            (CASE WHEN LA010 IN ('POS產生') THEN LA011 ELSE 0 END ) AS 'POSNUMS'
+	                            FROM [TK].dbo.INVLA
+	                            INNER JOIN [TK].dbo.INVMB ON MB001=LA001
+	                            WHERE 1=1
+	                            AND LA011>0
+	                            AND LA009 IN('21002')
+	                            AND LA001 LIKE '409%'
+	                            AND LA004>='{0}' AND LA004<='{1}'
+                            ) AS TEMP
+                            GROUP BY LA004,LA001,MB002
+                            ORDER BY LA001,MB002,LA004
+
+
+                            ", SDATES, EDATES);
+
+            return SB;
+
+        }
+
+
         #endregion
 
         #region BUTTON
@@ -275,6 +423,17 @@ namespace TKMK
             ADD_TBDAILYSDATESEDATES(SDATES, EDATES);
             SETFASTREPORT(SDATES, EDATES);
         }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            string SDATES = dateTimePicker3.Value.ToString("yyyyMMdd");
+            string EDATES = dateTimePicker4.Value.ToString("yyyyMMdd");
+
+            SETFASTREPORT2(SDATES, EDATES);
+            SETFASTREPORT3(SDATES, EDATES);
+        }
+
         #endregion
+
+
     }
 }
