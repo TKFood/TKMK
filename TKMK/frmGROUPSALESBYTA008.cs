@@ -4487,8 +4487,10 @@ namespace TKMK
                 string CARKIND = comboBox1.Text.Trim();
                 string GROUPKIND = comboBox2.Text.Trim();
                 string ISEXCHANGE = comboBox6.Text.Trim();
-                string PLAYDAYKINDS = comboBox10.Text.Trim();
-                string PLAYDAYS = comboBox11.Text.Trim();
+                //string PLAYDAYKINDS = comboBox10.Text.Trim();
+                //string PLAYDAYS = comboBox11.Text.Trim();
+                string PLAYDAYKINDS = "1日旅遊";
+                string PLAYDAYS = "第1天";
                 string GROUPSALES_LOGIN = comboBox12.Text.Trim();
                 string PLAYPROCESS = comboBox13.Text.Trim();
 
@@ -4605,8 +4607,10 @@ namespace TKMK
                     string CARKIND = comboBox1.Text.Trim();
                     string GROUPKIND = comboBox2.Text.Trim();
                     string ISEXCHANGE = comboBox6.Text.Trim();
-                    string PLAYDAYKINDS = comboBox10.Text.Trim();
-                    string PLAYDAYS = comboBox11.Text.Trim();
+                    //string PLAYDAYKINDS = comboBox10.Text.Trim();
+                    //string PLAYDAYS = comboBox11.Text.Trim();
+                    string PLAYDAYKINDS = "1日旅遊";
+                     string PLAYDAYS = "第1天";
                     string GROUPSALES_LOGIN = comboBox12.Text.Trim();
 
                     string CARNUM = textBox142.Text.Trim();
@@ -4879,8 +4883,10 @@ namespace TKMK
                     string CARKIND = comboBox1.Text.Trim();
                     string GROUPKIND = comboBox2.Text.Trim();
                     string ISEXCHANGE = comboBox6.Text.Trim();
-                    string PLAYDAYKINDS = comboBox10.Text.Trim();
-                    string PLAYDAYS = comboBox11.Text.Trim();
+                    //string PLAYDAYKINDS = comboBox10.Text.Trim();
+                    //string PLAYDAYS = comboBox11.Text.Trim();
+                    string PLAYDAYKINDS = "1日旅遊";
+                     string PLAYDAYS = "第1天";
                     string GROUPSALES_LOGIN = comboBox12.Text.Trim();
                     string PLAYPROCESS = comboBox13.Text.Trim();
 
@@ -4938,8 +4944,10 @@ namespace TKMK
                     string CARKIND = comboBox1.Text.Trim();
                     string GROUPKIND = comboBox2.Text.Trim();
                     string ISEXCHANGE = comboBox6.Text.Trim();
-                    string PLAYDAYKINDS = comboBox10.Text.Trim();
-                    string PLAYDAYS = comboBox11.Text.Trim();                   
+                    //string PLAYDAYKINDS = comboBox10.Text.Trim();
+                    //string PLAYDAYS = comboBox11.Text.Trim();
+                    string PLAYDAYKINDS = "1日旅遊";
+                    string PLAYDAYS = "第1天";
                     string GROUPSALES_LOGIN = comboBox12.Text.Trim();
                     string PLAYPROCESS = comboBox13.Text.Trim();
 
