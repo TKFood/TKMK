@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="10/22/2024 13:44:45" ReportInfo.Modified="05/21/2026 16:20:25" ReportInfo.CreatorVersion="2017.4.1.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNjHuzu89K+RQ2LIBVx1fpgNkNJhwC4eetn2/Uy0fMrO7zDUE5AmRb+0bcYI+lxqpN+i5gA3VDGcwlcfm6L9ZMsLrZ3U+wEDtHCQtd9vw2XUFL69ae0rT+Jrrm5kyk3nrC">
+      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT  &#13;&#10;[CARNAME] AS '車名'&#13;&#10;,[CARNO] AS '車號'&#13;&#10;,[PLAYPROCESS] AS '去程回程'   &#13;&#10;,COUNT([CARNO])  AS '遊程次數'&#13;&#10;,AVG([SALESMMONEYS]) AS '平均消費金額'&#13;&#10;,SUM([SALESMMONEYS]) AS '加總消費金額'&#13;&#10;FROM [TKMK].[dbo].[GROUPSALES]&#13;&#10;WHERE 1=1&#13;&#10;AND CONVERT(nvarchar,[CREATEDATES],112)&gt;='20260520'&#13;&#10;AND CONVERT(nvarchar,[CREATEDATES],112)&lt;='20260521'&#13;&#10;AND [STATUS]&lt;&gt;'取消預約'&#13;&#10;GROUP BY [CARNAME],[CARNO],[PLAYPROCESS]&#13;&#10; ORDER BY COUNT([CARNO])  DESC,[CARNAME],[CARNO],[PLAYPROCESS]">
+        <Column Name="車名" DataType="System.String"/>
+        <Column Name="車號" DataType="System.String"/>
+        <Column Name="遊程次數" DataType="System.Int32"/>
+        <Column Name="平均消費金額" DataType="System.Int32"/>
+        <Column Name="加總消費金額" DataType="System.Int32"/>
+        <Column Name="去程回程" DataType="System.String"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="P1" DataType="System.String"/>
+    <Parameter Name="P2" DataType="System.String"/>
+  </Dictionary>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="297" PaperHeight="210">
+    <ReportTitleBand Name="ReportTitle1" Width="1047.06" Height="18.9">
+      <TextObject Name="Text1" Width="340.2" Height="18.9" Text="查詢日期:[P1]~[P2]"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="24.23" Width="1047.06" Height="18.9">
+      <TextObject Name="Text3" Width="94.5" Height="18.9" Border.Lines="All" Text="車名" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text5" Left="94.5" Width="94.5" Height="18.9" Border.Lines="All" Text="車號" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text7" Left="283.5" Width="94.5" Height="18.9" Border.Lines="All" Text="遊程次數" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text9" Left="378" Width="94.5" Height="18.9" Border.Lines="All" Text="平均消費金額" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text11" Left="472.5" Width="94.5" Height="18.9" Border.Lines="All" Text="加總消費金額" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text13" Left="189" Width="94.5" Height="18.9" Border.Lines="All" Text="去程回程" HorzAlign="Center" VertAlign="Center"/>
+    </PageHeaderBand>
+    <DataBand Name="Data1" Top="48.47" Width="1047.06" Height="18.9" CanGrow="true" DataSource="Table">
+      <TextObject Name="Text2" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.車名]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text4" Left="94.5" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.車號]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text6" Left="283.5" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.遊程次數]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text8" Left="378" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table.平均消費金額]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text10" Left="472.5" Width="94.5" Height="18.9" Border.Lines="All" Text="[Table.加總消費金額]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text12" Left="189" Width="94.5" Height="18.9" Border.Lines="All" Text="[Table.去程回程]" HorzAlign="Center" VertAlign="Center"/>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="72.7" Width="1047.06" Height="18.9"/>
+  </ReportPage>
+</Report>

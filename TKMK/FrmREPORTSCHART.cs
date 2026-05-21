@@ -470,6 +470,81 @@ namespace TKMK
 
         }
 
+        public void SETFASTREPORT6(string SDATES, string EDATES,string CARNO)
+        {
+            StringBuilder SQL1 = new StringBuilder();
+            StringBuilder SQL2 = new StringBuilder();
+
+            SQL1 = SETSQL6(SDATES, EDATES,CARNO);
+           
+            Report report1 = new Report();
+            report1.Load(@"REPORT\團車遊程次數圖表.frx");
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+            report1.Dictionary.Connections[0].CommandTimeout = 180;
+
+
+            TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
+            table.SelectCommand = SQL1.ToString();
+       
+
+
+            report1.SetParameterValue("P1", SDATES);
+            report1.SetParameterValue("P2", EDATES);
+
+            report1.Preview = previewControl6;
+            report1.Show();
+        }
+
+        public StringBuilder SETSQL6(string SDATES, string EDATES,string CARNO)
+        {
+            StringBuilder SB = new StringBuilder();
+            StringBuilder QUERY1 = new StringBuilder();
+
+            if (!string.IsNullOrEmpty(CARNO))
+            {
+                QUERY1.AppendFormat(@" AND [CARNO] LIKE '%{0}%' ", CARNO);
+            }
+            else
+            {
+                QUERY1.AppendFormat(@"  ");
+            }
+
+
+            SB.AppendFormat(@"                              
+                             SELECT  
+                            [CARNAME] AS '車名'
+                            ,[CARNO] AS '車號'
+                            ,[PLAYPROCESS] AS '去程回程'   
+                            ,COUNT([CARNO])  AS '遊程次數'
+                            ,AVG([SALESMMONEYS]) AS '平均消費金額'
+                            ,SUM([SALESMMONEYS]) AS '加總消費金額'
+
+                            FROM [TKMK].[dbo].[GROUPSALES] 
+                            WHERE 1=1
+                            AND CONVERT(nvarchar,[CREATEDATES],112)>='{0}'
+                            AND CONVERT(nvarchar,[CREATEDATES],112)<='{1}'
+                            AND [STATUS]<>'取消預約'
+                            {2}
+                            GROUP BY [CARNAME],[CARNO],[PLAYPROCESS] 
+                            ORDER BY COUNT([CARNO])  DESC,[CARNAME],[CARNO],[PLAYPROCESS] 
+
+                            ", SDATES, EDATES, QUERY1.ToString());
+
+            return SB;
+
+        }
 
         #endregion
 
@@ -497,6 +572,15 @@ namespace TKMK
         {
             SETFASTREPORT5(dateTimePicker9.Value.ToString("yyyyMMdd"), dateTimePicker10.Value.ToString("yyyyMMdd"));
         }
+        private void button6_Click(object sender, EventArgs e)
+        {
+            string SDATES= dateTimePicker11.Value.ToString("yyyyMMdd");
+            string EDATES= dateTimePicker12.Value.ToString("yyyyMMdd");
+            string CARNO= textBox1.Text.Trim();
+            
+            SETFASTREPORT6(SDATES, EDATES, CARNO);
+        }
+
         #endregion
 
 
