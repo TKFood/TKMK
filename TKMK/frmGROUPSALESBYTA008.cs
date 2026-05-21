@@ -94,6 +94,7 @@ namespace TKMK
             comboBox10load();
             comboBox11load();
             comboBox12_load();
+            comboBox13_load();
 
             dateTimePicker1.Value = DateTime.Now;
             dateTimePicker2.Value = DateTime.Now;
@@ -577,6 +578,44 @@ namespace TKMK
             sqlConn.Close();
 
         }
+
+        public void comboBox13_load()
+        {
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            StringBuilder Sequel = new StringBuilder();
+            Sequel.AppendFormat(@"                                 
+                                SELECT
+                                [KINDS]
+                                ,[PARASNAMES]
+                                ,[DVALUES]
+                                FROM [TKMK].[dbo].[TBZPARAS]
+                                WHERE [KINDS]='PLAYPROCESS'
+                                ORDER BY [DVALUES]
+                                ");
+            SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
+            DataTable dt = new DataTable();
+            sqlConn.Open();
+
+            dt.Columns.Add("DVALUES", typeof(string));
+            da.Fill(dt);
+            comboBox13.DataSource = dt.DefaultView;
+            comboBox13.ValueMember = "DVALUES";
+            comboBox13.DisplayMember = "DVALUES";
+            sqlConn.Close();
+
+        }
+
+
         /// <summary>
         /// 尋找 業務員/會員
         /// </summary>
@@ -781,8 +820,7 @@ namespace TKMK
                                     ,[TA008] AS '業務員帳號'
                                     ,[EXCHANNO] AS '優惠券名'
                                     ,[EXCHANACOOUNT] AS '優惠券帳號'
-                                    ,[PLAYDAYKINDS] AS '旅遊天數'
-                                    ,[PLAYDAYS] AS '第幾天'
+                                    ,[PLAYPROCESS] AS '去程回程'                                  
                                     ,[DRIVERS] AS '司機'
                                     ,[TOURS] AS '領隊'
                                     ,CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間'
@@ -934,6 +972,7 @@ namespace TKMK
                     comboBox3.Text = row.Cells["業務員帳號"].Value.ToString() + ' ' + row.Cells["業務員名"].Value.ToString();
                     comboBox6.Text = row.Cells["兌換券"].Value.ToString();
                     comboBox5.Text = row.Cells["來車公司"].Value.ToString();
+                    comboBox13.Text = row.Cells["去程回程"].Value.ToString();
                 }
             }
             catch
@@ -988,8 +1027,8 @@ namespace TKMK
                     comboBox3.Text = row.Cells["業務員帳號"].Value.ToString() + ' ' + row.Cells["業務員名"].Value.ToString();
                     comboBox6.Text = row.Cells["兌換券"].Value.ToString();
                     comboBox5.Text = row.Cells["來車公司"].Value.ToString();
-                    comboBox10.Text = row.Cells["旅遊天數"].Value.ToString();
-                    comboBox11.Text = row.Cells["第幾天"].Value.ToString();
+                    //comboBox10.Text = row.Cells["旅遊天數"].Value.ToString();
+                    //comboBox11.Text = row.Cells["第幾天"].Value.ToString();
                 }
                 else
                 {
@@ -1100,6 +1139,7 @@ namespace TKMK
             , string DRIVERS
             , string TOURS
             , string GROUPSALES_LOGIN
+            , string PLAYPROCESS
            )
         {
             try
@@ -1130,7 +1170,8 @@ namespace TKMK
                                 [TOTALCOMMISSIONMONEYS], [CARNUM], [GUSETNUM],
                                 [EXCHANNO], [EXCHANACOOUNT], [PURGROUPSTARTDATES],
                                 [GROUPSTARTDATES], [PURGROUPENDDATES], [GROUPENDDATES],
-                                [STATUS], [PLAYDAYKINDS], [PLAYDAYS], [DRIVERS], [TOURS], [GROUPSALES_LOGIN]
+                                [STATUS], [PLAYDAYKINDS], [PLAYDAYS], [DRIVERS], [TOURS], [GROUPSALES_LOGIN],
+                                [PLAYPROCESS]
                                 )
                                 VALUES
                                 (
@@ -1142,7 +1183,8 @@ namespace TKMK
                                 @TOTALCOMMISSIONMONEYS, @CARNUM, @GUSETNUM,
                                 @EXCHANNO, @EXCHANACOOUNT, @PURGROUPSTARTDATES,
                                 @GROUPSTARTDATES, @PURGROUPENDDATES, @GROUPENDDATES,
-                                @STATUS, @PLAYDAYKINDS, @PLAYDAYS, @DRIVERS, @TOURS, @GROUPSALES_LOGIN
+                                @STATUS, @PLAYDAYKINDS, @PLAYDAYS, @DRIVERS, @TOURS, @GROUPSALES_LOGIN,
+                                @PLAYPROCESS
                                 )";
 
                             using (SqlCommand command = new SqlCommand(sql, conn, trans))
@@ -1184,6 +1226,7 @@ namespace TKMK
                                 command.Parameters.AddWithValue("@DRIVERS", DRIVERS ?? (object)DBNull.Value);
                                 command.Parameters.AddWithValue("@TOURS", TOURS ?? (object)DBNull.Value);
                                 command.Parameters.AddWithValue("@GROUPSALES_LOGIN", GROUPSALES_LOGIN ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@PLAYPROCESS", PLAYPROCESS ?? (object)DBNull.Value);
 
                                 int result = command.ExecuteNonQuery();
 
@@ -1246,6 +1289,8 @@ namespace TKMK
                                     , string PLAYDAYS
                                     , string DRIVERS
                                     , string TOURS
+                                    , string GROUPSALES_LOGIN
+                                    , string PLAYPROCESS   
                                     )
         {
             try
@@ -1287,6 +1332,8 @@ namespace TKMK
                                     ,PLAYDAYS='{15}'
                                     ,DRIVERS='{16}'
                                     ,TOURS='{17}'
+                                    ,GROUPSALES_LOGIN='{18}'
+                                    ,PLAYPROCESS='{19}'
                                     WHERE ID='{0}'
                                   ", ID
                                     , CARCOMPANY
@@ -1306,6 +1353,8 @@ namespace TKMK
                                     , PLAYDAYS
                                     , DRIVERS
                                     , TOURS
+                                    , GROUPSALES_LOGIN
+                                    , PLAYPROCESS
                                   );
 
                 cmd.Connection = sqlConn;
@@ -2690,6 +2739,7 @@ namespace TKMK
             comboBox6.Enabled = true;
             comboBox10.Enabled = true;
             comboBox11.Enabled = true;
+            comboBox13.Enabled = true;
         }
 
         public void SETTEXT2()
@@ -2706,6 +2756,7 @@ namespace TKMK
             comboBox6.Enabled = false;
             comboBox10.Enabled = false;
             comboBox11.Enabled = false;
+            comboBox13.Enabled = false;
         }
 
         public void SETTEXT3()
@@ -2721,7 +2772,7 @@ namespace TKMK
             comboBox6.Enabled = true;
             comboBox10.Enabled = true;
             comboBox11.Enabled = true;
-
+            comboBox13.Enabled = true;
         }
 
         public void SETTEXT4()
@@ -4439,7 +4490,7 @@ namespace TKMK
                 string PLAYDAYKINDS = comboBox10.Text.Trim();
                 string PLAYDAYS = comboBox11.Text.Trim();
                 string GROUPSALES_LOGIN = comboBox12.Text.Trim();
-
+                string PLAYPROCESS = comboBox13.Text.Trim();
 
                 string EXCHANGEMONEYS = "0";
                 string EXCHANGETOTALMONEYS = "0";
@@ -4465,6 +4516,7 @@ namespace TKMK
                 string CARCOMPANY = comboBox5.SelectedValue.ToString();
                 string DRIVERS = textBox151.Text.Trim();
                 string TOURS = textBox161.Text.Trim();
+                
 
                 try
                 {
@@ -4506,6 +4558,7 @@ namespace TKMK
                         , DRIVERS
                         , TOURS
                         , GROUPSALES_LOGIN
+                        , PLAYPROCESS
                        );
 
                         textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
@@ -4554,6 +4607,7 @@ namespace TKMK
                     string ISEXCHANGE = comboBox6.Text.Trim();
                     string PLAYDAYKINDS = comboBox10.Text.Trim();
                     string PLAYDAYS = comboBox11.Text.Trim();
+                    string GROUPSALES_LOGIN = comboBox12.Text.Trim();
 
                     string CARNUM = textBox142.Text.Trim();
                     string GUSETNUM = textBox143.Text.Trim();
@@ -4564,6 +4618,7 @@ namespace TKMK
                     string TA008 = comboBox3.Text.Trim().Substring(0, 7).ToString();
                     string DRIVERS = textBox151.Text.Trim();
                     string TOURS = textBox161.Text.Trim();
+                    string PLAYPROCESS = comboBox13.Text.Trim();
                     //string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     //string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     //string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
@@ -4589,6 +4644,8 @@ namespace TKMK
                                     , PLAYDAYS
                                     , DRIVERS
                                     , TOURS
+                                    , GROUPSALES_LOGIN
+                                    , PLAYPROCESS
                                     );
                     }
 
@@ -4824,6 +4881,8 @@ namespace TKMK
                     string ISEXCHANGE = comboBox6.Text.Trim();
                     string PLAYDAYKINDS = comboBox10.Text.Trim();
                     string PLAYDAYS = comboBox11.Text.Trim();
+                    string GROUPSALES_LOGIN = comboBox12.Text.Trim();
+                    string PLAYPROCESS = comboBox13.Text.Trim();
 
                     string CARNUM = textBox142.Text.Trim();
                     string GUSETNUM = textBox143.Text.Trim();
@@ -4854,6 +4913,8 @@ namespace TKMK
                                     , PLAYDAYS
                                     , DRIVERS
                                     , TOURS
+                                    , GROUPSALES_LOGIN
+                                    , PLAYPROCESS
                                     );
                 }
 
@@ -4878,7 +4939,9 @@ namespace TKMK
                     string GROUPKIND = comboBox2.Text.Trim();
                     string ISEXCHANGE = comboBox6.Text.Trim();
                     string PLAYDAYKINDS = comboBox10.Text.Trim();
-                    string PLAYDAYS = comboBox11.Text.Trim();
+                    string PLAYDAYS = comboBox11.Text.Trim();                   
+                    string GROUPSALES_LOGIN = comboBox12.Text.Trim();
+                    string PLAYPROCESS = comboBox13.Text.Trim();
 
                     string CARNUM = textBox142.Text.Trim();
                     string GUSETNUM = textBox143.Text.Trim();
@@ -4909,6 +4972,8 @@ namespace TKMK
                                     , PLAYDAYS
                                     , DRIVERS
                                     , TOURS
+                                    , GROUPSALES_LOGIN
+                                    , PLAYPROCESS
                                     );
                 }
 
