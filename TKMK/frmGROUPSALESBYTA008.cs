@@ -1027,6 +1027,8 @@ namespace TKMK
                     comboBox3.Text = row.Cells["業務員帳號"].Value.ToString() + ' ' + row.Cells["業務員名"].Value.ToString();
                     comboBox6.Text = row.Cells["兌換券"].Value.ToString();
                     comboBox5.Text = row.Cells["來車公司"].Value.ToString();
+                    comboBox12.Text = row.Cells["人員工號"].Value.ToString();
+                    comboBox13.Text = row.Cells["去程回程"].Value.ToString();
                     //comboBox10.Text = row.Cells["旅遊天數"].Value.ToString();
                     //comboBox11.Text = row.Cells["第幾天"].Value.ToString();
                 }
