@@ -4143,7 +4143,7 @@ namespace TKMK
 
                 string account = DT.Rows[0]["ACCOUNT"].ToString();
                 string jobTitleId = DT.Rows[0]["TITLE_ID"].ToString();
-                string fillerName = DT.Rows[0]["NAMES"].ToString();
+                string fillerName = DT.Rows[0]["NAME"].ToString();
                 string fillerUserGuid = DT.Rows[0]["USER_GUID"].ToString();
                 string depname = DT.Rows[0]["DEPNAME"].ToString();
                 string depno = DT.Rows[0]["DEPNO"].ToString();
@@ -4252,7 +4252,7 @@ namespace TKMK
                 using (SqlConnection sqlConn = new SqlConnection(sqlsb.ConnectionString))
                 {
                     SQLQUERYS.AppendFormat(@"
-                                            SELECT 
+                                           SELECT 
                                             [ID],
                                             CONVERT(varchar(100), [CREATEDATES], 112) CREATEDATES,                                           
                                             [SERNO] AS '序號',[CARNAME] AS '車名',[CARNO] AS '車號',[CARKIND] AS '車種',
@@ -4272,15 +4272,18 @@ namespace TKMK
                                             [EXCHANGEMONEYS] AS '領券額',
                                             [GROUP_NAME] AS 'DEPNAME',
                                             [TB_EB_EMPL_DEP].[GROUP_ID] + ',' + [GROUP_NAME] + ',False' AS 'DEPNO',
-                                            [TB_EB_USER].[USER_GUID],
-                                            [APPLY_ACCOUNTS].[ACCOUNT],
-                                            [APPLY_ACCOUNTS].[NAMES],
                                             [TB_EB_EMPL_DEP].[GROUP_ID],
                                             [TITLE_ID],
                                             [GROUP_NAME],
-                                            [GROUP_CODE]
-                                            FROM [TKMK].[dbo].[GROUPSALES],[TKMK].[dbo].[APPLY_ACCOUNTS]
-                                            JOIN [192.168.1.223].[UOF].[dbo].[TB_EB_USER] ON [TB_EB_USER].ACCOUNT=[APPLY_ACCOUNTS].ACCOUNT COLLATE Chinese_Taiwan_Stroke_BIN
+                                            [GROUP_CODE],
+
+                                            [GROUPSALES_LOGIN],
+                                            [TB_EB_USER].[USER_GUID],
+                                            [TB_EB_USER].[ACCOUNT],
+                                            [TB_EB_USER].[NAME]
+
+                                            FROM [TKMK].[dbo].[GROUPSALES]
+                                            JOIN [192.168.1.223].[UOF].[dbo].[TB_EB_USER] ON [TB_EB_USER].ACCOUNT=[GROUPSALES_LOGIN] COLLATE Chinese_Taiwan_Stroke_BIN
                                             JOIN [192.168.1.223].[UOF].[dbo].[TB_EB_EMPL_DEP]  ON ORDERS=0 AND [TB_EB_USER].[USER_GUID] = [TB_EB_EMPL_DEP].[USER_GUID]
                                             JOIN [192.168.1.223].[UOF].[dbo].[TB_EB_GROUP]  ON [TB_EB_EMPL_DEP].[GROUP_ID] = [TB_EB_GROUP].[GROUP_ID]
                                             WHERE ISNULL([TB_EB_GROUP].[GROUP_CODE], '') <> ''
