@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="07/13/2026 11:14:36" ReportInfo.Modified="07/13/2026 11:20:40" ReportInfo.CreatorVersion="2017.4.1.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNS8V+op55d8q+MyIM1gh0M9zlGOgK4zWs8Nahyki0xHW6v1SoNjLsQ40hUEIevZodc4nZn1VMr9PyrOeyOFQcW49yN37Wommt8wACdM4FKHAeO5qqwIh8UI3n9QTXxqWwv/TVRCMJtBkuMfzzKnMr7g==">
+      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT &#13;&#10;     V.ID&#13;&#10;    ,V.SETHOURS&#13;&#10;    ,ISNULL(TEMP.HRS, V.SETHOURS) AS '入場時間' -- 防止 LEFT JOIN 沒資料時顯示 NULL&#13;&#10;    ,ISNULL(TEMP.SUMMONEYS, 0) AS '團車銷售總金額' -- 沒資料時自動補 0&#13;&#10;    ,ISNULL(TEMP.SUMCARNUMS, 0) AS '團車來車數'&#13;&#10;    ,ISNULL(TEMP.AVGMONEYS, 0) AS '團車平均銷售金額 '&#13;&#10;FROM [TKMK].[dbo].[VISITORS_HOURS] AS V&#13;&#10;LEFT JOIN &#13;&#10;(&#13;&#10;    SELECT&#13;&#10;         DATEPART(HOUR, [GROUPSTARTDATES]) AS 'HRS'&#13;&#10;        ,SUM([SALESMMONEYS]) AS 'SUMMONEYS'&#13;&#10;        ,SUM([CARNUM]) AS 'SUMCARNUMS'&#13;&#10;        -- 優化 1：加入 CASE WHEN 防止車數為 0 時引發除以零錯誤&#13;&#10;        ,CASE &#13;&#10;            WHEN SUM([CARNUM]) = 0 THEN 0 &#13;&#10;            ELSE SUM([SALESMMONEYS]) / SUM([CARNUM]) &#13;&#10;         END AS 'AVGMONEYS'&#13;&#10;    FROM [TKMK].[dbo].[GROUPSALES]&#13;&#10;    -- 優化 2：移除欄位上的 CONVERT 轉換，改用標準日期區間比對（支援索引）&#13;&#10;    WHERE CONVERT(NVARCHAR,[GROUPSTARTDATES],112) &gt;= '20260710' &#13;&#10;      AND  CONVERT(NVARCHAR,[GROUPSTARTDATES],112)&lt;= '20260713' &#13;&#10;    GROUP BY DATEPART(HOUR, [GROUPSTARTDATES])&#13;&#10;) AS TEMP ON V.[SETHOURS] = TEMP.HRS&#13;&#10;ORDER BY V.SETHOURS;">
+        <Column Name="ID" DataType="System.String"/>
+        <Column Name="SETHOURS" DataType="System.Int32"/>
+        <Column Name="入場時間" DataType="System.Int32"/>
+        <Column Name="團車銷售總金額" DataType="System.Int32"/>
+        <Column Name="團車來車數" DataType="System.Int32"/>
+        <Column Name="團車平均銷售金額 " DataType="System.Int32"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="P1" DataType="System.String"/>
+    <Parameter Name="P2" DataType="System.String"/>
+  </Dictionary>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="297" PaperHeight="210" RawPaperSize="9">
+    <ReportTitleBand Name="ReportTitle1" Width="1047.06" Height="18.9">
+      <TextObject Name="Text1" Width="444.15" Height="18.9" Text="查詢日期:[P1]~[P2]"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="24.23" Width="1047.06" Height="18.9">
+      <TextObject Name="Text3" Width="94.5" Height="18.9" Border.Lines="All" Text="入場時間" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text5" Left="94.5" Width="94.5" Height="18.9" Border.Lines="All" Text="團車銷售總金額" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text7" Left="189" Width="94.5" Height="18.9" Border.Lines="All" Text="團車來車數" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text9" Left="283.5" Width="132.3" Height="18.9" Border.Lines="All" Text="團車平均銷售金額 " HorzAlign="Center" VertAlign="Center"/>
+    </PageHeaderBand>
+    <DataBand Name="Data1" Top="48.47" Width="1047.06" Height="18.9" DataSource="Table">
+      <TextObject Name="Text2" Width="94.5" Height="18.9" Border.Lines="All" Text="[Table.入場時間]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text4" Left="94.5" Width="94.5" Height="18.9" Border.Lines="All" Text="[Table.團車銷售總金額]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text6" Left="189" Width="94.5" Height="18.9" Border.Lines="All" Text="[Table.團車來車數]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text8" Left="283.5" Width="132.3" Height="18.9" Border.Lines="All" Text="[Table.團車平均銷售金額 ]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Center" VertAlign="Center"/>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="72.7" Width="1047.06" Height="18.9"/>
+  </ReportPage>
+</Report>

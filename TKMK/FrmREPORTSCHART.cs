@@ -546,6 +546,86 @@ namespace TKMK
 
         }
 
+        public void SETFASTREPORT7(string SDATES, string EDATES)
+        {
+            StringBuilder SQL1 = new StringBuilder();
+            StringBuilder SQL2 = new StringBuilder();
+
+            SQL1 = SETSQL7(SDATES, EDATES);
+
+            Report report1 = new Report();
+            report1.Load(@"REPORT\團車入場時間.frx");
+
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+            String connectionString;
+            sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+            report1.Dictionary.Connections[0].ConnectionString = sqlsb.ConnectionString;
+            report1.Dictionary.Connections[0].CommandTimeout = 180;
+
+
+            TableDataSource table = report1.GetDataSource("Table") as TableDataSource;
+            table.SelectCommand = SQL1.ToString();
+
+
+
+            report1.SetParameterValue("P1", SDATES);
+            report1.SetParameterValue("P2", EDATES);
+
+            report1.Preview = previewControl7;
+            report1.Show();
+        }
+
+        public StringBuilder SETSQL7(string SDATES, string EDATES)
+        {
+            StringBuilder SB = new StringBuilder();
+            StringBuilder QUERY1 = new StringBuilder();
+
+        
+
+
+            SB.AppendFormat(@"                              
+                            SELECT 
+                                 V.ID
+                                ,V.SETHOURS
+                                ,ISNULL(TEMP.HRS, V.SETHOURS) AS '入場時間' -- 防止 LEFT JOIN 沒資料時顯示 NULL
+                                ,ISNULL(TEMP.SUMMONEYS, 0) AS '團車銷售總金額' -- 沒資料時自動補 0
+                                ,ISNULL(TEMP.SUMCARNUMS, 0) AS '團車來車數'
+                                ,ISNULL(TEMP.AVGMONEYS, 0) AS '團車平均銷售金額 '
+                            FROM [TKMK].[dbo].[VISITORS_HOURS] AS V
+
+                            LEFT JOIN 
+                            (
+                                SELECT
+                                     DATEPART(HOUR, [GROUPSTARTDATES]) AS 'HRS'
+                                    ,SUM([SALESMMONEYS]) AS 'SUMMONEYS'
+                                    ,SUM([CARNUM]) AS 'SUMCARNUMS'
+                                    -- 優化 1：加入 CASE WHEN 防止車數為 0 時引發除以零錯誤
+                                    ,CASE 
+                                        WHEN SUM([CARNUM]) = 0 THEN 0 
+                                        ELSE SUM([SALESMMONEYS]) / SUM([CARNUM]) 
+                                     END AS 'AVGMONEYS'
+                                FROM [TKMK].[dbo].[GROUPSALES]
+                                -- 優化 2：移除欄位上的 CONVERT 轉換，改用標準日期區間比對（支援索引）
+                                WHERE CONVERT(NVARCHAR,[GROUPSTARTDATES],112) >= '{0}' 
+                                  AND  CONVERT(NVARCHAR,[GROUPSTARTDATES],112)<= '{1}' 
+                                GROUP BY DATEPART(HOUR, [GROUPSTARTDATES])
+                            ) AS TEMP ON V.[SETHOURS] = TEMP.HRS
+                            ORDER BY V.SETHOURS;
+
+                            ", SDATES, EDATES);
+
+            return SB;
+
+        }
+
         #endregion
 
         #region BUTTON
@@ -581,6 +661,14 @@ namespace TKMK
             SETFASTREPORT6(SDATES, EDATES, CARNO);
         }
 
+        private void button7_Click(object sender, EventArgs e)
+        {
+            string SDATES = dateTimePicker13.Value.ToString("yyyyMMdd");
+            string EDATES = dateTimePicker14.Value.ToString("yyyyMMdd");
+
+            SETFASTREPORT7(SDATES, EDATES);
+
+        }
         #endregion
 
 
