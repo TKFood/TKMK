@@ -593,32 +593,52 @@ namespace TKMK
 
             SB.AppendFormat(@"                              
                             SELECT 
-                                 V.ID
-                                ,V.SETHOURS
-                                ,ISNULL(TEMP.HRS, V.SETHOURS) AS '入場時間' -- 防止 LEFT JOIN 沒資料時顯示 NULL
-                                ,ISNULL(TEMP.SUMMONEYS, 0) AS '團車銷售總金額' -- 沒資料時自動補 0
-                                ,ISNULL(TEMP.SUMCARNUMS, 0) AS '團車來車數'
-                                ,ISNULL(TEMP.AVGMONEYS, 0) AS '團車平均銷售金額 '
-                            FROM [TKMK].[dbo].[VISITORS_HOURS] AS V
-
-                            LEFT JOIN 
+                                 TEMP.HRS AS '入場時間'
+                                ,SUM(TEMP.CARNUM) AS '團車來車數'
+                                ,SUM(ISNULL(P.TOTALTA026, 0)) AS '團車銷售總金額'
+                                ,SUM(ISNULL(P.FC_MONEY, 0)) AS '方城市總金額'
+                                ,SUM(ISNULL(P.YWM_MONEY, 0)) AS '硯微墨總金額'
+                                -- 平均金額計算（加入除以 0 保護）
+                                ,CASE 
+                                    WHEN SUM(TEMP.CARNUM) = 0 THEN 0 
+                                    ELSE SUM(ISNULL(P.TOTALTA026, 0)) / SUM(TEMP.CARNUM) 
+                                 END AS '團車平均銷售金額'
+                                ,CASE 
+                                    WHEN SUM(TEMP.CARNUM) = 0 THEN 0 
+                                    ELSE SUM(ISNULL(P.FC_MONEY, 0)) / SUM(TEMP.CARNUM) 
+                                 END AS '方城市平均銷售金額'
+                                ,CASE 
+                                    WHEN SUM(TEMP.CARNUM) = 0 THEN 0 
+                                    ELSE SUM(ISNULL(P.YWM_MONEY, 0)) / SUM(TEMP.CARNUM) 
+                                 END AS '硯微墨平均銷售金額'
+                            FROM 
                             (
+                                -- 內層 A：只負責乾淨地取出團車資料，並轉換日期與小時
                                 SELECT
-                                     DATEPART(HOUR, [GROUPSTARTDATES]) AS 'HRS'
-                                    ,SUM([SALESMMONEYS]) AS 'SUMMONEYS'
-                                    ,SUM([CARNUM]) AS 'SUMCARNUMS'
-                                    -- 優化 1：加入 CASE WHEN 防止車數為 0 時引發除以零錯誤
-                                    ,CASE 
-                                        WHEN SUM([CARNUM]) = 0 THEN 0 
-                                        ELSE SUM([SALESMMONEYS]) / SUM([CARNUM]) 
-                                     END AS 'AVGMONEYS'
-                                FROM [TKMK].[dbo].[GROUPSALES]
-                                -- 優化 2：移除欄位上的 CONVERT 轉換，改用標準日期區間比對（支援索引）
+                                     CONVERT(VARCHAR(8), [GROUPSTARTDATES], 112) AS [GROUP_DATE]
+                                    ,DATEPART(HOUR, [GROUPSTARTDATES]) AS [HRS]
+                                    ,[CARNUM]  
+                                    ,[EXCHANACOOUNT] 
+                                FROM [TKMK].[dbo].[GROUPSALES] WITH(NOLOCK)
+                                -- 優化 1：改用標準時間範圍比對，釋放 [GROUPSTARTDATES] 索引效能
                                 WHERE CONVERT(NVARCHAR,[GROUPSTARTDATES],112) >= '{0}' 
-                                  AND  CONVERT(NVARCHAR,[GROUPSTARTDATES],112)<= '{1}' 
-                                GROUP BY DATEPART(HOUR, [GROUPSTARTDATES])
-                            ) AS TEMP ON V.[SETHOURS] = TEMP.HRS
-                            ORDER BY V.SETHOURS;
+                            AND  CONVERT(NVARCHAR,[GROUPSTARTDATES],112)<= '{1}' 
+                            ) AS TEMP
+                            -- 優化 2：將原本 3 個子查詢，整合成一個高效的 LEFT JOIN 統計表
+                            LEFT JOIN (
+                                SELECT 
+                                     TA001 -- 日期
+                                    ,TA008 -- 帳號
+                                    ,SUM(TA026) AS TOTALTA026 -- 總金額
+                                    ,SUM(CASE WHEN TA002 = '106701' THEN TA026 ELSE 0 END) AS FC_MONEY  -- 方城市金額
+                                    ,SUM(CASE WHEN TA002 = '106702' THEN TA026 ELSE 0 END) AS YWM_MONEY -- 硯微墨金額
+                                FROM [TK].dbo.POSTA WITH(NOLOCK)
+                                WHERE TA001 BETWEEN '{0}' AND '{1}'
+                                GROUP BY TA001, TA008
+                            ) AS P ON P.TA001 = TEMP.GROUP_DATE AND P.TA008 = TEMP.EXCHANACOOUNT
+                            GROUP BY TEMP.HRS
+                            ORDER BY TEMP.HRS;
+
 
                             ", SDATES, EDATES);
 
