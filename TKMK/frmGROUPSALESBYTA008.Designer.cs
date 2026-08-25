@@ -2313,6 +2313,7 @@
             this.button24.TabIndex = 611;
             this.button24.Text = "更新並申請表單";
             this.button24.UseVisualStyleBackColor = true;
+            this.button24.Click += new System.EventHandler(this.button24_Click);
             // 
             // label51
             // 

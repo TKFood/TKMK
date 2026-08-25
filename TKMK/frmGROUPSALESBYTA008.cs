@@ -4348,7 +4348,7 @@ namespace TKMK
                                     SUBSTRING(MI002,1,3) AS '業務員'
                                     FROM [TK].dbo.POSTA
                                     LEFT JOIN [TK].dbo.WSCMI  ON MI001=TA008
-                                    WHERE  TA002='106701'                                    
+                                    WHERE  TA002 LIKE  '1067%'                                    
                                     AND TA001=@TA001
                                     {0}
                                     
@@ -4412,6 +4412,60 @@ namespace TKMK
                 }
                 else
                 {
+                }
+            }
+        }
+
+        public void UPDATE_POSTA_TA008(string ta014,string ta008)
+        {
+            // 1. 處理連線字串與解密
+            Class1 tkId = new Class1();
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+            sqlsb.Password = tkId.Decryption(sqlsb.Password);
+            sqlsb.UserID = tkId.Decryption(sqlsb.UserID);
+
+            // 2. 使用 using 確保資源自動釋放
+            using (SqlConnection conn = new SqlConnection(sqlsb.ConnectionString))
+            {
+                conn.Open();
+                // 開啟交易
+                using (SqlTransaction trans = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        string sql = @"
+                                        UPDATE [TK].dbo.POSTA
+                                        SET TA008=@TA008
+                                        WHERE TA014=@TA014
+                                        ";  
+
+                        using (SqlCommand command = new SqlCommand(sql, conn, trans))
+                        {
+                            command.CommandTimeout = 60;
+                            // 使用參數化查詢，避免 SQL Injection
+                            command.Parameters.AddWithValue("@TA008", ta008 ?? (object)DBNull.Value);
+                            command.Parameters.AddWithValue("@TA014", ta014 ?? (object)DBNull.Value);
+
+                            int rowsAffected = command.ExecuteNonQuery();
+
+                            if (rowsAffected > 0)
+                            {
+                                trans.Commit();
+                            }
+                            else
+                            {
+                                // 若更新筆數為 0，通常代表 ID 不存在
+                                trans.Rollback();
+                                MessageBox.Show("找不到指定的 ID，更新失敗。");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // 發生錯誤時回滾
+                        if (trans.Connection != null) trans.Rollback();
+                        MessageBox.Show("系統錯誤：" + ex.Message);
+                    }
                 }
             }
         }
@@ -5371,8 +5425,47 @@ namespace TKMK
             SEARCHGROUPSALES_GV5(TA001, TA014);
         }
 
+        private void button24_Click(object sender, EventArgs e)
+        {
+            string ta014= textBox6.Text.Trim();
+            string ta008 = textBox7.Text.Trim();  
+            string TA001 = dateTimePicker11.Value.ToString("yyyyMMdd");  
+
+            if (!string.IsNullOrEmpty(ta014)&& !string.IsNullOrEmpty(ta008))
+            {
+                // 1. 彈出詢問視窗
+                // 參數說明：(顯示訊息, 視窗標題, 按鈕類型, 圖示類型)
+                DialogResult result = MessageBox.Show(
+                    string.Format("確定要將 發票: {0} 變更為「{1}」並執行同步嗎？", ta014, ta008),
+                    "執行確認",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question
+                );
+
+                // 2. 判斷使用者點擊的是否為「是」
+                if (result == DialogResult.Yes)
+                {
+                    UPDATE_POSTA_TA008(ta014, ta008);
+
+                    // 重新查詢
+                    SEARCHGROUPSALES_GV5(TA001, "");
+
+                    // 建議執行完可以給個簡單提示
+                    // MessageBox.Show("更新完成！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    // 使用者選「否」，不執行任何動作
+                    return;
+                }
+            }
+            else
+            {
+                MessageBox.Show("請先輸入 發票 才能執行。", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
         #endregion
 
-     
+
     }
 }
