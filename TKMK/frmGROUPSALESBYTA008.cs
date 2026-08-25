@@ -40,8 +40,8 @@ namespace TKMK
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
         int result;
+        string currentId_GV5 = "";
 
-       
         string STATUSCONTROLLER = "VIEW";
         string ID = null;
         string ACCOUNT = null;
@@ -4417,6 +4417,90 @@ namespace TKMK
             }
         }
 
+        public void RefreshData_DG5(string currentId)
+        {
+            // 3. 回到原本那筆資料
+            if (!string.IsNullOrEmpty(currentId))
+            {
+                foreach (DataGridViewRow row in dataGridView5.Rows)
+                {
+                    if (row.Cells["發票號碼"].Value.ToString() == currentId)
+                    {
+                        row.Selected = true;
+                        dataGridView5.CurrentCell = row.Cells[0];
+
+                        dataGridView5_SelectionChanged(dataGridView5, EventArgs.Empty);
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void textBox7_TextChanged(object sender, EventArgs e)
+        {
+            textBox8.Text = "";
+            string mi001 = textBox7.Text.Trim();
+            DataTable DT = FIND_MI002(mi001);
+            if(DT!=null && DT.Rows.Count>=1)
+            {
+                textBox8.Text = DT.Rows[0]["MI002"].ToString();
+            }
+
+        }
+
+        public DataTable FIND_MI002(string mi001)
+        {
+            StringBuilder sql = new StringBuilder();
+            
+            try
+            {
+                Class1 TKID = new Class1();
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                using (SqlConnection conn = new SqlConnection(sqlsb.ConnectionString))
+                {
+
+
+                    // 使用參數化查詢 @Date，解決字串拼接風險
+                    sql.AppendFormat(@"
+                                    SELECT MI001,SUBSTRING(MI002,1,3)  MI002
+                                    FROM [TK].dbo.WSCMI WITH(NOLOCK)
+                                    WHERE MI001=@mi001
+                                    
+                                    ");
+
+                    using (SqlCommand cmd = new SqlCommand(sql.ToString(), conn))
+                    {
+                        cmd.Parameters.AddWithValue("@mi001", mi001);
+                        SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                        DataTable dt = new DataTable();
+                        adapter.Fill(dt);
+
+                        if (dt.Rows.Count >= 1)
+                        {
+                            return dt;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                      
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                // 建議至少記錄錯誤，不要讓 catch 空著
+                MessageBox.Show("查詢失敗: " + ex.Message);
+                return null;
+            }
+
+        }
+
         public void UPDATE_POSTA_TA008(string ta014,string ta008)
         {
             // 1. 處理連線字串與解密
@@ -5437,7 +5521,7 @@ namespace TKMK
                 // 1. 彈出詢問視窗
                 // 參數說明：(顯示訊息, 視窗標題, 按鈕類型, 圖示類型)
                 DialogResult result = MessageBox.Show(
-                    string.Format("確定要將 發票: {0} 變更為「{1}」並執行同步嗎？", ta014, ta008),
+                    string.Format("確定要將 發票: {0} 的業務員 變更為「{1}」嗎？", ta014, ta008),
                     "執行確認",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question
@@ -5446,10 +5530,12 @@ namespace TKMK
                 // 2. 判斷使用者點擊的是否為「是」
                 if (result == DialogResult.Yes)
                 {
-                    UPDATE_POSTA_TA008(ta014, ta008);
+                    //UPDATE_POSTA_TA008(ta014, ta008);
 
                     // 重新查詢
                     SEARCHGROUPSALES_GV5(TA001, "");
+                    RefreshData_DG5(ta014);
+
 
                     // 建議執行完可以給個簡單提示
                     // MessageBox.Show("更新完成！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -5465,8 +5551,9 @@ namespace TKMK
                 MessageBox.Show("請先輸入 發票 才能執行。", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
+
         #endregion
 
-
+       
     }
 }

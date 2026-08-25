@@ -2256,10 +2256,10 @@
             // 
             this.tableLayoutPanel12.BackColor = System.Drawing.Color.LightGreen;
             this.tableLayoutPanel12.ColumnCount = 4;
-            this.tableLayoutPanel12.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 111F));
-            this.tableLayoutPanel12.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 143F));
-            this.tableLayoutPanel12.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
-            this.tableLayoutPanel12.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 86F));
+            this.tableLayoutPanel12.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 153F));
+            this.tableLayoutPanel12.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 157F));
+            this.tableLayoutPanel12.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 151F));
+            this.tableLayoutPanel12.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 19F));
             this.tableLayoutPanel12.Controls.Add(this.label52, 0, 1);
             this.tableLayoutPanel12.Controls.Add(this.textBox6, 1, 1);
             this.tableLayoutPanel12.Controls.Add(this.label51, 0, 2);
@@ -2291,25 +2291,25 @@
             this.label52.AutoSize = true;
             this.label52.Location = new System.Drawing.Point(3, 52);
             this.label52.Name = "label52";
-            this.label52.Size = new System.Drawing.Size(105, 16);
+            this.label52.Size = new System.Drawing.Size(147, 16);
             this.label52.TabIndex = 612;
             this.label52.Text = "發票";
             // 
             // textBox6
             // 
             this.textBox6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox6.Location = new System.Drawing.Point(114, 47);
+            this.textBox6.Location = new System.Drawing.Point(156, 47);
             this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(137, 27);
+            this.textBox6.Size = new System.Drawing.Size(151, 27);
             this.textBox6.TabIndex = 613;
             // 
             // button24
             // 
             this.button24.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.button24.ForeColor = System.Drawing.Color.Fuchsia;
-            this.button24.Location = new System.Drawing.Point(257, 123);
+            this.button24.Location = new System.Drawing.Point(313, 123);
             this.button24.Name = "button24";
-            this.button24.Size = new System.Drawing.Size(134, 34);
+            this.button24.Size = new System.Drawing.Size(145, 34);
             this.button24.TabIndex = 611;
             this.button24.Text = "更新並申請表單";
             this.button24.UseVisualStyleBackColor = true;
@@ -2321,17 +2321,18 @@
             this.label51.AutoSize = true;
             this.label51.Location = new System.Drawing.Point(3, 92);
             this.label51.Name = "label51";
-            this.label51.Size = new System.Drawing.Size(105, 16);
+            this.label51.Size = new System.Drawing.Size(147, 16);
             this.label51.TabIndex = 614;
-            this.label51.Text = "業務員代號";
+            this.label51.Text = "業務員代號(預設=0)";
             // 
             // textBox7
             // 
             this.textBox7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox7.Location = new System.Drawing.Point(114, 87);
+            this.textBox7.Location = new System.Drawing.Point(156, 87);
             this.textBox7.Name = "textBox7";
-            this.textBox7.Size = new System.Drawing.Size(137, 27);
+            this.textBox7.Size = new System.Drawing.Size(151, 27);
             this.textBox7.TabIndex = 615;
+            this.textBox7.TextChanged += new System.EventHandler(this.textBox7_TextChanged);
             // 
             // label53
             // 
@@ -2339,16 +2340,16 @@
             this.label53.AutoSize = true;
             this.label53.Location = new System.Drawing.Point(3, 132);
             this.label53.Name = "label53";
-            this.label53.Size = new System.Drawing.Size(105, 16);
+            this.label53.Size = new System.Drawing.Size(147, 16);
             this.label53.TabIndex = 616;
             this.label53.Text = "業務員";
             // 
             // textBox8
             // 
             this.textBox8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox8.Location = new System.Drawing.Point(114, 126);
+            this.textBox8.Location = new System.Drawing.Point(156, 126);
             this.textBox8.Name = "textBox8";
-            this.textBox8.Size = new System.Drawing.Size(137, 27);
+            this.textBox8.Size = new System.Drawing.Size(151, 27);
             this.textBox8.TabIndex = 617;
             // 
             // frmGROUPSALESBYTA008
