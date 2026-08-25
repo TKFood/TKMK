@@ -5700,7 +5700,7 @@ namespace TKMK
                 // 2. 判斷使用者點擊的是否為「是」
                 if (result == DialogResult.Yes)
                 {
-                    //UPDATE_POSTA_TA008(ta014, ta008);
+                    UPDATE_POSTA_TA008(ta014, ta008);
                     ADDTB_WKF_EXTERNAL_TASK_COMMISSION(ID, ta014, ta008, ta008no, salesmoney);
                     // 重新查詢
                     SEARCHGROUPSALES_GV5(TA001, "");
