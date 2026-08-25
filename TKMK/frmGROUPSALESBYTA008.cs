@@ -4399,6 +4399,7 @@ namespace TKMK
             textBox6.Text = "";
             textBox7.Text = "";
             textBox8.Text = "";
+            textBox10.Text = "";
 
             if (dataGridView5.CurrentRow != null)
             {
@@ -4410,6 +4411,7 @@ namespace TKMK
                     textBox6.Text = row.Cells["發票號碼"].Value.ToString();
                     textBox7.Text = row.Cells["業務員代碼"].Value.ToString();
                     textBox8.Text = row.Cells["業務員"].Value.ToString();
+                    textBox10.Text = row.Cells["發票總金額"].Value.ToString();
                 }
                 else
                 {
@@ -4553,6 +4555,161 @@ namespace TKMK
                     }
                 }
             }
+        }
+
+        public DataTable SEARCH_UOF_USER(string ACCOUNT)
+        {
+            StringBuilder SQLQUERYS = new StringBuilder();
+            try
+            {
+                // 1. 處理連線字串與解密
+                Class1 tkId = new Class1();
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                sqlsb.Password = tkId.Decryption(sqlsb.Password);
+                sqlsb.UserID = tkId.Decryption(sqlsb.UserID);
+
+                using (SqlConnection sqlConn = new SqlConnection(sqlsb.ConnectionString))
+                {
+                    SQLQUERYS.AppendFormat(@"
+                                           SELECT 
+                                            [GROUP_NAME] AS 'DEPNAME',
+                                            [TB_EB_EMPL_DEP].[GROUP_ID] + ',' + [GROUP_NAME] + ',False' AS 'DEPNO',
+                                            [TB_EB_EMPL_DEP].[GROUP_ID],
+                                            [TITLE_ID],
+                                            [GROUP_NAME],
+                                            [GROUP_CODE],
+                                            [TB_EB_USER].[USER_GUID],
+                                            [TB_EB_USER].[ACCOUNT],
+                                            [TB_EB_USER].[NAME]
+
+                                            FROM  [192.168.1.223].[UOF].[dbo].[TB_EB_USER]
+                                            JOIN [192.168.1.223].[UOF].[dbo].[TB_EB_EMPL_DEP]  ON ORDERS=0 AND [TB_EB_USER].[USER_GUID] = [TB_EB_EMPL_DEP].[USER_GUID]
+                                            JOIN [192.168.1.223].[UOF].[dbo].[TB_EB_GROUP]  ON [TB_EB_EMPL_DEP].[GROUP_ID] = [TB_EB_GROUP].[GROUP_ID]
+                                            WHERE ISNULL([TB_EB_GROUP].[GROUP_CODE], '') <> ''
+                                            AND [TB_EB_USER].[ACCOUNT]='{0}'
+
+                                        ", ACCOUNT);
+
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(SQLQUERYS.ToString(), sqlConn))
+                    using (DataSet ds = new DataSet())
+                    {
+                        sqlConn.Open();
+                        adapter.Fill(ds);
+
+                        return ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 ? ds.Tables[0] : null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // log ex if needed
+                return null;
+            }
+        }
+        public void ADDTB_WKF_EXTERNAL_TASK_COMMISSION(string ID,string invoices,string ta008,string ta008no,string salesmoney)
+        {
+            int rowscounts = 0;
+
+            try
+            {
+                DataTable DT = SEARCH_UOF_USER(ID);
+
+                string EXTERNAL_FORM_NBR = invoices + "-" + ID;
+
+                string account = DT.Rows[0]["ACCOUNT"].ToString();
+                string jobTitleId = DT.Rows[0]["TITLE_ID"].ToString();
+                string fillerName = DT.Rows[0]["NAME"].ToString();
+                string fillerUserGuid = DT.Rows[0]["USER_GUID"].ToString();
+                string depname = DT.Rows[0]["DEPNAME"].ToString();
+                string depno = DT.Rows[0]["DEPNO"].ToString();
+                string groupId = DT.Rows[0]["GROUP_ID"].ToString();
+
+                string form_id = SEARCHFORM_UOF_VERSION_ID("2002.團務金額申請");
+
+                // 建立XML
+                XmlDocument xmlDoc = new XmlDocument();
+                XmlElement form = xmlDoc.CreateElement("Form");
+                if (!string.IsNullOrEmpty(form_id)) form.SetAttribute("formVersionId", form_id);
+                form.SetAttribute("urgentLevel", "2");
+                xmlDoc.AppendChild(form);
+                //建立XML的 applicant 節點
+                XmlElement applicant = CreateApplicant(xmlDoc, account, groupId, jobTitleId);
+                form.AppendChild(applicant);
+                //建立XML的 Comment 節點
+                XmlElement comment = xmlDoc.CreateElement("Comment");
+                comment.InnerText = "申請者意見";
+                applicant.AppendChild(comment);
+
+                //建立節點 FormFieldValue
+                XmlElement FormFieldValue = xmlDoc.CreateElement("FormFieldValue");
+                //加入至節點底下
+                form.AppendChild(FormFieldValue);
+
+                //建立節點FieldItem
+                //ID 表單編號	
+                AddFieldItem(xmlDoc, FormFieldValue, "ID", "", fillerName, fillerUserGuid, account);
+                AddFieldItem(xmlDoc, FormFieldValue, "FIELD01", invoices, fillerName, fillerUserGuid, account);
+                AddFieldItem(xmlDoc, FormFieldValue, "FIELD02", ta008, fillerName, fillerUserGuid, account);
+                AddFieldItem(xmlDoc, FormFieldValue, "FIELD03", ta008no, fillerName, fillerUserGuid, account);
+                AddFieldItem(xmlDoc, FormFieldValue, "FIELD04", salesmoney, fillerName, fillerUserGuid, account);
+                
+
+                ////用ADDTACK，直接啟動起單
+                //ADDTACK(Form);
+
+                //ADD TO DB
+                //string connectionString = ConfigurationManager.ConnectionStrings["dbUOF"].ToString();
+
+                //connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                //sqlConn = new SqlConnection(connectionString);
+
+                //20210902密
+                Class1 TKID = new Class1();//用new 建立類別實體
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbUOF"].ConnectionString);
+
+                // 資料庫使用者密碼解密
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                string connectionString = sqlsb.ConnectionString;
+
+                StringBuilder queryString = new StringBuilder();
+                queryString.AppendFormat(@"
+                                    INSERT INTO [UOF].dbo.TB_WKF_EXTERNAL_TASK
+                                    (EXTERNAL_TASK_ID, FORM_INFO, STATUS, EXTERNAL_FORM_NBR)
+                                    VALUES (NEWID(), @XML, 2, '{0}')
+                                    ", EXTERNAL_FORM_NBR);
+
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    using (SqlCommand command = new SqlCommand(queryString.ToString(), connection))
+                    {
+                        command.Parameters.Add("@XML", SqlDbType.NVarChar).Value = form.OuterXml;
+
+                        connection.Open();
+                        int count = command.ExecuteNonQuery();
+                        // 可依需求輸出執行結果，例如：
+                        // Console.WriteLine($"新增筆數: {count}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // 記錄或顯示例外訊息，方便除錯
+                    Console.WriteLine("資料庫寫入錯誤: " + ex.Message);
+                }
+
+            }
+            catch (Exception EX)
+            {
+
+            }
+            finally
+            {
+
+            }
+
+
         }
 
         //SEARCHFORM_UOF_VERSION_ID
@@ -5513,10 +5670,23 @@ namespace TKMK
         private void button24_Click(object sender, EventArgs e)
         {
             string ta014= textBox6.Text.Trim();
-            string ta008 = textBox7.Text.Trim();  
+            string ta008 = textBox7.Text.Trim();
+            string ta008no = textBox8.Text.Trim();
             string TA001 = dateTimePicker11.Value.ToString("yyyyMMdd");  
+            string ID= textBox9.Text.Trim();   
+            string salesmoney = textBox10.Text.Trim();
 
-            if (!string.IsNullOrEmpty(ta014)&& !string.IsNullOrEmpty(ta008))
+            //工號不存在就不執行
+            DataTable DT = SEARCH_UOF_USER(ID);
+
+            if(DT==null)
+            {
+                MessageBox.Show("帳號不存在，請重新輸入", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                textBox9.Text = "";
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(ta014)&& !string.IsNullOrEmpty(ta008)&&!string.IsNullOrEmpty(ID))
             {
                 // 1. 彈出詢問視窗
                 // 參數說明：(顯示訊息, 視窗標題, 按鈕類型, 圖示類型)
@@ -5531,12 +5701,12 @@ namespace TKMK
                 if (result == DialogResult.Yes)
                 {
                     //UPDATE_POSTA_TA008(ta014, ta008);
-
+                    ADDTB_WKF_EXTERNAL_TASK_COMMISSION(ID, ta014, ta008, ta008no, salesmoney);
                     // 重新查詢
                     SEARCHGROUPSALES_GV5(TA001, "");
                     RefreshData_DG5(ta014);
 
-
+                    MessageBox.Show("完成");
                     // 建議執行完可以給個簡單提示
                     // MessageBox.Show("更新完成！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
