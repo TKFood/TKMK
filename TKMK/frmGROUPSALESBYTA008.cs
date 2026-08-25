@@ -4348,7 +4348,8 @@ namespace TKMK
                                     SUBSTRING(MI002,1,3) AS '業務員'
                                     FROM [TK].dbo.POSTA
                                     LEFT JOIN [TK].dbo.WSCMI  ON MI001=TA008
-                                    WHERE  TA002 LIKE  '1067%'                                    
+                                    WHERE  TA002 LIKE  '1067%'  
+                                    AND ISNULL(TA014,'')<>''
                                     AND TA001=@TA001
                                     {0}
                                     
