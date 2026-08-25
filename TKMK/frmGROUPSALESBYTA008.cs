@@ -4308,6 +4308,115 @@ namespace TKMK
             }
         }
 
+        public void SEARCHGROUPSALES_GV5(string TA001,string TA014)
+        {
+            // 預先定義字型與顏色，避免在迴圈內反覆 new，提升效能
+            Font baseFont = new Font("Tahoma", 10);
+            Font headerFont = new Font("Tahoma", 9);
+            Font largeFont = new Font("Tahoma", 14);
+
+            StringBuilder sql = new StringBuilder();
+            StringBuilder SQL_QUERY = new StringBuilder();
+
+         
+
+            try
+            {
+                Class1 TKID = new Class1();
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+                sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                using (SqlConnection conn = new SqlConnection(sqlsb.ConnectionString))
+                {
+
+                    if (!string.IsNullOrEmpty(TA014))
+                    {
+                        SQL_QUERY.AppendFormat(@"AND TA014 LIKE '%{0}%'", TA014);
+                    }
+                    else
+                    {
+                        SQL_QUERY.AppendFormat(@"");
+                    }
+
+                    // 使用參數化查詢 @Date，解決字串拼接風險
+                    sql.AppendFormat(@"
+                                    SELECT
+                                    TA014 AS '發票號碼',
+                                    CONVERT(INT,TA024)AS '發票總金額',
+                                    TA008 AS '業務員代碼',
+                                    SUBSTRING(MI002,1,3) AS '業務員'
+                                    FROM [TK].dbo.POSTA
+                                    LEFT JOIN [TK].dbo.WSCMI  ON MI001=TA008
+                                    WHERE  TA002='106701'                                    
+                                    AND TA001=@TA001
+                                    {0}
+                                    
+                                    ", SQL_QUERY.ToString());
+
+                    using (SqlCommand cmd = new SqlCommand(sql.ToString(), conn))
+                    {
+                        cmd.Parameters.AddWithValue("@TA001", TA001);
+                        SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                        DataTable dt = new DataTable();
+                        adapter.Fill(dt);
+
+                        if (dt.Rows.Count == 0)
+                        {
+                            dataGridView5.DataSource = null;
+                            return;
+                        }
+
+                        // 綁定資料
+                        dataGridView5.DataSource = dt;
+                        dataGridView5.AutoResizeColumns();
+                        dataGridView5_SetColProperty("發票號碼", 160);
+                        dataGridView5_SetColProperty("業務員代碼", 160);
+                        dataGridView5_SetColProperty("業務員", 100);
+                        dataGridView5_SetColProperty("發票總金額", 100, "#,##0", DataGridViewContentAlignment.MiddleRight);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                // 建議至少記錄錯誤，不要讓 catch 空著
+                MessageBox.Show("查詢失敗: " + ex.Message);
+            }
+        }
+        private void dataGridView5_SetColProperty(string colName, int width, string format = null, DataGridViewContentAlignment align = DataGridViewContentAlignment.MiddleLeft)
+        {
+            if (dataGridView5.Columns.Contains(colName))
+            {
+                dataGridView5.Columns[colName].Width = width;
+                dataGridView5.Columns[colName].DefaultCellStyle.Alignment = align;
+                if (format != null) dataGridView5.Columns[colName].DefaultCellStyle.Format = format;
+            }
+        }
+        private void dataGridView5_SelectionChanged(object sender, EventArgs e)
+        {
+            textBox6.Text = "";
+            textBox7.Text = "";
+            textBox8.Text = "";
+
+            if (dataGridView5.CurrentRow != null)
+            {
+                int rowindex = dataGridView5.CurrentRow.Index;
+
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView5.Rows[rowindex];
+                    textBox6.Text = row.Cells["發票號碼"].Value.ToString();
+                    textBox7.Text = row.Cells["業務員代碼"].Value.ToString();
+                    textBox8.Text = row.Cells["業務員"].Value.ToString();
+                }
+                else
+                {
+                }
+            }
+        }
+
+        //SEARCHFORM_UOF_VERSION_ID
         public string SEARCHFORM_UOF_VERSION_ID(string formName)
         {
             try
@@ -4350,6 +4459,8 @@ namespace TKMK
                 return "";
             }
         }
+
+       
 
         /// <summary>
         /// 建立 Applicant
@@ -5253,8 +5364,15 @@ namespace TKMK
             }
         }
 
+        private void button23_Click(object sender, EventArgs e)
+        {
+            string TA001 = dateTimePicker11.Value.ToString("yyyyMMdd");
+            string TA014 = textBox5.Text.Trim();
+            SEARCHGROUPSALES_GV5(TA001, TA014);
+        }
+
         #endregion
 
-
+     
     }
 }
