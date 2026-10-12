@@ -2410,6 +2410,7 @@
             this.textBox_travel.Name = "textBox_travel";
             this.textBox_travel.Size = new System.Drawing.Size(108, 27);
             this.textBox_travel.TabIndex = 751;
+            this.textBox_travel.Validating += new System.ComponentModel.CancelEventHandler(this.textBox_travel_Validating);
             // 
             // label57
             // 

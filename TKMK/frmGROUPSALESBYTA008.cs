@@ -3927,7 +3927,9 @@ namespace TKMK
                     textBox312.Text = row.Cells["車名"].Value.ToString();
                     textBox313.Text = row.Cells["司機"].Value.ToString();
                     textBox314.Text = row.Cells["領隊"].Value.ToString();
-      
+                    textBox_travelB.Text = row.Cells["旅行社"].Value.ToString();
+
+
                 }
                 else
                 {
@@ -4913,6 +4915,61 @@ namespace TKMK
             textBox314.Text = "";
             textBox321.Text = "";
         }
+
+
+        private void textBox_travel_Validating(object sender, CancelEventArgs e)
+        {
+            string inputName = textBox_travel.Text.Trim();
+
+            // 如果輸入是空的，就不做檢查或新增
+            if (string.IsNullOrEmpty(inputName)) return;
+
+            try
+            {
+                string connString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(connString);
+
+                // 如果您的專案有密碼解密需求，請保留這兩行
+                Class1 tkid = new Class1();
+                sqlsb.Password = tkid.Decryption(sqlsb.Password);
+                sqlsb.UserID = tkid.Decryption(sqlsb.UserID);
+
+                using (SqlConnection conn = new SqlConnection(sqlsb.ConnectionString))
+                {
+                    conn.Open();
+
+                    // 1. 先檢查資料庫中是否已經存在這個名稱 (使用 參數化查詢 防止 SQL 注入)
+                    string checkSql = "SELECT COUNT(1) FROM [TKMK].[dbo].[GROUPTRAVELS] WHERE [NAMES] = @Names";
+
+                    int count = 0;
+                    using (SqlCommand checkCmd = new SqlCommand(checkSql, conn))
+                    {
+                        checkCmd.Parameters.AddWithValue("@Names", inputName);
+                        count = (int)checkCmd.ExecuteScalar(); // 取得筆數
+                    }
+
+                    // 2. 如果不存在 (count == 0)，就自動執行 INSERT 新增
+                    if (count == 0)
+                    {
+                        string insertSql = "INSERT INTO [TKMK].[dbo].[GROUPTRAVELS] ([NAMES]) VALUES (@Names)";
+
+                        using (SqlCommand insertCmd = new SqlCommand(insertSql, conn))
+                        {
+                            insertCmd.Parameters.AddWithValue("@Names", inputName);
+                            insertCmd.ExecuteNonQuery();
+                        }
+
+                        // (選用) 提示使用者已自動新增
+                        // MessageBox.Show($"已自動新增新項目：{inputName}", "系統提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"檢查或新增資料時發生錯誤：{ex.Message}", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         #endregion
 
         #region BUTTON
@@ -5801,8 +5858,8 @@ namespace TKMK
             }
         }
 
+
         #endregion
 
-       
     }
 }
