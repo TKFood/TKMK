@@ -150,6 +150,10 @@ namespace TKMK
                 textBox_travel.AutoCompleteMode = AutoCompleteMode.SuggestAppend; // 顯示下拉清單並自動填寫符合的文字
                 textBox_travel.AutoCompleteSource = AutoCompleteSource.CustomSource; // 使用自訂的資料來源
                 textBox_travel.AutoCompleteCustomSource = dataCollection; // 綁定資料集合
+
+                textBox_travelB.AutoCompleteMode = AutoCompleteMode.SuggestAppend; // 顯示下拉清單並自動填寫符合的文字
+                textBox_travelB.AutoCompleteSource = AutoCompleteSource.CustomSource; // 使用自訂的資料來源
+                textBox_travelB.AutoCompleteCustomSource = dataCollection; // 綁定資料集合
             }
             catch(Exception ex)
             {
@@ -2948,6 +2952,7 @@ namespace TKMK
                             ,DATEDIFF(MINUTE, CONVERT(DATETIME,[GROUPSTARTDATES]), CONVERT(DATETIME,[GROUPENDDATES])) AS '停留分鐘'
                             ,[DRIVERS] AS '司機'
                             ,[TOURS] AS '領隊'
+                            ,[TRAVELNAMES] AS '旅行社'
                             FROM [TKMK].[dbo].[GROUPSALES] WITH (NOLOCK) 
                              WHERE CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)>='{0}' AND CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)<='{1}'                              
                              AND [STATUS]='完成接團'
@@ -3757,6 +3762,7 @@ namespace TKMK
                                     ,[PLAYDAYS] AS '第幾天'
                                     ,[DRIVERS] AS '司機'
                                     ,[TOURS] AS '領隊'
+                                    ,[TRAVELNAMES] AS '旅行社'
                                     ,CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間'
                                     ,CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間'
                                     ,[STATUS] AS '狀態'
@@ -3937,6 +3943,7 @@ namespace TKMK
             , string CARNAME
             , string DRIVERS
             , string TOURS
+            , string TRAVELNAMES
             )
         {
             try
@@ -3961,7 +3968,7 @@ namespace TKMK
 
                 sbSql.AppendFormat(@" 
                                     UPDATE [TKMK].[dbo].[GROUPSALES]
-                                    SET CARNO='{1}',CARNAME='{2}',DRIVERS='{3}',TOURS='{4}'
+                                    SET CARNO='{1}',CARNAME='{2}',DRIVERS='{3}',TOURS='{4}',TRAVELNAMES='{5}'
                                     WHERE [ID]='{0}'
                                     
                                     ", ID
@@ -3969,6 +3976,7 @@ namespace TKMK
                                     , CARNAME                                  
                                     , DRIVERS
                                     , TOURS
+                                    , TRAVELNAMES
                                     );
                 sbSql.AppendFormat(@" ");
 
@@ -5668,6 +5676,7 @@ namespace TKMK
             string CARNAME = textBox312.Text;
             string DRIVERS = textBox313.Text;
             string TOURS = textBox314.Text;
+            string TRAVELNAMES = textBox_travelB.Text.Trim();
 
             UPDATE_GROUPSALES_CARS(
              ID
@@ -5675,6 +5684,7 @@ namespace TKMK
             , CARNAME
             , DRIVERS
             , TOURS
+            , TRAVELNAMES
             );
 
             SEARCH_GV3(dateTimePicker8.Value.ToString("yyyyMMdd"), dateTimePicker9.Value.ToString("yyyyMMdd"));

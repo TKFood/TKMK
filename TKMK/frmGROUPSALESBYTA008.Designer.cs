@@ -197,6 +197,8 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.label56 = new System.Windows.Forms.Label();
             this.textBox_travel = new System.Windows.Forms.TextBox();
+            this.label57 = new System.Windows.Forms.Label();
+            this.textBox_travelB = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -1768,7 +1770,7 @@
             // 
             this.splitContainer7.Panel2.Controls.Add(this.dataGridView3);
             this.splitContainer7.Size = new System.Drawing.Size(1176, 731);
-            this.splitContainer7.SplitterDistance = 180;
+            this.splitContainer7.SplitterDistance = 250;
             this.splitContainer7.TabIndex = 0;
             // 
             // tableLayoutPanel9
@@ -1802,17 +1804,20 @@
             this.tableLayoutPanel9.Controls.Add(this.button20, 4, 3);
             this.tableLayoutPanel9.Controls.Add(this.label45, 0, 2);
             this.tableLayoutPanel9.Controls.Add(this.label44, 0, 1);
+            this.tableLayoutPanel9.Controls.Add(this.label57, 0, 5);
+            this.tableLayoutPanel9.Controls.Add(this.textBox_travelB, 1, 5);
             this.tableLayoutPanel9.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel9.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel9.Name = "tableLayoutPanel9";
-            this.tableLayoutPanel9.RowCount = 6;
+            this.tableLayoutPanel9.RowCount = 7;
             this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
-            this.tableLayoutPanel9.Size = new System.Drawing.Size(1172, 176);
+            this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
+            this.tableLayoutPanel9.Size = new System.Drawing.Size(1172, 246);
             this.tableLayoutPanel9.TabIndex = 2;
             // 
             // label46
@@ -1981,7 +1986,7 @@
             this.dataGridView3.Name = "dataGridView3";
             this.dataGridView3.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             this.dataGridView3.RowTemplate.Height = 24;
-            this.dataGridView3.Size = new System.Drawing.Size(1172, 543);
+            this.dataGridView3.Size = new System.Drawing.Size(1172, 473);
             this.dataGridView3.TabIndex = 7;
             this.dataGridView3.SelectionChanged += new System.EventHandler(this.dataGridView3_SelectionChanged);
             // 
@@ -2406,6 +2411,24 @@
             this.textBox_travel.Size = new System.Drawing.Size(108, 27);
             this.textBox_travel.TabIndex = 751;
             // 
+            // label57
+            // 
+            this.label57.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label57.AutoSize = true;
+            this.label57.Location = new System.Drawing.Point(3, 184);
+            this.label57.Name = "label57";
+            this.label57.Size = new System.Drawing.Size(114, 16);
+            this.label57.TabIndex = 753;
+            this.label57.Text = "旅行社";
+            // 
+            // textBox_travelB
+            // 
+            this.textBox_travelB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox_travelB.Location = new System.Drawing.Point(123, 179);
+            this.textBox_travelB.Name = "textBox_travelB";
+            this.textBox_travelB.Size = new System.Drawing.Size(114, 27);
+            this.textBox_travelB.TabIndex = 754;
+            // 
             // frmGROUPSALESBYTA008
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 16F);
@@ -2671,5 +2694,7 @@
         private System.Windows.Forms.TextBox textBox10;
         private System.Windows.Forms.Label label56;
         private System.Windows.Forms.TextBox textBox_travel;
+        private System.Windows.Forms.Label label57;
+        private System.Windows.Forms.TextBox textBox_travelB;
     }
 }
