@@ -24,7 +24,7 @@ using System.Xml;
 namespace TKMK
 {
     public partial class frmGROUPSALESBYTA008 : Form
-    {
+    {        
         private ProgressBar progressBar;
         private CancellationTokenSource cancellationTokenSource;
 
@@ -108,6 +108,58 @@ namespace TKMK
 
             // 添加一个复选框列到DataGridView的第一个位置
             AddCheckBoxColumn();
+
+            //建立一個自動完成的字串集合
+            InitTextBoxAutoComplete();
+        }
+        public void InitTextBoxAutoComplete()
+        {
+            // 建立一個自動完成的字串集合
+            AutoCompleteStringCollection dataCollection = new AutoCompleteStringCollection();
+
+            try
+            {
+                // 1. 取得連線字串並解密 (依照您專案原本的寫法)
+                string connString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(connString);
+
+                // 若有加密需求可保留這兩行，若無可略過
+                Class1 tkid = new Class1();
+                sqlsb.Password = tkid.Decryption(sqlsb.Password);
+                sqlsb.UserID = tkid.Decryption(sqlsb.UserID);
+
+                // 2. 撰寫 SQL 查詢（建議使用 DISTINCT 避免重複資料）
+                string sql = "SELECT [NAMES] FROM [TKMK].[dbo].[GROUPTRAVELS]";
+
+                using (SqlConnection conn = new SqlConnection(sqlsb.ConnectionString))
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            // 3. 將資料庫讀到的每一筆資料加入集合中
+                            string item = reader["NAMES"].ToString();
+                            dataCollection.Add(item);
+                        }
+                    }
+                }
+
+                // 4. 設定 TextBox 的自動完成屬性
+                textBox_travel.AutoCompleteMode = AutoCompleteMode.SuggestAppend; // 顯示下拉清單並自動填寫符合的文字
+                textBox_travel.AutoCompleteSource = AutoCompleteSource.CustomSource; // 使用自訂的資料來源
+                textBox_travel.AutoCompleteCustomSource = dataCollection; // 綁定資料集合
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("初始化自動完成資料時發生錯誤: " + ex.Message);
+            }
+            finally
+            {
+
+            }
+
         }
         #region FUNCTION       
         /// <summary>
@@ -823,6 +875,7 @@ namespace TKMK
                                     ,[PLAYPROCESS] AS '去程回程'                                  
                                     ,[DRIVERS] AS '司機'
                                     ,[TOURS] AS '領隊'
+                                    ,[TRAVELNAMES] AS '旅行社'
                                     ,CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間'
                                     ,CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間'
                                     ,[STATUS] AS '狀態'
@@ -906,6 +959,7 @@ namespace TKMK
                         //dataGridView1.Columns["抽佣比率"].Width = 80;
                         dataGridView1.Columns["領券額"].Width = 80;
                         dataGridView1.Columns["來車公司"].Width = 80;
+                        dataGridView1.Columns["旅行社"].Width = 100;
                         dataGridView1.Columns["ID"].Width = 100;
                         dataGridView1.Columns["CREATEDATES"].Width = 80;
 
@@ -1020,6 +1074,7 @@ namespace TKMK
                     textBox143.Text = row.Cells["交易筆數"].Value.ToString();
                     //textBox144.Text = row.Cells["優惠券名"].Value.ToString();
                     textBox144.Text = row.Cells["業務員名"].Value.ToString();
+                    textBox_travel.Text = row.Cells["旅行社"].Value.ToString();
 
                     comboBox1.Text = row.Cells["車種"].Value.ToString();
                     comboBox2.Text = row.Cells["團類"].Value.ToString();
@@ -1142,6 +1197,7 @@ namespace TKMK
             , string TOURS
             , string GROUPSALES_LOGIN
             , string PLAYPROCESS
+            , string TRAVELNAMES
            )
         {
             try
@@ -1173,7 +1229,7 @@ namespace TKMK
                                 [EXCHANNO], [EXCHANACOOUNT], [PURGROUPSTARTDATES],
                                 [GROUPSTARTDATES], [PURGROUPENDDATES], [GROUPENDDATES],
                                 [STATUS], [PLAYDAYKINDS], [PLAYDAYS], [DRIVERS], [TOURS], [GROUPSALES_LOGIN],
-                                [PLAYPROCESS]
+                                [PLAYPROCESS],[TRAVELNAMES]
                                 )
                                 VALUES
                                 (
@@ -1186,7 +1242,7 @@ namespace TKMK
                                 @EXCHANNO, @EXCHANACOOUNT, @PURGROUPSTARTDATES,
                                 @GROUPSTARTDATES, @PURGROUPENDDATES, @GROUPENDDATES,
                                 @STATUS, @PLAYDAYKINDS, @PLAYDAYS, @DRIVERS, @TOURS, @GROUPSALES_LOGIN,
-                                @PLAYPROCESS
+                                @PLAYPROCESS,@TRAVELNAMES
                                 )";
 
                             using (SqlCommand command = new SqlCommand(sql, conn, trans))
@@ -1229,6 +1285,7 @@ namespace TKMK
                                 command.Parameters.AddWithValue("@TOURS", TOURS ?? (object)DBNull.Value);
                                 command.Parameters.AddWithValue("@GROUPSALES_LOGIN", GROUPSALES_LOGIN ?? (object)DBNull.Value);
                                 command.Parameters.AddWithValue("@PLAYPROCESS", PLAYPROCESS ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@TRAVELNAMES", TRAVELNAMES ?? (object)DBNull.Value);
 
                                 int result = command.ExecuteNonQuery();
 
@@ -1292,7 +1349,8 @@ namespace TKMK
                                     , string DRIVERS
                                     , string TOURS
                                     , string GROUPSALES_LOGIN
-                                    , string PLAYPROCESS   
+                                    , string PLAYPROCESS  
+                                    , string TRAVELNAMES
                                     )
         {
             try
@@ -1336,6 +1394,7 @@ namespace TKMK
                                     ,TOURS='{17}'
                                     ,GROUPSALES_LOGIN='{18}'
                                     ,PLAYPROCESS='{19}'
+                                    ,TRAVELNAMES='{20}'
                                     WHERE ID='{0}'
                                   ", ID
                                     , CARCOMPANY
@@ -1357,6 +1416,7 @@ namespace TKMK
                                     , TOURS
                                     , GROUPSALES_LOGIN
                                     , PLAYPROCESS
+                                    , TRAVELNAMES
                                   );
 
                 cmd.Connection = sqlConn;
@@ -4930,7 +4990,9 @@ namespace TKMK
                 string CARCOMPANY = comboBox5.SelectedValue.ToString();
                 string DRIVERS = textBox151.Text.Trim();
                 string TOURS = textBox161.Text.Trim();
-                
+                string TRAVELNAMES= textBox_travel.Text.Trim();
+
+
 
                 try
                 {
@@ -4973,6 +5035,7 @@ namespace TKMK
                         , TOURS
                         , GROUPSALES_LOGIN
                         , PLAYPROCESS
+                        , TRAVELNAMES
                        );
 
                         textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
@@ -5038,6 +5101,7 @@ namespace TKMK
                     //string PURGROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     //string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     //string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                    string TRAVELNAMES = textBox_travel.Text.Trim();
 
                     if (!string.IsNullOrEmpty(ID) && !string.IsNullOrEmpty(CARNO) && !string.IsNullOrEmpty(EXCHANNO) && !string.IsNullOrEmpty(EXCHANACOOUNT))
                     {                        
@@ -5062,6 +5126,7 @@ namespace TKMK
                                     , TOURS
                                     , GROUPSALES_LOGIN
                                     , PLAYPROCESS
+                                    , TRAVELNAMES
                                     );
                     }
 
@@ -5311,6 +5376,7 @@ namespace TKMK
                     string TA008 = comboBox3.Text.Trim().Substring(0, 7).ToString();
                     string DRIVERS = textBox151.Text.Trim();
                     string TOURS = textBox161.Text.Trim();
+                    string TRAVELNAMES = textBox_travel.Text.Trim();
 
                     UPDATEGROUPSALES(
                                       ID
@@ -5333,6 +5399,7 @@ namespace TKMK
                                     , TOURS
                                     , GROUPSALES_LOGIN
                                     , PLAYPROCESS
+                                    , TRAVELNAMES
                                     );
                 }
 
@@ -5372,6 +5439,7 @@ namespace TKMK
                     string TA008 = comboBox3.Text.Trim().Substring(0, 7).ToString();
                     string DRIVERS = textBox151.Text.Trim();
                     string TOURS = textBox161.Text.Trim();
+                    string TRAVELNAMES = textBox_travel.Text.Trim();
 
                     UPDATEGROUPSALES(
                                       ID
@@ -5394,6 +5462,7 @@ namespace TKMK
                                     , TOURS
                                     , GROUPSALES_LOGIN
                                     , PLAYPROCESS
+                                    , TRAVELNAMES
                                     );
                 }
 
