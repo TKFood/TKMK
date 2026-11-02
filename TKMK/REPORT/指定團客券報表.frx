@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="11/02/2026 10:25:01" ReportInfo.Modified="11/02/2026 10:34:39" ReportInfo.CreatorVersion="2017.4.1.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNS8V+op55d8q+MyIM1gh0M9zlGOgK4zWs8Nahyki0xHW6v1SoNjLsQ40hUEIevZodc4nZn1VMr9PyrOeyOFQcW49yN37Wommt8wACdM4FKHAeO5qqwIh8UI3n9QTXxqWwodcnEEDCsVtPkJVncJME6g==">
+      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT &#13;&#10;COUNT(*) AS '交易筆數'&#13;&#10;FROM [TK].dbo.POSTA WITH(NOLOCK)&#13;&#10;WHERE 1=1&#13;&#10;AND TA001&gt;='20260101' AND TA001&lt;='20261231'&#13;&#10;AND TA008 LIKE '68%'">
+        <Column Name="交易筆數" DataType="System.Int32"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <MsSqlDataConnection Name="Connection1" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNS8V+op55d8q+MyIM1gh0M9zlGOgK4zWs8Nahyki0xHW6v1SoNjLsQ40hUEIevZodc4nZn1VMr9PyrOeyOFQcW49yN37Wommt8wACdM4FKHAeO5qqwIh8UI3n9QTXxqWwHAePY5mzYPr/ZzJ4uJGX7Q==">
+      <TableDataSource Name="Table1" DataType="System.Int32" Enabled="true" SelectCommand="SELECT &#13;&#10;ISNULL(SUM(TA024),0) AS '總金額(含稅)'&#13;&#10;FROM [TK].dbo.POSTA WITH(NOLOCK)&#13;&#10;WHERE 1=1&#13;&#10;AND TA001&gt;='20260101' AND TA001&lt;='20261231'&#13;&#10;AND TA008 LIKE '68%'">
+        <Column Name="總金額(含稅)" DataType="System.Decimal"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <MsSqlDataConnection Name="Connection2" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNS8V+op55d8q+MyIM1gh0M9zlGOgK4zWs8Nahyki0xHW6v1SoNjLsQ40hUEIevZodc4nZn1VMr9PyrOeyOFQcW49yN37Wommt8wACdM4FKHAeO5qqwIh8UI3n9QTXxqWwos0LJVwmOChRa7vme9cWgw==">
+      <TableDataSource Name="Table2" DataType="System.Int32" Enabled="true" SelectCommand="SELECT &#13;&#10;TB010 AS '品號'&#13;&#10;,MB002 AS '品名'&#13;&#10;,ISNULL(SUM(TB019),0) AS '銷售數量'&#13;&#10;,ISNULL(SUM((TB031+TB032)),0) AS '總金額(含稅)'&#13;&#10;FROM [TK].dbo.POSTA WITH(NOLOCK),[TK].dbo.POSTB WITH(NOLOCK),[TK].dbo.INVMB WITH(NOLOCK)&#13;&#10;WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006&#13;&#10;AND TB010=MB001&#13;&#10;AND TA001&gt;='20260101' AND TA001&lt;='20261231'&#13;&#10;AND TA008 LIKE '68%'&#13;&#10;GROUP BY TB010&#13;&#10;,MB002&#13;&#10;ORDER BY TB010&#13;&#10;,MB002">
+        <Column Name="品號" DataType="System.String"/>
+        <Column Name="品名" DataType="System.String"/>
+        <Column Name="銷售數量" DataType="System.Decimal"/>
+        <Column Name="總金額(含稅)" DataType="System.Decimal"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+  </Dictionary>
+  <ReportPage Name="Page1">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="18.9">
+      <TextObject Name="Text1" Width="160.65" Height="18.9" Text="指定團客券報表"/>
+    </ReportTitleBand>
+    <GroupHeaderBand Name="GroupHeader1" Top="24.46" Width="718.2" Height="18.9" Condition="[Table.交易筆數]">
+      <TextObject Name="Text3" Width="160.65" Height="18.9" Border.Lines="All" Text="交易筆數" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Center" VertAlign="Center"/>
+      <DataBand Name="Data1" Top="48.91" Width="718.2" Height="18.9" DataSource="Table">
+        <TextObject Name="Text2" Width="160.65" Height="18.9" Border.Lines="All" Text="[Table.交易筆數]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Center" VertAlign="Center"/>
+      </DataBand>
+      <GroupFooterBand Name="GroupFooter1" Top="73.37" Width="718.2" Height="9.45"/>
+    </GroupHeaderBand>
+    <GroupHeaderBand Name="GroupHeader2" Top="88.37" Width="718.2" Height="18.9" Condition="[Table1.總金額(含稅)]">
+      <TextObject Name="Text5" Width="160.65" Height="18.9" Border.Lines="All" Text="總金額(含稅)" Format="Currency" Format.UseLocale="true" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+      <DataBand Name="Data2" Top="112.83" Width="718.2" Height="18.9" DataSource="Table1">
+        <TextObject Name="Text4" Width="160.65" Height="18.9" Border.Lines="All" Text="[Table1.總金額(含稅)]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+      </DataBand>
+      <GroupFooterBand Name="GroupFooter2" Top="137.28" Width="718.2" Height="9.45"/>
+    </GroupHeaderBand>
+    <GroupHeaderBand Name="GroupHeader3" Top="176.74" Width="718.2" Condition="[Table2.品號]">
+      <DataHeaderBand Name="DataHeader1" Top="152.29" Width="718.2" Height="18.9">
+        <TextObject Name="Text12" Left="519.75" Width="94.5" Height="18.9" Border.Lines="All" Text="銷售數量" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text10" Width="179.55" Height="18.9" Border.Lines="All" Text="品號" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text11" Left="179.55" Width="340.2" Height="18.9" Border.Lines="All" Text="品名" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text13" Left="614.25" Width="94.5" Height="18.9" Border.Lines="All" Text="總金額(含稅)" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+      </DataHeaderBand>
+      <DataBand Name="Data3" Top="182.3" Width="718.2" Height="18.9" DataSource="Table2">
+        <TextObject Name="Text6" Width="179.55" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table2.品號]" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text7" Left="179.55" Width="340.2" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table2.品名]" VertAlign="Center"/>
+        <TextObject Name="Text8" Left="519.75" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table2.銷售數量]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text9" Left="614.25" Width="94.5" Height="18.9" Border.Lines="All" CanGrow="true" GrowToBottom="true" Text="[Table2.總金額(含稅)]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+      </DataBand>
+      <GroupFooterBand Name="GroupFooter3" Top="206.76" Width="718.2"/>
+    </GroupHeaderBand>
+  </ReportPage>
+</Report>
