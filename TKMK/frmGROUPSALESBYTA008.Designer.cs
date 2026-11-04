@@ -81,6 +81,8 @@
             this.label38 = new System.Windows.Forms.Label();
             this.label54 = new System.Windows.Forms.Label();
             this.comboBox13 = new System.Windows.Forms.ComboBox();
+            this.label56 = new System.Windows.Forms.Label();
+            this.textBox_travel = new System.Windows.Forms.TextBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -163,6 +165,8 @@
             this.button20 = new System.Windows.Forms.Button();
             this.label45 = new System.Windows.Forms.Label();
             this.label44 = new System.Windows.Forms.Label();
+            this.label57 = new System.Windows.Forms.Label();
+            this.textBox_travelB = new System.Windows.Forms.TextBox();
             this.dataGridView3 = new System.Windows.Forms.DataGridView();
             this.tabPage7 = new System.Windows.Forms.TabPage();
             this.splitContainer8 = new System.Windows.Forms.SplitContainer();
@@ -195,10 +199,6 @@
             this.button24 = new System.Windows.Forms.Button();
             this.textBox10 = new System.Windows.Forms.TextBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.label56 = new System.Windows.Forms.Label();
-            this.textBox_travel = new System.Windows.Forms.TextBox();
-            this.label57 = new System.Windows.Forms.Label();
-            this.textBox_travelB = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -392,7 +392,7 @@
             // 
             this.comboBox12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox12.FormattingEnabled = true;
-            this.comboBox12.Location = new System.Drawing.Point(862, 40);
+            this.comboBox12.Location = new System.Drawing.Point(862, 42);
             this.comboBox12.Name = "comboBox12";
             this.comboBox12.Size = new System.Drawing.Size(95, 24);
             this.comboBox12.TabIndex = 744;
@@ -556,7 +556,7 @@
             "取消預約",
             "異常結案",
             "完成接團"});
-            this.comboBox4.Location = new System.Drawing.Point(862, 75);
+            this.comboBox4.Location = new System.Drawing.Point(862, 77);
             this.comboBox4.Name = "comboBox4";
             this.comboBox4.Size = new System.Drawing.Size(95, 24);
             this.comboBox4.TabIndex = 710;
@@ -577,7 +577,7 @@
             this.comboBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox3.Enabled = false;
             this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(617, 40);
+            this.comboBox3.Location = new System.Drawing.Point(617, 42);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(127, 24);
             this.comboBox3.TabIndex = 90;
@@ -638,7 +638,7 @@
             this.comboBox6.Items.AddRange(new object[] {
             "否",
             "是"});
-            this.comboBox6.Location = new System.Drawing.Point(617, 112);
+            this.comboBox6.Location = new System.Drawing.Point(617, 110);
             this.comboBox6.Name = "comboBox6";
             this.comboBox6.Size = new System.Drawing.Size(127, 24);
             this.comboBox6.TabIndex = 723;
@@ -741,7 +741,7 @@
             this.comboBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox2.Enabled = false;
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(328, 112);
+            this.comboBox2.Location = new System.Drawing.Point(328, 110);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(178, 24);
             this.comboBox2.TabIndex = 80;
@@ -771,7 +771,7 @@
             this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox1.Enabled = false;
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(328, 75);
+            this.comboBox1.Location = new System.Drawing.Point(328, 77);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(178, 24);
             this.comboBox1.TabIndex = 50;
@@ -781,7 +781,7 @@
             this.comboBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox5.Enabled = false;
             this.comboBox5.FormattingEnabled = true;
-            this.comboBox5.Location = new System.Drawing.Point(328, 40);
+            this.comboBox5.Location = new System.Drawing.Point(328, 42);
             this.comboBox5.Name = "comboBox5";
             this.comboBox5.Size = new System.Drawing.Size(178, 24);
             this.comboBox5.TabIndex = 727;
@@ -849,7 +849,7 @@
             this.comboBox11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox11.Enabled = false;
             this.comboBox11.FormattingEnabled = true;
-            this.comboBox11.Location = new System.Drawing.Point(328, 217);
+            this.comboBox11.Location = new System.Drawing.Point(328, 215);
             this.comboBox11.Name = "comboBox11";
             this.comboBox11.Size = new System.Drawing.Size(178, 24);
             this.comboBox11.TabIndex = 738;
@@ -871,7 +871,7 @@
             this.comboBox10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox10.Enabled = false;
             this.comboBox10.FormattingEnabled = true;
-            this.comboBox10.Location = new System.Drawing.Point(328, 182);
+            this.comboBox10.Location = new System.Drawing.Point(328, 180);
             this.comboBox10.Name = "comboBox10";
             this.comboBox10.Size = new System.Drawing.Size(178, 24);
             this.comboBox10.TabIndex = 737;
@@ -906,10 +906,29 @@
             this.comboBox13.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox13.Enabled = false;
             this.comboBox13.FormattingEnabled = true;
-            this.comboBox13.Location = new System.Drawing.Point(328, 145);
+            this.comboBox13.Location = new System.Drawing.Point(328, 147);
             this.comboBox13.Name = "comboBox13";
             this.comboBox13.Size = new System.Drawing.Size(178, 24);
             this.comboBox13.TabIndex = 749;
+            // 
+            // label56
+            // 
+            this.label56.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label56.AutoSize = true;
+            this.label56.Location = new System.Drawing.Point(3, 219);
+            this.label56.Name = "label56";
+            this.label56.Size = new System.Drawing.Size(110, 16);
+            this.label56.TabIndex = 750;
+            this.label56.Text = "旅行社";
+            // 
+            // textBox_travel
+            // 
+            this.textBox_travel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox_travel.Location = new System.Drawing.Point(119, 214);
+            this.textBox_travel.Name = "textBox_travel";
+            this.textBox_travel.Size = new System.Drawing.Size(108, 27);
+            this.textBox_travel.TabIndex = 751;
+            this.textBox_travel.Validating += new System.ComponentModel.CancelEventHandler(this.textBox_travel_Validating);
             // 
             // splitContainer2
             // 
@@ -1422,7 +1441,7 @@
             this.comboBox7.Items.AddRange(new object[] {
             "遊覽車對帳明細表",
             "多年期月份團務比較表"});
-            this.comboBox7.Location = new System.Drawing.Point(123, 50);
+            this.comboBox7.Location = new System.Drawing.Point(123, 48);
             this.comboBox7.Name = "comboBox7";
             this.comboBox7.Size = new System.Drawing.Size(234, 24);
             this.comboBox7.TabIndex = 613;
@@ -1432,7 +1451,7 @@
             // 
             this.comboBox8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox8.FormattingEnabled = true;
-            this.comboBox8.Location = new System.Drawing.Point(123, 88);
+            this.comboBox8.Location = new System.Drawing.Point(123, 90);
             this.comboBox8.Name = "comboBox8";
             this.comboBox8.Size = new System.Drawing.Size(114, 24);
             this.comboBox8.TabIndex = 731;
@@ -1557,7 +1576,7 @@
             this.comboBox9.FormattingEnabled = true;
             this.comboBox9.Items.AddRange(new object[] {
             "團車簽收單"});
-            this.comboBox9.Location = new System.Drawing.Point(123, 48);
+            this.comboBox9.Location = new System.Drawing.Point(123, 50);
             this.comboBox9.Name = "comboBox9";
             this.comboBox9.Size = new System.Drawing.Size(234, 24);
             this.comboBox9.TabIndex = 613;
@@ -1974,6 +1993,24 @@
             this.label44.Size = new System.Drawing.Size(114, 16);
             this.label44.TabIndex = 741;
             this.label44.Text = "車號";
+            // 
+            // label57
+            // 
+            this.label57.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label57.AutoSize = true;
+            this.label57.Location = new System.Drawing.Point(3, 184);
+            this.label57.Name = "label57";
+            this.label57.Size = new System.Drawing.Size(114, 16);
+            this.label57.TabIndex = 753;
+            this.label57.Text = "旅行社";
+            // 
+            // textBox_travelB
+            // 
+            this.textBox_travelB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox_travelB.Location = new System.Drawing.Point(123, 179);
+            this.textBox_travelB.Name = "textBox_travelB";
+            this.textBox_travelB.Size = new System.Drawing.Size(114, 27);
+            this.textBox_travelB.TabIndex = 754;
             // 
             // dataGridView3
             // 
@@ -2392,43 +2429,6 @@
             // timer1
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // label56
-            // 
-            this.label56.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label56.AutoSize = true;
-            this.label56.Location = new System.Drawing.Point(3, 219);
-            this.label56.Name = "label56";
-            this.label56.Size = new System.Drawing.Size(110, 16);
-            this.label56.TabIndex = 750;
-            this.label56.Text = "旅行社";
-            // 
-            // textBox_travel
-            // 
-            this.textBox_travel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox_travel.Location = new System.Drawing.Point(119, 214);
-            this.textBox_travel.Name = "textBox_travel";
-            this.textBox_travel.Size = new System.Drawing.Size(108, 27);
-            this.textBox_travel.TabIndex = 751;
-            this.textBox_travel.Validating += new System.ComponentModel.CancelEventHandler(this.textBox_travel_Validating);
-            // 
-            // label57
-            // 
-            this.label57.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label57.AutoSize = true;
-            this.label57.Location = new System.Drawing.Point(3, 184);
-            this.label57.Name = "label57";
-            this.label57.Size = new System.Drawing.Size(114, 16);
-            this.label57.TabIndex = 753;
-            this.label57.Text = "旅行社";
-            // 
-            // textBox_travelB
-            // 
-            this.textBox_travelB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox_travelB.Location = new System.Drawing.Point(123, 179);
-            this.textBox_travelB.Name = "textBox_travelB";
-            this.textBox_travelB.Size = new System.Drawing.Size(114, 27);
-            this.textBox_travelB.TabIndex = 754;
             // 
             // frmGROUPSALESBYTA008
             // 

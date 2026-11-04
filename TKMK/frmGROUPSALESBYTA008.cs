@@ -3347,39 +3347,97 @@ namespace TKMK
             }
 
         }
-        public void SETMONEYS_NEW(string SDATES)
+        /// <summary>
+        /// 計算佣金 (當天 CREATEDATES = SDATES 的團務)
+        /// 20261104 效能改善：
+        /// 1. 原本每一台車都要用 6 個子查詢去查整個 POSTA/POSTB/POSTC (POS 資料量大就很慢)
+        ///    → 先把「當天、這些業務員帳號(TA008)、團購門市」的 POS 資料抓進 #TA/#TB/#TC (只查一次大表)
+        ///    → 原本的計算邏輯完全不變，只是改從小的暫存表計算
+        /// 2. 拿掉 SET STATISTICS TIME ON、拿掉不需要的 SELECT * FROM #TempTable (少傳一份資料回程式)
+        /// 3. 參數化 (@SDATES)
+        /// 4. 連線/交易/命令都用區域變數，不再共用表單欄位 sqlConn/sbSql/cmd/tran (背景執行時不會互相干擾)
+        /// 5. 逾時 60 秒 → 300 秒；失敗時 Rollback，並回傳錯誤訊息 (原本錯誤會被吃掉，使用者不知道沒算到)
+        /// </summary>
+        /// <returns>成功回傳 null；失敗回傳錯誤訊息</returns>
+        public string SETMONEYS_NEW(string SDATES)
         {
             try
             {
+                return SETMONEYS_NEW_RUN(SDATES);
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
 
-                //20210902密
-                Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+        private string SETMONEYS_NEW_RUN(string SDATES)
+        {
+            //20210902密
+            Class1 TKID = new Class1();//用new 建立類別實體
+            SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
 
-                //資料庫使用者密碼解密
-                sqlsb.Password = TKID.Decryption(sqlsb.Password);
-                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+            //資料庫使用者密碼解密
+            sqlsb.Password = TKID.Decryption(sqlsb.Password);
+            sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
 
-                String connectionString;
-                sqlConn = new SqlConnection(sqlsb.ConnectionString);
+            StringBuilder SQL = new StringBuilder();
 
-
-                sbSql.Clear();
-                sqlConn.Close();
-                sqlConn.Open();
-                tran = sqlConn.BeginTransaction();
-
-
-
-                sbSql.AppendFormat(@" 
+            SQL.Append(@" 
                                     --20240424 查團務
+                                    --20261104 先把需要的 POS 資料抓進暫存表，大表只查一次
+                                    SET NOCOUNT ON;
 
-                                    SET STATISTICS TIME ON;
+                                    IF OBJECT_ID('tempdb..#TempTable') IS NOT NULL DROP TABLE #TempTable;
+                                    IF OBJECT_ID('tempdb..#TA') IS NOT NULL DROP TABLE #TA;
+                                    IF OBJECT_ID('tempdb..#TB') IS NOT NULL DROP TABLE #TB;
+                                    IF OBJECT_ID('tempdb..#TC') IS NOT NULL DROP TABLE #TC;
 
-                                    
-                                    IF OBJECT_ID('tempdb..#TempTable') IS NOT NULL
-                                    DROP TABLE #TempTable;
+                                    --當天團務會用到的 POS 日期範圍 (實際到達日、建立日)
+                                    DECLARE @MIND varchar(8),@MAXD varchar(8);
 
+                                    SELECT @MIND=MIN(YMD),@MAXD=MAX(YMD)
+                                    FROM
+                                    (
+                                        SELECT CONVERT(varchar(8),[GROUPSTARTDATES],112) AS YMD
+                                        FROM [TKMK].[dbo].[GROUPSALES]
+                                        WHERE CONVERT(nvarchar,[CREATEDATES],112)=@SDATES
+                                        UNION ALL
+                                        SELECT CONVERT(varchar(8),[CREATEDATES],112) AS YMD
+                                        FROM [TKMK].[dbo].[GROUPSALES]
+                                        WHERE CONVERT(nvarchar,[CREATEDATES],112)=@SDATES
+                                    ) AS D;
+
+                                    --POSTA：只抓 日期範圍內 + 當天團務的業務員帳號 + 團購門市
+                                    SELECT TA001,TA002,TA003,TA005,TA006,TA008,TA017
+                                    INTO #TA
+                                    FROM [TK].dbo.POSTA WITH (NOLOCK)
+                                    WHERE TA001>=@MIND AND TA001<=@MAXD
+                                    AND TA008 IN (SELECT [TA008] FROM [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)=@SDATES)
+                                    AND TA002 IN (SELECT [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1'));
+
+                                    CREATE CLUSTERED INDEX IX_TA ON #TA (TA008,TA001,TA005);
+
+                                    --POSTB：只抓上面那些交易的明細
+                                    SELECT TB001,TB002,TB003,TB006,TB010,TB019,TB033
+                                    INTO #TB
+                                    FROM [TK].dbo.POSTB WITH (NOLOCK)
+                                    WHERE TB001>=@MIND AND TB001<=@MAXD
+                                    AND EXISTS (SELECT 1 FROM #TA WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006);
+
+                                    CREATE CLUSTERED INDEX IX_TB ON #TB (TB001,TB002,TB003,TB006);
+
+                                    --POSTC：只抓上面那些交易、付款方式 0009 (兌換券)
+                                    SELECT TC001,TC002,TC003,TC006,TC008
+                                    INTO #TC
+                                    FROM [TK].dbo.POSTC WITH (NOLOCK)
+                                    WHERE TC001>=@MIND AND TC001<=@MAXD
+                                    AND TC008='0009'
+                                    AND EXISTS (SELECT 1 FROM #TA WHERE TA001=TC001 AND TA002=TC002 AND TA003=TC003 AND TA006=TC006);
+
+                                    CREATE CLUSTERED INDEX IX_TC ON #TC (TC001,TC002,TC003,TC006);
+
+                                    --以下計算邏輯與原本相同，只是 POSTA/POSTB/POSTC 改用 #TA/#TB/#TC
                                     SELECT *
                                     ,(CASE WHEN 兌換券='是' THEN EXCHANGEMONEYS ELSE 0 END ) AS 'FINALEXCHANGEMONEYS'
                                     ,(CASE WHEN 兌換券='否' THEN FINALBASEMONEYS ELSE 0 END ) AS 'FINALCOMMISSIONBASEMONEYS'
@@ -3433,7 +3491,7 @@ namespace TKMK
 		                                    ,CONVERT(varchar,[GROUPSTARTDATES], 108) AS 'STARTHM'
 		                                    ,(
 		                                    SELECT CONVERT(INT,ISNULL(SUM(TB033),0),0)
-		                                    FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
+		                                    FROM #TA,#TB
 		                                    WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006  
 		                                    AND TB010  NOT IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCT] WHERE [VALID]='Y' AND [SPLITCAL]='Y')              
 		                                    AND TA008=[GROUPSALES].[TA008] 
@@ -3452,7 +3510,7 @@ namespace TKMK
 		                                    LEFT JOIN 
 		                                    (
 		                                    SELECT TB010,CONVERT(INT,ISNULL(SUM(TB019),0),0) SUMTB019
-		                                    FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
+		                                    FROM #TA,#TB
 		                                    WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006 
 		                                    AND TA008=[GROUPSALES].[TA008]  
 		                                    AND TA001=CONVERT(varchar,[GROUPSALES].[GROUPSTARTDATES], 112)  
@@ -3476,7 +3534,7 @@ namespace TKMK
 		                                    LEFT JOIN 
 		                                    (
 		                                    SELECT TB010,CONVERT(INT,ISNULL(SUM(TB019),0),0) SUMTB019
-		                                    FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTB WITH (NOLOCK)
+		                                    FROM #TA,#TB
 		                                    WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006 
 		                                    AND TA008=[GROUPSALES].[TA008]  
 		                                    AND TA001=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112)  
@@ -3493,7 +3551,7 @@ namespace TKMK
 		                                    ,
 		                                    (
 		                                    SELECT CONVERT(INT,ISNULL(SUM(TA017),0))
-		                                    FROM [TK].dbo.POSTA WITH (NOLOCK),[TK].dbo.POSTC WITH (NOLOCK)
+		                                    FROM #TA,#TC
 		                                    WHERE TA001=TC001 AND TA002=TC002 AND TA003=TC003  AND TA006=TC006
 		                                    AND TC008='0009'
 		                                    AND TA008=[GROUPSALES].[TA008] 
@@ -3526,7 +3584,7 @@ namespace TKMK
 		                                    ,
 		                                    (
 		                                    SELECT COUNT(TA008) 
-		                                    FROM [TK].dbo.POSTA WITH (NOLOCK)
+		                                    FROM #TA
 		                                    WHERE TA008=[GROUPSALES].[TA008] 
 		                                    AND TA001=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112)
 		                                    AND TA005>=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 108)
@@ -3534,7 +3592,7 @@ namespace TKMK
 		                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1'))
 		                                    ) AS 'GUSETNUM'
 		                                    FROM [TKMK].[dbo].[GROUPSALES]
-		                                    WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'
+		                                    WHERE CONVERT(nvarchar,[CREATEDATES],112)=@SDATES
 		                                    --AND [STATUS] IN ('預約接團')
 
 		                                    ) AS TEMP
@@ -3551,10 +3609,6 @@ namespace TKMK
 	                                    ) AS OUTERPCT
                                     ) AS TEMP3
 
-                                    SELECT *
-                                    FROM  #TempTable
-
-
 
                                     UPDATE [TKMK].[dbo].[GROUPSALES]
                                     SET 
@@ -3570,46 +3624,47 @@ namespace TKMK
                                     ,[TOTALCOMMISSIONMONEYS]=#TempTable.FINALTOTALCOMMISSIONMONEYS
                                     ,[GUSETNUM]=#TempTable.GUSETNUM
                                     FROM #TempTable
-                                    WHERE  CONVERT(nvarchar,[GROUPSALES].[CREATEDATES],112)='{0}'
+                                    WHERE  CONVERT(nvarchar,[GROUPSALES].[CREATEDATES],112)=@SDATES
                                     AND [GROUPSALES].[STATUS] IN ('預約接團')
-                                    AND [GROUPSALES].ID=#TempTable.ID
+                                    AND [GROUPSALES].ID=#TempTable.ID;
 
-                                   UPDATE [TKMK].[dbo].[GROUPSALES]
+                                    UPDATE [TKMK].[dbo].[GROUPSALES]
                                     SET [COMMISSIONBASEMONEYS]=0
                                     ,[COMMISSIONPCT]=0.1
                                     ,[COMMISSIONPCTMONEYS]=[SALESMMONEYS]*0.1
                                     ,[TOTALCOMMISSIONMONEYS]=[SALESMMONEYS]*0.1
                                     WHERE [CARKIND]='空車伴手禮' 
                                     AND [SALESMMONEYS]>=1 AND [SALESMMONEYS]<=4999 
-                                    AND CONVERT(nvarchar,[GROUPSALES].[CREATEDATES],112)='{0}'
+                                    AND CONVERT(nvarchar,[GROUPSALES].[CREATEDATES],112)=@SDATES;
 
-                                   ", SDATES);
+                                    DROP TABLE #TempTable;
+                                    DROP TABLE #TA;
+                                    DROP TABLE #TB;
+                                    DROP TABLE #TC;
+                                   ");
 
-                cmd.Connection = sqlConn;
-                cmd.CommandTimeout = 60;
-                cmd.CommandText = sbSql.ToString();
-                cmd.Transaction = tran;
-                result = cmd.ExecuteNonQuery();
-
-                if (result == 0)
-                {
-                    tran.Rollback();    //交易取消
-                }
-                else
-                {
-                    tran.Commit();      //執行交易  
-
-
-                }
-            }
-            catch
+            using (SqlConnection conn = new SqlConnection(sqlsb.ConnectionString))
             {
+                conn.Open();
 
-            }
+                using (SqlTransaction trans = conn.BeginTransaction())
+                using (SqlCommand command = new SqlCommand(SQL.ToString(), conn, trans))
+                {
+                    try
+                    {
+                        command.CommandTimeout = 300;
+                        command.Parameters.Add("@SDATES", SqlDbType.NVarChar, 8).Value = SDATES;
+                        command.ExecuteNonQuery();
 
-            finally
-            {
-                sqlConn.Close();
+                        trans.Commit();      //執行交易
+                        return null;
+                    }
+                    catch (Exception ex)
+                    {
+                        try { trans.Rollback(); } catch { }   //交易取消
+                        return ex.Message;
+                    }
+                }
             }
         }
         private void textBox131_TextChanged(object sender, EventArgs e)
@@ -5663,62 +5718,50 @@ namespace TKMK
                 MessageBox.Show("團車未 完成接團");
             }
         }
-        private void button18_Click(object sender, EventArgs e)
+        private async void button18_Click(object sender, EventArgs e)
         {
+            //20261104 改善：
+            //1. 日期在 UI 執行緒先取好，背景只做 SQL
+            //2. 用 async/await，出錯也一定會關閉等待視窗、解除鎖定 (原本出錯畫面會一直鎖住)
+            //3. 計算失敗會顯示錯誤訊息 (原本會默默失敗)
+            string SDATES = dateTimePicker1.Value.ToString("yyyyMMdd");
+            string ERRMSG = null;
+
             MESSAGESHOW MSGSHOW = new MESSAGESHOW();
             // 鎖定控制項
             this.Enabled = false;
             // 顯示跳出視窗
             MSGSHOW.Show();
 
-            // 使用非同步操作執行長時間運行的操作
-            Task.Run(() =>
-            {                
-                // 計算佣金
-                SETMONEYS_NEW(dateTimePicker1.Value.ToString("yyyyMMdd"));
+            try
+            {
+                // 計算佣金 (背景執行)
+                ERRMSG = await Task.Run(() => SETMONEYS_NEW(SDATES));
 
-                // 更新 UI，確保在主 UI 線程上執行
-                Invoke(new Action(() =>
-                {
-                    // 查詢本日來車資料
-                    SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
+                // 查詢本日來車資料
+                SEARCHGROUPSALES(SDATES);
 
-                    // 查詢本日的合計
-                    SETNUMS(dateTimePicker1.Value.ToString("yyyyMMdd"));
+                // 查詢本日的合計
+                SETNUMS(SDATES);
 
-                    label29.Text = "更新時間" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-                    // 關閉跳出視窗
-                    MSGSHOW.Close();
-                    // 解除鎖定
-                    this.Enabled = true;
-                }));
-            });
+                label29.Text = "更新時間" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            }
+            catch (Exception ex)
+            {
+                ERRMSG = ex.Message;
+            }
+            finally
+            {
+                // 關閉跳出視窗
+                MSGSHOW.Close();
+                // 解除鎖定
+                this.Enabled = true;
+            }
 
-            //MESSAGESHOW MSGSHOW = new MESSAGESHOW();
-            ////鎖定控制項
-            //this.Enabled = false;
-            ////顯示跳出視窗
-            //MSGSHOW.Show();
-
-            //////查詢本日來車資料
-            ////SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
-            ////計算佣金
-            //SETMONEYS_NEW(dateTimePicker1.Value.ToString("yyyyMMdd"));
-            ////查詢本日來車資料
-            //SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
-            ////查詢本日的合計
-            //SETNUMS(dateTimePicker1.Value.ToString("yyyyMMdd"));
-
-            //label29.Text = "";
-            ////label29.Text = "更新時間" + dateTimePicker1.Value.ToString("yyyy/MM/dd HH:mm:ss");
-            //label29.Text = "更新時間" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-
-
-
-            ////關閉跳出視窗
-            //MSGSHOW.Close();
-            ////解除鎖定
-            //this.Enabled = true;
+            if (!string.IsNullOrEmpty(ERRMSG))
+            {
+                MessageBox.Show("計算佣金失敗：" + ERRMSG);
+            }
         }
 
         private void button19_Click(object sender, EventArgs e)
