@@ -185,33 +185,26 @@ namespace TKMK
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void timer1_Tick(object sender, EventArgs e)
+        private async void timer1_Tick(object sender, EventArgs e)
         {
-
-            if (STATUSCONTROLLER.Equals("VIEW"))
+            //20261104 佣金改用 button18 的計算 (共用 GROUPSALESCOMMISSIONCAL)，在背景執行，不再用舊的逐筆 SETMONEYS()
+            //原本舊 SETMONEYS() 公式不同 (用優惠券帳號、扣券消費...)，會把 button18 算好的佣金蓋掉
+            if (STATUSCONTROLLER.Equals("VIEW") && !CALRUNNING)
             {
-                dateTimePicker1.Value = GETDBDATES();
-                textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
-                comboBox3load();
-                label29.Text = "";
-                label29.Text = "更新時間" + dateTimePicker1.Value.ToString("yyyy/MM/dd HH:mm:ss");
+                try
+                {
+                    dateTimePicker1.Value = GETDBDATES();
+                    textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
+                    comboBox3load();
+                }
+                catch (Exception ex)
+                {
+                    label29.Text = "自動更新失敗 " + DateTime.Now.ToString("HH:mm:ss") + " " + ex.Message;
+                    return;
+                }
 
-
-                MESSAGESHOW MSGSHOW = new MESSAGESHOW();
-                //鎖定控制項
-                this.Enabled = false;
-                //顯示跳出視窗
-                MSGSHOW.Show();
-
-                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
-                SETMONEYS();
-                SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
-                SETNUMS(dateTimePicker1.Value.ToString("yyyyMMdd"));
-
-                //關閉跳出視窗
-                MSGSHOW.Close();
-                //解除鎖定
-                this.Enabled = true;
+                //自動更新出錯不跳視窗 (每 10 分鐘一次會很干擾)，錯誤顯示在 label29
+                await REFRESHMONEYS(dateTimePicker1.Value.ToString("yyyyMMdd"), false);
             }
         }
         private void frmGROUPSALESBYTA008_FormClosed(object sender, FormClosedEventArgs e)
@@ -370,7 +363,7 @@ namespace TKMK
                                 FROM [TK].dbo.POSMU WHERE (MU001 LIKE '69%')   
                                 AND MU001 NOT IN (
 	                                SELECT [EXCHANACOOUNT] FROM [TKMK].[dbo].[GROUPSALES] 
-	                                WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'  AND [STATUS]='預約接團' 
+	                                WHERE [CREATEDATES]>='{0}' AND [CREATEDATES]<DATEADD(DAY,1,'{0}')  AND [STATUS]='預約接團' 
                                 ) ORDER BY MU001
                                 ", dateTimePicker1.Value.ToString("yyyyMMdd"));
             SqlDataAdapter da = new SqlDataAdapter(Sequel.ToString(), sqlConn);
@@ -769,7 +762,7 @@ namespace TKMK
 
 
                 sbSql.AppendFormat(@"  
-                                    SELECT ISNULL(MAX(SERNO),'0') SERNO FROM  [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(NVARCHAR,[CREATEDATES],112)='{0}'"
+                                    SELECT ISNULL(MAX(SERNO),'0') SERNO FROM  [TKMK].[dbo].[GROUPSALES] WHERE [CREATEDATES]>='{0}' AND [CREATEDATES]<DATEADD(DAY,1,'{0}')"
                                     , CREATEDATES);
                 sbSql.AppendFormat(@"  ");  
 
@@ -830,6 +823,9 @@ namespace TKMK
         /// 找出團務資料
         /// </summary>
         /// <param name="CREATEDATES"></param>
+        //20261104 SEARCHGROUPSALES 最近一次分段秒數 (顯示在 button18 的更新時間後面)
+        string LAST_SEARCHGROUPSALES_TIMING = "";
+
         public void SEARCHGROUPSALES(string CREATEDATES)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
@@ -890,13 +886,17 @@ namespace TKMK
                                     ,[ID]
                                     ,[CREATEDATES]
 
-                                    FROM [TKMK].[dbo].[GROUPSALES]
-                                    WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'
+                                    FROM [TKMK].[dbo].[GROUPSALES] WITH(NOLOCK)
+                                    WHERE [CREATEDATES]>='{0}' AND [CREATEDATES]<DATEADD(DAY,1,'{0}')
                                     AND [STATUS]<>'取消預約'
                                     ORDER BY CONVERT(nvarchar,[CREATEDATES],112),CONVERT(int,[SERNO]) DESC
                                     ", CREATEDATES);
+                //20261104 原本 CONVERT(nvarchar,[CREATEDATES],112)='{0}' 會整張表掃描，且沒有 NOLOCK，
+                //其他電腦正在更新 GROUPSALES 時會被卡住等待；改日期區間 + NOLOCK
 
 
+                //20261104 分段計時 (SQL / 畫面)，結果放 LAST_SEARCHGROUPSALES_TIMING
+                System.Diagnostics.Stopwatch SWQ = System.Diagnostics.Stopwatch.StartNew();
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
                 sqlCmdBuilder1 = new SqlCommandBuilder(adapter1);
@@ -905,6 +905,11 @@ namespace TKMK
                 adapter1.Fill(ds1, "ds1");
                 sqlConn.Close();
 
+
+                double TSQL = SWQ.Elapsed.TotalSeconds; SWQ.Restart();
+
+                //20261104 綁定與設定格式時，先拿掉 SelectionChanged，避免過程中一直觸發 (每次都會設定一堆 TextBox/ComboBox)
+                dataGridView1.SelectionChanged -= dataGridView1_SelectionChanged;
 
                 if (ds1.Tables["ds1"].Rows.Count == 0)
                 {
@@ -967,23 +972,16 @@ namespace TKMK
                         dataGridView1.Columns["ID"].Width = 100;
                         dataGridView1.Columns["CREATEDATES"].Width = 80;
 
+                        //20261104 原本每一格都 new 一個 Font (列數 x 14 個)，改成整欄設定一次，畫面效果相同
+                        Font FONT14 = new Font("Tahoma", 14);
+                        foreach (string COL in new string[] { "車名", "車號", "券總額", "券消費", "消費總額", "消費獎金", "特賣數", "特賣獎金", "茶水費", "總獎金", "交易筆數", "優惠券名", "業務員名", "來車公司" })
+                        {
+                            dataGridView1.Columns[COL].DefaultCellStyle.Font = FONT14;
+                        }
+
                         //根据列表中数据不同，显示不同颜色背景
                         foreach (DataGridViewRow dgRow in dataGridView1.Rows)
                         {
-                            dgRow.Cells["車名"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["車號"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["券總額"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["券消費"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["消費總額"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["消費獎金"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["特賣數"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["特賣獎金"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["茶水費"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["總獎金"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["交易筆數"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["優惠券名"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["業務員名"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["來車公司"].Style.Font = new Font("Tahoma", 14);
 
                             //判断
                             if (dgRow.Cells["狀態"].Value.ToString().Trim().Equals("完成接團"))
@@ -1006,6 +1004,12 @@ namespace TKMK
 
                 }
 
+
+                double TUI = SWQ.Elapsed.TotalSeconds; SWQ.Restart();
+
+                //接回 SelectionChanged，並手動觸發一次 (等同原本綁定時觸發的效果)
+                dataGridView1.SelectionChanged += dataGridView1_SelectionChanged;
+                dataGridView1_SelectionChanged(dataGridView1, EventArgs.Empty);
 
                 if (ROWSINDEX > 0 || COLUMNSINDEX > 0)
                 {
@@ -1032,6 +1036,9 @@ namespace TKMK
                     comboBox5.Text = row.Cells["來車公司"].Value.ToString();
                     comboBox13.Text = row.Cells["去程回程"].Value.ToString();
                 }
+
+                double TSEL = SWQ.Elapsed.TotalSeconds;
+                LAST_SEARCHGROUPSALES_TIMING = string.Format("SQL{0:0.0}/畫面{1:0.0}/選取{2:0.0}", TSQL, TUI, TSEL);
             }
             catch
             {
@@ -1040,6 +1047,10 @@ namespace TKMK
             finally
             {
                 sqlConn.Close();
+
+                //確保 SelectionChanged 一定接回 (先拿掉再加，避免重複)
+                dataGridView1.SelectionChanged -= dataGridView1_SelectionChanged;
+                dataGridView1.SelectionChanged += dataGridView1_SelectionChanged;
             }
         }
 
@@ -1809,6 +1820,10 @@ namespace TKMK
             }
         }
 
+        /// <summary>
+        /// 20261104 已停用：舊的逐筆計算佣金，button4/timer1 已改用 SETMONEYS_NEW (共用 GROUPSALESCOMMISSIONCAL)
+        /// 保留程式碼供參考
+        /// </summary>
         public void SETMONEYS()
         {
             if (dataGridView1.Rows.Count > 0)
@@ -2662,19 +2677,23 @@ namespace TKMK
                 sbSql.Clear();
                 sbSqlQuery.Clear();
 
+                //20261104 原本 7 個子查詢，每個都用 CONVERT(NVARCHAR,GROUPSTARTDATES,112) 整張 GROUPSALES 掃描，
+                //部分沒有 NOLOCK，其他電腦正在更新 GROUPSALES 時會被卡住；
+                //改成只掃當天一次，用 CASE 分別加總，結果與原本相同
+                //(NUMS/CARNUM = COUNT(CARNO)：CARNO 為 NULL 不算；HAVING：當天沒有 預約接團/完成接團 就不回傳，畫面顯示 0，同原本)
                 sbSql.AppendFormat(@"  
-                                    SELECT COUNT(CARNO) AS NUMS  
-                                    ,(SELECT SUM(GUSETNUM) FROM [TKMK].[dbo].[GROUPSALES] GP WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALES].GROUPSTARTDATES,112) ) AS GUSETNUMS
-                                    ,(SELECT SUM(SALESMMONEYS) FROM [TKMK].[dbo].[GROUPSALES] GP WITH(NOLOCK) WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALES].GROUPSTARTDATES,112) ) AS SALESMMONEYS
-                                    ,(SELECT COUNT(CARNO) FROM [TKMK].[dbo].[GROUPSALES] GP WITH(NOLOCK) WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALES].GROUPSTARTDATES,112) AND STATUS='預約接團') AS CARNUM1
-                                    ,(SELECT COUNT(CARNO) FROM [TKMK].[dbo].[GROUPSALES] GP WITH(NOLOCK) WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALES].GROUPSTARTDATES,112) AND STATUS='取消預約') AS CARNUM2
-                                    ,(SELECT COUNT(CARNO) FROM [TKMK].[dbo].[GROUPSALES] GP WITH(NOLOCK) WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALES].GROUPSTARTDATES,112) AND STATUS='異常結案') AS CARNUM3
-                                    ,(SELECT COUNT(CARNO) FROM [TKMK].[dbo].[GROUPSALES] GP WITH(NOLOCK) WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALES].GROUPSTARTDATES,112) AND STATUS='完成接團') AS CARNUM4
-                                    ,(SELECT COUNT(CARNO) FROM [TKMK].[dbo].[GROUPSALES] GP WITH(NOLOCK) WHERE CONVERT(NVARCHAR,GP.GROUPSTARTDATES,112)=CONVERT(NVARCHAR,[GROUPSALES].GROUPSTARTDATES,112) AND STATUS='預約接團') AS CARNUM5
+                                    SELECT 
+                                    SUM(CASE WHEN STATUS IN ('預約接團','完成接團') AND CARNO IS NOT NULL THEN 1 ELSE 0 END) AS NUMS
+                                    ,SUM(GUSETNUM) AS GUSETNUMS
+                                    ,SUM(SALESMMONEYS) AS SALESMMONEYS
+                                    ,SUM(CASE WHEN STATUS='預約接團' AND CARNO IS NOT NULL THEN 1 ELSE 0 END) AS CARNUM1
+                                    ,SUM(CASE WHEN STATUS='取消預約' AND CARNO IS NOT NULL THEN 1 ELSE 0 END) AS CARNUM2
+                                    ,SUM(CASE WHEN STATUS='異常結案' AND CARNO IS NOT NULL THEN 1 ELSE 0 END) AS CARNUM3
+                                    ,SUM(CASE WHEN STATUS='完成接團' AND CARNO IS NOT NULL THEN 1 ELSE 0 END) AS CARNUM4
+                                    ,SUM(CASE WHEN STATUS='預約接團' AND CARNO IS NOT NULL THEN 1 ELSE 0 END) AS CARNUM5
                                     FROM [TKMK].[dbo].[GROUPSALES] WITH(NOLOCK)
-                                    WHERE CONVERT(NVARCHAR,GROUPSTARTDATES,112)='{0}'
-                                    AND STATUS IN ('預約接團','完成接團')
-                                    GROUP BY CONVERT(NVARCHAR,GROUPSTARTDATES,112)
+                                    WHERE GROUPSTARTDATES>='{0}' AND GROUPSTARTDATES<DATEADD(DAY,1,'{0}')
+                                    HAVING SUM(CASE WHEN STATUS IN ('預約接團','完成接團') THEN 1 ELSE 0 END)>0
                                     ", GROUPSTARTDATES);
 
                 adapter1 = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -2750,8 +2769,8 @@ namespace TKMK
 
                 sbSql.AppendFormat(@"  
                                     SELECT COUNT([CARNO]) AS NUMS 
-                                    FROM [TKMK].[dbo].[GROUPSALES]
-                                    WHERE [STATUS]='預約接團' AND CONVERT(nvarchar,[CREATEDATES],112)='{0}' 
+                                    FROM [TKMK].[dbo].[GROUPSALES] WITH(NOLOCK)
+                                    WHERE [STATUS]='預約接團' AND [CREATEDATES]>='{0}' AND [CREATEDATES]<DATEADD(DAY,1,'{0}') 
                                     ", CREATEDATES);
                 sbSql.AppendFormat(@"  ");
 
@@ -2954,7 +2973,7 @@ namespace TKMK
                             ,[TOURS] AS '領隊'
                             ,[TRAVELNAMES] AS '旅行社'
                             FROM [TKMK].[dbo].[GROUPSALES] WITH (NOLOCK) 
-                             WHERE CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)>='{0}' AND CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)<='{1}'                              
+                             WHERE [PURGROUPSTARTDATES]>='{0}' AND [PURGROUPSTARTDATES]<DATEADD(DAY,1,'{1}')
                              AND [STATUS]='完成接團'
                                 {2}
                              ORDER BY CONVERT(NVARCHAR,[PURGROUPSTARTDATES], 112),[SERNO]
@@ -2970,13 +2989,13 @@ namespace TKMK
 
             SB.AppendFormat(@"    
                             SELECT SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 ) AS '年月'
-                            ,(SELECT ISNULL(SUM(GS.[GUSETNUM]),0) FROM[TKMK].[dbo].[GROUPSALES] GS WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '交易筆數'
-                            ,(SELECT ISNULL(SUM(GS.[CARNUM]),0) FROM[TKMK].[dbo].[GROUPSALES] GS WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '來車數'
-                            ,(SELECT ISNULL(SUM(GS.[SALESMMONEYS]),0) FROM[TKMK].[dbo].[GROUPSALES] GS  WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '團客總金額'
+                            ,(SELECT ISNULL(SUM(GS.[GUSETNUM]),0) FROM[TKMK].[dbo].[GROUPSALES] GS WITH (NOLOCK) WHERE GS.[PURGROUPSTARTDATES]>=CONVERT(DATETIME,SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'01') AND GS.[PURGROUPSTARTDATES]<DATEADD(MONTH,1,CONVERT(DATETIME,SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'01'))) AS '交易筆數'
+                            ,(SELECT ISNULL(SUM(GS.[CARNUM]),0) FROM[TKMK].[dbo].[GROUPSALES] GS WITH (NOLOCK) WHERE GS.[PURGROUPSTARTDATES]>=CONVERT(DATETIME,SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'01') AND GS.[PURGROUPSTARTDATES]<DATEADD(MONTH,1,CONVERT(DATETIME,SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'01'))) AS '來車數'
+                            ,(SELECT ISNULL(SUM(GS.[SALESMMONEYS]),0) FROM[TKMK].[dbo].[GROUPSALES] GS  WITH (NOLOCK) WHERE GS.[PURGROUPSTARTDATES]>=CONVERT(DATETIME,SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'01') AND GS.[PURGROUPSTARTDATES]<DATEADD(MONTH,1,CONVERT(DATETIME,SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'01'))) AS '團客總金額'
                             ,(SELECT SUM(ISNULL(TA017,0)) FROM [TK].dbo.POSTA WITH (NOLOCK) WHERE  TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1')) AND TA001 LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%') AS '消費總金額'
-                            ,((SELECT SUM(ISNULL(TA017,0)) FROM [TK].dbo.POSTA WITH (NOLOCK) WHERE  TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1')) AND TA001 LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%')-(SELECT ISNULL(SUM(GS.[SALESMMONEYS]),0) FROM[TKMK].[dbo].[GROUPSALES] GS WITH (NOLOCK) WHERE CONVERT(NVARCHAR,GS.[PURGROUPSTARTDATES],112) LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%')) AS '散客總金額'
+                            ,((SELECT SUM(ISNULL(TA017,0)) FROM [TK].dbo.POSTA WITH (NOLOCK) WHERE  TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1')) AND TA001 LIKE SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'%')-(SELECT ISNULL(SUM(GS.[SALESMMONEYS]),0) FROM[TKMK].[dbo].[GROUPSALES] GS WITH (NOLOCK) WHERE GS.[PURGROUPSTARTDATES]>=CONVERT(DATETIME,SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'01') AND GS.[PURGROUPSTARTDATES]<DATEADD(MONTH,1,CONVERT(DATETIME,SUBSTRING(CONVERT(NVARCHAR,[GROUPSALES].[PURGROUPSTARTDATES],112),1,6 )+'01')))) AS '散客總金額'
                             FROM [TKMK].[dbo].[GROUPSALES] WITH (NOLOCK)
-                            WHERE CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)>='{0}' AND CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112)<='{1}'
+                            WHERE [PURGROUPSTARTDATES]>='{0}' AND [PURGROUPSTARTDATES]<DATEADD(DAY,1,'{1}')
                             AND [STATUS]='完成接團'
                             GROUP BY SUBSTRING(CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112),1,6 )
                             ORDER BY SUBSTRING(CONVERT(NVARCHAR,[PURGROUPSTARTDATES],112),1,6 )
@@ -3147,8 +3166,8 @@ namespace TKMK
                                     ,CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間'
                                     ,[EXCHANGEMONEYS] AS '領券額'
                                     ,[ID],[CREATEDATES]
-                                    FROM [TKMK].[dbo].[GROUPSALES]
-                                    WHERE CONVERT(nvarchar,[CREATEDATES],112)='{0}'
+                                    FROM [TKMK].[dbo].[GROUPSALES] WITH(NOLOCK)
+                                    WHERE [CREATEDATES]>='{0}' AND [CREATEDATES]<DATEADD(DAY,1,'{0}')
                                     AND [STATUS]<>'取消預約'
                                     ORDER BY CONVERT(nvarchar,[CREATEDATES],112),CONVERT(int,[SERNO]) DESC
                                     ", CREATEDATES);
@@ -3210,22 +3229,15 @@ namespace TKMK
                         dataGridView2.Columns["CREATEDATES"].Width = 80;
 
                         //根据列表中数据不同，显示不同颜色背景
+                        //20261104 原本每一格都 new 一個 Font (列數 x 14 個)，改成整欄設定一次，畫面效果相同
+                        Font FONT14_dataGridView2 = new Font("Tahoma", 14);
+                        foreach (string COL in new string[] { "車名", "車號", "券總額", "券消費", "消費總額", "消費獎金", "特賣數", "特賣獎金", "茶水費", "總獎金", "交易筆數", "優惠券名", "業務員名", "來車公司" })
+                        {
+                            dataGridView2.Columns[COL].DefaultCellStyle.Font = FONT14_dataGridView2;
+                        }
+
                         foreach (DataGridViewRow dgRow in dataGridView2.Rows)
                         {
-                            dgRow.Cells["車名"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["車號"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["券總額"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["券消費"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["消費總額"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["消費獎金"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["特賣數"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["特賣獎金"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["茶水費"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["總獎金"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["交易筆數"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["優惠券名"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["業務員名"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["來車公司"].Style.Font = new Font("Tahoma", 14);
 
                             //判断
                             if (dgRow.Cells["狀態"].Value.ToString().Trim().Equals("完成接團"))
@@ -3349,14 +3361,11 @@ namespace TKMK
         }
         /// <summary>
         /// 計算佣金 (當天 CREATEDATES = SDATES 的團務)
-        /// 20261104 效能改善：
-        /// 1. 原本每一台車都要用 6 個子查詢去查整個 POSTA/POSTB/POSTC (POS 資料量大就很慢)
-        ///    → 先把「當天、這些業務員帳號(TA008)、團購門市」的 POS 資料抓進 #TA/#TB/#TC (只查一次大表)
-        ///    → 原本的計算邏輯完全不變，只是改從小的暫存表計算
-        /// 2. 拿掉 SET STATISTICS TIME ON、拿掉不需要的 SELECT * FROM #TempTable (少傳一份資料回程式)
-        /// 3. 參數化 (@SDATES)
-        /// 4. 連線/交易/命令都用區域變數，不再共用表單欄位 sqlConn/sbSql/cmd/tran (背景執行時不會互相干擾)
-        /// 5. 逾時 60 秒 → 300 秒；失敗時 Rollback，並回傳錯誤訊息 (原本錯誤會被吃掉，使用者不知道沒算到)
+        /// 20261104 改用 frmGROUPSALESCOMMISSION 的做法 (共用 GROUPSALESCOMMISSIONCAL)，公式不變：
+        /// 1. 只算「預約接團」的車 (原本全部算，但只有預約接團會被回寫)
+        /// 2. 先查出當天車的日期、業務員帳號，用實際值抓 POS 進 #TA/#TB/#TC (大表只查一次)
+        /// 3. 每台車基本數字先存 #BASE，每台只算一次，再算抽佣/獎金
+        /// 4. 交易只包最後兩個 UPDATE，鎖 GROUPSALES 的時間最短
         /// </summary>
         /// <returns>成功回傳 null；失敗回傳錯誤訊息</returns>
         public string SETMONEYS_NEW(string SDATES)
@@ -3381,291 +3390,10 @@ namespace TKMK
             sqlsb.Password = TKID.Decryption(sqlsb.Password);
             sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
 
-            StringBuilder SQL = new StringBuilder();
+            //20261104 與 frmGROUPSALESCOMMISSION 共用同一份計算
+            GROUPSALESCOMMISSIONCAL.CALMONEYS(sqlsb.ConnectionString, SDATES);
 
-            SQL.Append(@" 
-                                    --20240424 查團務
-                                    --20261104 先把需要的 POS 資料抓進暫存表，大表只查一次
-                                    SET NOCOUNT ON;
-
-                                    IF OBJECT_ID('tempdb..#TempTable') IS NOT NULL DROP TABLE #TempTable;
-                                    IF OBJECT_ID('tempdb..#TA') IS NOT NULL DROP TABLE #TA;
-                                    IF OBJECT_ID('tempdb..#TB') IS NOT NULL DROP TABLE #TB;
-                                    IF OBJECT_ID('tempdb..#TC') IS NOT NULL DROP TABLE #TC;
-
-                                    --當天團務會用到的 POS 日期範圍 (實際到達日、建立日)
-                                    DECLARE @MIND varchar(8),@MAXD varchar(8);
-
-                                    SELECT @MIND=MIN(YMD),@MAXD=MAX(YMD)
-                                    FROM
-                                    (
-                                        SELECT CONVERT(varchar(8),[GROUPSTARTDATES],112) AS YMD
-                                        FROM [TKMK].[dbo].[GROUPSALES]
-                                        WHERE CONVERT(nvarchar,[CREATEDATES],112)=@SDATES
-                                        UNION ALL
-                                        SELECT CONVERT(varchar(8),[CREATEDATES],112) AS YMD
-                                        FROM [TKMK].[dbo].[GROUPSALES]
-                                        WHERE CONVERT(nvarchar,[CREATEDATES],112)=@SDATES
-                                    ) AS D;
-
-                                    --POSTA：只抓 日期範圍內 + 當天團務的業務員帳號 + 團購門市
-                                    SELECT TA001,TA002,TA003,TA005,TA006,TA008,TA017
-                                    INTO #TA
-                                    FROM [TK].dbo.POSTA WITH (NOLOCK)
-                                    WHERE TA001>=@MIND AND TA001<=@MAXD
-                                    AND TA008 IN (SELECT [TA008] FROM [TKMK].[dbo].[GROUPSALES] WHERE CONVERT(nvarchar,[CREATEDATES],112)=@SDATES)
-                                    AND TA002 IN (SELECT [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1'));
-
-                                    CREATE CLUSTERED INDEX IX_TA ON #TA (TA008,TA001,TA005);
-
-                                    --POSTB：只抓上面那些交易的明細
-                                    SELECT TB001,TB002,TB003,TB006,TB010,TB019,TB033
-                                    INTO #TB
-                                    FROM [TK].dbo.POSTB WITH (NOLOCK)
-                                    WHERE TB001>=@MIND AND TB001<=@MAXD
-                                    AND EXISTS (SELECT 1 FROM #TA WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006);
-
-                                    CREATE CLUSTERED INDEX IX_TB ON #TB (TB001,TB002,TB003,TB006);
-
-                                    --POSTC：只抓上面那些交易、付款方式 0009 (兌換券)
-                                    SELECT TC001,TC002,TC003,TC006,TC008
-                                    INTO #TC
-                                    FROM [TK].dbo.POSTC WITH (NOLOCK)
-                                    WHERE TC001>=@MIND AND TC001<=@MAXD
-                                    AND TC008='0009'
-                                    AND EXISTS (SELECT 1 FROM #TA WHERE TA001=TC001 AND TA002=TC002 AND TA003=TC003 AND TA006=TC006);
-
-                                    CREATE CLUSTERED INDEX IX_TC ON #TC (TC001,TC002,TC003,TC006);
-
-                                    --以下計算邏輯與原本相同，只是 POSTA/POSTB/POSTC 改用 #TA/#TB/#TC
-                                    SELECT *
-                                    ,(CASE WHEN 兌換券='是' THEN EXCHANGEMONEYS ELSE 0 END ) AS 'FINALEXCHANGEMONEYS'
-                                    ,(CASE WHEN 兌換券='否' THEN FINALBASEMONEYS ELSE 0 END ) AS 'FINALCOMMISSIONBASEMONEYS'
-                                    ,CONVERT(INT,FINNALSALESMMONEYS*FINALCOMMISSIONPCT,0) AS 'FINNALCOMMISSIONPCTMONEYS'
-                                    
-                                    --總將金=抽佣+茶水費+特賣獎金
-                                    ,(CONVERT(INT,FINNALSALESMMONEYS*FINALCOMMISSIONPCT,0)+(CASE WHEN 兌換券='否' THEN FINALBASEMONEYS ELSE 0 END )+FINALSPECIALMONEYS) AS 'FINALTOTALCOMMISSIONMONEYS'
-
-                                    INTO #TempTable
-                                    FROM 
-                                    (
-	                                    SELECT *
-	                                    FROM 
-	                                    (
-		                                    SELECT *
-		                                    --如果司機有兌換券，而且有消費金額，可當佣金的消費金額=原消費總額-券總額(保留超過的部份金額還是可以抽佣)
-		                                    ,(CASE WHEN FINALEXCHANGESALESMMONEYS>=1 AND SALESMMONEYS>=1 AND (SALESMMONEYS-EXCHANGEMONEYS)>=0 THEN (SALESMMONEYS-EXCHANGEMONEYS) ELSE SALESMMONEYS  END )  AS 'FINNALSALESMMONEYS'
-		                                    FROM
-		                                    (
-		                                    SELECT  
-		                                    [ID]
-		                                    ,[SERNO] AS '序號'
-		                                    ,[CARNAME] AS '車名'
-		                                    ,[CARNO] AS '車號'
-		                                    ,[CARKIND] AS '車種'
-		                                    ,[GROUPKIND]  AS '團類'
-		                                    ,[ISEXCHANGE] AS '兌換券'
-		                                    ,[EXCHANGETOTALMONEYS] AS '券總額'
-		                                    ,[EXCHANGESALESMMONEYS] AS '券消費'
-		                                    ,[SALESMMONEYS] AS '消費總額'
-		                                    ,[SPECIALMNUMS] AS '特賣數'
-		                                    ,[SPECIALMONEYS] AS '特賣獎金'
-		                                    ,[COMMISSIONBASEMONEYS] AS '茶水費'
-		                                    ,[COMMISSIONPCTMONEYS] AS '消費獎金'
-		                                    ,[TOTALCOMMISSIONMONEYS] AS '總獎金'
-		                                    ,[CARNUM] AS '車數'
-		                                    ,[GUSETNUM] AS '交易筆數'
-		                                    ,[CARCOMPANY] AS '來車公司'
-		                                    ,[TA008NO] AS '業務員名'
-		                                    ,[TA008] AS '業務員帳號'
-		                                    ,[EXCHANNO] AS '優惠券名'
-		                                    ,[EXCHANACOOUNT] AS '優惠券帳號'
-		                                    ,CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間'
-		                                    ,CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間'
-		                                    ,[STATUS] AS '狀態'
-		                                    ,CONVERT(varchar(100), [PURGROUPSTARTDATES],120) AS '預計到達時間'
-		                                    ,CONVERT(varchar(100), [PURGROUPENDDATES],120) AS '預計離開時間'
-		                                    ,[EXCHANGEMONEYS] AS '領券額'
-		                                    ,[CREATEDATES]
-		                                    ,CONVERT(varchar, [GROUPSTARTDATES], 112) AS 'YMD'
-		                                    ,CONVERT(varchar,[GROUPSTARTDATES], 108) AS 'STARTHM'
-		                                    ,(
-		                                    SELECT CONVERT(INT,ISNULL(SUM(TB033),0),0)
-		                                    FROM #TA,#TB
-		                                    WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003  AND TA006=TB006  
-		                                    AND TB010  NOT IN (SELECT [ID] FROM [TKMK].[dbo].[GROUPPRODUCT] WHERE [VALID]='Y' AND [SPLITCAL]='Y')              
-		                                    AND TA008=[GROUPSALES].[TA008] 
-		                                    AND TA001=CONVERT(varchar,[GROUPSALES].[GROUPSTARTDATES], 112) 
-		                                    AND TA005>=CONVERT(varchar, [GROUPSALES].[GROUPSTARTDATES],108 )
-
-		                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1'))
-		                                    )  AS 'SALESMMONEYS'
-		                                    ,
-		                                    (
-		                                    SELECT ISNULL(SUM(SUMTB019),0) 
-		                                    FROM 
-		                                    (
-		                                    SELECT [ID],[NAME],[NUM],[MONEYS],[SPLITCAL],[VALID],[SDATES],[EDATES],TB010,SUMTB019
-		                                    FROM [TKMK].[dbo].[GROUPPRODUCT]
-		                                    LEFT JOIN 
-		                                    (
-		                                    SELECT TB010,CONVERT(INT,ISNULL(SUM(TB019),0),0) SUMTB019
-		                                    FROM #TA,#TB
-		                                    WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006 
-		                                    AND TA008=[GROUPSALES].[TA008]  
-		                                    AND TA001=CONVERT(varchar,[GROUPSALES].[GROUPSTARTDATES], 112)  
-		                                    AND TA005>=CONVERT(varchar, [GROUPSALES].[GROUPSTARTDATES],108 )
-
-		                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1'))
-		                                    GROUP BY TB010
-		                                    ) AS TEMP ON TB010=ID
-		                                    WHERE [VALID]='Y' 
-		                                    AND CONVERT(NVARCHAR,SDATES,112)<=CONVERT(varchar,[GROUPSALES].[GROUPSTARTDATES], 112) 
-		                                    AND CONVERT(NVARCHAR,EDATES,112)>=CONVERT(varchar,[GROUPSALES].[GROUPSTARTDATES], 112) 
-		                                    ) AS TEMP2
-		                                    ) AS 'FINALSPECIALMNUMS'
-		                                    ,
-		                                    (
-		                                    SELECT ISNULL(SUM(SUMTB019/[NUM]*[MONEYS]),0)
-		                                    FROM 
-		                                    (
-		                                    SELECT [ID],[NAME],[NUM],[MONEYS],[SPLITCAL],[VALID],[SDATES],[EDATES],TB010,SUMTB019
-		                                    FROM [TKMK].[dbo].[GROUPPRODUCT]
-		                                    LEFT JOIN 
-		                                    (
-		                                    SELECT TB010,CONVERT(INT,ISNULL(SUM(TB019),0),0) SUMTB019
-		                                    FROM #TA,#TB
-		                                    WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006 
-		                                    AND TA008=[GROUPSALES].[TA008]  
-		                                    AND TA001=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112)  
-		                                    AND TA005>=CONVERT(varchar, [GROUPSALES].[CREATEDATES],108 )
-
-		                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1'))
-		                                    GROUP BY TB010
-		                                    ) AS TEMP ON TB010=ID
-		                                    WHERE [VALID]='Y' 
-		                                    AND CONVERT(NVARCHAR,SDATES,112)<=CONVERT(varchar,[GROUPSALES].[GROUPSTARTDATES], 112) 
-		                                    AND CONVERT(NVARCHAR,EDATES,112)>=CONVERT(varchar,[GROUPSALES].[GROUPSTARTDATES], 112) 
-		                                    ) AS TEMP2
-		                                    ) AS 'FINALSPECIALMONEYS' 
-		                                    ,
-		                                    (
-		                                    SELECT CONVERT(INT,ISNULL(SUM(TA017),0))
-		                                    FROM #TA,#TC
-		                                    WHERE TA001=TC001 AND TA002=TC002 AND TA003=TC003  AND TA006=TC006
-		                                    AND TC008='0009'
-		                                    AND TA008=[GROUPSALES].[TA008] 
-		                                    AND TA001=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112)
-		                                    AND TA005>=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 108)
-
-		                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1'))
-		                                    ) AS 'FINALEXCHANGESALESMMONEYS'
-		                                    ,
-		                                    ISNULL((
-		                                    SELECT  
-		                                    CONVERT(INT,[EXCHANGEMONEYS],0)
-		                                    FROM [TKMK].[dbo].[GROUPEXCHANGEMONEYS]
-		                                    WHERE  1=1
-		                                    AND [VALID]='Y'
-		                                    AND [CARKIND]=[GROUPSALES].[CARKIND] 
-		                                    AND CONVERT(NVARCHAR,SDATES,112)<=CONVERT(varchar,[GROUPSALES].[GROUPSTARTDATES], 112)
-		                                    AND CONVERT(NVARCHAR,EDATES,112)>=CONVERT(varchar,[GROUPSALES].[GROUPSTARTDATES], 112)
-		                                    ),0)  AS 'EXCHANGEMONEYS'  
-		                                    ,
-		                                    (
-		                                    SELECT CONVERT(INT,[BASEMONEYS],0)
-		                                    FROM [TKMK].[dbo].[GROUPBASE] 
-		                                    WHERE 1=1
-		                                    AND VALID='Y'
-		                                    AND CONVERT(NVARCHAR,SDATES,112)<=CONVERT(varchar,[GROUPSALES].[GROUPSTARTDATES], 112)
-		                                    AND CONVERT(NVARCHAR,EDATES,112)>=CONVERT(varchar,[GROUPSALES].[GROUPSTARTDATES], 112)
-		                                    AND [NAME]=[GROUPSALES].[CARKIND] 
-		                                    )  AS 'FINALBASEMONEYS' 
-		                                    ,
-		                                    (
-		                                    SELECT COUNT(TA008) 
-		                                    FROM #TA
-		                                    WHERE TA008=[GROUPSALES].[TA008] 
-		                                    AND TA001=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 112)
-		                                    AND TA005>=CONVERT(varchar,[GROUPSALES].[CREATEDATES], 108)
-		
-		                                    AND TA002 IN (SELECT  [TA002] FROM [TKMK].[dbo].[GROUPSTORES] WHERE KINDNAMES IN ('GROUPSTORES1'))
-		                                    ) AS 'GUSETNUM'
-		                                    FROM [TKMK].[dbo].[GROUPSALES]
-		                                    WHERE CONVERT(nvarchar,[CREATEDATES],112)=@SDATES
-		                                    --AND [STATUS] IN ('預約接團')
-
-		                                    ) AS TEMP
-	                                    ) AS TEMP2
-	                                    OUTER  APPLY (
-	                                    SELECT TOP 1 [PCT]  AS 'FINALCOMMISSIONPCT'              
-	                                    FROM [TKMK].[dbo].[GROUPPCT]
-	                                    WHERE [NAME] = TEMP2.車種
-	                                    AND (FINNALSALESMMONEYS - [PCTMONEYS]) >= 0
-	                                    AND VALID = 'Y'
-	                                    AND CONVERT(NVARCHAR, SDATES, 112) <= CONVERT(VARCHAR, TEMP2.YMD, 112)
-	                                    AND CONVERT(NVARCHAR, EDATES, 112) >= CONVERT(VARCHAR, TEMP2.YMD, 112)
-	                                    ORDER BY (FINNALSALESMMONEYS - [PCTMONEYS]) 
-	                                    ) AS OUTERPCT
-                                    ) AS TEMP3
-
-
-                                    UPDATE [TKMK].[dbo].[GROUPSALES]
-                                    SET 
-                                    [EXCHANGEMONEYS]=#TempTable.FINALEXCHANGEMONEYS
-                                    ,[EXCHANGETOTALMONEYS]=#TempTable.FINALEXCHANGEMONEYS*#TempTable.車數
-                                    ,[EXCHANGESALESMMONEYS]=#TempTable.FINALEXCHANGESALESMMONEYS
-                                    ,[SPECIALMNUMS]=#TempTable.FINALSPECIALMNUMS
-                                    ,[SPECIALMONEYS]=#TempTable.FINALSPECIALMONEYS
-                                    ,[SALESMMONEYS]=#TempTable.FINNALSALESMMONEYS
-                                    ,[COMMISSIONBASEMONEYS]=#TempTable.FINALCOMMISSIONBASEMONEYS
-                                    ,[COMMISSIONPCT]=#TempTable.FINALCOMMISSIONPCT
-                                    ,[COMMISSIONPCTMONEYS]=#TempTable.FINNALCOMMISSIONPCTMONEYS
-                                    ,[TOTALCOMMISSIONMONEYS]=#TempTable.FINALTOTALCOMMISSIONMONEYS
-                                    ,[GUSETNUM]=#TempTable.GUSETNUM
-                                    FROM #TempTable
-                                    WHERE  CONVERT(nvarchar,[GROUPSALES].[CREATEDATES],112)=@SDATES
-                                    AND [GROUPSALES].[STATUS] IN ('預約接團')
-                                    AND [GROUPSALES].ID=#TempTable.ID;
-
-                                    UPDATE [TKMK].[dbo].[GROUPSALES]
-                                    SET [COMMISSIONBASEMONEYS]=0
-                                    ,[COMMISSIONPCT]=0.1
-                                    ,[COMMISSIONPCTMONEYS]=[SALESMMONEYS]*0.1
-                                    ,[TOTALCOMMISSIONMONEYS]=[SALESMMONEYS]*0.1
-                                    WHERE [CARKIND]='空車伴手禮' 
-                                    AND [SALESMMONEYS]>=1 AND [SALESMMONEYS]<=4999 
-                                    AND CONVERT(nvarchar,[GROUPSALES].[CREATEDATES],112)=@SDATES;
-
-                                    DROP TABLE #TempTable;
-                                    DROP TABLE #TA;
-                                    DROP TABLE #TB;
-                                    DROP TABLE #TC;
-                                   ");
-
-            using (SqlConnection conn = new SqlConnection(sqlsb.ConnectionString))
-            {
-                conn.Open();
-
-                using (SqlTransaction trans = conn.BeginTransaction())
-                using (SqlCommand command = new SqlCommand(SQL.ToString(), conn, trans))
-                {
-                    try
-                    {
-                        command.CommandTimeout = 300;
-                        command.Parameters.Add("@SDATES", SqlDbType.NVarChar, 8).Value = SDATES;
-                        command.ExecuteNonQuery();
-
-                        trans.Commit();      //執行交易
-                        return null;
-                    }
-                    catch (Exception ex)
-                    {
-                        try { trans.Rollback(); } catch { }   //交易取消
-                        return ex.Message;
-                    }
-                }
-            }
+            return null;
         }
         private void textBox131_TextChanged(object sender, EventArgs e)
         {
@@ -3827,8 +3555,8 @@ namespace TKMK
                                     ,[ID]
                                     ,[CREATEDATES]
 
-                                    FROM [TKMK].[dbo].[GROUPSALES]
-                                    WHERE CONVERT(nvarchar,[CREATEDATES],112)>='{0}' AND CONVERT(nvarchar,[CREATEDATES],112)<='{1}'
+                                    FROM [TKMK].[dbo].[GROUPSALES] WITH(NOLOCK)
+                                    WHERE [CREATEDATES]>='{0}' AND [CREATEDATES]<DATEADD(DAY,1,'{1}')
                                     AND [STATUS]<>'取消預約'
                                     ORDER BY CONVERT(nvarchar,[CREATEDATES],112),CONVERT(int,[SERNO]) DESC
                                     ", SDATES, EDATES);
@@ -3845,7 +3573,8 @@ namespace TKMK
 
                 if (ds1.Tables["ds1"].Rows.Count == 0)
                 {
-                    dataGridView1.DataSource = null;
+                    //20261104 修正：原本誤清 dataGridView1 (當天來車表)，應清 dataGridView3
+                    dataGridView3.DataSource = null;
                 }
                 else
                 {
@@ -3906,22 +3635,15 @@ namespace TKMK
                         DGV.Columns["CREATEDATES"].Width = 80;
 
                         //根据列表中数据不同，显示不同颜色背景
+                        //20261104 原本每一格都 new 一個 Font (列數 x 14 個)，改成整欄設定一次，畫面效果相同
+                        Font FONT14_DGV = new Font("Tahoma", 14);
+                        foreach (string COL in new string[] { "車名", "車號", "券總額", "券消費", "消費總額", "消費獎金", "特賣數", "特賣獎金", "茶水費", "總獎金", "交易筆數", "優惠券名", "業務員名", "來車公司" })
+                        {
+                            DGV.Columns[COL].DefaultCellStyle.Font = FONT14_DGV;
+                        }
+
                         foreach (DataGridViewRow dgRow in DGV.Rows)
                         {
-                            dgRow.Cells["車名"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["車號"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["券總額"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["券消費"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["消費總額"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["消費獎金"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["特賣數"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["特賣獎金"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["茶水費"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["總獎金"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["交易筆數"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["優惠券名"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["業務員名"].Style.Font = new Font("Tahoma", 14);
-                            dgRow.Cells["來車公司"].Style.Font = new Font("Tahoma", 14);
 
                             //判断
                             if (dgRow.Cells["狀態"].Value.ToString().Trim().Equals("完成接團"))
@@ -4099,8 +3821,8 @@ namespace TKMK
                                     CONVERT(varchar(100), [PURGROUPSTARTDATES], 120) AS '預計到達時間',
                                     CONVERT(varchar(100), [PURGROUPENDDATES], 120) AS '預計離開時間',
                                     [EXCHANGEMONEYS] AS '領券額',[ID],[CREATEDATES]
-                                    FROM [TKMK].[dbo].[GROUPSALES]
-                                    WHERE CONVERT(nvarchar, [CREATEDATES], 112) = @Date
+                                    FROM [TKMK].[dbo].[GROUPSALES] WITH(NOLOCK)
+                                    WHERE [CREATEDATES] >= @Date AND [CREATEDATES] < DATEADD(DAY, 1, @Date)
                                     AND [STATUS] <> '取消預約'
                                     ORDER BY CONVERT(nvarchar, [CREATEDATES], 112), CONVERT(int, [SERNO]) DESC";
 
@@ -5028,33 +4750,10 @@ namespace TKMK
         #endregion
 
         #region BUTTON
-        private void button4_Click(object sender, EventArgs e)
+        private async void button4_Click(object sender, EventArgs e)
         {
-            MESSAGESHOW MSGSHOW = new MESSAGESHOW();
-            //鎖定控制項
-            this.Enabled = false;
-            //顯示跳出視窗
-            MSGSHOW.Show();
-
-            //查詢本日來車資料
-            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
-            //計算佣金
-            SETMONEYS();
-            //查詢本日來車資料
-            SEARCHGROUPSALES(dateTimePicker1.Value.ToString("yyyyMMdd"));
-            //查詢本日的合計
-            SETNUMS(dateTimePicker1.Value.ToString("yyyyMMdd"));
-
-            label29.Text = "";
-            //label29.Text = "更新時間" + dateTimePicker1.Value.ToString("yyyy/MM/dd HH:mm:ss");
-            label29.Text = "更新時間" +DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-
-
-
-            //關閉跳出視窗
-            MSGSHOW.Close();
-            //解除鎖定
-            this.Enabled = true;
+            //20261104 佣金改用 button18 的計算 (原本用舊的逐筆 SETMONEYS())
+            await REFRESHMONEYS(dateTimePicker1.Value.ToString("yyyyMMdd"), true);
         }
         private void button5_Click(object sender, EventArgs e)
         {
@@ -5720,11 +5419,28 @@ namespace TKMK
         }
         private async void button18_Click(object sender, EventArgs e)
         {
-            //20261104 改善：
-            //1. 日期在 UI 執行緒先取好，背景只做 SQL
-            //2. 用 async/await，出錯也一定會關閉等待視窗、解除鎖定 (原本出錯畫面會一直鎖住)
-            //3. 計算失敗會顯示錯誤訊息 (原本會默默失敗)
-            string SDATES = dateTimePicker1.Value.ToString("yyyyMMdd");
+            await REFRESHMONEYS(dateTimePicker1.Value.ToString("yyyyMMdd"), true);
+        }
+
+        //20261104 計算中旗標：避免 button18/button4/timer1 同時計算
+        bool CALRUNNING = false;
+
+        /// <summary>
+        /// 計算佣金 + 重新查詢來車、合計 (button18、button4、timer1 共用)
+        /// 1. 佣金計算在背景執行 (GROUPSALESCOMMISSIONCAL)
+        /// 2. 出錯也一定會關閉等待視窗、解除鎖定
+        /// 3. 各段秒數顯示在 label29 更新時間後面
+        /// </summary>
+        /// <param name="SDATES">yyyyMMdd</param>
+        /// <param name="SHOWERROR">true：出錯跳訊息；false：只顯示在 label29 (自動更新用)</param>
+        private async Task REFRESHMONEYS(string SDATES, bool SHOWERROR)
+        {
+            if (CALRUNNING)
+            {
+                return;
+            }
+            CALRUNNING = true;
+
             string ERRMSG = null;
 
             MESSAGESHOW MSGSHOW = new MESSAGESHOW();
@@ -5735,16 +5451,22 @@ namespace TKMK
 
             try
             {
+                System.Diagnostics.Stopwatch SW = System.Diagnostics.Stopwatch.StartNew();
+
                 // 計算佣金 (背景執行)
                 ERRMSG = await Task.Run(() => SETMONEYS_NEW(SDATES));
+                double T1 = SW.Elapsed.TotalSeconds; SW.Restart();
 
                 // 查詢本日來車資料
                 SEARCHGROUPSALES(SDATES);
+                double T2 = SW.Elapsed.TotalSeconds; SW.Restart();
 
                 // 查詢本日的合計
                 SETNUMS(SDATES);
+                double T3 = SW.Elapsed.TotalSeconds;
 
-                label29.Text = "更新時間" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+                label29.Text = "更新時間" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")
+                    + string.Format(" (計算{0:0.0}秒/來車{1:0.0}秒[{3}]/合計{2:0.0}秒)", T1, T2, T3, LAST_SEARCHGROUPSALES_TIMING);
             }
             catch (Exception ex)
             {
@@ -5756,11 +5478,19 @@ namespace TKMK
                 MSGSHOW.Close();
                 // 解除鎖定
                 this.Enabled = true;
+                CALRUNNING = false;
             }
 
             if (!string.IsNullOrEmpty(ERRMSG))
             {
-                MessageBox.Show("計算佣金失敗：" + ERRMSG);
+                if (SHOWERROR)
+                {
+                    MessageBox.Show("計算佣金失敗：" + ERRMSG);
+                }
+                else
+                {
+                    label29.Text = "自動更新失敗 " + DateTime.Now.ToString("HH:mm:ss") + " " + ERRMSG;
+                }
             }
         }
 
