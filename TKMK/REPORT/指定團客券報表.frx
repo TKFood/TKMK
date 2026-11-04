@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="11/02/2026 10:25:01" ReportInfo.Modified="11/02/2026 10:34:39" ReportInfo.CreatorVersion="2017.4.1.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="11/02/2026 10:25:01" ReportInfo.Modified="11/02/2026 11:46:09" ReportInfo.CreatorVersion="2017.4.1.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNS8V+op55d8q+MyIM1gh0M9zlGOgK4zWs8Nahyki0xHW6v1SoNjLsQ40hUEIevZodc4nZn1VMr9PyrOeyOFQcW49yN37Wommt8wACdM4FKHAeO5qqwIh8UI3n9QTXxqWwodcnEEDCsVtPkJVncJME6g==">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNS8V+op55d8q+MyIM1gh0M9zlGOgK4zWs8Nahyki0xHW6v1SoNjLsQ40hUEIevZodc4nZn1VMr9PyrOeyOFQcW49yN37Wommt8wACdM4FKHAeO5qqwIh8UI3n9QTXxqWwbIQS6pxHgBTiqAzkGRWukw==">
       <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="SELECT &#13;&#10;COUNT(*) AS '交易筆數'&#13;&#10;FROM [TK].dbo.POSTA WITH(NOLOCK)&#13;&#10;WHERE 1=1&#13;&#10;AND TA001&gt;='20260101' AND TA001&lt;='20261231'&#13;&#10;AND TA008 LIKE '68%'">
         <Column Name="交易筆數" DataType="System.Int32"/>
       </TableDataSource>
     </MsSqlDataConnection>
-    <MsSqlDataConnection Name="Connection1" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNS8V+op55d8q+MyIM1gh0M9zlGOgK4zWs8Nahyki0xHW6v1SoNjLsQ40hUEIevZodc4nZn1VMr9PyrOeyOFQcW49yN37Wommt8wACdM4FKHAeO5qqwIh8UI3n9QTXxqWwHAePY5mzYPr/ZzJ4uJGX7Q==">
+    <MsSqlDataConnection Name="Connection1" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNS8V+op55d8q+MyIM1gh0M9zlGOgK4zWs8Nahyki0xHW6v1SoNjLsQ40hUEIevZodc4nZn1VMr9PyrOeyOFQcW49yN37Wommt8wACdM4FKHAeO5qqwIh8UI3n9QTXxqWw6xQiUVlxxFpFBEDgsmQfcg==">
       <TableDataSource Name="Table1" DataType="System.Int32" Enabled="true" SelectCommand="SELECT &#13;&#10;ISNULL(SUM(TA024),0) AS '總金額(含稅)'&#13;&#10;FROM [TK].dbo.POSTA WITH(NOLOCK)&#13;&#10;WHERE 1=1&#13;&#10;AND TA001&gt;='20260101' AND TA001&lt;='20261231'&#13;&#10;AND TA008 LIKE '68%'">
         <Column Name="總金額(含稅)" DataType="System.Decimal"/>
       </TableDataSource>
     </MsSqlDataConnection>
-    <MsSqlDataConnection Name="Connection2" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNS8V+op55d8q+MyIM1gh0M9zlGOgK4zWs8Nahyki0xHW6v1SoNjLsQ40hUEIevZodc4nZn1VMr9PyrOeyOFQcW49yN37Wommt8wACdM4FKHAeO5qqwIh8UI3n9QTXxqWwos0LJVwmOChRa7vme9cWgw==">
+    <MsSqlDataConnection Name="Connection2" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8Zy6q+uhwpDsytgWqwZQZyEQUQyQ022aWUGqU90pHzzNS8V+op55d8q+MyIM1gh0M9zlGOgK4zWs8Nahyki0xHW6v1SoNjLsQ40hUEIevZodc4nZn1VMr9PyrOeyOFQcW49yN37Wommt8wACdM4FKHAeO5qqwIh8UI3n9QTXxqWw3mh7y2jLbWuVZ5QdyyOp4A==">
       <TableDataSource Name="Table2" DataType="System.Int32" Enabled="true" SelectCommand="SELECT &#13;&#10;TB010 AS '品號'&#13;&#10;,MB002 AS '品名'&#13;&#10;,ISNULL(SUM(TB019),0) AS '銷售數量'&#13;&#10;,ISNULL(SUM((TB031+TB032)),0) AS '總金額(含稅)'&#13;&#10;FROM [TK].dbo.POSTA WITH(NOLOCK),[TK].dbo.POSTB WITH(NOLOCK),[TK].dbo.INVMB WITH(NOLOCK)&#13;&#10;WHERE TA001=TB001 AND TA002=TB002 AND TA003=TB003 AND TA006=TB006&#13;&#10;AND TB010=MB001&#13;&#10;AND TA001&gt;='20260101' AND TA001&lt;='20261231'&#13;&#10;AND TA008 LIKE '68%'&#13;&#10;GROUP BY TB010&#13;&#10;,MB002&#13;&#10;ORDER BY TB010&#13;&#10;,MB002">
         <Column Name="品號" DataType="System.String"/>
         <Column Name="品名" DataType="System.String"/>
