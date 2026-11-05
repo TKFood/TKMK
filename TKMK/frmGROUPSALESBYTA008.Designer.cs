@@ -341,7 +341,7 @@
             this.tableLayoutPanel1.Controls.Add(this.dateTimePicker3, 7, 4);
             this.tableLayoutPanel1.Controls.Add(this.button9, 6, 3);
             this.tableLayoutPanel1.Controls.Add(this.dateTimePicker2, 7, 3);
-            this.tableLayoutPanel1.Controls.Add(this.label29, 4, 0);
+            this.tableLayoutPanel1.Controls.Add(this.label29, 4, 5);
             this.tableLayoutPanel1.Controls.Add(this.comboBox4, 7, 2);
             this.tableLayoutPanel1.Controls.Add(this.label9, 4, 1);
             this.tableLayoutPanel1.Controls.Add(this.comboBox3, 5, 1);
@@ -537,13 +537,16 @@
             // 
             // label29
             // 
-            this.label29.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label29.AutoSize = true;
-            this.label29.Font = new System.Drawing.Font("PMingLiU", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.label29.AutoSize = false;
+            this.label29.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label29.Font = new System.Drawing.Font("PMingLiU", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.label29.ForeColor = System.Drawing.Color.Blue;
-            this.label29.Location = new System.Drawing.Point(512, 12);
+            this.label29.Location = new System.Drawing.Point(512, 178);
             this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(99, 11);
+            this.label29.Size = new System.Drawing.Size(685, 64);
+            this.label29.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.tableLayoutPanel1.SetColumnSpan(this.label29, 6);
+            this.tableLayoutPanel1.SetRowSpan(this.label29, 2);
             this.label29.TabIndex = 721;
             this.label29.Text = "更新時間";
             // 

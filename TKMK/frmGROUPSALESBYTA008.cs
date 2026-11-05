@@ -109,6 +109,10 @@ namespace TKMK
             // 添加一个复选框列到DataGridView的第一个位置
             AddCheckBoxColumn();
 
+            //20261105 來車表格開雙緩衝，加快重繪
+            SetDoubleBuffered(dataGridView1);
+            SetDoubleBuffered(dataGridView2);
+
             //建立一個自動完成的字串集合
             InitTextBoxAutoComplete();
         }
@@ -826,6 +830,22 @@ namespace TKMK
         //20261104 SEARCHGROUPSALES 最近一次分段秒數 (顯示在 button18 的更新時間後面)
         string LAST_SEARCHGROUPSALES_TIMING = "";
 
+        //20261105 表格用的字型共用，不用每次查詢都 new
+        static readonly Font FONT_DG_HEADER = new Font("Tahoma", 9);
+        static readonly Font FONT_DG_CELL = new Font("Tahoma", 10);
+        static readonly Font FONT_DG_14 = new Font("Tahoma", 14);
+
+        /// <summary>
+        /// 20261105 開啟 DataGridView 的雙緩衝 (DoubleBuffered 是 protected，要用反射設定)，
+        /// 重繪時先畫在記憶體再一次貼上，減少閃爍、加快大量格式設定後的重繪
+        /// </summary>
+        private static void SetDoubleBuffered(DataGridView DGV)
+        {
+            typeof(DataGridView).InvokeMember("DoubleBuffered",
+                BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetProperty,
+                null, DGV, new object[] { true });
+        }
+
         public void SEARCHGROUPSALES(string CREATEDATES)
         {
             SqlDataAdapter adapter1 = new SqlDataAdapter();
@@ -911,6 +931,15 @@ namespace TKMK
                 //20261104 綁定與設定格式時，先拿掉 SelectionChanged，避免過程中一直觸發 (每次都會設定一堆 TextBox/ComboBox)
                 dataGridView1.SelectionChanged -= dataGridView1_SelectionChanged;
 
+                //20261105 畫面加速：
+                //1. 綁定/設定格式期間，標題列高度先不要自動計算 (每改一次欄寬/字型就會重算一次)，最後再一次算好
+                //2. 字型在綁定前先設好，避免綁定後再改字型讓整個表格重新排版
+                //3. 拿掉 AutoResizeColumns()：它會量完全部欄位、全部列的文字寬度，但後面每一欄又都手動設寬度，量了等於白量
+                dataGridView1.SuspendLayout();
+                dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+                dataGridView1.ColumnHeadersDefaultCellStyle.Font = FONT_DG_HEADER;
+                dataGridView1.DefaultCellStyle.Font = FONT_DG_CELL;
+
                 if (ds1.Tables["ds1"].Rows.Count == 0)
                 {
                     dataGridView1.DataSource = null;
@@ -921,9 +950,10 @@ namespace TKMK
                     {
                         dataGridView1.DataSource = ds1.Tables["ds1"];
 
-                        dataGridView1.AutoResizeColumns();
-                        dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Tahoma", 9);
-                        dataGridView1.DefaultCellStyle.Font = new Font("Tahoma", 10);
+                        //20261105 拿掉 AutoResizeColumns()，字型改在綁定前設定
+                        //dataGridView1.AutoResizeColumns();
+                        //dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Tahoma", 9);
+                        //dataGridView1.DefaultCellStyle.Font = new Font("Tahoma", 10);
                         dataGridView1.Columns["序號"].Width = 30;
                         dataGridView1.Columns["車名"].Width = 80;
                         dataGridView1.Columns["車號"].Width = 100;
@@ -973,10 +1003,10 @@ namespace TKMK
                         dataGridView1.Columns["CREATEDATES"].Width = 80;
 
                         //20261104 原本每一格都 new 一個 Font (列數 x 14 個)，改成整欄設定一次，畫面效果相同
-                        Font FONT14 = new Font("Tahoma", 14);
+                        //20261105 Font 改用共用的 FONT_DG_14，不用每次查詢都 new
                         foreach (string COL in new string[] { "車名", "車號", "券總額", "券消費", "消費總額", "消費獎金", "特賣數", "特賣獎金", "茶水費", "總獎金", "交易筆數", "優惠券名", "業務員名", "來車公司" })
                         {
-                            dataGridView1.Columns[COL].DefaultCellStyle.Font = FONT14;
+                            dataGridView1.Columns[COL].DefaultCellStyle.Font = FONT_DG_14;
                         }
 
                         //根据列表中数据不同，显示不同颜色背景
@@ -1004,49 +1034,50 @@ namespace TKMK
 
                 }
 
+                //20261105 格式都設定完，再一次計算標題列高度、重新排版
+                dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+                dataGridView1.ResumeLayout();
 
                 double TUI = SWQ.Elapsed.TotalSeconds; SWQ.Restart();
+
+                //20261105 原本：先手動觸發一次 SelectionChanged，再設定 CurrentCell (又觸發一次 SelectionChanged)，
+                //再把同樣的 TextBox/ComboBox 重設一次；每次設定 comboBox3 都可能觸發 SEARCH_POSMU 查資料庫。
+                //改成：SelectionChanged 還沒接回前，先把游標移回上次的位置，最後只觸發一次，結果相同
+                bool RESTOREROW = false;
+                if ((ROWSINDEX > 0 || COLUMNSINDEX > 0)
+                    && ROWSINDEX < dataGridView1.Rows.Count
+                    && COLUMNSINDEX < dataGridView1.Columns.Count
+                    && dataGridView1.Columns[COLUMNSINDEX].Visible)
+                {
+                    dataGridView1.CurrentCell = dataGridView1.Rows[ROWSINDEX].Cells[COLUMNSINDEX];
+                    RESTOREROW = true;
+                }
 
                 //接回 SelectionChanged，並手動觸發一次 (等同原本綁定時觸發的效果)
                 dataGridView1.SelectionChanged += dataGridView1_SelectionChanged;
                 dataGridView1_SelectionChanged(dataGridView1, EventArgs.Empty);
 
-                if (ROWSINDEX > 0 || COLUMNSINDEX > 0)
+                if (RESTOREROW)
                 {
-                    dataGridView1.CurrentCell = dataGridView1.Rows[ROWSINDEX].Cells[COLUMNSINDEX];
-
-                    DataGridViewRow row = dataGridView1.Rows[ROWSINDEX];
-                    ID = row.Cells["ID"].Value.ToString();
-
-                    STATUS = row.Cells["狀態"].Value.ToString().Trim();
-
-                    textBox121.Text = row.Cells["序號"].Value.ToString();
-                    textBox131.Text = row.Cells["車號"].Value.ToString();
-                    textBox141.Text = row.Cells["車名"].Value.ToString();
-                    textBox142.Text = row.Cells["車數"].Value.ToString();
-                    textBox143.Text = row.Cells["交易筆數"].Value.ToString();
-                    //textBox144.Text = row.Cells["優惠券名"].Value.ToString();
-                    textBox144.Text = row.Cells["業務員名"].Value.ToString();
-
-                    comboBox1.Text = row.Cells["車種"].Value.ToString();
-                    comboBox2.Text = row.Cells["團類"].Value.ToString();
-                    //comboBox3.Text = row.Cells["優惠券帳號"].Value.ToString() + ' ' + row.Cells["優惠券名"].Value.ToString();
-                    comboBox3.Text = row.Cells["業務員帳號"].Value.ToString() + ' ' + row.Cells["業務員名"].Value.ToString();
-                    comboBox6.Text = row.Cells["兌換券"].Value.ToString();
-                    comboBox5.Text = row.Cells["來車公司"].Value.ToString();
-                    comboBox13.Text = row.Cells["去程回程"].Value.ToString();
+                    //同原本：回到上次位置時，業務員名以 GRID 的資料為準 (SEARCH_POSMU 可能會改掉)
+                    textBox144.Text = dataGridView1.Rows[ROWSINDEX].Cells["業務員名"].Value.ToString();
                 }
 
                 double TSEL = SWQ.Elapsed.TotalSeconds;
                 LAST_SEARCHGROUPSALES_TIMING = string.Format("SQL{0:0.0}/畫面{1:0.0}/選取{2:0.0}", TSQL, TUI, TSEL);
             }
-            catch
+            catch (Exception ex)
             {
-
+                //20261105 出錯時也顯示在更新時間後面，不然計時會一直是上一次的結果
+                LAST_SEARCHGROUPSALES_TIMING = "查詢錯誤:" + ex.Message;
             }
             finally
             {
                 sqlConn.Close();
+
+                //20261105 出錯時也要確保表格恢復排版、標題列自動高度
+                dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+                dataGridView1.ResumeLayout();
 
                 //確保 SelectionChanged 一定接回 (先拿掉再加，避免重複)
                 dataGridView1.SelectionChanged -= dataGridView1_SelectionChanged;
@@ -3190,11 +3221,12 @@ namespace TKMK
                 {
                     if (ds1.Tables["ds1"].Rows.Count >= 1)
                     {
+                        //20261105 字型先設好再綁定；拿掉 AutoResizeColumns() (後面每欄都手動設寬度，量了等於白量)
+                        dataGridView2.ColumnHeadersDefaultCellStyle.Font = FONT_DG_HEADER;
+                        dataGridView2.DefaultCellStyle.Font = FONT_DG_CELL;
                         dataGridView2.DataSource = ds1.Tables["ds1"];
 
-                        dataGridView2.AutoResizeColumns();
-                        dataGridView2.ColumnHeadersDefaultCellStyle.Font = new Font("Tahoma", 9);
-                        dataGridView2.DefaultCellStyle.Font = new Font("Tahoma", 10);
+                        //dataGridView2.AutoResizeColumns();
                         dataGridView2.Columns["序號"].Width = 30;
                         dataGridView2.Columns["車名"].Width = 80;
                         dataGridView2.Columns["車號"].Width = 100;
@@ -3230,7 +3262,7 @@ namespace TKMK
 
                         //根据列表中数据不同，显示不同颜色背景
                         //20261104 原本每一格都 new 一個 Font (列數 x 14 個)，改成整欄設定一次，畫面效果相同
-                        Font FONT14_dataGridView2 = new Font("Tahoma", 14);
+                        Font FONT14_dataGridView2 = FONT_DG_14;
                         foreach (string COL in new string[] { "車名", "車號", "券總額", "券消費", "消費總額", "消費獎金", "特賣數", "特賣獎金", "茶水費", "總獎金", "交易筆數", "優惠券名", "業務員名", "來車公司" })
                         {
                             dataGridView2.Columns[COL].DefaultCellStyle.Font = FONT14_dataGridView2;
