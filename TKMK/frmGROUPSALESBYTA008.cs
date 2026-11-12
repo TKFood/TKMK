@@ -3005,12 +3005,13 @@ namespace TKMK
                             ,CONVERT(NVARCHAR,[GROUPSTARTDATES],108) AS '到達時間'
                             ,CONVERT(NVARCHAR,[GROUPENDDATES],108) AS '離開時間'
                             ,[GROUPSTARTDATES]
-                            ,[GROUPENDDATES]
+                            ,[GROUPENDDATES] 
                             ,DATEDIFF(HOUR, CONVERT(DATETIME,[GROUPSTARTDATES]), CONVERT(DATETIME,[GROUPENDDATES])) AS '停留小時'
                             ,DATEDIFF(MINUTE, CONVERT(DATETIME,[GROUPSTARTDATES]), CONVERT(DATETIME,[GROUPENDDATES])) AS '停留分鐘'
                             ,[DRIVERS] AS '司機'
                             ,[TOURS] AS '領隊'
                             ,[TRAVELNAMES] AS '旅行社'
+                            ,[COMPANYNAMES] AS '公司行號'
                             FROM [TKMK].[dbo].[GROUPSALES] WITH (NOLOCK) 
                              WHERE [PURGROUPSTARTDATES]>='{0}' AND [PURGROUPSTARTDATES]<DATEADD(DAY,1,'{1}')
                              AND [STATUS]='完成接團'
