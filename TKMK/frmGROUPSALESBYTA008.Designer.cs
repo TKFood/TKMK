@@ -83,6 +83,8 @@
             this.comboBox13 = new System.Windows.Forms.ComboBox();
             this.label56 = new System.Windows.Forms.Label();
             this.textBox_travel = new System.Windows.Forms.TextBox();
+            this.label_company = new System.Windows.Forms.Label();
+            this.textBox_company = new System.Windows.Forms.TextBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -310,7 +312,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
             this.splitContainer1.Size = new System.Drawing.Size(1170, 725);
-            this.splitContainer1.SplitterDistance = 262;
+            this.splitContainer1.SplitterDistance = 297;
             this.splitContainer1.TabIndex = 0;
             // 
             // tableLayoutPanel1
@@ -373,6 +375,8 @@
             this.tableLayoutPanel1.Controls.Add(this.comboBox13, 3, 4);
             this.tableLayoutPanel1.Controls.Add(this.label56, 0, 6);
             this.tableLayoutPanel1.Controls.Add(this.textBox_travel, 1, 6);
+            this.tableLayoutPanel1.Controls.Add(this.label_company, 0, 7);
+            this.tableLayoutPanel1.Controls.Add(this.textBox_company, 1, 7);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -385,7 +389,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1166, 258);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1166, 293);
             this.tableLayoutPanel1.TabIndex = 3;
             // 
             // comboBox12
@@ -932,6 +936,26 @@
             this.textBox_travel.Size = new System.Drawing.Size(108, 27);
             this.textBox_travel.TabIndex = 751;
             this.textBox_travel.Validating += new System.ComponentModel.CancelEventHandler(this.textBox_travel_Validating);
+            // 
+            // label_company
+            // 
+            this.label_company.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label_company.AutoSize = true;
+            this.label_company.Location = new System.Drawing.Point(3, 254);
+            this.label_company.Name = "label_company";
+            this.label_company.Size = new System.Drawing.Size(110, 16);
+            this.label_company.TabIndex = 755;
+            this.label_company.Text = "公司行號";
+            // 
+            // textBox_company
+            // 
+            this.textBox_company.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.SetColumnSpan(this.textBox_company, 3);
+            this.textBox_company.Location = new System.Drawing.Point(119, 249);
+            this.textBox_company.MaxLength = 100;
+            this.textBox_company.Name = "textBox_company";
+            this.textBox_company.Size = new System.Drawing.Size(387, 27);
+            this.textBox_company.TabIndex = 756;
             // 
             // splitContainer2
             // 
@@ -2698,6 +2722,8 @@
         private System.Windows.Forms.TextBox textBox10;
         private System.Windows.Forms.Label label56;
         private System.Windows.Forms.TextBox textBox_travel;
+        private System.Windows.Forms.Label label_company;
+        private System.Windows.Forms.TextBox textBox_company;
         private System.Windows.Forms.Label label57;
         private System.Windows.Forms.TextBox textBox_travelB;
     }

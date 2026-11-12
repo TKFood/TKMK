@@ -896,6 +896,7 @@ namespace TKMK
                                     ,[DRIVERS] AS '司機'
                                     ,[TOURS] AS '領隊'
                                     ,[TRAVELNAMES] AS '旅行社'
+                                    ,[COMPANYNAMES] AS '公司行號'
                                     ,CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間'
                                     ,CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間'
                                     ,[STATUS] AS '狀態'
@@ -999,6 +1000,7 @@ namespace TKMK
                         dataGridView1.Columns["領券額"].Width = 80;
                         dataGridView1.Columns["來車公司"].Width = 80;
                         dataGridView1.Columns["旅行社"].Width = 100;
+                        dataGridView1.Columns["公司行號"].Width = 120;
                         dataGridView1.Columns["ID"].Width = 100;
                         dataGridView1.Columns["CREATEDATES"].Width = 80;
 
@@ -1121,6 +1123,7 @@ namespace TKMK
                     //textBox144.Text = row.Cells["優惠券名"].Value.ToString();
                     textBox144.Text = row.Cells["業務員名"].Value.ToString();
                     textBox_travel.Text = row.Cells["旅行社"].Value.ToString();
+                    textBox_company.Text = row.Cells["公司行號"].Value.ToString();
 
                     comboBox1.Text = row.Cells["車種"].Value.ToString();
                     comboBox2.Text = row.Cells["團類"].Value.ToString();
@@ -1244,6 +1247,7 @@ namespace TKMK
             , string GROUPSALES_LOGIN
             , string PLAYPROCESS
             , string TRAVELNAMES
+            , string COMPANYNAMES
            )
         {
             try
@@ -1275,7 +1279,7 @@ namespace TKMK
                                 [EXCHANNO], [EXCHANACOOUNT], [PURGROUPSTARTDATES],
                                 [GROUPSTARTDATES], [PURGROUPENDDATES], [GROUPENDDATES],
                                 [STATUS], [PLAYDAYKINDS], [PLAYDAYS], [DRIVERS], [TOURS], [GROUPSALES_LOGIN],
-                                [PLAYPROCESS],[TRAVELNAMES]
+                                [PLAYPROCESS],[TRAVELNAMES],[COMPANYNAMES]
                                 )
                                 VALUES
                                 (
@@ -1288,7 +1292,7 @@ namespace TKMK
                                 @EXCHANNO, @EXCHANACOOUNT, @PURGROUPSTARTDATES,
                                 @GROUPSTARTDATES, @PURGROUPENDDATES, @GROUPENDDATES,
                                 @STATUS, @PLAYDAYKINDS, @PLAYDAYS, @DRIVERS, @TOURS, @GROUPSALES_LOGIN,
-                                @PLAYPROCESS,@TRAVELNAMES
+                                @PLAYPROCESS,@TRAVELNAMES,@COMPANYNAMES
                                 )";
 
                             using (SqlCommand command = new SqlCommand(sql, conn, trans))
@@ -1332,6 +1336,7 @@ namespace TKMK
                                 command.Parameters.AddWithValue("@GROUPSALES_LOGIN", GROUPSALES_LOGIN ?? (object)DBNull.Value);
                                 command.Parameters.AddWithValue("@PLAYPROCESS", PLAYPROCESS ?? (object)DBNull.Value);
                                 command.Parameters.AddWithValue("@TRAVELNAMES", TRAVELNAMES ?? (object)DBNull.Value);
+                                command.Parameters.AddWithValue("@COMPANYNAMES", COMPANYNAMES ?? (object)DBNull.Value);
 
                                 int result = command.ExecuteNonQuery();
 
@@ -1397,6 +1402,7 @@ namespace TKMK
                                     , string GROUPSALES_LOGIN
                                     , string PLAYPROCESS  
                                     , string TRAVELNAMES
+                                    , string COMPANYNAMES
                                     )
         {
             try
@@ -1441,6 +1447,7 @@ namespace TKMK
                                     ,GROUPSALES_LOGIN='{18}'
                                     ,PLAYPROCESS='{19}'
                                     ,TRAVELNAMES='{20}'
+                                    ,COMPANYNAMES='{21}'
                                     WHERE ID='{0}'
                                   ", ID
                                     , CARCOMPANY
@@ -1463,6 +1470,7 @@ namespace TKMK
                                     , GROUPSALES_LOGIN
                                     , PLAYPROCESS
                                     , TRAVELNAMES
+                                    , (COMPANYNAMES ?? "").Replace("'", "''")
                                   );
 
                 cmd.Connection = sqlConn;
@@ -3578,6 +3586,7 @@ namespace TKMK
                                     ,[DRIVERS] AS '司機'
                                     ,[TOURS] AS '領隊'
                                     ,[TRAVELNAMES] AS '旅行社'
+                                    ,[COMPANYNAMES] AS '公司行號'
                                     ,CONVERT(varchar(100), [GROUPSTARTDATES],120) AS '實際到達時間'
                                     ,CONVERT(varchar(100), [GROUPENDDATES],120) AS '實際離開時間'
                                     ,[STATUS] AS '狀態'
@@ -4842,6 +4851,7 @@ namespace TKMK
                 string DRIVERS = textBox151.Text.Trim();
                 string TOURS = textBox161.Text.Trim();
                 string TRAVELNAMES= textBox_travel.Text.Trim();
+                string COMPANYNAMES = textBox_company.Text.Trim();
 
 
 
@@ -4887,6 +4897,7 @@ namespace TKMK
                         , GROUPSALES_LOGIN
                         , PLAYPROCESS
                         , TRAVELNAMES
+                        , COMPANYNAMES
                        );
 
                         textBox121.Text = FINDSERNO(dateTimePicker1.Value.ToString("yyyyMMdd"));
@@ -4953,6 +4964,7 @@ namespace TKMK
                     //string GROUPSTARTDATES = dateTimePicker2.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     //string PURGROUPENDDATES = dateTimePicker3.Value.ToString("yyyy/MM/dd HH:mm:ss");
                     string TRAVELNAMES = textBox_travel.Text.Trim();
+                    string COMPANYNAMES = textBox_company.Text.Trim();
 
                     if (!string.IsNullOrEmpty(ID) && !string.IsNullOrEmpty(CARNO) && !string.IsNullOrEmpty(EXCHANNO) && !string.IsNullOrEmpty(EXCHANACOOUNT))
                     {                        
@@ -4978,6 +4990,7 @@ namespace TKMK
                                     , GROUPSALES_LOGIN
                                     , PLAYPROCESS
                                     , TRAVELNAMES
+                                    , COMPANYNAMES
                                     );
                     }
 
@@ -5228,6 +5241,7 @@ namespace TKMK
                     string DRIVERS = textBox151.Text.Trim();
                     string TOURS = textBox161.Text.Trim();
                     string TRAVELNAMES = textBox_travel.Text.Trim();
+                    string COMPANYNAMES = textBox_company.Text.Trim();
 
                     UPDATEGROUPSALES(
                                       ID
@@ -5251,6 +5265,7 @@ namespace TKMK
                                     , GROUPSALES_LOGIN
                                     , PLAYPROCESS
                                     , TRAVELNAMES
+                                    , COMPANYNAMES
                                     );
                 }
 
@@ -5291,6 +5306,7 @@ namespace TKMK
                     string DRIVERS = textBox151.Text.Trim();
                     string TOURS = textBox161.Text.Trim();
                     string TRAVELNAMES = textBox_travel.Text.Trim();
+                    string COMPANYNAMES = textBox_company.Text.Trim();
 
                     UPDATEGROUPSALES(
                                       ID
@@ -5314,6 +5330,7 @@ namespace TKMK
                                     , GROUPSALES_LOGIN
                                     , PLAYPROCESS
                                     , TRAVELNAMES
+                                    , COMPANYNAMES
                                     );
                 }
 
